@@ -25,7 +25,17 @@ SECRET_KEY = 'django-insecure-69z7g4z57r(g_rd4ott1mca#)^hykt681ig5znx!ra1+7q#9_-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'www.streamstage.co',
+    'streamstage.co',
+    'master.streamstage.co',
+]
+
+ROOT_URLCONF = 'StreamStage.urls'
+SUBDOMAIN_URLCONFS = {
+    None: 'StreamStage.urls',
+    'www': 'StreamStage.urls',
+}
 
 
 # Application definition
