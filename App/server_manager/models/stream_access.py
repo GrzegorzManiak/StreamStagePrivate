@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinLengthValidator
+import secrets
 import uuid
 
 class StreamAccess(models.Model):
@@ -21,6 +22,7 @@ class StreamAccess(models.Model):
             MinLengthValidator(32)
         ],
         max_length=64,
+        default=secrets.token_hex(16)
     )
 
     # ========= Temporary ========= #

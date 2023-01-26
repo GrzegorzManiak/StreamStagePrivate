@@ -19,12 +19,10 @@ import secrets
     @return: The key that was generated or None if an error occurred
 """
 def generate_key(user_id, stream_id):
-    # -- Generate a new key
-    key = secrets.token_hex(16)
 
     # -- Check if the key already exists
     #    If so, Invalidate the key
-    while key_exists(key):
+    for key in get_keys_by_user(user_id):
         invalidate_key(key, True)
 
     # -- Attempt to locate the user and stream
@@ -39,7 +37,6 @@ def generate_key(user_id, stream_id):
 
     # -- Create a new entry in the table
     StreamAccess.objects.create(
-        id=key,
         user=user,
         stream=""
     )
@@ -75,3 +72,20 @@ def invalidate_key(key, pass_check=False):
 """
 def key_exists(key):
     return StreamAccess.objects.filter(id=key).exists()
+
+
+
+"""
+    @name: get_keys_by_user
+
+    @description: Returns a list of keys that are associated with a user
+    @param user_id: The user's id
+    @return: A list of keys or an empty list if an error occurred
+"""
+def get_keys_by_user(user_id):
+    user = Member.objects.filter(id=user_id).first()
+
+    if user == None:
+        return []
+
+    return StreamAccess.objects.filter(user=user).all()
