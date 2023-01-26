@@ -15,7 +15,7 @@ class StreamerProfile(models.Model):
         null=False,
         on_delete=models.CASCADE,
         primary_key=True
-        )
+    )
     
     category = models.CharField("Category", max_length=50, null=False, blank=False)
     
