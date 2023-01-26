@@ -20,6 +20,7 @@ class StreamAccess(models.Model):
         validators=[
             MinLengthValidator(32)
         ],
+        max_length=64,
     )
 
     # ========= Temporary ========= #
