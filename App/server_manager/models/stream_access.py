@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinLengthValidator
+from django.conf import settings
 import secrets
 import uuid
 
@@ -11,10 +12,9 @@ class StreamAccess(models.Model):
         editable=False
     )
 
-    user = models.ForeignKey(
-        'Member',
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name='stream_access'
     )
 
     key = models.CharField(
