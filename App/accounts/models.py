@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 
 # Create your models here.
 class Member(AbstractUser):
-    username = models.CharField("Username", max_length=25, null=False, blank=False)
+    username = models.CharField("Username", max_length=25, unique=True, null=False, blank=False)
     access_level = models.PositiveBigIntegerField("Access Level", null=False, blank=False)
 
 
