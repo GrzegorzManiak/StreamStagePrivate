@@ -12,7 +12,7 @@ class StreamAccess(models.Model):
         editable=False
     )
 
-    user = models.OneToOneField(
+    member = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
@@ -33,4 +33,4 @@ class StreamAccess(models.Model):
 
 
     def __str__(self):
-        return f'{self.user} - {self.stream}'
+        return f'{self.member} - {self.stream}'
