@@ -42,6 +42,14 @@ class Publisher(models.Model):
 
     # =========================================== #
 
+    ingest_server = models.ForeignKey(
+        Server,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='ingest_server',
+    )
+
     def __str__(self):
         return self.name
 
@@ -63,6 +71,21 @@ class Publisher(models.Model):
     def get_members(self):
         return self.members.all()
 
+
+    def set_ingest_server(self, server: Server) -> bool:
+        # Make sure the server is not in the list
+        if server in self.server_list.all():
+            return False
+
+        # Make sure the server is an ingest server
+        if server.mode != 'I':
+            return False
+
+        self.ingest_server = server
+        return True
+
+    def remove_ingest_server(self):
+        self.ingest_server = None
 
     def add_server(self, server: Server) -> bool: 
         # Make sure the server is not already in the list
@@ -87,3 +110,6 @@ class Publisher(models.Model):
         return self.server_list.all()
 
     # ============================== #
+
+
+    # ===== List verification ====== #

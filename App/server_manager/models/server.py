@@ -34,7 +34,7 @@ class Server(models.Model):
     mode = models.CharField(
         max_length=2,
         choices=[
-            ('I', 'Ingester'),
+            ('I', 'Ingest'),
             ('R', 'Relay'),
             ('RR', 'Root Relay'),
         ],
