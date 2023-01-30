@@ -137,3 +137,10 @@ GitHub.sublime-settings
 .history
 
 package-lock.json
+
+
+lib64
+include
+bin
+pyvenv.cfg
+.vscode
