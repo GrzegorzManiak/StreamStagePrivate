@@ -13,7 +13,7 @@ class ServerMode(Enum):
 
         return None
 
-    def from_string(mode: str) -> ServerMode or None:
+    def from_string(mode: str) -> any or None:
         match mode:
             case 'I': return ServerMode.INGEST
             case 'R': return ServerMode.RELAY

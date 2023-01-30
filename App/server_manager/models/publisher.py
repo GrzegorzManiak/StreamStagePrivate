@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MinLengthValidator
 from django.conf import settings
 import uuid
+from .server import Server
 
 class Publisher(models.Model):
 
@@ -26,9 +27,6 @@ class Publisher(models.Model):
 
     # ========= Black/white server list ========= #
 
-    # TODO: Implement this field properly once
-    #       the server model is implemented
-
     list_type = models.CharField(
         max_length=1,
         choices=[
@@ -38,11 +36,9 @@ class Publisher(models.Model):
         default='B',
     )
 
-    # list = models.ManyToManyField(
-    #     Server,
-    #     through='ServerList',
-    #     through_fields=('publisher', 'server'),
-    # )
+    server_list = models.ManyToManyField(
+        Server,
+    )
 
     # =========================================== #
 
@@ -68,18 +64,26 @@ class Publisher(models.Model):
         return self.members.all()
 
 
-    # TODO: Implement these functions once
-    #       the server model is implemented
-    def add_server(self, server):
-        pass
+    def add_server(self, server: Server) -> bool: 
+        # Make sure the server is not already in the list
+        if server not in self.server_list.all():
+            self.server_list.add(server)
+            return True
+        
+        return False
 
-    def remove_server(self, server):
-        pass
+    def remove_server(self, server: Server):
+        # Make sure the server is in the list
+        if server in self.server_list.all():
+            self.server_list.remove(server)
+            return True
 
-    def is_server(self, server):
-        pass
+        return False
+
+    def has_server(self, server: Server) -> bool:
+        return server in self.server_list.all()
 
     def get_servers(self):
-        pass
+        return self.server_list.all()
 
     # ============================== #

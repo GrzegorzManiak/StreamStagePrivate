@@ -3,7 +3,7 @@ from django.core.validators import (
     MinLengthValidator, 
     ip_address_validators
 )
-from library import ServerMode
+from server_manager.library import ServerMode
 
 import uuid
 import secrets
