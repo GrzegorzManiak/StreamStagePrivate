@@ -110,6 +110,3 @@ class Publisher(models.Model):
         return self.server_list.all()
 
     # ============================== #
-
-
-    # ===== List verification ====== #

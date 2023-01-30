@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.validators import (
     MinLengthValidator, 
-    ip_address_validators
+    validate_ipv4_address
 )
 from server_manager.library import ServerMode
 
@@ -70,6 +70,8 @@ class Server(models.Model):
 
     # ========= Functions ========= #
     def set_mode(self, mode: ServerMode) -> None or ValueError:
+        # TODO: Add a check if the server is being set to a different mode
+        # whilst other models are referencing it as an ingest server
         mode = mode.to_string()
 
         if mode is not None: self.mode = mode
@@ -85,8 +87,8 @@ class Server(models.Model):
         self.live = True
         
         # Validate the IP and port
-        try: ip_address_validators('ipv4', ip)
-        except: raise ValueError('Invalid IP address')
+        try: validate_ipv4_address(ip)
+        except ValueError: raise ValueError('Invalid IP')
 
         # Validate the port
         if port < 0 or port > 65535:
@@ -99,15 +101,3 @@ class Server(models.Model):
 
         self.ip = ip
         self.port = port
-
-        self.save()
-
-
-    def save(self, *args, **kwargs):
-        # Validate that if live is True, then the IP and port are not None
-        if self.live:
-            if self.ip is None or self.port is None:
-                raise ValueError('Server is live, but IP or port is None')
-
-        super().save(*args, **kwargs)
-
