@@ -46,3 +46,40 @@ class Publisher(models.Model):
 
     # =========================================== #
 
+    def __str__(self):
+        return self.name
+
+
+    # ========= Functions ========= #
+    def add_member(self, member):
+        # Make sure the member is not already in the list
+        if member not in self.members.all():
+            self.members.add(member)
+
+    def remove_member(self, member):
+        # Make sure the member is in the list
+        if member in self.members.all():
+            self.members.remove(member)
+
+    def is_member(self, member):
+        return member in self.members.all()
+
+    def get_members(self):
+        return self.members.all()
+
+
+    # TODO: Implement these functions once
+    #       the server model is implemented
+    def add_server(self, server):
+        pass
+
+    def remove_server(self, server):
+        pass
+
+    def is_server(self, server):
+        pass
+
+    def get_servers(self):
+        pass
+
+    # ============================== #
