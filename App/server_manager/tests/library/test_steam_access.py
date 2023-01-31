@@ -1,7 +1,7 @@
 from accounts.models import Member
 from django.test import TestCase
 
-from server_manager.models import StreamAccess
+from server_manager.models.stream_access import StreamAccess
 from server_manager.library import (
     generate_key, 
 
@@ -33,6 +33,8 @@ class StreamAccessTest(TestCase):
             member=self.member,
             stream="test"
         )
+
+        
 
     
     #                                         #
@@ -237,3 +239,15 @@ class StreamAccessTest(TestCase):
 
         # -- Ensure the key is None
         self.assertIsNone(key)
+
+
+    # TODO: Fix this test ONCE we create a stream model
+    # def test_get_keys_by_stream_id(self):
+    #     # -- Get the keys
+    #     keys = get_keys_by_stream_id(self.stream.id)
+
+    #     # -- Ensure the keys is not None
+    #     self.assertIsNotNone(keys)
+
+    #     # -- Ensure the keys is correct
+    #     self.assertEqual(keys[0].id, self.key.id)
