@@ -1,4 +1,4 @@
-from ..models import StreamAccess
+from server_manager.models.stream_access import StreamAccess
 from accounts.models import Member
 import uuid
 

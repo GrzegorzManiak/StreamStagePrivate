@@ -2,7 +2,6 @@ from django.db import models
 from django.core.validators import MinLengthValidator
 from django.conf import settings
 import uuid
-from .server import Server
 
 class Publisher(models.Model):
 
@@ -37,13 +36,13 @@ class Publisher(models.Model):
     )
 
     server_list = models.ManyToManyField(
-        Server,
+        'server_manager.Server',
     )
 
     # =========================================== #
 
     ingest_server = models.ForeignKey(
-        Server,
+        'server_manager.Server',
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
@@ -72,7 +71,7 @@ class Publisher(models.Model):
         return self.members.all()
 
 
-    def set_ingest_server(self, server: Server) -> bool:
+    def set_ingest_server(self, server) -> bool:
         # Make sure the server is not in the list
         if server in self.server_list.all():
             return False
@@ -82,28 +81,32 @@ class Publisher(models.Model):
             return False
 
         self.ingest_server = server
+        self.save()
         return True
 
     def remove_ingest_server(self):
         self.ingest_server = None
+        self.save()
 
-    def add_server(self, server: Server) -> bool: 
+    def add_server(self, server) -> bool: 
         # Make sure the server is not already in the list
         if server not in self.server_list.all():
             self.server_list.add(server)
+            self.save()
             return True
         
         return False
 
-    def remove_server(self, server: Server):
+    def remove_server(self, server):
         # Make sure the server is in the list
         if server in self.server_list.all():
             self.server_list.remove(server)
+            self.save()
             return True
 
         return False
 
-    def has_server(self, server: Server) -> bool:
+    def has_server(self, server) -> bool:
         return server in self.server_list.all()
 
     def get_servers(self):

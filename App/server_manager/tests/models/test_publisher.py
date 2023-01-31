@@ -1,7 +1,9 @@
 from accounts.models import Member
 from django.test import TestCase
 from server_manager.library import ServerMode
-from server_manager.models import Publisher, Server
+
+from server_manager.models.publisher import Publisher
+from server_manager.models.server import Server
 
 class PublisherTest(TestCase):
 
@@ -254,45 +256,45 @@ class PublisherTest(TestCase):
     #                                          #
     def test_set_ingest_server(self):
         # -- Make sure server 1 is an ingest server
-        self.server_1.set_mode(ServerMode.INGEST)
+        self.server_2.set_mode(ServerMode.INGEST)
 
         # -- Lets set the ingest server
-        self.publisher.set_ingest_server(self.server_1)
+        self.publisher.set_ingest_server(self.server_2)
 
         # -- Lets check if the server is in the publisher
-        self.assertTrue(self.publisher.ingest_server == self.server_1)
+        self.assertTrue(self.publisher.ingest_server == self.server_2)
 
 
     def test_set_invalid_ingest_server(self):
         # -- Make sure server 1 is not an ingest server
-        self.server_1.set_mode(ServerMode.RELAY)
+        self.server_2.set_mode(ServerMode.RELAY)
 
         # -- Lets set the ingest server
-        self.publisher.set_ingest_server(self.server_1)
+        self.publisher.set_ingest_server(self.server_2)
 
         # -- Lets check if the server is in the publisher
-        self.assertFalse(self.publisher.ingest_server == self.server_1)
+        self.assertFalse(self.publisher.ingest_server == self.server_2)
 
     def test_set_ingest_server_twice(self):
         # -- Make sure server 1 is an ingest server
-        self.server_1.set_mode(ServerMode.INGEST)
+        self.server_2.set_mode(ServerMode.INGEST)
 
         # -- Lets set the ingest server
-        self.publisher.set_ingest_server(self.server_1)
+        self.publisher.set_ingest_server(self.server_2)
 
         # -- Lets set the ingest server again
-        self.publisher.set_ingest_server(self.server_1)
+        self.publisher.set_ingest_server(self.server_2)
 
         # -- Lets check if the server is in the publisher
-        self.assertTrue(self.publisher.ingest_server == self.server_1)
+        self.assertTrue(self.publisher.ingest_server == self.server_2)
 
 
     def test_remove_ingest_server(self):
         # -- Make sure server 1 is an ingest server
-        self.server_1.set_mode(ServerMode.INGEST)
+        self.server_2.set_mode(ServerMode.INGEST)
 
         # -- Lets set the ingest server
-        self.publisher.set_ingest_server(self.server_1)
+        self.publisher.set_ingest_server(self.server_2)
 
         # -- Lets remove the ingest server
         self.publisher.remove_ingest_server()

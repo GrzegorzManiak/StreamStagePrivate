@@ -3,8 +3,9 @@ from django.core.validators import (
     MinLengthValidator, 
     validate_ipv4_address
 )
-from server_manager.library import ServerMode
+from server_manager.library.common import ServerMode
 
+from server_manager.models import Publisher
 import uuid
 import secrets
 
@@ -69,13 +70,21 @@ class Server(models.Model):
 
 
     # ========= Functions ========= #
-    def set_mode(self, mode: ServerMode) -> None or ValueError:
-        # TODO: Add a check if the server is being set to a different mode
-        # whilst other models are referencing it as an ingest server
-        mode = mode.to_string()
+    def set_mode(self, mode: ServerMode) -> None:
+        # Make sure no other servers are using this mode
+        for pub in Publisher.objects.all():
+            if pub.ingest_server == self:
+                raise ValueError('Cannot change the mode of an ingest server')
 
+            if self in pub.server_list.all():
+                raise ValueError('Cannot change the mode of a publisher server')
+        
+        mode = mode.to_string()
+    
         if mode is not None: self.mode = mode
         else: raise ValueError('Invalid server mode')
+
+        self.save()
 
     def get_mode(self) -> ServerMode or ValueError:
         mode = ServerMode.from_string(self.mode)
@@ -88,7 +97,7 @@ class Server(models.Model):
         
         # Validate the IP and port
         try: validate_ipv4_address(ip)
-        except ValueError: raise ValueError('Invalid IP')
+        except: raise ValueError('Invalid IP address')
 
         # Validate the port
         if port < 0 or port > 65535:
@@ -101,3 +110,5 @@ class Server(models.Model):
 
         self.ip = ip
         self.port = port
+
+        self.save()
