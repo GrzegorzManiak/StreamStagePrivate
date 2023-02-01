@@ -1,18 +1,14 @@
 from accounts.models import Member
 from django.test import TestCase
 
-from server_manager.models.stream_access import StreamAccess
+from server_manager.models import StreamAccess
 from server_manager.library import (
     generate_key, 
 
-    get_key_by_member_id,
+    get_keys_by_member_id,
     get_keys_by_stream_id,
     get_key,
     get_key_by_id,
-
-    key_exists,
-    key_exists_by_id,
-    key_exists_by_member_id,
 
     invalidate_key, 
     invalidate_key_by_id,
@@ -33,8 +29,6 @@ class StreamAccessTest(TestCase):
             member=self.member,
             stream="test"
         )
-
-        
 
     
     #                                         #
@@ -105,37 +99,6 @@ class StreamAccessTest(TestCase):
 
 
     #                                         #
-    # ======== Test key_exists suite ======== #
-    #                                         #
-    
-    def test_key_exists_by_id(self):
-        # -- Check if the key exists
-        self.assertTrue(key_exists_by_id(self.key.id))
-    
-    def test_key_exists_by_id_invalid(self):
-        # -- Check if the key exists
-        self.assertFalse(key_exists_by_id(uuid.uuid4()))
-
-
-    def test_key_exists_by_member_id(self):
-        # -- Check if the key exists
-        self.assertTrue(key_exists_by_member_id(self.member.id))
-
-    def test_key_exists_by_member_id_invalid(self):
-        # -- Check if the key exists
-        self.assertFalse(key_exists_by_member_id(uuid.uuid4()))
-
-
-    def test_key_exists(self):
-        # -- Check if the key exists
-        self.assertTrue(key_exists(self.key.key))
-
-    def test_key_exists_invalid(self):
-        # -- Check if the key exists
-        self.assertFalse(key_exists("invalid_key"))
-
-
-    #                                         #
     # ====== Test invalidate_key suite ====== #
     #                                         #
 
@@ -144,14 +107,14 @@ class StreamAccessTest(TestCase):
         invalidate_key(self.key.key)
 
         # -- Ensure the key is no longer valid
-        self.assertIsNone(key_exists_by_id(self.key.id))
+        self.assertIsNone(get_key_by_id(self.key.id))
 
     def test_invalidate_key_invalid(self):
         # -- Invalidate the key
         invalidate_key(uuid.uuid4())
 
         # -- Ensure the key is no longer valid
-        self.assertIsNotNone(key_exists_by_id(self.key.id))
+        self.assertIsNotNone(get_key_by_id(self.key.id))
 
 
     def test_invalidate_key_by_id(self):
@@ -159,14 +122,14 @@ class StreamAccessTest(TestCase):
         invalidate_key_by_id(self.key.id)
 
         # -- Ensure the key is no longer valid
-        self.assertIsNone(key_exists_by_id(self.key.id))
+        self.assertIsNone(get_key_by_id(self.key.id))
 
     def test_invalidate_key_by_id_invalid(self):
         # -- Invalidate the key
         invalidate_key_by_id(uuid.uuid4())
 
         # -- Ensure the key is no longer valid
-        self.assertIsNotNone(key_exists_by_id(self.key.id))
+        self.assertIsNone(get_key_by_id(self.key.id))
 
 
     def test_invalidate_key_by_member_id(self):
@@ -174,14 +137,14 @@ class StreamAccessTest(TestCase):
         invalidate_key_by_member_id(self.member.id)
 
         # -- Ensure the key is no longer valid
-        self.assertIsNone(key_exists_by_id(self.key.id))
+        self.assertIsNone(get_key_by_id(self.key.id))
 
     def test_invalidate_key_by_member_id_invalid(self):
         # -- Invalidate the key
         invalidate_key_by_member_id(uuid.uuid4())
 
         # -- Ensure the key is no longer valid
-        self.assertIsNotNone(key_exists_by_id(self.key.id))
+        self.assertIsNone(get_key_by_id(self.key.id))
     
 
     #                                         #
@@ -225,29 +188,17 @@ class StreamAccessTest(TestCase):
 
     def test_get_key_by_member_id(self):
         # -- Get the key
-        key = get_key_by_member_id(self.member.id)
+        keys = get_keys_by_member_id(self.member.id)
 
         # -- Ensure the key is not None
-        self.assertIsNotNone(key)
+        self.assertIsNotNone(keys)
 
         # -- Ensure the key is correct
-        self.assertEqual(key.id, self.key.id)
+        self.assertEqual(keys[0].id, self.key.id)
 
     def test_get_key_by_member_id_invalid(self):
         # -- Get the key
-        key = get_key_by_member_id(uuid.uuid4())
+        keys = get_keys_by_member_id(uuid.uuid4())
 
         # -- Ensure the key is None
-        self.assertIsNone(key)
-
-
-    # TODO: Fix this test ONCE we create a stream model
-    # def test_get_keys_by_stream_id(self):
-    #     # -- Get the keys
-    #     keys = get_keys_by_stream_id(self.stream.id)
-
-    #     # -- Ensure the keys is not None
-    #     self.assertIsNotNone(keys)
-
-    #     # -- Ensure the keys is correct
-    #     self.assertEqual(keys[0].id, self.key.id)
+        self.assertIsNone(keys)
