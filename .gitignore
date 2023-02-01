@@ -143,4 +143,10 @@ lib64
 include
 bin
 pyvenv.cfg
+
+# VSC   
+.vscode/
 .vscode
+.vscode/settings.json
+
+.vs/
