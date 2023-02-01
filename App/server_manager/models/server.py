@@ -110,5 +110,3 @@ class Server(models.Model):
 
         self.ip = ip
         self.port = port
-
-        self.save()
