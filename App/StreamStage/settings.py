@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'localhost',
+    '127.0.0.1',
     'www.streamstage.co',
     'streamstage.co',
     'master.streamstage.co',
@@ -173,3 +174,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Stripe keys
 # STRIPE_SECRET_KEY = ''
 # STRIPE_PUBLISHABLE_KEY = ''
+
+INBOUND_EMAIL = 'inquiries@StreamStage.co'
+OUTBOUND_EMAIL = 'mail@streamstage.co'
+
+# DEV Key
+SENDGIRD_TOKEN = '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'
