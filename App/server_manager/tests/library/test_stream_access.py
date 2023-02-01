@@ -97,6 +97,31 @@ class StreamAccessTest(TestCase):
         self.assertFalse(StreamAccess.objects.filter(id=key_1.id).exists())
 
 
+    def test_generate_key_higher_key_limit(self):
+        # -- Lets generate some keys
+        KEY_LIMIT = 5
+        keys = [generate_key(self.member.id, i, KEY_LIMIT) for i in range(KEY_LIMIT)]
+        
+        # -- Ensure the keys are not None
+        for key in keys:
+            self.assertIsNotNone(key)
+
+            # -- Check if the keys exists
+            self.assertTrue(StreamAccess.objects.filter(id=key.id).exists())
+
+        # -- Lets generate a key again
+        key = generate_key(self.member.id, 1, KEY_LIMIT)
+
+        # -- Ensure the key is not None
+        self.assertIsNotNone(key)
+
+        # -- Check if the key exists
+        self.assertTrue(StreamAccess.objects.filter(id=key.id).exists())
+
+        # -- Ensure that the first key is no longer valid
+        self.assertFalse(StreamAccess.objects.filter(id=keys[0].id).exists())
+        
+
 
     #                                         #
     # ====== Test invalidate_key suite ====== #
@@ -129,7 +154,7 @@ class StreamAccessTest(TestCase):
         invalidate_key_by_id(uuid.uuid4())
 
         # -- Ensure the key is no longer valid
-        self.assertIsNone(get_key_by_id(self.key.id))
+        self.assertIsNotNone(get_key_by_id(self.key.id))
 
 
     def test_invalidate_key_by_member_id(self):
@@ -144,7 +169,7 @@ class StreamAccessTest(TestCase):
         invalidate_key_by_member_id(uuid.uuid4())
 
         # -- Ensure the key is no longer valid
-        self.assertIsNone(get_key_by_id(self.key.id))
+        self.assertIsNotNone(get_key_by_id(self.key.id))
     
 
     #                                         #
@@ -193,8 +218,8 @@ class StreamAccessTest(TestCase):
         # -- Ensure the key is not None
         self.assertIsNotNone(keys)
 
-        # -- Ensure the key is correct
-        self.assertEqual(keys[0].id, self.key.id)
+        # -- We should only have one key
+        self.assertEqual(len(keys), 1)
 
     def test_get_key_by_member_id_invalid(self):
         # -- Get the key

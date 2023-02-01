@@ -5,15 +5,15 @@ import uuid
 """
     @name: generate_key
 
-    @description: The "generate_key" function is used to create a new key for a user when 
-    they request to watch a live stream. The function takes in two parameters, 
-    "member_id" and "stream_id", and uses them to create a unique key for the user.
-    We than proceed to check the table if any old keys are found, if so, it is 
-    removed to prevent multiple connections from one account, the key then is then 
-    stored in a table along with the member_id and stream_id.
+    @description: This function generates a key for a user to access a stream
+    every time a stream is requested, a key is generated and stored in the database
+    the key is then returned to the user, and the user can use the key to access the stream.
+    The key is then invalidated after a certain amount of time, or when a user requests a new key
+    from more then the permitted amount of devices.
 
     @param member_id: The user's id
     @param stream_id: The stream's id
+    @param key_limit: The maximum amount of keys a user can have (inclusive)
 
     @return: The key that was generated or None if an error occurred
 """
@@ -26,42 +26,32 @@ def generate_key(
     # -- Attempt to locate the user and stream
     member = Member.objects.filter(id=member_id).first()
 
-    if member == None:
-        return None
-
-    if key_limit is None:
-        key_limit = 1 # TODO: Change this to the actual key limit, Ticket #54
+    if member == None: return None
+    if key_limit is None: key_limit = 1 # TODO: Change this to the actual key limit, Ticket #54
     
     # -- Get the list of keys associated to this member
     key_list = StreamAccess.objects.filter(member=member_id)
 
-    # -- invert the list as to get rid of the oldest keys first
-    key_list = key_list[::-1]
-
     # -- Remove the oldest keys until the threshold is met
-    while len(key_list) > key_limit:
-        key = key_list.pop()
-        key.delete()
+    while len(key_list) >= key_limit:        
+        # -- Remove the key from the table
+        StreamAccess.objects.filter(id=key_list[0].id).delete()
+
+        # -- Then remove the key from the list
+        key_list = key_list[1:]
 
 
     # TODO: Change this to the actual stream model
     # stream = Stream.objects.filter(id=stream_id).first()
 
-    # -- Check if the user and stream exists
-    if member == None: # or stream == None:
-        return None
-
     # -- Create a new entry in the table
-    try:
-        return StreamAccess.objects.create(
+    try: return StreamAccess.objects.create(
             member=member,
             stream=str(stream_id)
         )
         
     
-    except Exception as e:
-        print(e)
-        return None
+    except Exception as e: return None
         
 
 
@@ -101,6 +91,9 @@ def invalidate_key_by_member_id(member_id, pass_check=False) -> bool:
     if pass_check == False:
         if get_keys_by_member_id(member_id) is None:
             return False
+
+    # -- Get the member
+    member = Member.objects.filter(id=member_id).first()
 
     # -- Remove the key from the table
     StreamAccess.objects.filter(member=member).delete()
@@ -144,7 +137,7 @@ def get_keys_by_member_id(member_id) -> list[StreamAccess]:
     if member == None:
         return None
 
-    return StreamAccess.objects.filter(member=member).first()
+    return StreamAccess.objects.filter(member=member).all()
 
 
 

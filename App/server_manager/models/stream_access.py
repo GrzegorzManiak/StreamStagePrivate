@@ -12,7 +12,7 @@ class StreamAccess(models.Model):
         editable=False
     )
 
-    member = models.OneToOneField(
+    member = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
