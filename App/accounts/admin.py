@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .forms import MemberCreationForm, MemberChangeForm
-from .models import Member, Streamer
+from .models import Member, StreamerProfile
 
 
 # Register your models here.
@@ -13,3 +13,4 @@ class MemberAdmin(UserAdmin):
     
 
 admin.site.register(Member, MemberAdmin)
+admin.site.register(StreamerProfile)

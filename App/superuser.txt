@@ -1,0 +1,5 @@
+Username: Cian
+Email: c@g.com
+First name: C
+Last name: M
+Password: Cian

@@ -26,6 +26,7 @@ SECRET_KEY = 'django-insecure-69z7g4z57r(g_rd4ott1mca#)^hykt681ig5znx!ra1+7q#9_-
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    'localhost',
     'www.streamstage.co',
     'streamstage.co',
     'master.streamstage.co',
@@ -47,8 +48,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Local
     'accounts',
     'server_manager',
+
+    # 3rd Party
+    'crispy_forms',
+    'crispy_bootstrap5',
+    'stripe',
 ]
 
 MIDDLEWARE = [
@@ -131,17 +138,38 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
+
+# Developer Content
 STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
-STATICFILES_DIRS = [
-    BASE_DIR / 'static'
+STATICFILES_DIRS = [str(BASE_DIR.joinpath('static'))]
+STATIC_ROOT = str(BASE_DIR.joinpath('staticfiles'))
+STATICFILES_FINDERS = [
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
 ]
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-MEDIA_ROOT = BASE_DIR / 'media'
+# User-uploaded content
+MEDIA_URL = '/media/'
+MEDIA_ROOT = str(BASE_DIR.joinpath('media'))
 
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Custom User
 AUTH_USER_MODEL = 'accounts.Member'
+
+# Login & Logout redirects
+# LOGIN_REDIRECT_URL = ''
+# LOGOUT_REDIRECT_URL = ''
+
+# Bootstrap & Django forms
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
+
+# Password reset email
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Stripe keys
+# STRIPE_SECRET_KEY = ''
+# STRIPE_PUBLISHABLE_KEY = ''
