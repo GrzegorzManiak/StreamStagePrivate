@@ -6,7 +6,7 @@ class HeartbeatResponse():
     SUCCESS = 0
     TOO_LATE = 1
     TOO_SOON = 2
-    TIMED_OUT = 3
+    EXPIRED = 3
     NOT_STARTED = 4
     NOT_FOUND = 5
 
@@ -18,10 +18,11 @@ class Heartbeat():
 
     def __init__(
         self, 
-        server_id: str,
+        server_id: uuid,
+        time_limit: int = 60, # -- The amount of time the server can be late by before it is considered dead
         interval: int = 5,
         timeout: int = 10,
-        timeout_max: int = 3,
+        max_timeouts: int = 3,
         frame_of_error: int = 2, # -- FoE +- the amount of time the server can be late or early by
     ):
         self.started = False
@@ -32,14 +33,19 @@ class Heartbeat():
         self.interval = interval
         self.timeout = timeout
         self.timeouts = 0
-        self.timeout_max = timeout_max
+        self.max_timeouts = max_timeouts
         self.last_beat = datetime.datetime.now()
         self.frame_of_error = frame_of_error
         self.key = self.generate_key()
+        self.time_limit = time_limit
+
+        # -- Check if the server is already in the heartbeats dict
+        #    If so, let's delete it and replace it with this new heartbeat
+        if old_hearbeat := get_heartbeat(server_id):
+            delete_heartbeat(old_hearbeat)
 
         # -- add self to the heartbeats dict
-        heartbeats[self.server_id] = self
-
+        heartbeats[str(self.server_id)] = self
 
 
     """
@@ -51,7 +57,6 @@ class Heartbeat():
         return f'heartbeat_{secrets.token_hex(16)}'
 
     
-
     """
         Check if the heartbeat has sent too soon, accounting for frame of error
         :name: has_sent_too_soon
@@ -59,7 +64,6 @@ class Heartbeat():
     """
     def has_sent_too_soon(self):
         return (datetime.datetime.now() - self.last_beat).total_seconds() < self.interval - self.frame_of_error
-
 
 
     """
@@ -71,15 +75,22 @@ class Heartbeat():
         return (datetime.datetime.now() - self.last_beat).total_seconds() > self.timeout + self.frame_of_error
 
 
-
     """
         Check if the heartbeat has timed out too many times
-        :name: has_timed_out_too_many_times
+        :name: has_EXPIRED_too_many_times
         :return: bool - True if the heartbeat has timed out too many times
     """
-    def has_timed_out_too_many_times(self):
-        return self.timeouts >= self.timeout_max
+    def has_expired_too_many_times(self):
+        return self.timeouts >= self.max_timeouts
 
+
+    """
+        Check if the server is dead
+        :name: is_server_dead
+        :return: bool - True if the server is dead
+    """
+    def is_server_dead(self):
+        return (datetime.datetime.now() - self.last_beat).total_seconds() >= (self.timeout + self.time_limit)
 
 
     """
@@ -88,19 +99,19 @@ class Heartbeat():
         :return: HeartbeatResponse - The response from the heartbeat
     """
     def internal_check(self) -> HeartbeatResponse:
-        # -- Check if the heartbeat has sent too soon
-        if self.has_sent_too_soon():
-            self.timeout += 1
-            return HeartbeatResponse.TOO_SOON
-
-        if self.has_sent_too_late():
-            self.timeouts += 1
-            return HeartbeatResponse.TOO_LATE
+        # -- Check if the heartbeat has started
+        if not self.started:
+            return HeartbeatResponse.NOT_STARTED
             
-        # -- Check if the heartbeat has timed out too many times
-        if self.has_timed_out_too_many_times():
-            return HeartbeatResponse.TIMED_OUT
+        # -- Check if the server is dead
+        if self.is_server_dead():
+            return HeartbeatResponse.EXPIRED
 
+        # -- Check if the heartbeat has timed out too many times
+        if self.has_expired_too_many_times():
+            return HeartbeatResponse.EXPIRED
+
+        return HeartbeatResponse.SUCCESS
 
 
     """
@@ -119,16 +130,31 @@ class Heartbeat():
 
             return HeartbeatResponse.SUCCESS
 
-        
         # -- Check if the heartbeat is still valid
-        if resp := self.internal_check() != HeartbeatResponse.SUCCESS:
-            return resp
+        if self.internal_check() != HeartbeatResponse.SUCCESS:
+            # -- Update the key to prevent any further requests
+            #    This instance will be deleted soon by a cleanup task
+            self.key = self.generate_key()
+            return HeartbeatResponse.EXPIRED
 
         
-        # -- Update the last beat
-        self.last_beat = datetime.datetime.now()
+        # -- Update the key
         self.key = self.generate_key()
+
+
+        # -- Check if the heartbeat has sent too soon
+        if self.has_sent_too_late():
+            self.timeouts += 1
+            self.last_beat = datetime.datetime.now()
+            return HeartbeatResponse.TOO_LATE
+
+        if self.has_sent_too_soon():
+            self.timeouts += 1
+            self.last_beat = datetime.datetime.now()
+            return HeartbeatResponse.TOO_SOON
+
         return HeartbeatResponse.SUCCESS
+
 
 
 
@@ -139,15 +165,15 @@ class Heartbeat():
     """
     def serialize(self):
         return {
-            'server_id': self.server_id,
+            'server_id': str(self.server_id),
             'interval': self.interval,
             'timeout': self.timeout,
             'timeouts': self.timeouts,
-            'timeout_max': self.timeout_max,
+            'max_timeouts': self.max_timeouts,
             'last_beat': self.last_beat,
             'key': self.key,
             'started': self.started,
-            'heartbeat_id': self.heartbeat_id,
+            'heartbeat_id': str(self.heartbeat_id),
             'date_created': self.date_created,
         }
 
@@ -157,42 +183,51 @@ class Heartbeat():
 heartbeats = {}
 
 
+"""
+    Resolves a server id from a heartbeat id
+    :name: resolve_server_id
+    :param heartbeat_id: uuid - The heartbeat id
+    :return: uuid - The server id
+"""
+def resolve_server_id(heartbeat_id: uuid) -> uuid:
+    for server_id, heartbeat in heartbeats.items():
+        if heartbeat.heartbeat_id == heartbeat_id:
+            return uuid.UUID(server_id)
+    return None
+
 
 """
     Get a heartbeat by server id
     :name: get_heartbeat
-    :param server_id: str - The server id
+    :param server_id: uuid - The server id
     :return: Heartbeat - The heartbeat object or None
 """
-def get_heartbeat(server_id: str) -> Heartbeat or None:
-    return heartbeats[server_id]
+def get_heartbeat(server_id: uuid) -> Heartbeat or None:
+    return heartbeats.get(str(server_id), None)
 
 
 
 """
     Get a heartbeat by heartbeat id
     :name: get_heartbeat_by_id
-    :param heartbeat_id: str - The heartbeat id
+    :param heartbeat_id: uuid - The heartbeat id
     :return: Heartbeat - The heartbeat object or None
 """
-def get_heartbeat_by_id(heartbeat_id: str) -> Heartbeat or None:
-    for heartbeat in heartbeats.values():
-        if heartbeat.heartbeat_id == heartbeat_id:
-            return heartbeat
-
+def get_heartbeat_by_id(heartbeat_id: uuid) -> Heartbeat or None:
+    server_id = resolve_server_id(heartbeat_id)
+    if server_id: return get_heartbeat(server_id)
     return None
-
 
 
 """
     Delete a heartbeat by server id
     :name: delete_heartbeat
-    :param server_id: str - The server id
+    :param server_id: uuid - The server id
     :return: HeartbeatResponse - The response from the heartbeat
 """
-def delete_heartbeat(server_id: str) -> bool:
-    if server_id in heartbeats:
-        del heartbeats[server_id]
+def delete_heartbeat(server_id: uuid) -> bool:
+    if get_heartbeat(server_id):
+        del heartbeats[str(server_id)]
         return HeartbeatResponse.SUCCESS
 
     return HeartbeatResponse.NOT_FOUND
@@ -205,12 +240,9 @@ def delete_heartbeat(server_id: str) -> bool:
     :param heartbeat_id: str - The heartbeat id
     :return: HeartbeatResponse - The response from the heartbeat
 """
-def delete_heartbeat_by_id(heartbeat_id: str) -> bool:
-    for heartbeat in heartbeats.values():
-        if heartbeat.heartbeat_id == heartbeat_id:
-            del heartbeats[heartbeat.server_id]
-            return HeartbeatResponse.SUCCESS
-
+def delete_heartbeat_by_id(heartbeat_id: uuid) -> bool:
+    server_id = resolve_server_id(heartbeat_id)
+    if server_id: return delete_heartbeat(server_id)
     return HeartbeatResponse.NOT_FOUND
 
 
@@ -218,10 +250,10 @@ def delete_heartbeat_by_id(heartbeat_id: str) -> bool:
 """
     Check health of a heartbeat
     :name: check_health
-    :param server_id: str - The server id
+    :param server_id: uuid - The server id
     :return: HeartbeatResponse - The response from the heartbeat
 """
-def check_health(server_id: str) -> HeartbeatResponse:
+def check_health(server_id: uuid) -> HeartbeatResponse:
     if heartbeat := get_heartbeat(server_id):
         return heartbeat.internal_check()
 
@@ -232,13 +264,12 @@ def check_health(server_id: str) -> HeartbeatResponse:
 """
     Check health of a heartbeat by heartbeat id
     :name: check_health_by_id
-    :param heartbeat_id: str - The heartbeat id
+    :param heartbeat_id: uuid - The heartbeat id
     :return: HeartbeatResponse - The response from the heartbeat
 """
-def check_health_by_id(heartbeat_id: str) -> HeartbeatResponse:
-    if heartbeat := get_heartbeat_by_id(heartbeat_id):
-        return heartbeat.internal_check()
-
+def check_health_by_id(heartbeat_id: uuid) -> HeartbeatResponse:
+    server_id = resolve_server_id(heartbeat_id)
+    if server_id: return check_health(server_id)
     return HeartbeatResponse.NOT_FOUND
 
 
@@ -252,6 +283,6 @@ def check_all_health() -> dict:
     health = {}
 
     for heartbeat in heartbeats.values():
-        health[heartbeat.server_id] = heartbeat.internal_check()
+        health[str(heartbeat.server_id)] = heartbeat.internal_check()
 
     return health
