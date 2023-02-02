@@ -8,7 +8,7 @@ from .oauth import (
     oAuthRespone, 
     generate_oauth_key,
     format_instructions,
-    oAuthTypes,
+    OAuthTypes,
 )
 
 class GoogleUser():
@@ -216,7 +216,7 @@ def google_sso(request):
     #    So that we can fetch this
     #    User later on
     key = generate_oauth_key(
-        oAuthTypes.GOOGLE,
+        OAuthTypes.GOOGLE,
         google.user.serialize()
     )
 
@@ -229,7 +229,7 @@ def google_sso(request):
         'instructions': format_instructions(
             google.user.get_email(),
             google.user.get_is_verified(),
-            oAuthTypes.GOOGLE,
+            OAuthTypes.GOOGLE,
             google.user.get_id()
         )
     }, status=status.HTTP_200_OK)

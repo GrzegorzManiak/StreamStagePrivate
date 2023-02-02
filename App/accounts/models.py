@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import get_user_model
-from .oauth.oauth import oAuthTypes
+from .oauth.oauth import OAuthTypes
 import uuid
 
 
@@ -39,5 +39,5 @@ class StreamerProfile(models.Model):
 class oAuth2(models.Model):
     id = models.CharField("ID", max_length=100, primary_key=True)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    oauth_type = models.SmallIntegerField("Type", choices=oAuthTypes.choices)
+    oauth_type = models.SmallIntegerField("Type", choices=OAuthTypes.choices)
     

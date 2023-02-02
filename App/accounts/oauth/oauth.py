@@ -23,7 +23,7 @@ class oAuthRespone():
     A type for the types of oauth
     that are supported
 """
-class oAuthTypes():
+class OAuthTypes():
     # -- Google, maybe discord and github
     GOOGLE = 0
 
@@ -33,7 +33,7 @@ class oAuthTypes():
     )
 
     def __str__(self):
-        return f"oAuthTypes({str(self.value)})"
+        return f"OAuthTypes({str(self.value)})"
 
 
     """
@@ -44,7 +44,7 @@ class oAuthTypes():
     """
     def get_ttl(self) -> int:
         match self:
-            case oAuthTypes.GOOGLE:
+            case OAuthTypes.GOOGLE:
                 return secrets.OAUTH_PROVIDERS['google']['ttl']
             
         return 0
@@ -58,7 +58,7 @@ class oAuthTypes():
 def format_instructions(
     email: str,
     email_verified: bool,
-    oauth_type: oAuthTypes,
+    oauth_type: OAuthTypes,
     oauth_id: str
 ):  
     # -- Lets check if the user has an oauth id 
@@ -110,7 +110,7 @@ authentication_reqests = {}
     @return: reference key
 """
 def generate_oauth_key(
-    oauth_type: oAuthTypes,
+    oauth_type: OAuthTypes,
     data: dict
 ) -> str:
     # -- Generate a key
@@ -142,7 +142,7 @@ def check_oauth_key(key: str) -> bool:
 
     # -- Check if the key is expired
     created = authentication_reqests[key]['created']
-    ttl = oAuthTypes.get_ttl(authentication_reqests[key]['type'])
+    ttl = OAuthTypes.get_ttl(authentication_reqests[key]['type'])
 
     if (created + ttl) < datetime.datetime.now():
         del authentication_reqests[key]
