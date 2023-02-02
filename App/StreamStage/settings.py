@@ -162,7 +162,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'accounts.Member'
 
 # Login & Logout redirects
-# LOGIN_REDIRECT_URL = ''
+# LOGIN_REDIRECT_URL = 'member_profile'
 # LOGOUT_REDIRECT_URL = ''
 
 # Bootstrap & Django forms

@@ -7,12 +7,12 @@ from .models import Member, StreamerProfile
 class MemberCreationForm(UserCreationForm):
     class Meta(UserCreationForm):
         model = Member
-        fields = UserCreationForm.Meta.fields + ('email', 'first_name', 'last_name')
+        fields = UserCreationForm.Meta.fields + ('email',)
 
 class MemberChangeForm(UserChangeForm):
     class Meta:
         model = Member
-        fields = UserCreationForm.Meta.fields + ('username', 'email', 'first_name', 'last_name')
+        fields = UserCreationForm.Meta.fields + ('username', 'email', 'first_name', 'last_name', 'profile_pic',)
 
 # class StreamerProfileCreationForm(Form):
 #     category = forms.CharField(label="Content Category", max_length=50, min_length=1)
