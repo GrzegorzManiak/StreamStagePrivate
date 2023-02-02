@@ -8,9 +8,9 @@ from server_manager.models.server import Server
 class PublisherTest(TestCase):
 
     def setUp(self):
-        self.member_1 = Member.objects.create(username="user_1", access_level=0)
-        self.member_2 = Member.objects.create(username="user_2", access_level=0)
-        self.member_3 = Member.objects.create(username="user_3", access_level=0)
+        self.member_1 = Member.objects.create(username="user_1", access_level=0, email="1@2.com")
+        self.member_2 = Member.objects.create(username="user_2", access_level=0, email="2@3.com")
+        self.member_3 = Member.objects.create(username="user_3", access_level=0, email="3@4.com")
 
         self.server_1 = Server.objects.create(slug="server_1", name="server_1")
         self.server_2 = Server.objects.create(slug="server_2", name="server_2")
