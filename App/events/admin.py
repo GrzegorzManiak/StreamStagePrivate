@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Event, EventMedia, Category, Showing
+from .models import Event, EventMedia, Category, EventShowing
 
 # Register your models here.
 
@@ -16,6 +16,6 @@ class ShowingAdmin(admin.ModelAdmin):
     list_display = [ 'location', 'time' ]
 
 admin.site.register(Event, EventAdmin)
-admin.site.register(Showing, ShowingAdmin)
+admin.site.register(EventShowing, ShowingAdmin)
 admin.site.register(EventMedia, EventMediaAdmin)
 admin.site.register(Category, CategoryAdmin)

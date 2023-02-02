@@ -20,19 +20,19 @@ class EventMedia(models.Model):
     class Meta:
         verbose_name_plural = 'Event Media'
 
-class Showing(models.Model):
+class EventShowing(models.Model):
     location = models.CharField(blank=True, max_length=64)
     time = models.DateField()
 
 # when the 'delete event' feature is implemented - all EventMedia objects will need to be
 # deleted by code.
 class Event(models.Model):
-    event_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    event_id = models.CharField(primary_key=True, editable=False, max_length=8) # randomly generated 8 character ID
     media = models.ManyToManyField(to=EventMedia, blank=True)
     event_title = models.TextField("Title", default="New Event")
     description = models.TextField("Description", blank=True, max_length=3096)
     categories = models.ManyToManyField(to=Category)
     # References member, but only "streamers" will be allowed to have an event
     streamer = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    showings = models.ManyToManyField(to=Showing)
+    showings = models.ManyToManyField(to=EventShowing)
     
