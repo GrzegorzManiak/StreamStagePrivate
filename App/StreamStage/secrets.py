@@ -12,5 +12,6 @@ OAUTH_PROVIDERS = {
         },
         'userinfo_url': 'https://www.googleapis.com/userinfo/v2/me',
         'redirect_uri': 'https://sso.streamstage.co/google',
+        'ttl': 3600
     }
 }

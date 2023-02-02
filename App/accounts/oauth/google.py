@@ -2,8 +2,13 @@ from StreamStage import secrets
 from django.http.response import JsonResponse
 from rest_framework import status
 from rest_framework.decorators import api_view
+from django.http import HttpResponseRedirect
 import requests
-from .oauth import oAuthRespone
+from .oauth import (
+    oAuthRespone, 
+    generate_oauth_key,
+    oAuthTypes,
+)
 
 class GoogleUser():
     def __init__(
@@ -164,8 +169,9 @@ def google_sso(request):
     code = request.GET.get('code')
 
     if code == None:
-        # -- TODO: Redirect the user to the login page
-        return JsonResponse({'message': 'No code provided'}, status=status.HTTP_400_BAD_REQUEST)
+        # -- Redirect to the Google login page
+        return HttpResponseRedirect(Google().url)
+
 
     # -- Create a new Google object
     google = Google(code)
@@ -180,8 +186,15 @@ def google_sso(request):
     if res != oAuthRespone.SUCCESS:
         return JsonResponse({'message': str(res)}, status=status.HTTP_400_BAD_REQUEST)
 
+    # -- Generate a reference key
+    key = generate_oauth_key(
+        oAuthTypes.GOOGLE,
+        google.user.serialize()
+    )
+
     # -- Return success
     return JsonResponse({
         'message': 'Success',
-        'user': google.user.serialize()
+        'user': google.user.serialize(),
+        'token': key,
     }, status=status.HTTP_200_OK)
