@@ -1,4 +1,6 @@
 from StreamStage import secrets
+from django.contrib.auth import get_user_model
+from django.apps import apps
 
 import secrets
 import datetime
@@ -47,6 +49,47 @@ class oAuthTypes():
             
         return 0
 
+
+
+"""
+    This function returns a formated message instructing the
+    Users browser on how to proceed.
+"""
+def format_instructions(
+    email: str,
+    email_verified: bool,
+    oauth_type: oAuthTypes,
+    oauth_id: str
+):  
+    # -- Lets check if the user has an oauth id 
+    # associated with their account
+    # NOTE: We cannot directly import the model here
+    #       because it will cause a circular import
+    oauth_model = apps.get_model('accounts.oAuth2', require_ready=False)
+
+    # -- Check if the user has an oauth id
+    exisiting_link = oauth_model.objects.filter(
+        id=str(oauth_id),
+        oauth_type=oauth_type
+    )
+
+    # -- Check if the user has an account
+    member = get_user_model().objects.filter(email=email).first()
+
+    has_oauth_id = False
+    if exisiting_link.exists() and member is not None:
+        # Make sure that the user matches
+        if exisiting_link.user == member and exisiting_link.oauth_type == oauth_type:
+            has_oauth_id = True
+
+
+    # -- Return the instructions
+    return {
+        'has_account': member is not None,
+        'email_verified': email_verified,
+        'oauth_type': oauth_type,
+        'can_authenticate': has_oauth_id,
+    }
 
 
     

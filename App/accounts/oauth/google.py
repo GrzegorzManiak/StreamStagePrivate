@@ -7,6 +7,7 @@ import requests
 from .oauth import (
     oAuthRespone, 
     generate_oauth_key,
+    format_instructions,
     oAuthTypes,
 )
 
@@ -36,6 +37,26 @@ class GoogleUser():
             'given_name': self.given_name,
             'picture': self.picture,
         }
+
+    # 
+    #  Getters,
+    #  The reason for these is so that we can
+    #  use the same functions on all oauth providers
+    #  and some might have different names for the same
+    #  data
+    #
+    def get_email(self):
+        return self.email
+
+    def get_is_verified(self):
+        return self.verified_email
+
+    def get_name(self):
+        return self.name
+
+    def get_id(self):
+        return self.id
+
 
 class Google():
     def __init__(self, code=None):
@@ -161,15 +182,17 @@ class Google():
 
 """
     View for the Google OAuth2 login
+    NOTE: This should probably be formatted to work with all
+    OAuth2 providers
 """
 @api_view(['GET'])
 def google_sso(request):
     
     # -- Get the code from the request
+    #    And if its none, just redirect
+    #    The user to the oauth url
     code = request.GET.get('code')
-
     if code == None:
-        # -- Redirect to the Google login page
         return HttpResponseRedirect(Google().url)
 
 
@@ -179,22 +202,34 @@ def google_sso(request):
     # -- Get the access token
     res = google.get_access_token()
     if res != oAuthRespone.SUCCESS:
-        return JsonResponse({'message': str(res)}, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse({'message': str(res)}, 
+        status=status.HTTP_400_BAD_REQUEST)
 
     # -- Get the user info
     res = google.get_userinfo()
     if res != oAuthRespone.SUCCESS:
-        return JsonResponse({'message': str(res)}, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse({'message': str(res)}, 
+        status=status.HTTP_400_BAD_REQUEST)
+
 
     # -- Generate a reference key
+    #    So that we can fetch this
+    #    User later on
     key = generate_oauth_key(
         oAuthTypes.GOOGLE,
         google.user.serialize()
     )
+
 
     # -- Return success
     return JsonResponse({
         'message': 'Success',
         'user': google.user.serialize(),
         'token': key,
+        'instructions': format_instructions(
+            google.user.get_email(),
+            google.user.get_is_verified(),
+            oAuthTypes.GOOGLE,
+            google.user.get_id()
+        )
     }, status=status.HTTP_200_OK)
