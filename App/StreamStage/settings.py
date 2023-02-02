@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+from .secrets import *
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-69z7g4z57r(g_rd4ott1mca#)^hykt681ig5znx!ra1+7q#9_-'
+SECRET_KEY = DJANGO_SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,6 +38,7 @@ ROOT_URLCONF = 'StreamStage.urls'
 SUBDOMAIN_URLCONFS = {
     None: 'StreamStage.urls',
     'www': 'StreamStage.urls',
+    'sso': 'accounts.oauth.urls',
 }
 
 
@@ -179,4 +181,4 @@ INBOUND_EMAIL = 'inquiries@StreamStage.co'
 OUTBOUND_EMAIL = 'mail@streamstage.co'
 
 # DEV Key
-SENDGIRD_TOKEN = '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'
+SENDGIRD_TOKEN = SENDGIRD_TOKEN
