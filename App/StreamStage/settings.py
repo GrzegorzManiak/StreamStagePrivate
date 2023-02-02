@@ -32,14 +32,12 @@ ALLOWED_HOSTS = [
     'www.streamstage.co',
     'streamstage.co',
     'master.streamstage.co',
+    'sso.streamstage.co',
 ]
+DEFAULT_HOST = 'www'
 
+ROOT_HOSTCONF = 'StreamStage.hosts'
 ROOT_URLCONF = 'StreamStage.urls'
-SUBDOMAIN_URLCONFS = {
-    None: 'StreamStage.urls',
-    'www': 'StreamStage.urls',
-    'sso': 'accounts.oauth.urls',
-}
 
 
 # Application definition
@@ -58,10 +56,12 @@ INSTALLED_APPS = [
     # 3rd Party
     'crispy_forms',
     'crispy_bootstrap5',
+    'django_hosts',
     'stripe',
 ]
 
 MIDDLEWARE = [
+     'django_hosts.middleware.HostsRequestMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -69,6 +69,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_hosts.middleware.HostsResponseMiddleware',
 ]
 
 ROOT_URLCONF = 'StreamStage.urls'
