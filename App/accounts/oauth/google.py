@@ -5,7 +5,7 @@ from rest_framework.decorators import api_view
 from django.http import HttpResponseRedirect
 import requests
 from .oauth import (
-    oAuthRespone, 
+    OAuthRespone, 
     generate_oauth_key,
     format_instructions,
     OAuthTypes,
@@ -79,7 +79,7 @@ class Google():
     """
         Gets the access token from Google
     """
-    def get_access_token(self) -> oAuthRespone:
+    def get_access_token(self) -> OAuthRespone:
         json_response = None
 
         try:
@@ -105,22 +105,22 @@ class Google():
 
             # -- Check the status code
             if response.status_code != 200:
-                return oAuthRespone.REQUEST_ERROR
+                return OAuthRespone.REQUEST_ERROR
 
             else: 
                 try: json_response = response.json()
-                except: return oAuthRespone.JSON_ERROR
+                except: return OAuthRespone.JSON_ERROR
                 
         except:
-            return oAuthRespone.REQUEST_ERROR
+            return OAuthRespone.REQUEST_ERROR
 
         # -- Parse the data
         self.access_token = json_response['access_token']
         if self.access_token == None:
-            return oAuthRespone.ERROR
+            return OAuthRespone.ERROR
 
         # -- Return success
-        return oAuthRespone.SUCCESS
+        return OAuthRespone.SUCCESS
 
 
 
@@ -143,14 +143,14 @@ class Google():
 
             # -- Check the status code
             if response.status_code != 200:
-                return oAuthRespone.REQUEST_ERROR
+                return OAuthRespone.REQUEST_ERROR
 
             else:
                 try: response = response.json()
-                except: return oAuthRespone.JSON_ERROR
+                except: return OAuthRespone.JSON_ERROR
 
         except:
-            return oAuthRespone.REQUEST_ERROR
+            return OAuthRespone.REQUEST_ERROR
 
         # -- Parse the data
         id = response['id']
@@ -162,7 +162,7 @@ class Google():
 
         # -- Make sure the data is valid
         if id == None or email == None or verified_email == None or name == None or given_name == None:
-            return oAuthRespone.ERROR
+            return OAuthRespone.ERROR
 
         # -- Create the user object
         self.user = GoogleUser(
@@ -175,7 +175,7 @@ class Google():
         )
 
         # -- Return success
-        return oAuthRespone.SUCCESS
+        return OAuthRespone.SUCCESS
 
 
 
@@ -201,13 +201,13 @@ def google_sso(request):
 
     # -- Get the access token
     res = google.get_access_token()
-    if res != oAuthRespone.SUCCESS:
+    if res != OAuthRespone.SUCCESS:
         return JsonResponse({'message': str(res)}, 
         status=status.HTTP_400_BAD_REQUEST)
 
     # -- Get the user info
     res = google.get_userinfo()
-    if res != oAuthRespone.SUCCESS:
+    if res != OAuthRespone.SUCCESS:
         return JsonResponse({'message': str(res)}, 
         status=status.HTTP_400_BAD_REQUEST)
 

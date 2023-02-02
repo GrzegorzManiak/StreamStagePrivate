@@ -1,11 +1,11 @@
-from StreamStage import secrets
+from StreamStage.secrets import OAUTH_PROVIDERS
 from django.contrib.auth import get_user_model
 from django.apps import apps
 
 import secrets
-import datetime
+import time
 
-class oAuthRespone():
+class OAuthRespone():
     SUCCESS = 0
     ERROR = 1
     INVALID = 2
@@ -15,7 +15,7 @@ class oAuthRespone():
     REDIRECT = 6
 
     def __str__(self):
-        return f"oAuthRespone({str(self.value)})"
+        return f"OAuthRespone({str(self.value)})"
 
 
 
@@ -45,7 +45,7 @@ class OAuthTypes():
     def get_ttl(self) -> int:
         match self:
             case OAuthTypes.GOOGLE:
-                return secrets.OAUTH_PROVIDERS['google']['ttl']
+                return OAUTH_PROVIDERS['google']['ttl']
             
         return 0
 
@@ -71,13 +71,13 @@ def format_instructions(
     exisiting_link = oauth_model.objects.filter(
         id=str(oauth_id),
         oauth_type=oauth_type
-    )
+    ).first()
 
     # -- Check if the user has an account
     member = get_user_model().objects.filter(email=email).first()
 
     has_oauth_id = False
-    if exisiting_link.exists() and member is not None:
+    if exisiting_link is not None and member is not None:
         # Make sure that the user matches
         if exisiting_link.user == member and exisiting_link.oauth_type == oauth_type:
             has_oauth_id = True
@@ -111,7 +111,8 @@ authentication_reqests = {}
 """
 def generate_oauth_key(
     oauth_type: OAuthTypes,
-    data: dict
+    data: dict,
+    created: float = time.time()
 ) -> str:
     # -- Generate a key
     key = secrets.token_urlsafe(32)
@@ -120,7 +121,7 @@ def generate_oauth_key(
     authentication_reqests[key] = {
         'type': oauth_type,
         'data': data,
-        'created': datetime.datetime.now()
+        'created': created
     }
 
     # -- Return the key
@@ -144,7 +145,7 @@ def check_oauth_key(key: str) -> bool:
     created = authentication_reqests[key]['created']
     ttl = OAuthTypes.get_ttl(authentication_reqests[key]['type'])
 
-    if (created + ttl) < datetime.datetime.now():
+    if (created + ttl) < time.time():
         del authentication_reqests[key]
         return False
 
@@ -158,5 +159,12 @@ def check_oauth_key(key: str) -> bool:
     any of them became expired
 """
 def clean_key_store():
-    for key in authentication_reqests:
+    # -- Loop trough all the keys
+    #    But we have to be careful because
+    #    we are modifying the list while
+    #    looping trough it
+    keys = list(authentication_reqests.keys())
+    for key in keys:
         check_oauth_key(key)
+
+    
