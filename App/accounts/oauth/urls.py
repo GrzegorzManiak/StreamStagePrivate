@@ -1,7 +1,6 @@
 from django.urls import path
-
-from . import google_sso
+from .oauth import determine_app, OAuthTypes
 
 urlpatterns = [
-    path('google/', google_sso, name='google'),
+    path('google/', determine_app(OAuthTypes.GOOGLE), name='google'),
 ]

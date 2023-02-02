@@ -1,54 +1,17 @@
-from StreamStage.secrets import OAUTH_PROVIDERS
+from django.http.response import JsonResponse
+from django.http import HttpResponseRedirect
+from rest_framework.decorators import api_view
+from rest_framework import status
+from django.urls import reverse_lazy
+
 from django.contrib.auth import get_user_model
 from django.apps import apps
 
+from .google import Google
+from .types import OAuthTypes, OAuthRespone
+
 import secrets
 import time
-
-class OAuthRespone():
-    SUCCESS = 0
-    ERROR = 1
-    INVALID = 2
-    JSON_ERROR = 3
-    REQUEST_ERROR = 4
-    EXPIRED = 5
-    REDIRECT = 6
-
-    def __str__(self):
-        return f"OAuthRespone({str(self.value)})"
-
-
-
-"""
-    A type for the types of oauth
-    that are supported
-"""
-class OAuthTypes():
-    # -- Google, maybe discord and github
-    GOOGLE = 0
-
-    # -- Django choices
-    choices = (
-        (GOOGLE, 'Google'),
-    )
-
-    def __str__(self):
-        return f"OAuthTypes({str(self.value)})"
-
-
-    """
-        THis function just gets how long the
-        token should live for before we 
-        call it quits, than the user will have
-        to reauthenticate
-    """
-    def get_ttl(self) -> int:
-        match self:
-            case OAuthTypes.GOOGLE:
-                return OAUTH_PROVIDERS['google']['ttl']
-            
-        return 0
-
 
 
 """
@@ -168,3 +131,72 @@ def clean_key_store():
         check_oauth_key(key)
 
     
+
+
+"""
+    This is the OAuth view that is used to
+    determine what service the user is trying
+    to authenticate with
+"""
+def determine_app(oauth_service: OAuthTypes):
+    app = None
+
+    # -- Determine the app
+    match oauth_service:
+        case OAuthTypes.GOOGLE: app = Google
+
+
+    @api_view(['GET'])
+    def sso(request):
+        # -- Check if the user is already authenticated
+        if request.user.is_authenticated:
+            return reverse_lazy('login')
+        
+
+        # -- Get the code from the request
+        #    And if its none, just redirect
+        #    The user to the oauth url
+        code = request.GET.get('code')
+        if code == None:
+            return HttpResponseRedirect(app().url)
+
+
+        # -- Create a new Google object
+        choosen_app = app(code)
+
+        # -- Get the access token
+        res = choosen_app.get_access_token()
+        if res != OAuthRespone.SUCCESS:
+            return JsonResponse({'message': str(res)}, 
+            status=status.HTTP_400_BAD_REQUEST)
+
+        # -- Get the user info
+        res = choosen_app.get_userinfo()
+        if res != OAuthRespone.SUCCESS:
+            return JsonResponse({'message': str(res)}, 
+            status=status.HTTP_400_BAD_REQUEST)
+
+
+        # -- Generate a reference key
+        #    So that we can fetch this
+        #    User later on
+        key = generate_oauth_key(
+            oauth_service,
+            choosen_app.user.serialize()
+        )
+
+
+        # -- Return success
+        return JsonResponse({
+            'message': 'Success',
+            'user': choosen_app.user.serialize(),
+            'token': key,
+            'instructions': format_instructions(
+                choosen_app.user.get_email(),
+                choosen_app.user.get_is_verified(),
+                oauth_service,
+                choosen_app.user.get_id()
+            )
+        }, status=status.HTTP_200_OK)
+
+    return sso

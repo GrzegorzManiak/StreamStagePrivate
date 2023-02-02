@@ -1,15 +1,7 @@
 from StreamStage import secrets
-from django.http.response import JsonResponse
-from rest_framework import status
-from rest_framework.decorators import api_view
-from django.http import HttpResponseRedirect
+from accounts.oauth.types import OAuthRespone
+
 import requests
-from .oauth import (
-    OAuthRespone, 
-    generate_oauth_key,
-    format_instructions,
-    OAuthTypes,
-)
 
 class GoogleUser():
     def __init__(
@@ -153,7 +145,7 @@ class Google():
             return OAuthRespone.REQUEST_ERROR
 
         # -- Parse the data
-        id = response['id']
+        google_id = response['id']
         email = response['email']
         verified_email = response['verified_email']
         name = response['name']
@@ -161,12 +153,12 @@ class Google():
         picture = response['picture']
 
         # -- Make sure the data is valid
-        if id == None or email == None or verified_email == None or name == None or given_name == None:
+        if google_id == None or email == None or verified_email == None or name == None or given_name == None:
             return OAuthRespone.ERROR
 
         # -- Create the user object
         self.user = GoogleUser(
-            id, 
+            google_id, 
             email,
             verified_email, 
             name, 
@@ -176,60 +168,3 @@ class Google():
 
         # -- Return success
         return OAuthRespone.SUCCESS
-
-
-
-
-"""
-    View for the Google OAuth2 login
-    NOTE: This should probably be formatted to work with all
-    OAuth2 providers
-"""
-@api_view(['GET'])
-def google_sso(request):
-    
-    # -- Get the code from the request
-    #    And if its none, just redirect
-    #    The user to the oauth url
-    code = request.GET.get('code')
-    if code == None:
-        return HttpResponseRedirect(Google().url)
-
-
-    # -- Create a new Google object
-    google = Google(code)
-
-    # -- Get the access token
-    res = google.get_access_token()
-    if res != OAuthRespone.SUCCESS:
-        return JsonResponse({'message': str(res)}, 
-        status=status.HTTP_400_BAD_REQUEST)
-
-    # -- Get the user info
-    res = google.get_userinfo()
-    if res != OAuthRespone.SUCCESS:
-        return JsonResponse({'message': str(res)}, 
-        status=status.HTTP_400_BAD_REQUEST)
-
-
-    # -- Generate a reference key
-    #    So that we can fetch this
-    #    User later on
-    key = generate_oauth_key(
-        OAuthTypes.GOOGLE,
-        google.user.serialize()
-    )
-
-
-    # -- Return success
-    return JsonResponse({
-        'message': 'Success',
-        'user': google.user.serialize(),
-        'token': key,
-        'instructions': format_instructions(
-            google.user.get_email(),
-            google.user.get_is_verified(),
-            OAuthTypes.GOOGLE,
-            google.user.get_id()
-        )
-    }, status=status.HTTP_200_OK)
