@@ -5,3 +5,6 @@ django_crispy_forms
 crispy_bootstrap5
 stripe
 sendgrid
+django_hosts
+django_rest_framework
+pillow
