@@ -13,8 +13,7 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = [ 'name', 'description', 'splash_photo' ]
 
 class ShowingAdmin(admin.ModelAdmin):
-    list_display = [ 'location', 'date' ]
-
+    list_display = [ 'location', 'time' ]
 
 admin.site.register(Event, EventAdmin)
 admin.site.register(Showing, ShowingAdmin)
