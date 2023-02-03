@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Event{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-6 mx-auto">
+            <h1 class="my_title my-4 text-center">{{ event.event_title }}</h1>
+            <p>{{ event.description }}</p>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
