@@ -1,5 +1,7 @@
 /***** Body/Base *****/
-
+html, body, .container {
+    background-color: #999!important;
+}
 
 /***** Navbar *****/
 
@@ -20,7 +22,18 @@
 
 
 /***** Events Listings Page *****/
+.event-media {
+    display: inline-block;
+}
 
+.event-media .elem {
+    display: inline-block;
+    width: 250px;
+    height: 250px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
 
 /***** Upcoming Events Page *****/
 

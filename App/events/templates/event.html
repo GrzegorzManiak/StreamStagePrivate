@@ -1,13 +1,44 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Event{% endblock title %}
+
+{% comment %}
+{% block additional_styles %}
+<link rel="stylesheet" href="{% static 'css/events.css' %}">
+{% endblock %}
+{% endcomment %}
 
 {% block content %}
 <div class="container">
     <div class="row">
-        <div class="col-12 col-sm-12 col-md-12 col-lg-6 mx-auto">
-            <h1 class="my_title my-4 text-center">{{ event.event_title }}</h1>
+        <div class="col-9 mx-auto">
+            {% for category in event.categories.all %}
+                <span class="badge bg-primary">{{category.name}}</span>
+            {% endfor %}
+            <h1 class="my_title my-4 text-center">{{ event.title }}</h1>
             <p>{{ event.description }}</p>
+
+            <div>
+                <h2>MEDIA</h2>
+                {% for media in event.media.all %}
+                    <div class="event-media">
+                        <span class="elem" style="background-image: url({{ media.picture.url }})"></span>
+                        <p>{{ media.description }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-2 text-start mx-auto">
+            <h1 class="my-4">STREAMER</h1>
+            <p>{{ event.streamer.username }}</p>
+
+            <div>
+                <h1 class="my-4">SHOWINGS</h1>
+                {% for showing in event.showings.all %}
+                <p>{{showing.location}} - {{showing.time}}</p>
+                {% endfor %}
+            </div>
         </div>
     </div>
 </div>

@@ -47,5 +47,5 @@ class Event(models.Model):
         return reverse('events.view_event', args=[self.event_id])
     
     def __str__(self):
-        return self.event_title
+        return self.title
     
