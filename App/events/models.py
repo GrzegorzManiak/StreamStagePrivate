@@ -20,7 +20,7 @@ class EventMedia(models.Model):
     class Meta:
         verbose_name_plural = 'Event Media'
 
-class Showing(models.Model):
+class EventShowing(models.Model):
     location = models.CharField(blank=True, max_length=64)
     time = models.DateField()
 
@@ -34,5 +34,21 @@ class Event(models.Model):
     categories = models.ManyToManyField(to=Category)
     # References member, but only "streamers" will be allowed to have an event
     streamer = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    showings = models.ManyToManyField(to=Showing)
-    
+    showings = models.ManyToManyField(to=EventShowing)
+            
+class EventReview(models.Model):
+    review_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    review_title = models.CharField(max_length=50)
+    review_text = models.TextField(max_length=500)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(blank=True, null=True)
+    likes = models.IntegerField(default=0)
+
+    class Meta:
+        verbose_name = 'Event Review'
+        verbose_name_plural = 'Event Reviews'
+
+    def __str__(self):
+        return self.text[:100]
