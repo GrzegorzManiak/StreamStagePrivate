@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block metadescription %}
+    Sign in and start streaming.
+{% endblock %}
+
+{% block title %}
+    Login - StreamStage
+{% endblock %}
+
+{% block content %}
+    
+    <!-- Loop trough all OAUTH Providers -->
+    {% for provider in providers %}
+        <span
+            id='{{ provider.id }}_sso'
+            aria-label='{{ provider.name }}'
+            aria-id='{{ provider.id }}'
+            aria-url='{{ provider.url }}'
+            class='sso'
+        >
+            
+            <a href='{{ provider.url }}'>
+                <p>{{ provider.name }}</p>
+            </a>
+            
+        </span>
+    {% endfor %}
+
+    <!-- Load the autentication script -->
+    <script src="{% static 'js/app_bin.js' %}"></script>
+{% endblock %}

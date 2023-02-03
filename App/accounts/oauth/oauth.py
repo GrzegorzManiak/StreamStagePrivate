@@ -2,7 +2,7 @@ from django.http.response import JsonResponse
 from django.http import HttpResponseRedirect
 from rest_framework.decorators import api_view
 from rest_framework import status
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 
 from django.contrib.auth import get_user_model
 from django.apps import apps
@@ -12,7 +12,7 @@ from .types import OAuthTypes, OAuthRespone
 
 import secrets
 import time
-
+import json
 
 """
     This function returns a formated message instructing the
@@ -198,8 +198,7 @@ def determine_app(oauth_service: OAuthTypes):
     def sso(request):
         # -- Check if the user is already authenticated
         if request.user.is_authenticated:
-            return reverse_lazy('login')
-        
+            return reverse('login')
 
         # -- Get the code from the request
         #    And if its none, just redirect
@@ -215,14 +214,18 @@ def determine_app(oauth_service: OAuthTypes):
         # -- Get the access token
         res = choosen_app.get_access_token()
         if res != OAuthRespone.SUCCESS:
-            return JsonResponse({'message': str(res)}, 
-            status=status.HTTP_400_BAD_REQUEST)
+            response = HttpResponseRedirect(reverse('login', urlconf='accounts.urls'))
+            response.set_cookie('oauth_error', str(res))
+
+            return response
 
         # -- Get the user info
         res = choosen_app.get_userinfo()
         if res != OAuthRespone.SUCCESS:
-            return JsonResponse({'message': str(res)}, 
-            status=status.HTTP_400_BAD_REQUEST)
+            response = HttpResponseRedirect(reverse('login', urlconf='accounts.urls'))
+            response.set_cookie('oauth_error', str(res))
+
+            return response
 
 
         # -- Generate a reference key
@@ -234,9 +237,8 @@ def determine_app(oauth_service: OAuthTypes):
             choosen_app.user.get_id()
         )
 
-
-        # -- Return success
-        return JsonResponse({
+        # -- Format the instructions
+        instructions = {
             'message': 'Success',
             'user': choosen_app.user.serialize(),
             'token': key,
@@ -246,6 +248,36 @@ def determine_app(oauth_service: OAuthTypes):
                 oauth_service,
                 choosen_app.user.get_id()
             )
-        }, status=status.HTTP_200_OK)
+        }
+
+        # -- Convert the instructions to json
+        instructions = json.dumps(instructions)
+
+        # -- Return the instructions
+        return HttpResponseRedirect(
+            reverse_lazy(
+                'login', 
+                urlconf='accounts.urls',
+            ) + f'?instructions={instructions}'
+        )
 
     return sso
+
+
+
+"""
+    This function formats all available
+    oauth options for django templates to use
+"""
+def format_providers():
+
+    # -- Format the providers
+    providers = []
+    for provider in OAuthTypes.choices:
+        providers.append({
+            'name': provider[1],
+            'id': provider[1].lower(),
+            'url': reverse(provider[1].lower())
+        })
+
+    return providers

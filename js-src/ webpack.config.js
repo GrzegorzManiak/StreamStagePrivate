@@ -2,7 +2,7 @@ const path = require("path");
 
 module.exports = {
     entry: {
-        authentication: [ './authentication/index.ts', ]
+        authentication: './authentication/index.ts',
     },
     module: {
         rules: [

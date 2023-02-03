@@ -4,14 +4,14 @@ SENDGIRD_TOKEN = 'SG.grs1js7pSPyCNk7iya-T_A.pKXlgz9yrrCEsslf-Bu7ovIxsPAPFaJDCvH5
 # OAUTH
 OAUTH_PROVIDERS = {
     'google': {
-        'client_id': '701632206335-5j55b6b730umr3sicjg84h358e4ji6q7.apps.googleusercontent.com',
-        'secret': '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',
+        'client_id': '701632206335-h3c6bl04mep98c42s2li8ba1icl4pk1s.apps.googleusercontent.com',
+        'secret': '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',
         'scopes': {
             'email': 'https://www.googleapis.com/auth/userinfo.email', 
             'profile': 'https://www.googleapis.com/auth/userinfo.profile'
         },
         'userinfo_url': 'https://www.googleapis.com/userinfo/v2/me',
-        'redirect_uri': 'https://sso.streamstage.co/google',
+        'redirect_uri': 'https://me.streamstage.co/sso/google',
         'ttl': 3600
     }
 }

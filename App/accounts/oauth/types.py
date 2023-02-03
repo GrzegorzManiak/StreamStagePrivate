@@ -30,8 +30,7 @@ class OAuthTypes():
 
     def __str__(self):
         return f"OAuthTypes({str(self.value)})"
-
-
+        
     """
         THis function just gets how long the
         token should live for before we 

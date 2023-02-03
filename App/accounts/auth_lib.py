@@ -11,7 +11,6 @@
 
 # -- Imports
 from .oauth.oauth import (
-    OAuthTypes, 
     check_oauth_key, 
     get_oauth_data, 
     remove_oauth_key

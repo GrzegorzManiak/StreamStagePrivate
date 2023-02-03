@@ -12,10 +12,11 @@ from .forms import MemberCreationForm
 from .models import Member #, StreamerProfile
 
 from .auth_lib import authenticate_key
+from .oauth.oauth import format_providers
 
 class MemberSignUpView(CreateView):
     form_class = MemberCreationForm
-    template_name = 'registration/signup.html'
+    template_name = 'signup.html'
 
     def post(self, request, *args, **kwargs):
         form = MemberCreationForm(request.POST)
@@ -25,9 +26,34 @@ class MemberSignUpView(CreateView):
             signup_user = Member.objects.get(username=username)
             member_group = Group.objects.get(name='Member')
             member_group.user_set.add(signup_user)
-            return redirect('login')
+            return redirect('auth')
         else:
             return render(request, self.template_name, {'form' : form })
+
+
+
+"""
+    This view is used to get a token
+    aka, login
+"""
+@api_view(['GET'])
+def login(request):
+    # -- Make sure that the user isint already logged in
+    if request.user.is_authenticated:
+        return reverse_lazy('member_profile')
+
+    # -- Construct the context
+    context = {
+        'providers': format_providers()
+    }
+
+    # -- Render the login page
+    return render(
+        request, 
+        'login.html', 
+        context=context
+    )
+
 
 
 

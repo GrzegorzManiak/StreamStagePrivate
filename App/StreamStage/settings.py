@@ -33,7 +33,6 @@ ALLOWED_HOSTS = [
     'me.streamstage.co',
     'streamstage.co',
     'master.streamstage.co',
-    'sso.streamstage.co',
 ]
 DEFAULT_HOST = 'www'
 
@@ -50,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
     # Local
     'accounts',
     'server_manager',
