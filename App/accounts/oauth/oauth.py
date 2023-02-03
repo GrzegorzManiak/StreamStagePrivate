@@ -52,6 +52,9 @@ def format_instructions(
         'email_verified': email_verified,
         'oauth_type': oauth_type,
         'can_authenticate': has_oauth_id,
+        'needs_username': has_oauth_id is False and member is None,
+        'needs_password': has_oauth_id is False,
+        'needs_email': email_verified is False,
     }
 
 
@@ -75,16 +78,18 @@ authentication_reqests = {}
 def generate_oauth_key(
     oauth_type: OAuthTypes,
     data: dict,
+    oauth_id: str,
     created: float = time.time()
 ) -> str:
     # -- Generate a key
-    key = f'OAUTH_{oauth_type}_{secrets.token_urlsafe(32)}'
+    key = f'OAUTH:{oauth_type}:{secrets.token_urlsafe(32)}'
 
     # -- Add the key to the list
     authentication_reqests[key] = {
         'type': oauth_type,
         'data': data,
-        'created': created
+        'created': created,
+        'oauth_id': oauth_id
     }
 
     # -- Return the key
@@ -112,6 +117,17 @@ def check_oauth_key(key: str) -> bool:
         del authentication_reqests[key]
         return False
 
+    
+    # -- Now make sure that the key exists in
+    #    the oauth model
+    oauth_model = apps.get_model('accounts.oAuth2')
+
+    # -- Check if the key exists
+    if oauth_model.objects.filter(
+        id=authentication_reqests[key]['data']['oauth_id']
+    ).first() is None:
+        return False
+
     # -- Key is valid
     return True
 
@@ -126,7 +142,7 @@ def get_oauth_data(key: str) -> dict or None:
         return None
 
     # -- Get the data
-    data = authentication_reqests[key]['data']
+    data = authentication_reqests[key]
 
     # -- Return the data
     return data
@@ -214,7 +230,8 @@ def determine_app(oauth_service: OAuthTypes):
         #    User later on
         key = generate_oauth_key(
             oauth_service,
-            choosen_app.user.serialize()
+            choosen_app.user.serialize(),
+            choosen_app.user.get_id()
         )
 
 

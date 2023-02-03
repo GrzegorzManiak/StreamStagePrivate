@@ -30,6 +30,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'www.streamstage.co',
+    'me.streamstage.co',
     'streamstage.co',
     'master.streamstage.co',
     'sso.streamstage.co',
@@ -57,6 +58,7 @@ INSTALLED_APPS = [
     # 3rd Party
     'crispy_forms',
     'crispy_bootstrap5',
+    'rest_framework',
     'django_hosts',
     'stripe',
 ]

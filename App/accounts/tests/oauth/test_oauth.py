@@ -201,7 +201,7 @@ class OAuthTest(TestCase):
         data = get_oauth_data(key)
 
         # -- Check if the data is correct
-        self.assertTrue(data['email'] == "test")
+        self.assertTrue(data['data']['email'] == "test")
 
 
     def test_get_oauth_data_invalid_key(self):
@@ -226,7 +226,7 @@ class OAuthTest(TestCase):
         data = get_oauth_data(key)
 
         # -- Check if the data is correct
-        self.assertTrue(data['email'] == "test")
+        self.assertTrue(data['data']['email'] == "test")
 
         # -- Remove the data
         remove_oauth_key(key)
