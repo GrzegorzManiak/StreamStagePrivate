@@ -78,7 +78,7 @@ def generate_oauth_key(
     created: float = time.time()
 ) -> str:
     # -- Generate a key
-    key = secrets.token_urlsafe(32)
+    key = f'OAUTH_{oauth_type}_{secrets.token_urlsafe(32)}'
 
     # -- Add the key to the list
     authentication_reqests[key] = {
@@ -113,6 +113,38 @@ def check_oauth_key(key: str) -> bool:
         return False
 
     # -- Key is valid
+    return True
+
+
+
+"""
+    Get the oauth data from the key
+"""
+def get_oauth_data(key: str) -> dict or None:
+    # -- Check if the key is valid
+    if not check_oauth_key(key):
+        return None
+
+    # -- Get the data
+    data = authentication_reqests[key]['data']
+
+    # -- Return the data
+    return data
+
+
+
+"""
+    Remove the key from the list
+"""
+def remove_oauth_key(key: str) -> bool:
+    # -- Check if the key is valid
+    if not check_oauth_key(key):
+        return False
+
+    # -- Remove the key
+    del authentication_reqests[key]
+
+    # -- Return true since the key was removed
     return True
 
 

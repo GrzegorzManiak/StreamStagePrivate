@@ -23,7 +23,5 @@ class MemberSignUpView(CreateView):
         else:
             return render(request, self.template_name, {'form' : form })
 
-# class MemberProfileView(ListView):
-#     template_name = 'registration/profile.html'
 
-# class StreamerProfileSignUpView(CreateView):
+
