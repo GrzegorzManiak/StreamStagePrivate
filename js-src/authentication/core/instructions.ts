@@ -1,5 +1,6 @@
 import { Panel, PanelType, Response } from '../index.d';
 import { get_panel, hide_panel, show_panel } from './panel_manager';
+import { create_toast } from './toasts';
 import { name_monitor, password_monitor, rp_password_monitor } from './validation';
 import * as DOMPurify from 'dompurify';
 
@@ -66,4 +67,9 @@ function handle_inputs(response: Response, panel: Panel) {
 
     // -- Get the submit button
     const submit_button = panel.element.querySelector('button[type="submit"]') as HTMLButtonElement;
+
+
+    submit_button.addEventListener('click', (event) => {
+        create_toast('success', 'Account created!', 'Your account has been created! You will be redirected to the home page shortly.');
+    });
 }
