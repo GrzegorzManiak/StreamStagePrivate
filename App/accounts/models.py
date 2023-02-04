@@ -15,7 +15,8 @@ class Member(AbstractUser):
     access_level = models.SmallIntegerField("Access Level", default=0)
     # Maximum parallel devices for a Member to watch on
     max_keys = models.SmallIntegerField("Max Devices", default=1)
-
+    last_login = models.DateTimeField("Last Login", auto_now=True)
+    
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email', 'first_name', 'last_name']
 

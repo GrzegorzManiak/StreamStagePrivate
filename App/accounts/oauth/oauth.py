@@ -1,10 +1,6 @@
-from django.http.response import JsonResponse
 from django.http import HttpResponseRedirect
 from rest_framework.decorators import api_view
-from rest_framework import status
 from django.urls import reverse, reverse_lazy
-
-from django.contrib.auth import get_user_model
 from django.apps import apps
 
 from .google import Google
@@ -123,13 +119,32 @@ def check_oauth_key(key: str) -> bool:
 
     # -- Check if the key exists
     if oauth_model.objects.filter(
-        id=authentication_reqests[key]['oauth_id']
+        oauth_id=authentication_reqests[key]['oauth_id'],
+        oauth_type=authentication_reqests[key]['type']
     ).first() is None:
         return False
 
     # -- Key is valid
     return True
 
+
+
+"""
+    Get the user from the ID not the KEY
+    very important distinction.
+"""
+def get_oauth_user(oauth_id: str, oauth_type: OAuthTypes):
+    # -- Get the oauth model
+    oauth_model = apps.get_model('accounts.oAuth2')
+
+    # -- Get the user
+    user = oauth_model.objects.filter(
+        oauth_id=oauth_id,
+        oauth_type=oauth_type
+    ).first()
+
+    # -- Return the user
+    return user.user
 
 
 
@@ -313,6 +328,6 @@ def link_oauth_account(user, oauth_key: str):
             oauth_id=oauth_data['oauth_id'],
             oauth_type=oauth_data['type']
         )
-        
+
     except:
         return False

@@ -4,6 +4,7 @@ import { create_toast } from '../core/toasts';
 import { name_monitor, password_monitor, rp_password_monitor, validate_name, validate_password } from '../core/validation';
 import * as DOMPurify from 'dompurify';
 import { register_with_oauth } from '../api/register';
+import { login } from '../api/login';
 
 
 // -- Handle instructions
@@ -25,15 +26,24 @@ export const instruction_handler = async (instructions: string) => {
         return;
     }   
 
-    console.log(response);
     if (response.instructions.can_authenticate) {
-        // -- If we get here, we can submit the form
-        create_toast('success', 'oAuth2 Login', 'You have successfully autenticated in with OAuth, please wait while we redirect you to the home page');
-            
-        // -- Redirect the user to the home page
-        setTimeout(() => {
-            window.location.href = '/';
-        }, 3000);
+        login(response.token).then((data) => {
+            console.log(data.message, data);
+
+            // -- If there was an error, show the error
+            if (data?.status !== 'success') {
+                create_toast('error', 'Login', 'There was some issue logging you in, ' + data.message);
+            }
+            else {
+                // -- If we get here, we can submit the form
+                create_toast('success', 'oAuth2 Login', 'You have successfully autenticated in with OAuth, please wait while we redirect you to the home page');
+                
+                // -- Redirect the user to the home page
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 3000);
+            }
+        });
 
         return;
     }
@@ -137,6 +147,10 @@ function handle_inputs(response: Response, panel: Panel) {
             // -- If we get here, we can submit the form
             create_toast('success', 'Account created!', 'Your account has been created! You will be redirected to the home page shortly.');
             
+            // -- Get the token
+            const token = reg_req.token;
+            console.log(token);
+
             // -- Redirect the user to the home page
             setTimeout(() => {
                 window.location.href = '/';

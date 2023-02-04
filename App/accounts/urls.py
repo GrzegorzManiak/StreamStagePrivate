@@ -3,12 +3,13 @@ from .views import (
     validate_token,
     get_token,
     login,
-    register
+    register,
+    profile
 )
 
 urlpatterns = [
     # path('signup/', MemberSignUpView.as_view(), name='signup'),
-    path('/', register, name='member_profile'),
+    path('', profile, name='member_profile'),
 
     path('login/', login, name='login'),
     path('register/', register, name='register'),

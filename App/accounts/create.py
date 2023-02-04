@@ -1,16 +1,9 @@
 from accounts.oauth.oauth import get_oauth_data, link_oauth_account
 from .models import Member
-
-from django.contrib.auth import authenticate, login, logout
 from django.http.response import JsonResponse
-from django.http import HttpResponse, HttpResponseRedirect
-from rest_framework.decorators import api_view
-from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
 from rest_framework import status
+from django.contrib.auth.models import Group
 
-import secrets
-import time
 
 """
     This file contains all things related to the

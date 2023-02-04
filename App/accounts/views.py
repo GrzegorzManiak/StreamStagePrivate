@@ -1,31 +1,18 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import logout, login, authenticate
+from django.contrib.auth import logout, login as dj_login, authenticate
 from django.urls import reverse_lazy, reverse
+from django.views.generic import View
 from django.http.response import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework import status
 
+from django.contrib.auth.signals import user_logged_in
+from django.contrib.auth import update_session_auth_hash
+
 from accounts.create import create_account_oauth
 
-from .auth_lib import authenticate_key
+from .auth_lib import authenticate_key, generate_key
 from .oauth.oauth import format_providers, check_oauth_key, get_oauth_data
-
-# class MemberSignUpView(CreateView):
-#     form_class = MemberCreationForm
-#     template_name = 'signup.html'
-
-#     def post(self, request, *args, **kwargs):
-#         form = MemberCreationForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             username = form.cleaned_data.get('username')
-#             signup_user = Member.objects.get(username=username)
-#             member_group = Group.objects.get(name='Member')
-#             member_group.user_set.add(signup_user)
-#             return redirect('auth')
-#         else:
-#             return render(request, self.template_name, {'form' : form })
-
 
 
 """
@@ -36,7 +23,9 @@ from .oauth.oauth import format_providers, check_oauth_key, get_oauth_data
 def login(request):
     # -- Make sure that the user isint already logged in
     if request.user.is_authenticated:
-        return reverse_lazy('member_profile')
+        return redirect(
+            reverse_lazy('member_profile', urlconf='accounts.urls')
+        )
 
     # -- Construct the context
     context = {
@@ -114,8 +103,12 @@ def register_post(request):
         if isinstance(new_member, JsonResponse):
             return new_member
 
+        # -- Generate the token for the user
+        token = generate_key(new_member)
+
         return JsonResponse({
             'message': 'Account created successfully',
+            'token': token,
             'status': 'success'
         }, status=status.HTTP_201_CREATED)
 
@@ -126,7 +119,10 @@ def register_post(request):
 def register_get(request):
     # -- Make sure that the user isint already logged in
     if request.user.is_authenticated:
-        return redirect('member_profile')
+        return redirect(
+            reverse_lazy('member_profile', urlconf='accounts.urls')
+        )
+        
         
 
 
@@ -155,7 +151,7 @@ def validate_token(request):
     auth_header = request.headers['Authorization']
 
     # -- Make sure the header is not too long or too short
-    if len(auth_header) < 10 or len(auth_header) > 100:
+    if len(auth_header) < 10 or len(auth_header) > 150:
         return JsonResponse({
             'message': 'Invalid Authorization header'
         }, status=status.HTTP_400_BAD_REQUEST)
@@ -166,11 +162,14 @@ def validate_token(request):
 
     if user is not None:
         # -- Log the user in
-        login(request, user)
+        request._request.user = user
+        request._request.method = 'GET'
+        dj_login(request._request, user)
 
-        # -- Return a success message
+        # -- Return the user to the member profile
         return JsonResponse({
-            'message': 'Logged in successfully'
+            'message': 'Successfully logged in',
+            'status': 'success'
         }, status=status.HTTP_200_OK)
 
     
@@ -189,3 +188,24 @@ def validate_token(request):
 @api_view(['GET'])
 def get_token(request):
     pass
+
+
+@api_view(['GET'])
+def profile(request):
+    print(request.user)
+
+    # -- Make sure that the user is logged in
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    # -- Construct the context
+    context = {
+        'user': request.user,
+    }
+
+    # -- Render the profile page
+    return render(
+        request, 
+        'profile.html', 
+        context=context
+    )

@@ -34,6 +34,15 @@ ALLOWED_HOSTS = [
     'streamstage.co',
     'master.streamstage.co',
 ]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://me.streamstage.co',
+]
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://.+$",
+]
+
 DEFAULT_HOST = 'www'
 
 ROOT_HOSTCONF = 'StreamStage.hosts'
@@ -57,6 +66,7 @@ INSTALLED_APPS = [
 
     # 3rd Party
     'crispy_forms',
+    'corsheaders',
     'crispy_bootstrap5',
     'rest_framework',
     'django_hosts',
@@ -69,6 +79,8 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -76,6 +88,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'StreamStage.urls'
+
 
 TEMPLATES = [
     {

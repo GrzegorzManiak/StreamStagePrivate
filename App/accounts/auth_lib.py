@@ -12,17 +12,15 @@
 # -- Imports
 from .oauth.oauth import (
     check_oauth_key, 
-    get_oauth_data, 
-    remove_oauth_key
+    get_oauth_data,
+    remove_oauth_key,
+    get_oauth_user
 )
 
 from .models import Member
-
-from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
-
+from django.contrib.auth import SESSION_KEY, BACKEND_SESSION_KEY, HASH_SESSION_KEY, _get_user_session_key, rotate_token
+from django.contrib.auth.signals import user_logged_in
+from django.middleware.csrf import rotate_token
 import secrets
 import time
 
@@ -140,42 +138,36 @@ def determine_key(key: str) -> KeyType or None:
 """
     This function will be used to authenticate
     the user with the key that they have provided
-    TODO: Fix this before it blows up the entire planet
 """
 def authenticate_key(key: str) -> Member or None:
     # -- Determine the key type
     keytype = determine_key(key)
     if keytype is None: return None
 
-    # -- Get the first user in the database
-    user = Member.objects.first()
-    # -- generate a key for the user
-    key = generate_key(user)
 
     # -- Authenticate the user
     match keytype:
         case KeyType.OAUTH:
             # -- Get the oauth data
-            data = get_oauth_data(key)
-
-            # -- Check if the data is valid
-            if not data: return None
-
-            # -- Get the user
-            # TODO: fix this
-            user = authenticate(
-                request=None,
-                oauth_type=data['oauth_type'],
-                oauth_id=data['oauth_id'],
-                oauth_email=data['oauth_email'],
-                oauth_name=data['oauth_name']
-            )
+            data = check_oauth_key(key)
 
             # -- Check if the user is valid
-            if not user: return None
+            if data == False: return None
+
+            # -- Get the user
+            oauth_data = get_oauth_data(key)
+
+            # -- Get the user
+            user = get_oauth_user(
+                oauth_data['oauth_id'],
+                oauth_data['type']
+            )
 
             # -- Remove the key
             remove_oauth_key(key)
+
+            # -- Check if the user is valid
+            if not user: return None
 
         case KeyType.EMAIL:
             # -- Get the user
@@ -184,4 +176,7 @@ def authenticate_key(key: str) -> Member or None:
             # -- Check if the user is valid
             if not user: return None 
 
+
     return user
+
+
