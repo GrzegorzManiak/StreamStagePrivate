@@ -50,4 +50,11 @@ export const instruction_handler = (instructions: string) => {
     const password_input = panel.element.querySelector('input[name="password"]') as HTMLInputElement;
     attach_to_input(password_input);
 
+    // -- Get the rp-password input
+    const rp_password_input = panel.element.querySelector('input[name="rp-password"]') as HTMLInputElement;
+
+
+    // -- Get the submit button
+    const submit_button = panel.element.querySelector('button[type="submit"]') as HTMLButtonElement;
+
 }
