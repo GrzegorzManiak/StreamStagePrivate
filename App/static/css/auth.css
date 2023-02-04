@@ -60,3 +60,54 @@ body {
 hr {
     border-top: 1px solid var(--accent-color)!important;
 }
+
+
+/* 
+    requirements animation, should only appear 
+    when the user is clicked onto a field that
+    requires a certain input, eg. name, password
+*/
+@keyframes requirements {
+    0% {
+        height: 0px;
+        opacity: 0;
+    }
+    100% {
+        height: 100%;
+        opacity: 1;
+    }
+}
+
+.requirements {
+    display: none;
+    animation: requirements 0.3s ease-in-out;
+}
+
+.requirements li {
+    transition: color 0.3s ease-in-out;
+}
+
+/* On focus */
+#password:focus ~ .requirements, 
+#username:focus + .requirements {
+    display: block;
+}
+
+
+/* 
+    data-error-x 
+    for every error that is displayed,
+    the x represents the name of the error 
+*/
+[data-error-length=''] ~ .requirements .length,
+[data-error-number=''] ~ .requirements .number,
+[data-error-spaces=''] ~ .requirements .spaces,
+[data-error-uppercase=''] ~ .requirements .uppercase,
+[data-error-lowercase=''] ~ .requirements .lowercase,
+[data-error-start=''] ~ .requirements .start,
+[data-error-characters=''] ~ .requirements .characters,
+[data-error-double-underscore=''] ~ .requirements .double-underscore,
+[data-error-end-underscore=''] ~ .requirements .end-underscore {
+    color: #ff4340!important;
+}
+

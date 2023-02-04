@@ -170,6 +170,15 @@
                         
                         
                             <article class='panel' data-panel-type='oauth' style='display: none'>
+
+                                <!-- 
+                                    This snipped here is to discurage the browser 
+                                    from auto filling the username field, as it
+                                    blocks the username requirments
+                                -->
+                                <input style="display:none">
+                                <input type="password" style="display:none">
+
                                 <div class='
                                     d-flex
                                     justify-content-center
@@ -199,17 +208,35 @@
                                 <!-- Username input -->
                                 <div class="mb-4">
                                     <label class="form-label" for="username">Username</label>
-                                    <input name="username" id="username" placeholder="CoolDude1" class="
+                                    <input name="username" autocomplete='off' id="username" placeholder="CoolDude1" class="
                                         form-control 
                                         form-control-lg
                                         inp
                                     ">
+
+                                    <!-- Username requirements -->
+                                    <div class="
+                                        text-muted
+                                        small
+                                        p-2
+                                        requirements
+                                    ">
+                                        <ul class="
+                                            text-muted
+                                        ">
+                                            <li class='length'>Must be between 3 and 20 characters</li>
+                                            <li class='start'>Must Start with a letter</li>
+                                            <li class='characters'>Must only contain letters, numbers, and underscores</li>
+                                            <li class='double-underscore'>Must not contain two underscores in a row</li>
+                                            <li class='end-underscore'>Must not end with an underscore</li>
+                                        </ul>
+                                    </div>
                                 </div>
 
                                 <!-- Password input -->
                                 <div class="mb-4">
                                     <label class="form-label" for="password">Password</label>
-                                    <input name="password" id="password" placeholder="Super Secret Password" type="password" class="
+                                    <input name="password" autocomplete="new-password" id="password" placeholder="Super Secret Password" type="password" class="
                                         form-control 
                                         form-control-lg
                                         inp
@@ -221,6 +248,24 @@
                                         form-control-lg
                                         inp
                                     ">
+
+                                    <!-- Password requirements -->
+                                    <div class="
+                                        text-muted
+                                        small
+                                        p-2
+                                        requirements
+                                    ">
+                                        <ul class="
+                                            text-muted
+                                        ">
+                                            <li class='length'>Must be between 8 and 64 characters</li>
+                                            <li class='spaces'>Must not contain spaces</li>
+                                            <li class='number'>Must contain at least one number</li>
+                                            <li class='uppercase'>Must contain at least one uppercase letter</li>
+                                            <li class='lowercase'>Must contain at least one lowercase letter</li>
+                                        </ul>
+                                    </div>
                                 </div>
 
                                 <!-- Buttons -->
