@@ -18,7 +18,7 @@ export const create_toast = (type: 'error' | 'success' | 'warning', title: strin
 
     // -- Create the badge
     const badge = document.createElement('span');
-    badge.classList.add('badge', `bg-${type}`);
+    badge.classList.add('badge', `bg-${type === 'error' ? 'danger' : type}`);
     badge.style.marginRight = '0.5rem';
     switch (type) {
         case 'error': badge.innerText = 'Error'; break;

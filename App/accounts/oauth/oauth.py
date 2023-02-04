@@ -20,7 +20,6 @@ import json
     Users browser on how to proceed.
 """
 def format_instructions(
-    email: str,
     email_verified: bool,
     oauth_type: OAuthTypes,
     oauth_id: str
@@ -33,27 +32,26 @@ def format_instructions(
 
     # -- Check if the user has an oauth id
     exisiting_link = oauth_model.objects.filter(
-        id=str(oauth_id),
+        oauth_id=str(oauth_id),
         oauth_type=oauth_type
     ).first()
 
-    # -- Check if the user has an account
-    member = get_user_model().objects.filter(email=email).first()
+    print(exisiting_link, oauth_id, oauth_type)
 
     has_oauth_id = False
-    if exisiting_link is not None and member is not None:
+    if exisiting_link is not None:
         # Make sure that the user matches
-        if exisiting_link.user == member and exisiting_link.oauth_type == oauth_type:
+        if exisiting_link.oauth_type == oauth_type:
             has_oauth_id = True
 
 
     # -- Return the instructions
     return {
-        'has_account': member is not None,
+        'has_account': exisiting_link is not None,
         'email_verified': email_verified,
         'oauth_type': oauth_type,
         'can_authenticate': has_oauth_id,
-        'needs_username': has_oauth_id is False and member is None,
+        'needs_username': has_oauth_id is False,
         'needs_password': has_oauth_id is False,
         'needs_email': email_verified is False,
     }
@@ -125,7 +123,7 @@ def check_oauth_key(key: str) -> bool:
 
     # -- Check if the key exists
     if oauth_model.objects.filter(
-        id=authentication_reqests[key]['data']['oauth_id']
+        id=authentication_reqests[key]['oauth_id']
     ).first() is None:
         return False
 
@@ -134,12 +132,13 @@ def check_oauth_key(key: str) -> bool:
 
 
 
+
 """
     Get the oauth data from the key
 """
 def get_oauth_data(key: str) -> dict or None:
     # -- Check if the key is valid
-    if not check_oauth_key(key):
+    if key not in authentication_reqests:
         return None
 
     # -- Get the data
@@ -155,7 +154,7 @@ def get_oauth_data(key: str) -> dict or None:
 """
 def remove_oauth_key(key: str) -> bool:
     # -- Check if the key is valid
-    if not check_oauth_key(key):
+    if key not in authentication_reqests:
         return False
 
     # -- Remove the key
@@ -244,7 +243,6 @@ def determine_app(oauth_service: OAuthTypes):
             'user': choosen_app.user.serialize(),
             'token': key,
             'instructions': format_instructions(
-                choosen_app.user.get_email(),
                 choosen_app.user.get_is_verified(),
                 oauth_service,
                 choosen_app.user.get_id()
@@ -283,3 +281,38 @@ def format_providers():
         })
 
     return providers
+
+
+
+"""
+    This function links the user to the oauth
+    account
+"""
+def link_oauth_account(user, oauth_key: str):
+    # -- Get the oauth data
+    oauth_data = get_oauth_data(oauth_key)
+
+    # -- Check if the key is valid
+    if oauth_data == None:
+        return False
+
+    # -- Make sure the user is valid
+    if user == None:
+        return False
+
+    # -- Remove the key
+    remove_oauth_key(oauth_key)
+
+    # -- Get the oauth model
+    oauth_model = apps.get_model('accounts.oAuth2')
+
+    try:
+        # -- Create the oauth model
+        oauth_model.objects.create(
+            user=user,
+            oauth_id=oauth_data['oauth_id'],
+            oauth_type=oauth_data['type']
+        )
+        
+    except:
+        return False

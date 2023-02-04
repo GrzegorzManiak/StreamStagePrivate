@@ -40,7 +40,8 @@ class StreamerProfile(models.Model):
 
 
 class oAuth2(models.Model):
-    id = models.CharField("ID", max_length=100, primary_key=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     oauth_type = models.SmallIntegerField("Type", choices=OAuthTypes.choices)
+    oauth_id = models.CharField("OAuth ID", max_length=100, unique=True)
     
