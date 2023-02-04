@@ -215,8 +215,18 @@ def profile(request):
 """
     This view is used to logout the user
 """
-@api_view(['POST'])
+@api_view(['POST', 'GET'])
 def logout(request):
+    match request.method:
+        case 'POST': return logout_post(request)
+        case 'GET': return logout_get(request)
+
+    return JsonResponse({
+        'message': 'Invalid method'
+    }, status=status.HTTP_400_BAD_REQUEST)
+
+
+def logout_post(request):
     # -- Make sure that the user is logged in
     if not request.user.is_authenticated:
         return JsonResponse({
@@ -233,3 +243,17 @@ def logout(request):
         'message': 'Successfully logged out',
         'status': 'success'
     }, status=status.HTTP_200_OK)
+
+
+def logout_get(request):
+    # -- Make sure that the user is logged in
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    # -- Log the user out
+    request._request.method = 'GET'
+    request._request.user = request.user
+    dj_logout(request._request)
+
+    # -- Return a success message
+    return redirect('login')

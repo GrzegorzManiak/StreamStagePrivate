@@ -4,6 +4,7 @@ from .views import (
     get_token,
     login,
     register,
+    logout,
     profile
 )
 
@@ -12,6 +13,7 @@ urlpatterns = [
     path('', profile, name='member_profile'),
 
     path('login/', login, name='login'),
+    path('logout/', logout, name='logout'),
     path('register/', register, name='register'),
 
     # -- Authentication

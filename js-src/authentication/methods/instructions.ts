@@ -14,6 +14,28 @@ const instruction_parser = (instructions: string): Response | null => {
     catch (error) { return null; }
 };
 
+function auth_token(token: string): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+        login(token).then((data) => {
+            console.log(data.message, data);
+    
+            // -- If there was an error, show the error
+            if (data?.status !== 'success') {
+                create_toast('error', 'Login', 'There was some issue logging you in, ' + data.message);
+                resolve(false);
+            }
+            else {
+                // -- If we get here, we can submit the form
+                create_toast('success', 'oAuth2 Login', 'You have successfully autenticated in with OAuth, please wait while we redirect you to the home page');
+                
+                // -- Redirect the user to the home page
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 3000);
+            }
+        });
+    });
+}
 
 export const instruction_handler = async (instructions: string) => {
     // -- Parse instructions
@@ -26,27 +48,9 @@ export const instruction_handler = async (instructions: string) => {
         return;
     }   
 
-    if (response.instructions.can_authenticate) {
-        login(response.token).then((data) => {
-            console.log(data.message, data);
+    if (response.instructions.can_authenticate) 
+        return auth_token(response.token);
 
-            // -- If there was an error, show the error
-            if (data?.status !== 'success') {
-                create_toast('error', 'Login', 'There was some issue logging you in, ' + data.message);
-            }
-            else {
-                // -- If we get here, we can submit the form
-                create_toast('success', 'oAuth2 Login', 'You have successfully autenticated in with OAuth, please wait while we redirect you to the home page');
-                
-                // -- Redirect the user to the home page
-                setTimeout(() => {
-                    window.location.href = '/';
-                }, 3000);
-            }
-        });
-
-        return;
-    }
 
     // -- Since the user has provided oauth
     // data, we can hide the login panel,
@@ -137,7 +141,7 @@ function handle_inputs(response: Response, panel: Panel) {
         );
 
         // -- Handle the response
-        register_attempt.then((reg_req) => {
+        register_attempt.then(async (reg_req) => {
             // -- Check the status of the response
             if (reg_req.status === 'error') {
                 submit_button.disabled = false;
@@ -148,13 +152,18 @@ function handle_inputs(response: Response, panel: Panel) {
             create_toast('success', 'Account created!', 'Your account has been created! You will be redirected to the home page shortly.');
             
             // -- Get the token
-            const token = reg_req.token;
-            console.log(token);
+            if (await auth_token(reg_req.token) == false) {
+                submit_button.disabled = false;
+                return create_toast('error', 'Error', 'There was some issue logging you in, please try again.');
+            }
 
-            // -- Redirect the user to the home page
-            setTimeout(() => {
-                window.location.href = '/';
-            }, 3000);
+            else {
+                // -- Redirect the user to the home page
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 3000);
+            }
+
         });
     });
 }
