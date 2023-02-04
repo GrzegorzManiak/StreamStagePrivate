@@ -11,6 +11,7 @@ from .google import Google
 from .types import OAuthTypes, OAuthRespone
 
 import secrets
+import base64
 import time
 import json
 
@@ -252,13 +253,14 @@ def determine_app(oauth_service: OAuthTypes):
 
         # -- Convert the instructions to json
         instructions = json.dumps(instructions)
+        enocded_instructions = base64.b64encode(instructions.encode('utf-8')).decode('utf-8')
 
         # -- Return the instructions
         return HttpResponseRedirect(
             reverse_lazy(
                 'login', 
                 urlconf='accounts.urls',
-            ) + f'?instructions={instructions}'
+            ) + f'?instructions={enocded_instructions}'
         )
 
     return sso

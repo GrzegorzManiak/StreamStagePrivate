@@ -5,7 +5,7 @@ import {
 // -- Handle instructions
 const instruction_parser = (instructions: string): Response | null => {
     // -- Try decoding instructions
-    try { return JSON.parse(instructions); }
+    try { return JSON.parse(atob(instructions)); }
     catch (error) { return null; }
 };
 

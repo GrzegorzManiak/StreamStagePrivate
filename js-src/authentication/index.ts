@@ -19,11 +19,19 @@ const url = new URL(window.location.href);
 // -- Get URL parameters
 const instructions = url.searchParams.get('instructions');
 const auth_token = url.searchParams.get('auth_token'); 
+const code = url.searchParams.get('code');
 
-// -- If there are both, reload page
-if (instructions && auth_token) {
-    window.location.reload();
-}
+
+// -- If there are multiple params, reload
+let count = 0;
+const count_if_exit = (param: string | null) => 
+{ if (param) count++; }
+
+count_if_exit(instructions);
+count_if_exit(auth_token);
+count_if_exit(code);
+
+if (count > 1) window.location.reload();
 
 
 // -- Handle anything that comes in

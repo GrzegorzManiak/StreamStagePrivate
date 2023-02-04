@@ -1,0 +1,45 @@
+body {
+    background-color: var(--theme-secondary-color);
+    color: var(--font-color);
+}
+
+.main-content {
+    height: 100vh;
+}
+
+.size-limiter {
+    width: 55%;
+    min-width: 400px;
+    max-width: 60rem;
+}
+
+.smoother {
+    transition: height 0.3s ease-in-out;
+}
+
+.fill {
+    /* Image should use all of elemnt */
+    object-fit: cover;
+}
+
+
+.card-body {
+    background-color: var(--theme-color);
+    border-radius: 1rem;
+}
+
+/* Inputs */
+.inp {
+    border: 2px solid var(--accent-color)!important;
+    background-color: var(--theme-color-secondary)!important;
+
+    color: var(--font-color)!important;
+}
+
+.text-muted {
+    color: var(--muted-font-color)!important;
+}
+
+hr {
+    border-top: 1px solid var(--accent-color)!important;
+}

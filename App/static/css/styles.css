@@ -1,3 +1,19 @@
+/* Variables */
+:root {
+    --theme-color: #15181d;
+    --theme-secondary-color: rgb(32, 38, 46);
+    --accent-color: #5A7FFF;
+    --font-color: #ffffff;
+    --muted-font-color: #b3b3b3;
+}
+
+
+* {
+    font-family: 'montserrat', sans-serif;
+    font-weight: 400;
+}
+
+
 /***** Body/Base *****/
 
 

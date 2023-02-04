@@ -22,10 +22,14 @@ class OAuthRespone(Enum):
 class OAuthTypes():
     # -- Google, maybe discord and github
     GOOGLE = 0
+    DISCORD = 1
+    GITHUB = 2
 
     # -- Django choices
     choices = (
         (GOOGLE, 'Google'),
+        (DISCORD, 'Discord'),
+        (GITHUB, 'Github')
     )
 
     def __str__(self):

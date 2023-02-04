@@ -22,8 +22,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-import secrets
 
+import secrets
+import time
+
+# 15 minutes
+TTL = 60 * 15
 
 """
     Just a simple class to hold the key types
@@ -58,7 +62,10 @@ def generate_key(member: Member) -> str:
     key = f'EMAIL:{secrets.token_urlsafe(32)}'
 
     # -- Add the key to the dictionary
-    authentication_keys[key] = member
+    authentication_keys[key] = {
+        'member': member,
+        'created': time.time()
+    }
 
     return key
     
@@ -67,7 +74,17 @@ def generate_key(member: Member) -> str:
     Check if the key is valid
 """
 def check_key(key: str) -> bool:
-    return key in authentication_keys
+    # -- Check if the key exists
+    if key not in authentication_keys:
+        return False
+
+    # -- Check if the key has expired
+    if time.time() - authentication_keys[key]['created'] > TTL:
+        del authentication_keys[key]
+        return False
+
+    # -- The key is valid
+    return True
 
 
 
@@ -81,7 +98,7 @@ def consume_key(key: str) -> Member or None:
         return None
 
     # -- Get the member
-    member = authentication_keys[key]
+    member = authentication_keys[key]['member']
 
     # -- Remove the key from the dictionary
     del authentication_keys[key]
@@ -123,6 +140,7 @@ def determine_key(key: str) -> KeyType or None:
 """
     This function will be used to authenticate
     the user with the key that they have provided
+    TODO: Fix this before it blows up the entire planet
 """
 def authenticate_key(key: str) -> Member or None:
     # -- Determine the key type
@@ -144,6 +162,7 @@ def authenticate_key(key: str) -> Member or None:
             if not data: return None
 
             # -- Get the user
+            # TODO: fix this
             user = authenticate(
                 request=None,
                 oauth_type=data['oauth_type'],

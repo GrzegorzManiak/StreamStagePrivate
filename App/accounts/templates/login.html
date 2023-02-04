@@ -9,25 +9,183 @@
     Login - StreamStage
 {% endblock %}
 
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
 {% block content %}
     
-    <!-- Loop trough all OAUTH Providers -->
-    {% for provider in providers %}
-        <span
-            id='{{ provider.id }}_sso'
-            aria-label='{{ provider.name }}'
-            aria-id='{{ provider.id }}'
-            aria-url='{{ provider.url }}'
-            class='sso'
-        >
-            
-            <a href='{{ provider.url }}'>
-                <p>{{ provider.name }}</p>
-            </a>
-            
-        </span>
-    {% endfor %}
+    <div class = '
+        container 
+        mt-4
+        d-flex
+        justify-content-center
+        align-items-center
+    '>
 
+        <div class = '
+            size-limiter
+        '>
+            <div class = '
+                rounded
+            '>
+                <div class = '
+                    row 
+                    g-0
+                    main-content
+                '>
+                    <main class="
+                        col-12
+                        d-flex 
+                        align-items-center
+                    ">
+                        <div class = "
+                            card-body 
+                            p-5
+                            text-light
+                            smoother
+                        ">
+
+                            <!-- Header -->
+                            <div class="
+                                mb-5
+                                justify-content-start
+                            ">
+                                <!-- Header -->
+                                <h1 class="
+                                    fw-bold 
+                                ">Stream Stage</h1>
+
+                                <!-- Slogan -->
+                                <p class="
+                                    text-muted
+                                ">
+                                    Dont ever miss out on another live event ever again.
+                                </p>
+                            </div>
+
+                            <article id='init-choice'>
+                                <form>
+
+                                    <!-- Email input -->
+                                    <div class="mb-4">
+                                        <label class="form-label" for="emailorusername">Email or Username</label>
+                                        <input name="emailorusername" id="emailorusername" placeholder="you@StreamStage.co" class="
+                                            form-control 
+                                            form-control-lg
+                                            inp
+                                        ">
+                                    </div>
+
+                                    <!-- Password input -->
+                                    <div class="mb-4">
+                                        <label class="form-label" for="password">Password</label>
+                                        <input name="password" id="password" placeholder="Super Secret Password" type="password" class="
+                                            form-control 
+                                            form-control-lg
+                                            inp
+                                        ">
+                                    </div>
+
+                                    <!-- Buttons -->
+                                    <div class="
+                                        d-flex 
+                                        justify-content-lg-start
+                                        justify-content-center
+                                        flex-column
+                                        mb-5
+                                    ">
+
+                                        <button type="submit" id="login-btn" class="
+                                            btn 
+                                            btn-primary
+                                            mb-3
+                                            btn-lg
+                                        ">
+                                            Login
+                                        </button>
+
+                                        <p class="
+                                            text-center
+                                            text-muted
+                                            mx-3
+                                            my-auto
+                                        ">Not a member? &nbsp;
+                                            <a href="/account/register" class="text-primary">Register</a>
+                                        </p>
+                                    </div>
+
+                                    <!-- Divider -->
+                                        
+                                    <!-- Or -->
+                                    <div class="
+                                        text-center
+                                    ">
+                                        <p class="
+                                            text-muted
+                                        ">
+                                            Other login options
+                                        </p>
+                                    </div>
+
+                                    <!-- Loop trough all OAUTH Providers -->
+                                    <div class="
+                                        text-center
+                                    ">
+                                        {% for provider in providers %}
+                                            <span
+                                                id='{{ provider.id }}_sso'
+                                                aria-label='{{ provider.name }}'
+                                                aria-id='{{ provider.id }}'
+                                                aria-url='{{ provider.url }}'
+                                                class='sso'
+                                            >
+                                                <!-- Login with {{provider.name}}-->
+                                                <a 
+                                                    href='{{ provider.url }}'
+                                                    style="
+                                                        text-decoration: none;
+                                                    "
+                                                >
+                                                    <p class='
+                                                        fab 
+                                                        fa-{{ provider.id }}
+                                                        fa-2x
+                                                        text-light
+                                                        p-1
+                                                    '></p>
+                                                </a>
+                                                
+                                            </span>
+                                        {% endfor %}
+                                    </div>
+
+
+                                    <!-- Divider -->
+                                    <hr>
+
+                                    <div class="
+                                        text-center
+                                        text-muted
+                                    ">
+
+                                        <!-- Tos, Privacy policy -->
+                                        <p>
+                                            By clicking the "Login" button and or by using any of the other login options, you agree to our
+                                            <a href="">Terms of Service</a> and 
+                                            <a href="#!">Privacy Policy</a>.
+                                        </p>
+
+                                    </div>
+                                </form>
+                            <article>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- Load the autentication script -->
     <script src="{% static 'js/app_bin.js' %}"></script>
 {% endblock %}

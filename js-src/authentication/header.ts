@@ -4,7 +4,7 @@ import {
 
 export function delete_cookies() {
     // -- Delete cookies
-    let cookies_to_delete: string[] = ['csrf_token', 'oauth_error', 'instructions'];
+    let cookies_to_delete: string[] = ['csrf_token', 'oauth_error', 'instructions', 'code'];
     cookies_to_delete.forEach((cookie) => {
         document.cookie = `${cookie}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
     });
