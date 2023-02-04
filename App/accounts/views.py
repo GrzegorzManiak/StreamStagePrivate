@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import logout, login as dj_login, authenticate
+from django.contrib.auth import logout as dj_logout, login as dj_login
 from django.urls import reverse_lazy, reverse
 from django.views.generic import View
 from django.http.response import JsonResponse
@@ -122,7 +122,7 @@ def register_get(request):
         return redirect(
             reverse_lazy('member_profile', urlconf='accounts.urls')
         )
-        
+
         
 
 
@@ -209,3 +209,27 @@ def profile(request):
         'profile.html', 
         context=context
     )
+
+
+
+"""
+    This view is used to logout the user
+"""
+@api_view(['POST'])
+def logout(request):
+    # -- Make sure that the user is logged in
+    if not request.user.is_authenticated:
+        return JsonResponse({
+            'message': 'You are not logged in'
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    # -- Log the user out
+    request._request.method = 'GET'
+    request._request.user = request.user
+    dj_logout(request._request)
+
+    # -- Return a success message
+    return JsonResponse({
+        'message': 'Successfully logged out',
+        'status': 'success'
+    }, status=status.HTTP_200_OK)
