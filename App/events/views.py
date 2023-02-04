@@ -17,3 +17,10 @@ def view_event(request, event_id):
         cover_pic = media[primary_media_idx]
 
     return render(request, 'event.html', {'event':event, 'cover_pic': cover_pic})
+
+def listing(request):
+    events = Event.objects.all()
+
+    # TODO: sorting/filtering
+
+    return render(request, 'listing.html', {'events': events})

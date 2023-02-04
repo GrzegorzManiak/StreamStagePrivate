@@ -40,6 +40,11 @@ html, body, .container {
     background-size: cover;
 }
 
+.event-listing {
+    width: 350px;
+    height: 350px;
+}
+
 /***** Upcoming Events Page *****/
 
 

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Event{% endblock title %}
+{% block title %}{{ event.title }}{% endblock title %}
 
 {% comment %}
 {% block additional_styles %}
@@ -18,7 +18,7 @@
                     <span class="badge bg-primary">{{category.name}}</span>
                 {% endfor %}
             </div>
-            
+
             <div class="d-flex flex-row">
                 {% if event.media.all.count == 0 %}
                     <img class="event-cover col-3" src="{% static 'images/default_event_cover.png' %}" alt="No Event Cover Photo">
