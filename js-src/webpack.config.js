@@ -4,6 +4,7 @@ module.exports = {
     entry: {
         logout: './logout/index.ts',
         authentication: './authentication/index.ts',
+        toast: './toasts/index.ts',
     },
     module: {
         rules: [

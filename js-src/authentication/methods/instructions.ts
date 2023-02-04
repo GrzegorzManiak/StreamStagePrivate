@@ -1,6 +1,6 @@
 import { Panel, PanelType, Response } from '../index.d';
 import { get_panel, hide_panel, show_panel } from '../core/panel_manager';
-import { create_toast } from '../core/toasts';
+import { create_toast } from '../../toasts';
 import { name_monitor, password_monitor, rp_password_monitor, validate_name, validate_password } from '../core/validation';
 import * as DOMPurify from 'dompurify';
 import { register_with_oauth } from '../api/register';
