@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "lib": [
+      "es2017", 
+      "es7", 
+      "es6", 
+      "dom"
+    ],
+    "module": "CommonJS",
+    "target": "es5",
+    "declarationMap": false,
+    "declaration": false,
+    "noEmit": false,
+    "outDir": "../dist",
+  },
+  "include": [
+    "./**/*.ts",
+    "./**/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+  ]
+}

@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-from .secrets import *
+from .secrets import DJANGO_SECRET_KEY, SENDGIRD_TOKEN
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,10 +30,19 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'www.streamstage.co',
+    'me.streamstage.co',
     'streamstage.co',
     'master.streamstage.co',
-    'sso.streamstage.co',
 ]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://me.streamstage.co',
+]
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://.+$",
+]
+
 DEFAULT_HOST = 'www'
 
 ROOT_HOSTCONF = 'StreamStage.hosts'
@@ -49,6 +58,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
     # Local
     'accounts',
     'server_manager',
@@ -56,17 +66,21 @@ INSTALLED_APPS = [
 
     # 3rd Party
     'crispy_forms',
+    'corsheaders',
     'crispy_bootstrap5',
+    'rest_framework',
     'django_hosts',
     'stripe',
 ]
 
 MIDDLEWARE = [
-     'django_hosts.middleware.HostsRequestMiddleware',
+    'django_hosts.middleware.HostsRequestMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -74,6 +88,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'StreamStage.urls'
+
 
 TEMPLATES = [
     {
@@ -147,7 +162,6 @@ USE_TZ = True
 # Developer Content
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [str(BASE_DIR.joinpath('static'))]
-STATIC_ROOT = str(BASE_DIR.joinpath('staticfiles'))
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",

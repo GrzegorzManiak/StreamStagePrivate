@@ -2,7 +2,8 @@ const path = require("path");
 
 module.exports = {
     entry: {
-        // consistent_hashing: './scripts/consistent_hashing/index.ts',
+        logout: './logout/index.ts',
+        authentication: './authentication/index.ts',
     },
     module: {
         rules: [
@@ -28,10 +29,10 @@ module.exports = {
         ],
     },
     resolve: {
-        extensions: [ '.ts', '.js' ],
+        extensions: [ '.ts', '.js' ]
     },
     output: {
         filename: '[name]_bin.js',
-        path: path.resolve(__dirname, './master/StreamStage/static/js'),
+        path: path.resolve(__dirname, '../App/static/js'),
     },
 };
