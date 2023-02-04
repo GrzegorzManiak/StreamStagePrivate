@@ -1,6 +1,6 @@
 import {
     ParsedHeaders,
-} from './index.d';
+} from '../index.d';
 
 export function delete_cookies() {
     // -- Delete cookies

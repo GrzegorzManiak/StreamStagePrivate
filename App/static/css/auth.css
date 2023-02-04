@@ -30,10 +30,27 @@ body {
 
 /* Inputs */
 .inp {
-    border: 2px solid var(--accent-color)!important;
+    border: 2px solid!important;
+    border-color: var(--accent-color)!important;
     background-color: var(--theme-color-secondary)!important;
 
     color: var(--font-color)!important;
+}
+
+[data-strength="0"] {
+    border-color: #ff4340!important;
+}
+
+[data-strength="1"] {
+    border-color: #ff8040!important;
+}
+
+[data-strength="2"] {
+    border-color: #ecff40!important;
+}
+
+[data-strength="3"] {
+    border-color: #40ff53!important;
 }
 
 .text-muted {

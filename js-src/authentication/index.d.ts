@@ -36,3 +36,11 @@ export interface ParsedHeaders {
     csrf_token: CSRF_Token;
     oauth_error: OAUTH_Error | null;
 }
+
+
+export type PanelType = 'defualt' | 'tfa' | 'oauth';
+
+export interface Panel {
+    type: PanelType;
+    element: HTMLDivElement;
+}

@@ -14,6 +14,12 @@
 {% endblock %}
 
 {% block content %}
+    <span
+        id='sso'
+        data-token-url='{{ token }}'
+        data-get-token-url='{{ get_token }}'
+    >
+    </span>
     
     <div class = '
         container 
@@ -64,7 +70,7 @@
                                 </p>
                             </div>
 
-                            <article id='init-choice'>
+                            <article class='panel' data-panel-type='defualt'>
                                 <form>
 
                                     <!-- Email input -->
@@ -159,26 +165,111 @@
                                             </span>
                                         {% endfor %}
                                     </div>
-
-
-                                    <!-- Divider -->
-                                    <hr>
-
-                                    <div class="
+                                </form>
+                            </article>
+                        
+                        
+                            <article class='panel' data-panel-type='oauth' style='display: none'>
+                                <div class='
+                                    d-flex
+                                    justify-content-center
+                                    align-items-center
+                                    flex-column
+                                    m-2
+                                '>
+                                    <p class='
                                         text-center
-                                        text-muted
+                                        fw-bold
+                                    '>
+                                        Please enter in the rest of your information
+                                    </p>
+        
+                                </div>
+
+                                <!-- Email input -->
+                                <div class="mb-4">
+                                    <label class="form-label" for="email">Email</label>
+                                    <input name="email" id="email" placeholder="you@StreamStage.co" class="
+                                        form-control 
+                                        form-control-lg
+                                        inp
+                                    ">
+                                </div>
+
+                                <!-- Username input -->
+                                <div class="mb-4">
+                                    <label class="form-label" for="username">Username</label>
+                                    <input name="username" id="username" placeholder="CoolDude1" class="
+                                        form-control 
+                                        form-control-lg
+                                        inp
+                                    ">
+                                </div>
+
+                                <!-- Password input -->
+                                <div class="mb-4">
+                                    <label class="form-label" for="password">Password</label>
+                                    <input name="password" id="password" placeholder="Super Secret Password" type="password" class="
+                                        form-control 
+                                        form-control-lg
+                                        inp
+                                        mb-2
                                     ">
 
-                                        <!-- Tos, Privacy policy -->
-                                        <p>
-                                            By clicking the "Login" button and or by using any of the other login options, you agree to our
-                                            <a href="">Terms of Service</a> and 
-                                            <a href="#!">Privacy Policy</a>.
-                                        </p>
+                                    <input name="rp-password" id="rp-password" placeholder="What was my Password?" type="password" class="
+                                        form-control 
+                                        form-control-lg
+                                        inp
+                                    ">
+                                </div>
 
-                                    </div>
-                                </form>
-                            <article>
+                                <!-- Buttons -->
+                                <div class="
+                                    d-flex 
+                                    justify-content-lg-start
+                                    justify-content-center
+                                    flex-column
+                                    mb-5
+                                ">
+
+                                    <button type="submit" id="login-btn" class="
+                                        btn 
+                                        btn-primary
+                                        mb-3
+                                        btn-lg
+                                    ">
+                                        Create
+                                    </button>
+
+                                    <p class="
+                                        text-center
+                                        text-muted
+                                        mx-3
+                                        my-auto
+                                    ">Dont want to link accounts?
+                                        <a href="/account/register" class="text-primary">Click here</a>
+                                    </p>
+                                </div>
+
+                            </article>
+
+
+                            <!-- Divider -->
+                            <hr>
+
+                            <div class="
+                                text-center
+                                text-muted
+                            ">
+
+                                <!-- Tos, Privacy policy -->
+                                <p>
+                                    By proceeding with the "Loging in" or "Creation" of an account, you acknowledge and agree to abide by the
+                                    <a href="">Terms of Service</a> and 
+                                    <a href="#!">Privacy Policy</a>.
+                                </p>
+
+                            </div>
                         </div>
                     </main>
                 </div>

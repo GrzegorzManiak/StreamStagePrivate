@@ -1,17 +1,12 @@
-import {
-    Response,
-} from './index.d';
 
 import {
-    oauth_error, 
     ensure_tokens 
-} from './header';
-import { instruction_handler } from './instructions';
+} from './core/header';
+import { instruction_handler } from './core/instructions';
 
 
 // -- Ensure CSRF token
 ensure_tokens();
-
 
 // -- Handle all URL parameters
 const url = new URL(window.location.href);
@@ -33,6 +28,18 @@ count_if_exit(code);
 
 if (count > 1) window.location.reload();
 
+
+
+// -- Get configuration
+const sso_config = document.getElementById('sso');
+
+export const token_url = sso_config?.getAttribute('data-token-url'),
+    get_token_url = sso_config?.getAttribute('data-get-token-url');
+
+// -- If theres no urls or auth token, error out
+if (!token_url || !get_token_url) {
+    console.error('No token url or get token url or auth token');
+};
 
 // -- Handle anything that comes in
 if (instructions) instruction_handler(instructions);

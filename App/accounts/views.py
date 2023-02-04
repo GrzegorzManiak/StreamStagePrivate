@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout, login
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from django.http.response import JsonResponse
@@ -44,7 +44,11 @@ def login(request):
 
     # -- Construct the context
     context = {
-        'providers': format_providers()
+        'providers': format_providers(),
+
+        'token': reverse('token'),
+        'get_token': reverse('get_token'),
+        'signup': reverse('signup'),
     }
 
     # -- Render the login page
