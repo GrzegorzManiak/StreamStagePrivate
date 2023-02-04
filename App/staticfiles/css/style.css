@@ -26,6 +26,11 @@ html, body, .container {
     display: inline-block;
 }
 
+.event-cover {
+    display: inline-block;
+    max-width: 150px;
+}
+
 .event-media .elem {
     display: inline-block;
     width: 250px;
