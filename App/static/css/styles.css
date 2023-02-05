@@ -1,0 +1,75 @@
+/* Variables */
+:root {
+    --theme-color: #15181d;
+    --theme-secondary-color: rgb(32, 38, 46);
+    --accent-color: #5A7FFF;
+    --font-color: #ffffff;
+    --muted-font-color: #b3b3b3;
+}
+
+
+* {
+    font-family: 'montserrat', sans-serif;
+    font-weight: 400;
+}
+
+#toasts {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 9999;
+    margin: 20px;
+}
+
+.toast {
+    background-color: var(--theme-color)!important;
+    color: var(--font-color)!important;
+    border-radius: 1rem!important;
+}
+
+.toast-header {
+    background-color: var(--accent-color)!important;
+    color: var(--font-color)!important; 
+}
+
+.toast-body {
+    background-color: var(--theme-color)!important;
+    color: var(--font-color)!important;
+}
+
+
+/***** Body/Base *****/
+
+
+/***** Navbar *****/
+
+
+/***** Header *****/
+
+
+/***** Footer *****/
+
+
+/***** Fonts *****/
+
+
+/***** Images *****/
+
+
+/***** Category Page *****/
+
+
+/***** Events Listings Page *****/
+
+
+/***** Upcoming Events Page *****/
+
+
+/***** Cart Page*****/
+
+
+/***** Search Page *****/
+
+
+/***** Media Queries *****/
+

@@ -88,7 +88,7 @@ class Google():
                 'code': code,
                 'client_id': client_id,
                 'client_secret': secret,
-                'redirect_uri': 'https://sso.streamstage.co/google',
+                'redirect_uri': secrets.OAUTH_PROVIDERS['google']['redirect_uri'],
                 'grant_type': 'authorization_code'
             }
 
