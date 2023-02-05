@@ -12,7 +12,7 @@ class ReviewsListView(ListView):
     # *** CM
     # ***
     # Not sure if calling the right data & works for reviews of each event???
-    queryset = EventReview.objects.filter(event='event').order_by('creation_date')
+    queryset = EventReview.objects.filter(event='event').order_by('created')
     template_name = 'reviews.html'
     context_object_name = "all_reviews_list"
 
