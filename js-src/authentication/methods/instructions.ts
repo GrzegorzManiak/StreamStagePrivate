@@ -16,31 +16,32 @@ const instruction_parser = (instructions: string): Response | null => {
 
 function auth_token(token: string): Promise<boolean> {
     // -- Add a spinner
-    const stop_spinner = attach(document.querySelector('button[type="submit"]') as HTMLButtonElement);
+    const stop_spinner = attach(
+        document.querySelector('button[type="submit"]') as HTMLButtonElement);
     
+
     // -- Make the request
-    return new Promise((resolve, reject) => {
-        login_with_token(token).then((data) => {
-            console.log(data.message, data);
-    
-            // -- If there was an error, show the error
-            if (data?.status !== 'success') {
-                create_toast('error', 'Login', 'There was some issue logging you in, ' + data.message);
-                stop_spinner();
-                return resolve(false);
-            }
-            else {
-                // -- If we get here, we can submit the form
-                create_toast('success', 'oAuth2 Login', 'You have successfully autenticated in with OAuth, please wait while we redirect you to the home page');
-                
-                // -- Redirect the user to the home page
-                setTimeout(() => {
-                    window.location.href = '/';
-                }, 3000);
-            }
-        });
+    return new Promise(async (resolve, reject) => {
+        // -- Make the request
+        const response = await login_with_token(token);
+
+        // -- If there was an error, show the error
+        if (response.code !== 200) {
+            create_toast('error', 'login', response.data.message);
+            return stop_spinner();
+        }
+
+        // -- If we get here, we can submit the form
+        create_toast('success', 'oAuth2 Login', 'You have successfully autenticated in with OAuth, please wait while we redirect you to the home page');
+
+        // -- Redirect the user to the home page
+        setTimeout(() => {
+            window.location.href = '/';
+        }, 3000);
     });
 }
+
+
 
 export const instruction_handler = async (instructions: string) => {
     // -- Parse instructions
@@ -78,7 +79,8 @@ export const instruction_handler = async (instructions: string) => {
 
 function handle_inputs(response: Response, panel: Panel) {
     // -- Get the email input and set the value
-    const email_input = panel.element.querySelector('input[name="email"]') as HTMLInputElement;
+    const email_input = panel.element.querySelector(
+        'input[name="email"]') as HTMLInputElement;
     email_input.value = DOMPurify.sanitize(response.user.email);
 
     // -- If the email is verified, hide the email input
@@ -87,22 +89,26 @@ function handle_inputs(response: Response, panel: Panel) {
     
 
     // -- Get the name input and set the value
-    const name_input = panel.element.querySelector('input[name="username"]') as HTMLInputElement;
+    const name_input = panel.element.querySelector(
+        'input[name="username"]') as HTMLInputElement;
     name_input.value =  DOMPurify.sanitize(response.user.name);
     name_monitor(name_input);
 
 
     // -- Get the password input 
-    const password_input = panel.element.querySelector('input[name="password"]') as HTMLInputElement;
+    const password_input = panel.element.querySelector(
+        'input[name="password"]') as HTMLInputElement;
     password_monitor(password_input);
 
 
     // -- Get the rp-password input
-    const rp_password_input = panel.element.querySelector('input[name="rp-password"]') as HTMLInputElement;
+    const rp_password_input = panel.element.querySelector(
+        'input[name="rp-password"]') as HTMLInputElement;
     rp_password_monitor(password_input, rp_password_input);
 
     // -- Get the submit button
-    const submit_button = panel.element.querySelector('button[type="submit"]') as HTMLButtonElement;
+    const submit_button = panel.element.querySelector(
+        'button[type="submit"]') as HTMLButtonElement;
 
 
     submit_button.addEventListener('click', async (event) => {
@@ -153,37 +159,33 @@ function handle_inputs(response: Response, panel: Panel) {
         submit_button.disabled = true;
 
         // -- Make the request
-        let register_attempt = register_with_oauth(
+        const register_attempt = await register_with_oauth(
             response.token,
             password_input.value,
             name_input.value,
             email_input.value,
         );
+        
+        // -- Check the status of the response
+        if (register_attempt.status === 'error') {
+            submit_button.disabled = false;
+            return create_toast('error', 'Error', register_attempt.message);
+        }
 
-        // -- Handle the response
-        register_attempt.then(async (reg_req) => {
-            // -- Check the status of the response
-            if (reg_req.status === 'error') {
-                submit_button.disabled = false;
-                return create_toast('error', 'Error', reg_req.message);
-            }
+        // -- If we get here, we can submit the form
+        create_toast('success', 'Account created!', 'Your account has been created! You will be redirected to the home page shortly.');
 
-            // -- If we get here, we can submit the form
-            create_toast('success', 'Account created!', 'Your account has been created! You will be redirected to the home page shortly.');
-            
-            // -- Get the token
-            if (await !auth_token(reg_req.token)) {
-                submit_button.disabled = false;
-                return create_toast('error', 'Error', 'There was some issue logging you in, please try again.');
-            }
+        // -- Get the token
+        if (await !auth_token(register_attempt.token)) {
+            submit_button.disabled = false;
+            return create_toast('error', 'Error', 'There was some issue logging you in, please try again.');
+        }
 
-            else {
-                // -- Redirect the user to the home page
-                setTimeout(() => {
-                    window.location.href = '/';
-                }, 3000);
-            }
-
-        });
+        else {
+            // -- Redirect the user to the home page
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 3000);
+        }
     });
 }
