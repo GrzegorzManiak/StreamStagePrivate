@@ -1,6 +1,10 @@
 import {
     ParsedHeaders,
 } from '../index.d';
+import { 
+    create_toast 
+} from '../../toasts';
+
 
 export function delete_cookies() {
     // -- Delete cookies
@@ -39,9 +43,14 @@ export const {
 export const ensure_tokens = () => {
     if (!csrf_token) {
         console.error('No CSRF token found');
+        create_toast('error', 'CSRF', 'No CSRF token found, reloading page');
+
         delete_cookies();
     
-        // -- Refresh page
-        window.location.reload();
+        // -- Refresh page after 3 seconds
+        setTimeout(() => {
+            window.location.reload();
+        }, 3000);
+        
     }
 }

@@ -5,4 +5,15 @@
 
 {% block content %}
 <h1>Profile Page</h1>
+
+<a>Username: {{ user.username }}</a>
+<br>
+<a>Email: {{ user.email }}</a>
+<br>
+<a>Logout</a>
+<a href="{% url 'logout' %}">Logout</a>
+
+<a>Linked Accounts</a>
+<br>
+
 {% endblock %}

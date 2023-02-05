@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import logout as dj_logout, login as dj_login
+from django.contrib.auth import logout as dj_logout, login as dj_login, authenticate
 from django.urls import reverse_lazy, reverse
 from django.views.generic import View
 from django.http.response import JsonResponse
@@ -14,6 +14,7 @@ from accounts.create import create_account_oauth
 from .auth_lib import authenticate_key, generate_key
 from .oauth.oauth import format_providers, check_oauth_key, get_oauth_data
 
+from .models import Member
 
 """
     This view is used to get a token
@@ -185,9 +186,62 @@ def validate_token(request):
     for the user depending on the requirements
     of their login.
 """
-@api_view(['GET'])
+@api_view(['POST'])
 def get_token(request):
-    pass
+    # -- Make sure that the user isint already logged in
+    if request.user.is_authenticated:
+        return JsonResponse({
+            'message': 'You are already logged in'
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    # -- Get the json data
+    if 'emailorusername' not in request.data or 'password' not in request.data:
+        return JsonResponse({
+            'message': 'Missing email or password',
+            'status': 'error'
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    # -- Get the email and password
+    emailorusername = request.data['emailorusername']
+    password = request.data['password']
+
+
+    # -- Probably an email
+    if emailorusername.find('@') != -1:
+        try: user = Member.objects.get(email=emailorusername)
+        except Member.DoesNotExist:
+            return JsonResponse({
+                'message': 'Invalid credentials',
+                'status': 'error'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+    # -- Probably a username
+    else:
+        try: user = Member.objects.get(username=emailorusername)
+        except Member.DoesNotExist:
+            return JsonResponse({
+                'message': 'Invalid credentials',
+                'status': 'error'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+
+    # -- Authenticate the user
+    if authenticate(username=user.username, password=password) is None:
+        return JsonResponse({
+            'message': 'Invalid credentials',
+            'status': 'error'
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    # -- Generate the token for the user
+    token = generate_key(user)
+
+    return JsonResponse({
+        'message': 'Successfully logged in',
+        'token': token,
+        'status': 'success'
+    }, status=status.HTTP_200_OK)
+
+
 
 
 @api_view(['GET'])

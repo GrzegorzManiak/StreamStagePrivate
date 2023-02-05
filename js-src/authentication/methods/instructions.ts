@@ -4,8 +4,8 @@ import { create_toast } from '../../toasts';
 import { name_monitor, password_monitor, rp_password_monitor, validate_name, validate_password } from '../core/validation';
 import * as DOMPurify from 'dompurify';
 import { register_with_oauth } from '../api/register';
-import { login } from '../api/login';
-
+import { login_with_token } from '../api/login';
+import { attach } from '../core/spinner';
 
 // -- Handle instructions
 const instruction_parser = (instructions: string): Response | null => {
@@ -15,14 +15,19 @@ const instruction_parser = (instructions: string): Response | null => {
 };
 
 function auth_token(token: string): Promise<boolean> {
+    // -- Add a spinner
+    const stop_spinner = attach(document.querySelector('button[type="submit"]') as HTMLButtonElement);
+    
+    // -- Make the request
     return new Promise((resolve, reject) => {
-        login(token).then((data) => {
+        login_with_token(token).then((data) => {
             console.log(data.message, data);
     
             // -- If there was an error, show the error
             if (data?.status !== 'success') {
                 create_toast('error', 'Login', 'There was some issue logging you in, ' + data.message);
-                resolve(false);
+                stop_spinner();
+                return resolve(false);
             }
             else {
                 // -- If we get here, we can submit the form
@@ -101,22 +106,34 @@ function handle_inputs(response: Response, panel: Panel) {
 
 
     submit_button.addEventListener('click', async (event) => {
+        // -- Start the spinner
+        const stop_spinner = attach(submit_button);
+
         // -- Validate all inputs
         const name_valid = validate_name(name_input.value);
         const password_valid = validate_password(password_input.value);
 
 
         // -- Make sure the passwords match
-        if (password_input.value !== rp_password_input.value)
-            return create_toast('error', 'Passwords', 'Oops! It looks like your passwords don\'t match.');
+        if (password_input.value !== rp_password_input.value) {
+            create_toast('error', 'Passwords', 'Oops! It looks like your passwords don\'t match.');
+            await stop_spinner();
+            return;
+        }
         
         // -- Make sure the name is valid
-        if (name_valid.length > 0)
-            return create_toast('error', 'Name', 'Oops! It looks like your name is invalid.');
+        if (name_valid.length > 0) {
+            create_toast('error', 'Name', 'Oops! It looks like your name is invalid.');
+            await stop_spinner();
+            return;
+        }
 
         // -- Make sure the password is valid
-        if (password_valid.length > 0)
-            return create_toast('error', 'Password', 'Oops! It looks like your password is invalid.');
+        if (password_valid.length > 0) {
+            create_toast('error', 'Password', 'Oops! It looks like your password is invalid.');
+            await stop_spinner();
+            return;
+        }
 
 
         // -- If the email is not verified, make sure the user
@@ -124,8 +141,11 @@ function handle_inputs(response: Response, panel: Panel) {
         if (!response.user.verified_email) {
             // -- Make sure the email is there, email validation
             //    will be done by just sending an email to the user
-            if (email_input.value.length === 0)
-                return create_toast('error', 'Email', 'Oops! It looks like you haven\'t entered an email.');
+            if (email_input.value.length === 0) {
+                create_toast('error', 'Email', 'Oops! It looks like you haven\'t entered an email.');
+                await stop_spinner();
+                return;
+            }
         }
         
 
@@ -152,7 +172,7 @@ function handle_inputs(response: Response, panel: Panel) {
             create_toast('success', 'Account created!', 'Your account has been created! You will be redirected to the home page shortly.');
             
             // -- Get the token
-            if (await auth_token(reg_req.token) == false) {
+            if (await !auth_token(reg_req.token)) {
                 submit_button.disabled = false;
                 return create_toast('error', 'Error', 'There was some issue logging you in, please try again.');
             }
