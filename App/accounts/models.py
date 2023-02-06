@@ -45,3 +45,7 @@ class oAuth2(models.Model):
     oauth_type = models.SmallIntegerField("Type", choices=OAuthTypes.choices)
     oauth_id = models.CharField("OAuth ID", max_length=100, unique=True)
     
+class TwoFactorAuth(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    secret = models.CharField("Secret", max_length=100)
