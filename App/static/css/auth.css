@@ -111,3 +111,53 @@ hr {
     color: #ff4340!important;
 }
 
+
+/* 
+    Loader button
+    Grid that is 1x1, and we just fade
+    out the text and spinner depending
+    on the state of the button
+*/
+.loader-btn {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    grid-template-areas: "text";
+    align-items: center;
+    justify-items: center;
+
+    --anim-time: 0.3s;
+}
+
+/* Spiner */
+.loader-btn > span {
+    grid-area: text;
+    opacity: 0;
+}
+
+/* Text */  
+.loader-btn > p {
+    grid-area: text;
+    opacity: 1;
+    padding: 0;
+    margin: 0;
+}
+
+[loader-state='defualt'] > span { opacity: 0; }
+[loader-state='default'] > p { opacity: 1; }
+
+@keyframes hide-text {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+@keyframes show-text {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+[loader-state='hide-text'] > span { animation: hide-text var(--anim-time) ease-in forwards reverse; }
+[loader-state='hide-text'] > p { animation: hide-text var(--anim-time)ease-in forwards; }
+
+[loader-state='show-text'] > span { animation: show-text var(--anim-time) ease-in forwards reverse; }
+[loader-state='show-text'] > p { animation: show-text var(--anim-time) ease-in forwards; }

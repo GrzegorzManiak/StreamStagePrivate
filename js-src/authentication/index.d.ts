@@ -38,7 +38,8 @@ export interface ParsedHeaders {
 }
 
 
-export type PanelType = 'defualt' | 'tfa' | 'oauth';
+export type PanelType = 'defualt' | 'tfa' | 'oauth' | 'register' | 'email-wait';
+export type PageType = 'login' | 'register';
 
 export interface Panel {
     type: PanelType;

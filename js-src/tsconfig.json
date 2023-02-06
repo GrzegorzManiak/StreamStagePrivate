@@ -1,24 +1,13 @@
 {
   "compilerOptions": {
-    "noImplicitAny": true,
-    "lib": [
-      "es2017", 
-      "es7", 
-      "es6", 
-      "dom"
-    ],
-    "module": "CommonJS",
-    "target": "es5",
-    "declarationMap": false,
+    "module": "commonjs",
+    "target": "ES6",
+    "lib": ["es5", "es6", "dom"],
     "declaration": false,
-    "noEmit": false,
-    "outDir": "../dist",
-  },
-  "include": [
-    "./**/*.ts",
-    "./**/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-  ]
+    "noImplicitAny": false,
+    "removeComments": true,
+    "inlineSourceMap": true,
+    "moduleResolution": "node",
+    "downlevelIteration": true,
+  }
 }

@@ -1,9 +1,9 @@
 from accounts.oauth.oauth import get_oauth_data, link_oauth_account
 from .models import Member
 from django.http.response import JsonResponse
+from django.contrib.auth.hashers import make_password
 from rest_framework import status
-from django.contrib.auth.models import Group
-
+from .email.email import send_email
 
 """
     This file contains all things related to the
@@ -47,21 +47,23 @@ def create_account_oauth(
             'message': 'An account with that username already exists',
         }, status=status.HTTP_400_BAD_REQUEST)
 
+    email = email.lower()
+    username = username.lower()
     
     # -- Check if the user's choosen oauth method has a 
     #    verified email
     if oauth_data['data']['verified_email'] is False:
         # -- The user's email is not verified
         #    so we'll need to send a verification email
-        pass
+        return send_email(email, password, username)
 
     else:
         # -- The user's email is verified
         #    so we can create the account
-        member = Member.objects.create_user(
+        member = Member.objects.create(
             username=username,
             email=email,
-            password=password,
+            password=make_password(password),
         )
 
         # -- Remove the oauth id from the session
@@ -79,3 +81,36 @@ def create_account_oauth(
 
         # -- Return the account
         return member
+
+
+
+"""
+    Create a new account
+    with an email and password
+"""
+def create_account_email(
+    email: str,
+    username: str,
+    password: str,
+):
+    # -- Check if the user already has an account
+    member = Member.objects.filter(email=email).first()
+    if member is not None:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'An account with that email already exists',
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+
+    member = Member.objects.filter(username=username).first()
+    if member is not None:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'An account with that username already exists',
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    email = email.lower()
+    username = username.lower()
+   
+    # -- Verify the email
+    return send_email(email, password, username)

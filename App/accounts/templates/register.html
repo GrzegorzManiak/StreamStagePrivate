@@ -2,11 +2,11 @@
 {% load static %}
 
 {% block metadescription %}
-    Sign in and start streaming.
+  Register and start streaming.
 {% endblock %}
 
 {% block title %}
-    Login - StreamStage
+    Register - StreamStage
 {% endblock %}
 
 {% block head %}
@@ -16,7 +16,7 @@
 {% block content %}
     <span
         id='sso'
-        data-page='login'
+        data-page='register'
         data-csrf-token='{{ csrf_token }}'
         data-token-url='{{ token }}'
         data-get-token-url='{{ get_token }}'
@@ -82,116 +82,8 @@
                                 </p>
                             </div>
 
-                            <article class='panel' data-panel-type='defualt'>
-
-                                <!-- Email input -->
-                                <div class="mb-4">
-                                    <label class="form-label" for="emailorusername">Email or Username</label>
-                                    <input name="emailorusername" id="emailorusername" placeholder="you@StreamStage.co" class="
-                                        form-control 
-                                        form-control-lg
-                                        inp
-                                    ">
-                                </div>
-
-                                <!-- Password input -->
-                                <div class="mb-4">
-                                    <label class="form-label" for="password">Password</label>
-                                    <input name="password" id="password" placeholder="Super Secret Password" type="password" class="
-                                        form-control 
-                                        form-control-lg
-                                        inp
-                                    ">
-                                </div>
-
-                                <!-- Buttons -->
-                                <div class="
-                                    d-flex 
-                                    justify-content-lg-start
-                                    justify-content-center
-                                    flex-column
-                                    mb-5
-                                ">
-
-                                    <button 
-                                        type="submit" 
-                                        id="login-btn" 
-                                        class="
-                                            btn 
-                                            btn-primary
-                                            mb-3
-                                            btn-lg
-                                            loader-btn
-                                        "
-                                        loader-state='default'
-                                    >   
-                                        <span>
-                                            <div class='spinner-border' role='status'>
-                                                <span class='visually-hidden'>Loading...</span>
-                                            </div>
-                                        </span>
-                                        <p>Login</p>
-                                    </button>
-
-
-                                    <p class="
-                                        text-center
-                                        text-muted
-                                        mx-3
-                                        my-auto
-                                    ">Not a member? &nbsp;
-                                        <a href="{% url 'register' %}" class="text-primary">Register</a>
-                                    </p>
-                                </div>
-
-                                <!-- Divider -->
-                                    
-                                <!-- Or -->
-                                <div class="
-                                    text-center
-                                ">
-                                    <p class="
-                                        text-muted
-                                    ">
-                                        Other login options
-                                    </p>
-                                </div>
-
-                                <!-- Loop trough all OAUTH Providers -->
-                                <div class="
-                                    text-center
-                                ">
-                                    {% for provider in providers %}
-                                        <span
-                                            id='{{ provider.id }}_sso'
-                                            aria-label='{{ provider.name }}'
-                                            aria-id='{{ provider.id }}'
-                                            aria-url='{{ provider.url }}'
-                                            class='sso'
-                                        >
-                                            <!-- Login with {{provider.name}}-->
-                                            <a 
-                                                href='{{ provider.url }}'
-                                                style="
-                                                    text-decoration: none;
-                                                "
-                                            >
-                                                <p class='
-                                                    fab 
-                                                    fa-{{ provider.id }}
-                                                    fa-2x
-                                                    text-light
-                                                    p-1
-                                                '></p>
-                                            </a>
-                                            
-                                        </span>
-                                    {% endfor %}
-                                </div>
-                            </article>
                         
-                        
-                            <article class='panel' data-panel-type='oauth' style='display: none'>
+                            <article class='panel' data-panel-type='register'>
 
                                 <!-- 
                                     This snipped here is to discurage the browser 
@@ -200,22 +92,6 @@
                                 -->
                                 <input style="display:none">
                                 <input type="password" style="display:none">
-
-                                <div class='
-                                    d-flex
-                                    justify-content-center
-                                    align-items-center
-                                    flex-column
-                                    m-2
-                                '>
-                                    <p class='
-                                        text-center
-                                        fw-bold
-                                    '>
-                                        Please enter in the rest of your information
-                                    </p>
-        
-                                </div>
 
                                 <!-- Email input -->
                                 <div class="mb-4">
@@ -324,9 +200,115 @@
                                         text-muted
                                         mx-3
                                         my-auto
-                                    ">Dont want to link accounts?
-                                        <a href="{% url 'register' %}" class="text-primary">Click here</a>
+                                    ">Just want to login?
+                                        <a href="{% url 'login' %}" class="text-primary">Click here</a>
                                     </p>
+                                </div>
+
+                                <!-- Or -->
+                                <div class="
+                                    text-center
+                                ">
+                                    <p class="
+                                        text-muted
+                                    ">
+                                        Other sign up options
+                                    </p>
+                                </div>
+
+                                <!-- Loop trough all OAUTH Providers -->
+                                <div class="
+                                    text-center
+                                ">
+                                    {% for provider in providers %}
+                                        <span
+                                            id='{{ provider.id }}_sso'
+                                            aria-label='{{ provider.name }}'
+                                            aria-id='{{ provider.id }}'
+                                            aria-url='{{ provider.url }}'
+                                            class='sso'
+                                        >
+                                            <!-- Login with {{provider.name}}-->
+                                            <a 
+                                                href='{{ provider.url }}'
+                                                style="
+                                                    text-decoration: none;
+                                                "
+                                            >
+                                                <p class='
+                                                    fab 
+                                                    fa-{{ provider.id }}
+                                                    fa-2x
+                                                    text-light
+                                                    p-1
+                                                '></p>
+                                            </a>
+                                            
+                                        </span>
+                                    {% endfor %}
+                                </div>
+
+                            </article>
+
+
+                            <article class='panel' data-panel-type='email-wait' style='display: none'>
+                                <div class="
+                                    text-center
+                                ">
+                                    <p class='
+                                        mb-4
+                                    '>
+                                        Please check your email and click the link to verify your account,
+                                        If you don't see the email, check your spam folder.
+                                    </p>
+       
+                                    <p class='
+                                        mb-4
+                                        text-muted
+                                    '>
+                                        If you still don't see the email, you can resend it,
+                                        or you can use a different email.
+                                    </p>
+                                    
+                                    <!-- Buttons -->
+                                    <div class="
+                                        d-flex 
+                                        justify-content-lg-start
+                                        justify-content-center
+                                        flex-column
+                                        mb-5
+                                    ">
+                                        <!-- Email input -->
+                                        <div class="mb-4">
+                                            <input name="email" id="email" placeholder="you@StreamStage.co" class="
+                                                form-control 
+                                                form-control-lg
+                                                inp
+                                            ">
+                                        </div>
+                                        
+                                        <button 
+                                            type="resend" 
+                                            name="resend"
+                                            id="resend" 
+                                            class="
+                                                btn 
+                                                btn-primary
+                                                mb-3
+                                                btn-lg
+                                                loader-btn
+                                            "
+                                            loader-state='default'
+                                        >   
+                                            <span>
+                                                <div class='spinner-border' role='status'>
+                                                    <span class='visually-hidden'>Loading...</span>
+                                                </div>
+                                            </span>
+                                            <p>Resend</p>
+                                        </button>
+
+                                    </div>
                                 </div>
 
                             </article>
