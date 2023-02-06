@@ -69,7 +69,7 @@ INSTALLED_APPS = [
 
     # 3rd Party
     'crispy_forms',
-    'corsheaders',
+    # 'corsheaders',
     'crispy_bootstrap5',
     'rest_framework',
     'django_hosts',
@@ -82,7 +82,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+    # 'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -165,7 +165,8 @@ USE_TZ = True
 
 # Developer Content
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [str(BASE_DIR.joinpath('static'))]
+STATICFILES_DIRS = [str(BASE_DIR.joinpath('staticfiles'))]
+STATIC_ROOT = str(BASE_DIR.joinpath('static'))
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
