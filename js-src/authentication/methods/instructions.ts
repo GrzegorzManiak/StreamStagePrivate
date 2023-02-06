@@ -111,7 +111,7 @@ function handle_inputs(response: Response, panel: Panel) {
         'button[type="submit"]') as HTMLButtonElement;
 
 
-    submit_button.addEventListener('click', async (event) => {
+    submit_button.addEventListener('click', async () => {
         // -- Start the spinner
         const stop_spinner = attach(submit_button);
 
@@ -165,7 +165,7 @@ function handle_inputs(response: Response, panel: Panel) {
             name_input.value,
             email_input.value,
         );
-        
+
         // -- Check the status of the response
         if (register_attempt.status === 'error') {
             submit_button.disabled = false;

@@ -18,9 +18,6 @@ from .oauth.oauth import (
 )
 
 from .models import Member
-from django.contrib.auth import SESSION_KEY, BACKEND_SESSION_KEY, HASH_SESSION_KEY, _get_user_session_key, rotate_token
-from django.contrib.auth.signals import user_logged_in
-from django.middleware.csrf import rotate_token
 import secrets
 import time
 

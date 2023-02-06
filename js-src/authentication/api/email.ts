@@ -1,61 +1,25 @@
-import { register_url } from "..";
 import { csrf_token } from "../core/headers";
+import { email_recent, email_verify, email_resend } from "..";
 
-export async function register_with_oauth(
-    oauth_token: string,
-    password: string,
-    username: string,
-    email: string,
-) {
-    const response = await fetch(
-        register_url,
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `${oauth_token}`,
-                "X-CSRFToken": csrf_token,
-            },
-            body: JSON.stringify({
-                password,
-                username,
-                email,
-            }),
-        },
-    );
-    
-    try {
-        console.log(response);
-        const data = await response.json();
-        return data;
-    }
-    catch (error) {
-        return {
-            message: 'An unknown error has occured, ' + error.message,
-            status: 'error',
-        };
-    }
-}
-
-
-export const register = async (
-    password: string,
-    username: string,
-    email: string,
+export const resend = async (
+    resend_key: string,
+    email?: string,
 ) => {
+    let body: {
+        token: string,
+        email?: string,
+    } = { token: resend_key };
+    if (email) body['email'] = email;
+
     const response = await fetch(
-        register_url,
+        email_resend,
         {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "X-CSRFToken": csrf_token,
             },
-            body: JSON.stringify({
-                password,
-                username,
-                email,
-            }),
+            body: JSON.stringify(body),
         },
     );
 
@@ -66,6 +30,40 @@ export const register = async (
             status: data.status as string,
             code: response.status,
             message: data.message as string,
+        }
+    }
+    catch (error) {
+        return {
+            message: 'An unknown error has occured, ' + error.message,
+            code: response.status,
+            status: 'error',
+        };
+    }
+}
+
+export const recent = async (
+    token: string,
+) => {
+    const response = await fetch(
+        email_recent,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrf_token,
+            },
+            body: JSON.stringify({
+                token,
+            }),
+        },
+    );
+
+    try {
+        const data = await response.json();
+        return {
+            data: data,
+            status: 'success',
+            code: response.status,
         }
     }
     catch (error) {

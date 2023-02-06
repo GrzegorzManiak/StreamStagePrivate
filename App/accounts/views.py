@@ -1,20 +1,17 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout as dj_logout, login as dj_login, authenticate
 from django.urls import reverse_lazy, reverse
-from django.views.generic import View
+from django.contrib.auth.hashers import check_password, make_password
 from django.http.response import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework import status
-
-from django.contrib.auth.signals import user_logged_in
-from django.contrib.auth import update_session_auth_hash
-
 from accounts.create import create_account_oauth
-
 from .auth_lib import authenticate_key, generate_key
-from .oauth.oauth import format_providers, check_oauth_key, get_oauth_data
-
+from .oauth.oauth import format_providers, get_oauth_data
 from .models import Member
+from .email.email import send_email
+
+
 
 """
     This view is used to get a token
@@ -35,6 +32,12 @@ def login(request):
         'token': reverse('token'),
         'get_token': reverse('get_token'),
         'register': reverse('register'),
+        'login': reverse('login'),
+
+        # -- Email
+        'email_recent': reverse('recent'),
+        'email_verify': reverse('verify'),
+        'email_resend': reverse('resend'),
     }
 
     # -- Render the login page
@@ -43,6 +46,7 @@ def login(request):
         'login.html', 
         context=context
     )
+
 
 
 
@@ -91,9 +95,9 @@ def register_post(request):
         }, status=status.HTTP_400_BAD_REQUEST)
 
     # -- Get the email and password
-    email = request.data['email']
+    email = request.data['email'].lower()
     password = request.data['password']
-    username = request.data['username']
+    username = request.data['username'].lower()
 
     
     # -- If we have an oauth token
@@ -113,10 +117,17 @@ def register_post(request):
             'status': 'success'
         }, status=status.HTTP_201_CREATED)
 
+
+    # -- If we dont have an oauth token
+    else: return send_email(email, username, password)
+
         
 
 
-    
+"""
+    This is the get method for the register view
+    that is used to render the register page
+"""
 def register_get(request):
     # -- Make sure that the user isint already logged in
     if request.user.is_authenticated:
@@ -124,7 +135,27 @@ def register_get(request):
             reverse_lazy('member_profile', urlconf='accounts.urls')
         )
 
-        
+    # -- Construct the context
+    context = {
+        'providers': format_providers(),
+
+        'token': reverse('token'),
+        'get_token': reverse('get_token'),
+        'register': reverse('register'),
+        'login': reverse('login'),
+
+        # -- Email
+        'email_recent': reverse('recent'),
+        'email_verify': reverse('verify'),
+        'email_resend': reverse('resend'),
+    }
+
+    # -- Render the register page
+    return render(
+        request, 
+        'register.html', 
+        context=context
+    )
 
 
 
@@ -181,6 +212,7 @@ def validate_token(request):
     
 
 
+
 """
     This view is responsible for generating a token
     for the user depending on the requirements
@@ -202,13 +234,13 @@ def get_token(request):
         }, status=status.HTTP_400_BAD_REQUEST)
 
     # -- Get the email and password
-    emailorusername = request.data['emailorusername']
+    emailorusername = request.data['emailorusername'].lower()
     password = request.data['password']
 
 
     # -- Probably an email
     if emailorusername.find('@') != -1:
-        try: user = Member.objects.get(email=emailorusername)
+        try: user = Member.objects.get(email=emailorusername.lower())
         except Member.DoesNotExist:
             return JsonResponse({
                 'message': 'Invalid credentials',
@@ -217,16 +249,16 @@ def get_token(request):
 
     # -- Probably a username
     else:
-        try: user = Member.objects.get(username=emailorusername)
+        try: user = Member.objects.get(username=emailorusername.lower())
         except Member.DoesNotExist:
             return JsonResponse({
                 'message': 'Invalid credentials',
                 'status': 'error'
             }, status=status.HTTP_400_BAD_REQUEST)
 
-
+    print(password)
     # -- Authenticate the user
-    if authenticate(username=user.username, password=password) is None:
+    if not user.check_password(password):
         return JsonResponse({
             'message': 'Invalid credentials',
             'status': 'error'
@@ -263,6 +295,7 @@ def profile(request):
         'profile.html', 
         context=context
     )
+
 
 
 

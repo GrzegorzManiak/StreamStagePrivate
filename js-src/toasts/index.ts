@@ -2,9 +2,10 @@
 const toasts = document.getElementById('toasts');
 if (!toasts) throw new Error('No toasts element found');
 
+export type ToastType = 'error' | 'success' | 'warning';
 
 // -- Create a toast
-export const create_toast = (type: 'error' | 'success' | 'warning', title: string, message: string) => {
+export const create_toast = (type: ToastType, title: string, message: string) => {
     // -- Create the toast element
     const toast = document.createElement('div');
     toast.classList.add('toast', 'show', 'mb-2');

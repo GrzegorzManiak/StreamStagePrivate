@@ -32,3 +32,13 @@ export const hide_panel = (type: PanelType) => {
     const panel = get_panel(type);
     panel.element.style.display = 'none';
 }
+
+export const hide_all_panels_except = (type: PanelType) => {
+    panels.forEach((panel) => {
+        if (panel.type !== type) {
+            panel.element.style.display = 'none';
+        }
+    });
+
+    show_panel(type);
+}
