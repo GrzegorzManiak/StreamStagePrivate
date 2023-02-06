@@ -21,6 +21,6 @@ module.exports = {
     target: "web",
     output: {
         filename: '[name]_bin.js',
-        path: path.resolve(__dirname, '../App/static/js'),
+        path: path.resolve(__dirname, '../App/staticfiles/js'),
     },
 };

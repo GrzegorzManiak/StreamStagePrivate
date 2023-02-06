@@ -25,13 +25,18 @@ export async function register_with_oauth(
     );
     
     try {
-        console.log(response);
         const data = await response.json();
-        return data;
+        return {
+            data: data,
+            status: data.status as string,
+            code: response.status,
+            message: data.message as string,
+        }
     }
     catch (error) {
         return {
             message: 'An unknown error has occured, ' + error.message,
+            code: response.status,
             status: 'error',
         };
     }

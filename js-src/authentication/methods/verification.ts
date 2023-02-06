@@ -34,10 +34,7 @@ async function check_email_verification(
 
 
 export async function complete_verification(
-    current_panel: PanelType,
     email: string,
-    password: string,
-    username: string,
     response: any
 ) {    
     create_toast(response.status, 'Registration', response.message);

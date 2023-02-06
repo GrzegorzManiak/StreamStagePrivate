@@ -99,24 +99,38 @@ def register_post(request):
     password = request.data['password']
     username = request.data['username'].lower()
 
-    
-    # -- If we have an oauth token
+
+    # -- Check if an oauth token was provided
+    #    and if its email is verifiedq
     if oauth_token is not None:
-        new_member = create_account_oauth(oauth_token, email, username, password)
-        
-        # -- If the account was created successfully
-        if isinstance(new_member, JsonResponse):
-            return new_member
 
-        # -- Generate the token for the user
-        token = generate_key(new_member)
+        # -- Get the oauth data
+        oauth_data = get_oauth_data(oauth_token)
 
-        return JsonResponse({
-            'message': 'Account created successfully',
-            'token': token,
-            'status': 'success'
-        }, status=status.HTTP_201_CREATED)
+        # -- Check if the email is verified
+        if oauth_data['data']['email_verified'] is False:
+            return send_email(email, username, password, oauth_token)
 
+        else:
+            # -- Get the email from the oauth data
+            email = oauth_data['data']['email'].lower()
+
+            # -- Get the oauth data 
+            new_member = create_account_oauth(oauth_token, email, username, password)
+            
+            # -- If the account was not created successfully
+            if isinstance(new_member, JsonResponse):
+                return new_member
+
+            # -- Generate the token for the user
+            token = generate_key(new_member)
+
+            return JsonResponse({
+                'message': 'Account created successfully',
+                'token': token,
+                'status': 'success'
+            }, status=status.HTTP_201_CREATED)
+    
 
     # -- If we dont have an oauth token
     else: return send_email(email, username, password)
@@ -277,7 +291,7 @@ def get_token(request):
 
 @api_view(['GET'])
 def profile(request):
-    
+
     # -- Make sure that the user is logged in
     if not request.user.is_authenticated:
         return redirect('login')

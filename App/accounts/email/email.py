@@ -5,6 +5,7 @@
 
 # -- Imports
 from StreamStage.mail import send_email as sm
+from accounts.oauth.oauth import link_oauth_account
 from django.http.response import JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
@@ -66,7 +67,7 @@ def email_taken(email) -> bool:
     of the user and storing them in a temporary database
     until they are verified.
 """
-def send_email(email, username, password):
+def send_email(email, username, password, oauth_token=None):
     email = email.lower()
     username = username.lower()
 
@@ -99,6 +100,7 @@ def send_email(email, username, password):
         'created': time.time(),
         'verify_token': verify_token,
         'resend_key': resend_key,
+        'oauth_token': oauth_token,
     }
     
 
@@ -237,16 +239,30 @@ def verify(key):
 
         # -- Remove the user from the temporary database
         token = temp_users[key]['verify_token']
+
+        # -- Check if the user has an oauth token
+        oauth_token = temp_users[key]['oauth_token']
+
         del resend_keys[temp_users[key]['resend_key']]
         del temp_users[key]
         
         try: 
-            Member.objects.create(
+            member = Member.objects.create(
                 email=email,
                 username=username,
                 password=make_password(password),
             )
 
+            # -- If there is a oauth token, link the account
+            if oauth_token is not None:
+                link = link_oauth_account(member, oauth_token)
+
+                if link == False:
+                    # -- Remove the account
+                    member.delete()
+                    return (False, 'Failed to link account')
+
+            
             # -- Add the user to the recently verified database
             recently_verified.append(token)
 

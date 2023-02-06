@@ -24,7 +24,7 @@ class GoogleUser():
         return {
             'id': self.id,
             'email': self.email,
-            'verified_email': self.verified_email,
+            'email_verified': self.verified_email,
             'name': self.name,
             'given_name': self.given_name,
             'picture': self.picture,
