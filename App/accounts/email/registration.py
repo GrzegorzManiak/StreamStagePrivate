@@ -115,7 +115,7 @@ def send_email(email, username, password, oauth_token=None):
         sm(
             email,
             'Verify your email',
-            f'Click on this link to verify your email: https://me.streamstage.co/verify?token={key}'
+            f'Click on this link to verify your email: https://me.streamstage.co/email/reg/verify?token={key}'
         )
 
         return JsonResponse({
@@ -195,7 +195,7 @@ def resend(resend_key, new_email=None):
         sm(
             temp_users[new_key]['email'],
             'Verify your email',
-            f'Click on this link to verify your email: https://me.streamstage.co/verify?token={new_key}'
+            f'Click on this link to verify your email: https://me.streamstage.co/email/reg/verify?token={new_key}'
         )
 
         return JsonResponse({

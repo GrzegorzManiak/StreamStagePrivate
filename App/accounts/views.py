@@ -9,7 +9,7 @@ from accounts.create import create_account_oauth
 from .auth_lib import authenticate_key, generate_key
 from .oauth.oauth import format_providers, get_oauth_data
 from .models import Member
-from .email.email import send_email
+from .email import send_email
 
 
 
@@ -35,9 +35,9 @@ def login(request):
         'login': reverse('login'),
 
         # -- Email
-        'email_recent': reverse('recent'),
-        'email_verify': reverse('verify'),
-        'email_resend': reverse('resend'),
+        'email_recent': reverse('reg_recent', urlconf='accounts.email.urls'),
+        'email_verify': reverse('reg_verify', urlconf='accounts.email.urls'),
+        'email_resend': reverse('reg_resend', urlconf='accounts.email.urls'),
     }
 
     # -- Render the login page
@@ -159,9 +159,9 @@ def register_get(request):
         'login': reverse('login'),
 
         # -- Email
-        'email_recent': reverse('recent'),
-        'email_verify': reverse('verify'),
-        'email_resend': reverse('resend'),
+        'email_recent': reverse('reg_recent', urlconf='accounts.email.urls'),
+        'email_verify': reverse('reg_verify', urlconf='accounts.email.urls'),
+        'email_resend': reverse('reg_resend', urlconf='accounts.email.urls'),
     }
 
     # -- Render the register page
