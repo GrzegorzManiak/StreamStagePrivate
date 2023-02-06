@@ -4,6 +4,7 @@ from rest_framework import status
 from .email import verify, recent, resend, temp_users
 from django.shortcuts import render, redirect
 
+
 """
     This view is responsible verifying the user's email
     token

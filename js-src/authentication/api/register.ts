@@ -1,5 +1,5 @@
 import { register_url } from "..";
-import { csrf_token } from "../core/headers";
+import { csrf_token } from "../";
 
 export async function register_with_oauth(
     oauth_token: string,

@@ -9,29 +9,16 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.tsx?$/,
-                loader: 'ts-loader',
-                exclude: /node_modules|\.d\.ts$/
+              test: /\.ts$/,
+              exclude: /node_modules/,
+              loader: "babel-loader",
             },
-            {
-                test: /\.d\.ts$/,
-                loader: 'ignore-loader'
-            },         
-            {
-                test: /\.m?js$/,
-                exclude: /(node_modules|bower_components)/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: ['@babel/preset-env']
-                    }
-                }
-            }  
-        ],
+          ],
     },
     resolve: {
         extensions: [ '.ts', '.js' ]
     },
+    target: "web",
     output: {
         filename: '[name]_bin.js',
         path: path.resolve(__dirname, '../App/static/js'),

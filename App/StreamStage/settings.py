@@ -48,6 +48,9 @@ DEFAULT_HOST = 'www'
 ROOT_HOSTCONF = 'StreamStage.hosts'
 ROOT_URLCONF = 'StreamStage.urls'
 
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = None
+CSRF_COOKIE_SAMESITE = None
 
 # Application definition
 
@@ -84,6 +87,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django_hosts.middleware.HostsResponseMiddleware',
 ]
 

@@ -1,5 +1,5 @@
 import { token_url, get_token_url } from "..";
-import { csrf_token } from "../core/headers";
+import { csrf_token } from "../";
 
 export const login = async (
     emailorusername: string,

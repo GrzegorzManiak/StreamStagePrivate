@@ -1,5 +1,5 @@
-import { csrf_token } from "../core/headers";
-import { email_recent, email_verify, email_resend } from "..";
+import { csrf_token } from "../";
+import { email_recent, email_resend } from "..";
 
 export const resend = async (
     resend_key: string,

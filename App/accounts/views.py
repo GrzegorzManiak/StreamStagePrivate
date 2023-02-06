@@ -256,7 +256,6 @@ def get_token(request):
                 'status': 'error'
             }, status=status.HTTP_400_BAD_REQUEST)
 
-    print(password)
     # -- Authenticate the user
     if not user.check_password(password):
         return JsonResponse({
@@ -278,8 +277,7 @@ def get_token(request):
 
 @api_view(['GET'])
 def profile(request):
-    print(request.user)
-
+    
     # -- Make sure that the user is logged in
     if not request.user.is_authenticated:
         return redirect('login')
