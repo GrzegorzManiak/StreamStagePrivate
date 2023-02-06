@@ -21,5 +21,5 @@ class EventShowingAdmin(admin.ModelAdmin):
 
 @admin.register(EventReview)
 class EventReviewAdmin(admin.ModelAdmin):
-    list_display = ['review_id', 'author', 'review_title', 'review_text']
+    list_display = ['review_id', 'author', 'title', 'body']
 

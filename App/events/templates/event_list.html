@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags%}
+
+{% block metadescription %}
+All Events
+{% endblock %}
+{% block title %}
+Events | StreamStage
+{% endblock title %}
+
+{% block content %}
+<div>
+    <h1>All Events</h1>
+
+    {% for event in events %}
+        <p>{{ event.title }}</p>
+        <p>{{ event.description }}</p>
+        <p>{{ event.streamer }}</p>
+        <p>{{ event.categories }}</p>
+        <p>{{ event.showings }}</p>
+        <hr/>
+
+    {% endfor %}
+</div>
+{% endblock %}

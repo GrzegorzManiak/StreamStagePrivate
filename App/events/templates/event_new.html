@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags%}
+
+{% block metadescription %}
+Adding an Event
+{% endblock %}
+{% block title %}
+Add Event | StreamStage
+{% endblock title %}
+
+
+{% block content %}
+<div class="container">
+    <h1 class="my-4 text-center">Add Event</h1>
+    <div class="d-flex content_center">
+        <form class="form-layout" action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="d-flex content_center my-4">
+                <button class="btn btn-success ml-2" type="submit"><i class="fa fa-plus"></i>&emsp;Add Event</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
