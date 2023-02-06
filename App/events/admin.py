@@ -9,7 +9,7 @@ class EventAdmin(admin.ModelAdmin):
 
 @admin.register(EventMedia)
 class EventMediaAdmin(admin.ModelAdmin):
-    list_display = [ 'picture', 'description' ]
+    list_display = [ 'media', 'description' ]
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):

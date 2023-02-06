@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from .validation import validate_event_media, generate_file_media
 import uuid
 
 class Category(models.Model):
@@ -15,8 +16,14 @@ class Category(models.Model):
         return self.name
 
 class EventMedia(models.Model):
-    picture = models.ImageField("Photograph", upload_to="events", null=True, editable=True)
-    description = models.TextField("Photograph Description", max_length=300, blank=True, null=False)
+    #picture = models.ImageField("Photograph", upload_to="events", null=True, editable=True)
+    media = models.FileField("Media", upload_to=generate_file_media, null=True, editable=True, validators=[validate_event_media])
+    description = models.TextField("Media Description", max_length=300, blank=True, null=False)
+    content_type = models.TextField("Content Type", editable=False)
+
+    def save(self, *args, **kwargs):
+        self.content_type = self.media.path.split("")
+        super(EventMedia, self).save(*args, **kwargs)
     
     class Meta:
         verbose_name_plural = 'Event Media'
@@ -30,6 +37,9 @@ class EventShowing(models.Model):
 
     def __str__(self):
         return self.location
+
+class TicketType(models.Model):
+    event_id = models.AutoField
 
 # when the 'delete event' feature is implemented - all EventMedia objects will need to be
 # deleted by code.
@@ -49,4 +59,3 @@ class Event(models.Model):
     
     def __str__(self):
         return self.title
-    
