@@ -37,6 +37,7 @@ ALLOWED_HOSTS = [
 
 CSRF_TRUSTED_ORIGINS = [
     'https://me.streamstage.co',
+    'https://streamstage.co',
 ]
 
 CORS_ALLOWED_ORIGIN_REGEXES = [

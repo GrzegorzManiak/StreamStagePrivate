@@ -11,6 +11,8 @@ class Member(AbstractUser):
     username = models.CharField("Username", max_length=30, unique=True)
     email = models.EmailField("Email", unique=True)
     profile_pic = models.ImageField("Profile Photo", upload_to='member', blank=True)
+    description = models.TextField("Description", blank=True)
+
     # Access Level for member. 0 for basic. See list of access level codes for other levels.
     access_level = models.SmallIntegerField("Access Level", default=0)
     # Maximum parallel devices for a Member to watch on
