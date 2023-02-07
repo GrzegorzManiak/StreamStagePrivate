@@ -7,8 +7,9 @@ from .views import (
     login,
     register,
     logout,
-    profile
 )
+
+from .profile.views import profile
 
 urlpatterns = [
     # path('signup/', MemberSignUpView.as_view(), name='signup'),

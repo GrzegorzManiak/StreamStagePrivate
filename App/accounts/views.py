@@ -34,6 +34,9 @@ def login(request):
         'register': reverse('register'),
         'login': reverse('login'),
 
+        # -- Security
+        'has_tfa': False,
+        
         # -- Email
         'email_recent': reverse('reg_recent', urlconf='accounts.email.urls'),
         'email_verify': reverse('reg_verify', urlconf='accounts.email.urls'),
@@ -285,29 +288,6 @@ def get_token(request):
         'token': token,
         'status': 'success'
     }, status=status.HTTP_200_OK)
-
-
-
-
-@api_view(['GET'])
-def profile(request):
-
-    # -- Make sure that the user is logged in
-    if not request.user.is_authenticated:
-        return redirect('login')
-
-    # -- Construct the context
-    context = {
-        'user': request.user,
-    }
-
-    # -- Render the profile page
-    return render(
-        request, 
-        'profile.html', 
-        context=context
-    )
-
 
 
 

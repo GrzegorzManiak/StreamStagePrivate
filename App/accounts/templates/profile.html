@@ -11,21 +11,30 @@
 
 {% block head %}
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
 {% endblock %}
 
 {% block content %}
-    <span id='config'
+    <span 
+        id='config'
         data-admin='{{ user.is_staff }}'
         data-username='{{ user.username }}'
         data-userid='{{ user.id }}'
         data-useremail='{{ user.mask_email }}'
-        data-userfirst='{{ user.first_name }}'
-        data-userlast='{{ user.last_name }}'
+        data-userfirst='data:{{ user.first_name }}'
+        data-userlast='data:{{ user.last_name }}'
         data-access-level='{{ user.access_level }}'
-        data-profile-picture='{{ user.profile_picture }}'
-    ></span>
+        data-profile-picture='data:{{ user.profile_picture }}'
 
-    <div id='toasts'></div>
+        data-change-username='{{api.change_username}}'
+        data-change-description='{{api.change_description}}'
+        data-csrf-token='{{ csrf_token }}'
+
+        data-send-verification='{{ api.send_verification }}'
+        data-resend-verification='{{ api.resend_verification }}'
+        data-remove-verification='{{ api.remove_verification }}'
+        data-recent-verification='{{ api.recent_verification }}'
+    ></span>
 
     <div class='
         main-container
@@ -40,7 +49,6 @@
             col-sm-12
             col-xs-12
             col-lg-3
-            h-100
         '>
             <!-- 
                 Header - General
@@ -65,7 +73,7 @@
             -->
             <div 
                 data-pod-status='active'
-                data-pod='user'
+                data-pod='profile'
             class='
                 side-panel-pod
                 text-light row d-flex
@@ -500,14 +508,298 @@
         <!-- 3/4 Of the page-->
         <div class='
             main-panel
-            container
             col-md-9
             col-sm-12
             col-xs-12
             col-lg-9
-            h-100
         '>
-            <p>Main Panel</p>
+            
+            <div class = '
+                mt-4
+                d-flex
+                justify-content-center
+                align-items-center
+            '>
+
+            <div class = '
+                size-limiter
+            '>
+                <div class = '
+                    rounded
+                '>
+                    <div class = '
+                        row 
+                        g-0
+                        main-content
+                    '>
+                        <main class="
+                            col-12
+                            d-flex 
+                            align-items-center
+                        ">
+                            <div class = "
+                                card-body 
+                                p-5
+                                text-light
+                                smoother
+                            ">
+                                <!--
+                                    Security Panel
+                                -->
+                                <article 
+                                    class='panel' 
+                                    data-panel-type='security'
+                                    data-panel-status=''
+                                >
+                                    <!-- 
+                                        The security panel will require 
+                                        the user to click a link in their
+                                        email to verify their account.
+
+                                        or if they have TFA enabled, they
+                                        will be required to enter a code
+                                        from their authenticator app.
+                                    -->
+                                    <div class="
+                                        mb-5
+                                        justify-content-start
+                                    ">
+                                        <!-- Header -->
+                                        <h1 class="
+                                            fw-bold 
+                                        ">Security</h1>
+
+                                        <!-- Descriptiopn -->
+                                        <p class="
+                                            text-muted
+                                        ">
+                                            Here you can view your security settings, manage linked accounts and change your password.
+                                        </p>
+                                    </div>
+
+
+                                    <!-- 
+                                        2FA
+                                    -->
+                                    <div class="
+                                        mb-5
+                                        justify-content-start
+                                        text-center
+                                    ">
+                                        <!-- Descriptiopn -->
+                                        <p class="">
+                                            But, before you can make any changes,
+                                            {% if has_tfa %}
+                                                you must enter the code from your authenticator app.
+                                            {% else %}
+                                                you must click the link sent to {{ user.mask_email }}.
+                                            {% endif %}
+                                        </p>
+
+                                    </div>
+
+                                    <!-- Buttons -->
+                                    <div class="
+                                        d-flex 
+                                        justify-content-lg-start
+                                        justify-content-center
+                                        flex-column
+                                    ">   
+                                            
+                                        <button 
+                                            type="submit" 
+                                            id="send-verification-email" 
+                                            class="
+                                                btn 
+                                                btn-primary
+                                                mb-3
+                                                btn-lg
+                                                loader-btn
+                                            "
+                                            loader-state='default'
+                                        >   
+                                            <span>
+                                                <div class='spinner-border' role='status'>
+                                                    <span class='visually-hidden'>Loading...</span>
+                                                </div>
+                                            </span>
+                                            <p>Send verification email</p>
+                                        </button>
+
+                                    </div>
+
+                                    
+                                </article>
+
+
+                                <!--
+                                    Profile Panel
+                                -->
+                                <article 
+                                    class='panel' 
+                                    data-panel-type='profile'
+                                    data-panel-status='hidden'
+                                >
+                                    <!-- Header -->
+                                    <div class="
+                                        mb-5
+                                        justify-content-start
+                                    ">
+                                        <!-- Header -->
+                                        <h1 class="
+                                            fw-bold 
+                                        ">Welcome, {{ user.username }}!</h1>
+
+                                        <!-- Descriptiopn -->
+                                        <p class="
+                                            text-muted
+                                        ">
+                                            Here you can view your profile, edit your details, and change your password.
+                                        </p>
+                                    </div>
+
+                                    <!-- Profile picture -->
+                                    <div class="
+                                        mb-5
+                                        d-flex
+                                        justify-content-center
+                                    ">
+                                        <img 
+                                            src="{{ user.profile_picture }}" 
+                                            alt="Profile picture" 
+                                            class="
+                                                profile-picture
+                                            "
+                                        >
+                                    </div>
+                                    
+
+                                    
+                                    <!-- Username input -->
+                                    <div class="mb-4">
+                                        <label class="form-label" for="username">Username</label>
+                                        <input 
+                                            name="username" 
+                                            id="username" 
+                                            placeholder="Sick name 13" 
+                                            value="{{ user.username }}"
+                                        class="
+                                            form-control 
+                                            form-control-lg
+                                            inp
+                                        ">
+                                    </div>
+
+
+                                    <!-- First and lastname -->
+                                    <div
+                                        class="
+                                            d-flex
+                                            gap-4
+                                        "
+                                    >
+                                        <!-- Firstname -->
+                                        <div class="mb-4">
+                                            <label class="form-label" for="fname">First name</label>
+                                            <input 
+                                                name="fname" 
+                                                id="fname" 
+                                                placeholder="Joe" 
+                                                value="{{ user.first_name }}"
+                                            class="
+                                                form-control 
+                                                form-control-lg
+                                                inp
+                                            ">
+                                        </div>
+
+                                        <!-- Lastname -->
+                                        <div class="mb-4">
+                                            <label class="form-label" for="lname">Last name</label>
+                                            <input 
+                                                name="lname" 
+                                                id="lname" 
+                                                placeholder="Fungus"
+                                                value="{{ user.last_name }}"
+                                            class="
+                                                form-control 
+                                                form-control-lg
+                                                inp
+                                            ">
+                                        </div>
+                                    </div>
+
+
+                                    <!-- Description -->
+                                    <div class="mb-4">
+                                        <label class="form-label" for="bio">Bio</label>
+                                        <textarea 
+                                            name="bio" 
+                                            id="bio" 
+                                            cols="40" rows="5"
+                                            placeholder="I like to eat cheese"
+                                            value="{{ user.description }}"
+                                            class="
+                                                form-control 
+                                                form-control-lg
+                                                inp
+                                            "> 
+                                        </textarea>
+                                    </div>
+
+
+                                    <!-- Save button -->
+                                    <div class="
+                                        text-center
+                                    ">
+                                        <p class='
+                                            mb-4
+                                            fs-5
+                                        '>
+                                            {{ message }}
+                                        </p>
+        
+
+                                        <!-- Buttons -->
+                                        <div class="
+                                            d-flex 
+                                            justify-content-lg-start
+                                            justify-content-center
+                                            flex-column
+                                        ">   
+                                                
+                                            <button 
+                                                type="submit" 
+                                                id="save-btn" 
+                                                class="
+                                                    btn 
+                                                    btn-primary
+                                                    mb-3
+                                                    btn-lg
+                                                    loader-btn
+                                                "
+                                                loader-state='default'
+                                            >   
+                                                <span>
+                                                    <div class='spinner-border' role='status'>
+                                                        <span class='visually-hidden'>Loading...</span>
+                                                    </div>
+                                                </span>
+                                                <p>Save</p>
+                                            </button>
+
+                                        </div>
+                                    </div>
+
+                            
+                                </article>
+
+                            </div>
+                        </main>
+                    </div>
+                </div>
+            </div>
+            </div>
         </div>
       </div>
 

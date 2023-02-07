@@ -1,4 +1,3 @@
-
 import { create_toast } from '../toasts';
 import { PageType } from './index.d';
 import { instruction_handler } from './methods/instructions';

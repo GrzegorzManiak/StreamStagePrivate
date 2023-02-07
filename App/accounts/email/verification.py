@@ -181,14 +181,13 @@ def send_email(
         return (False, 'Invalid key')
 
     # -- Create the message
-    message = f""" Your link is https://me.streamstage.com/verify?token={key}"""
+    message = f""" Your link is https://me.streamstage.co/email/verify?token={key['key']}"""
 
-    
     # -- Send the email
     if test: return (True, message)
     else: 
         try:
-            sm.send_email(
+            sm(
                 key['user'].email,
                 'Verification Link',
                 message,

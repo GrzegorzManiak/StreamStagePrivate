@@ -5,6 +5,7 @@ module.exports = {
         settings: './settings/index.ts',
         authentication: './authentication/index.ts',
         toast: './toasts/index.ts',
+        click_handler: './click_handler/index.ts',
     },
     module: {
         rules: [
