@@ -46,7 +46,7 @@ recently_verified = []
     a touple, the first item is the key, the second item
     is the resend key
 """
-def add_key(user: Member, callback) -> tuple[str, str, str]:
+def add_key(user: Member, callback, ttl = REMOVE_AFTER) -> tuple[str, str, str]:
     # -- Create the keys
     key = secrets.token_urlsafe(32)
     resend_key = secrets.token_urlsafe(32)
@@ -59,6 +59,7 @@ def add_key(user: Member, callback) -> tuple[str, str, str]:
         'created': time.time(),
         'callback': callback,
         'verify_key': verify_key,
+        'ttl': ttl,
     }
 
     # -- Add the resend key to the resend key store
@@ -80,6 +81,18 @@ def get_key(key: str) -> dict:
     if key in temp_keys_store:
         return temp_keys_store[key]
     return None
+
+
+
+"""
+    This function expires the key
+"""
+def expire_key(key: str) -> bool:
+    if key in temp_keys_store:
+        temp_keys_store[key]['created'] = 0
+        return True
+    return False
+
 
 
 """
@@ -127,7 +140,7 @@ def remove_key(key: str) -> bool:
     This function is responsible for verifying the email
     code 
 """
-def verify_key(key, ra = REMOVE_AFTER) -> tuple[bool, str]:
+def verify_key(key) -> tuple[bool, str]:
     # -- Get the key from the store
     key = get_key(key)
 
@@ -136,9 +149,9 @@ def verify_key(key, ra = REMOVE_AFTER) -> tuple[bool, str]:
         return (False, 'Invalid key')
 
     # -- Check if the key has expired
-    if time.time() - key['created'] > ra:
+    if time.time() - key['created'] > key['ttl']:
         remove_key(key['key'])
-        return (False, 'Key has expired')
+        return (False, 'expired')
 
     # -- Try to call the callback
     try:
@@ -151,6 +164,7 @@ def verify_key(key, ra = REMOVE_AFTER) -> tuple[bool, str]:
     recently_verified.append({
         'key': key['verify_key'],
         'created': time.time(),
+        'ttl': key['ttl'],
     })
     remove_key(key['key'])
     return (True, 'Sick! You can now return to your previous page')
@@ -207,10 +221,10 @@ def regenerate_key(resend_key: str) -> dict or None:
     if key is None: return None
 
     # -- Make sure the key hasn't expired
-    if time.time() - key['created'] > REMOVE_AFTER: return None
+    if time.time() - key['created'] > key['ttl']: return None
 
     # -- Add the new key to the store
-    new_key = add_key(key['user'], key['callback'])
+    new_key = add_key(key['user'], key['callback'], key['ttl'])
 
     # -- Remove the old key from the store
     remove_key(key['key'])
@@ -226,8 +240,10 @@ def regenerate_key(resend_key: str) -> dict or None:
 """
 def check_if_verified_recently(verify_key: str) -> bool:
     for i in range(len(recently_verified)):
+        key = recently_verified[i]
+        
         if recently_verified[i]['key'] == verify_key:
-            if time.time() - recently_verified[i]['created'] < REMOVE_AFTER:
+            if time.time() - recently_verified[i]['created'] < recently_verified[i]['ttl']:
                 return True
             else:
                 del recently_verified[i]

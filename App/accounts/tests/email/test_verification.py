@@ -7,6 +7,7 @@ from accounts.email.verification import (
     resend_keys,
     add_key,
     get_key,
+    expire_key,
     remove_key,
     verify_key,
     send_email,
@@ -223,3 +224,14 @@ class EmailVerificationTest(TestCase):
         response = check_if_verified_recently(key[2])
         self.assertFalse(response)
 
+
+    def test_expire_key(self):
+        def callback():
+            pass
+        
+        key = add_key(self.member_1, callback)
+        expire_key(key[0])
+
+        self.assertFalse(verify_key(key[0])[0])
+
+    
