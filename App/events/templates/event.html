@@ -55,13 +55,10 @@
             <div>
                 <h1 class="my-4">REVIEWS</h1>
 
-                <!-- {% if event in EventReview.event %} -->
-                    {% for review in reviews %}
-                        <p>{{ review.title }}</p>
-                        <p>{{ review.body }}</p>
-
-                    {% endfor %}
-                <!-- {% endif %} -->
+                {% for review in reviews %}
+                    <p>{{ review.title }}</p>
+                    <p>{{ review.body }}</p>
+                {% endfor %}
             </div>
         </div>
     </div>

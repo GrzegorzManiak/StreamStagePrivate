@@ -28,7 +28,7 @@ def view_event(request, event_id):
     return render(request, 'event.html', {
         'event': event, 
         'cover_pic': cover_pic,
-        'reviews' : reviews,
+        'reviews' : reviews
         })
 
 def get_all_events(request):
