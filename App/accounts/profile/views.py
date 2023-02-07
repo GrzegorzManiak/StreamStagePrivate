@@ -17,52 +17,8 @@ from accounts.email.verification import (
     send_email
 )
 
-
 @api_view(['POST'])
-def change_username_view(request):
-    # -- Make sure the user is logged in
-    if request.user.is_authenticated is False:
-        return JsonResponse({
-            'status': 'error',
-            'message': 'You are not logged in',
-        }, status=status.HTTP_401_UNAUTHORIZED)
-
-
-    # -- Get the user
-    user = Member.objects.filter(id=request.user.id).first()
-    if user is None:
-        return JsonResponse({
-            'status': 'error',
-            'message': 'You are not logged in',
-        }, status=status.HTTP_401_UNAUTHORIZED)
-
-    # -- Get the data
-    data = request.data
-    if 'username' not in data:
-        return JsonResponse({
-            'status': 'error',
-            'message': 'Missing username',
-        }, status=status.HTTP_400_BAD_REQUEST)
-
-
-    # -- Change the username
-    res = change_username(user, data['username'])
-
-    if res[0] is False:
-        return JsonResponse({
-            'status': 'error',
-            'message': res[1],
-        }, status=status.HTTP_400_BAD_REQUEST)
-
-    return JsonResponse({
-        'status': 'success',
-        'message': 'Username changed',
-    }, status=status.HTTP_200_OK)
-
-
-
-@api_view(['POST'])
-def change_description_view(request):
+def change_details(request):
     # -- Make sure the user is logged in
     if request.user.is_authenticated is False:
         return JsonResponse({
@@ -88,18 +44,26 @@ def change_description_view(request):
         }, status=status.HTTP_400_BAD_REQUEST)
 
 
-    # -- Change the description
-    res = change_description(user, data['description'])
+    if data['description'] is not None:
+        res = change_description(user, data['description'])
+        if res[0] is False:
+            return JsonResponse({
+                'status': 'error',
+                'message': res[1],
+            }, status=status.HTTP_400_BAD_REQUEST)
 
-    if res[0] is False:
-        return JsonResponse({
-            'status': 'error',
-            'message': res[1],
-        }, status=status.HTTP_400_BAD_REQUEST)
+    if data['username'] is not None:
+        res = change_username(user, data['username'])
+        if res[0] is False:
+            return JsonResponse({
+                'status': 'error',
+                'message': res[1],
+            }, status=status.HTTP_400_BAD_REQUEST)
+
 
     return JsonResponse({
         'status': 'success',
-        'message': 'Description changed',
+        'message': 'Details changed',
     }, status=status.HTTP_200_OK)
 
 
@@ -116,8 +80,7 @@ def profile(request):
     context = {
         'user': request.user,
         'api': {
-            'change_username': "profile" + reverse('change_username', urlconf='accounts.profile.urls'),
-            'change_description':"profile" + reverse('change_description', urlconf='accounts.profile.urls'),
+            'change_details': "profile" + reverse('change_details', urlconf='accounts.profile.urls'),
 
             'send_verification': "profile" + reverse('send_verification', urlconf='accounts.profile.urls'),
             'resend_verification': "email" + reverse('resend_key', urlconf='accounts.email.urls'),

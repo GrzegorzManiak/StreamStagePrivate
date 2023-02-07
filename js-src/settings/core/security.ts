@@ -40,39 +40,42 @@ async function click_handler(stop: () => void, type: 'email' | 'tfa') {
         resend_key, 
         verify_key 
     } = (res as VerifyAccessSuccess).data;
+    
+    // -- Check if the email has been verified
+    const verified = await check_email_verification(verify_key);
+    if (verified === false) return stop();
 
-
-    console.log(access_key, resend_key, verify_key);
-
-    await check_email_verification(verify_key);
-    stop();
+    // -- Continue to show the panel
 }
 
 // -- This function will run every x seconds
 //    to check if the email has been verified
 async function check_email_verification(
     verify_token: string,
-) {
-    const int = setInterval(async () => {
-        const response = await recent(verify_token);
-
-        // -- If the email has been verified
-        if (response.code === 404) {} // -- Do nothing
-        else if (response.code === 200) {
-            // -- Login the user
-            create_toast('success', 'Congratulations!', 'Your email has been verified, you\'ll be given access to your account in a few seconds.');
+): Promise<boolean> {
+    return new Promise(async (resolve, reject) => {
+        const int = setInterval(async () => {
+            const response = await recent(verify_token);
+    
+            // -- If the email has been verified
+            if (response.code === 404) {} // -- Do nothing
+            else if (response.code === 200) {
+                // -- Login the user
+                create_toast('success', 'Congratulations!', 'Your email has been verified, you\'ll be given access to your account in a few seconds.');
+                clearInterval(int);
+                resolve(true);
+            }
+            else {
+                // -- Show the error
+                create_toast('error', 'Error', response.message);
+                clearInterval(int);
+                reject(false);
+            }
+        }, 3000);
+    
+        // -- Stop the interval after 15 minutes
+        setTimeout(() => {
             clearInterval(int);
-        }
-        else {
-            // -- Show the error
-            create_toast('error', 'Error', response.message);
-        }
-    }, 3000);
-
-    // -- Stop the interval after 15 minutes
-    setTimeout(() => {
-        clearInterval(int);
-    }, 15 * 60 * 1000);
-
-    return int;
+        }, 15 * 60 * 1000);
+    });
 }

@@ -32,8 +32,7 @@ export const configuration = {
     userlast: get_or_error<string>(config, 'data-userlast'),
     access_level: get_or_error<number>(config, 'data-access-level'),
     profile_picture: get_or_error<string>(config, 'data-profile-picture'),
-    change_username: get_or_error<string>(config, 'data-change-username'),
-    change_description: get_or_error<string>(config, 'data-change-description'),
+    change_details: get_or_error<string>(config, 'data-change-details'),
     csrf_token: get_or_error<string>(config, 'data-csrf-token'),
 
     send_verification: get_or_error<string>(config, 'data-send-verification'),
