@@ -1,19 +1,518 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
 
-{% block title %}StageStream Profile{% endblock title %}
+{% block metadescription %}
+    {{ user.username }} control panel
+{% endblock %}
 
+{% block title %}
+    {{ user.username }} - Control Panel
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
 
 {% block content %}
-<h1>Profile Page</h1>
+    <span id='config'
+        data-admin='{{ user.is_staff }}'
+        data-username='{{ user.username }}'
+        data-userid='{{ user.id }}'
+        data-useremail='{{ user.mask_email }}'
+        data-userfirst='{{ user.first_name }}'
+        data-userlast='{{ user.last_name }}'
+        data-access-level='{{ user.access_level }}'
+        data-profile-picture='{{ user.profile_picture }}'
+    ></span>
 
-<a>Username: {{ user.username }}</a>
-<br>
-<a>Email: {{ user.email }}</a>
-<br>
-<a>Logout</a>
-<a href="{% url 'logout' %}">Logout</a>
+    <div id='toasts'></div>
 
-<a>Linked Accounts</a>
-<br>
+    <div class='
+        main-container
+        row
+    '>
+        <!-- 1/4 Of the page-->
+        <div class='
+            side-panel
+            container
+            text-light
+            col-md-3
+            col-sm-12
+            col-xs-12
+            col-lg-3
+            h-100
+        '>
+            <!-- 
+                Header - General
+            -->
+            <div class='
+                side-panel-header
+                pt-5
+                m-2
+            '>
+                <p class='
+                    side-panel-header-text
+                    mb-0
+                    pt-4
+                '>
+                    General
+                </p>
+            </div>
 
+
+            <!-- 
+                Pod - User
+            -->
+            <div 
+                data-pod-status='active'
+                data-pod='user'
+            class='
+                side-panel-pod
+                text-light row d-flex
+                align-items-center
+                justify-content-start
+            '>
+                <!-- Icon -->
+                <div 
+                    class='
+                        side-panel-pod-icon
+                        col-2 d-flex
+                        align-items-center
+                        justify-content-center
+                    '
+                >
+                    <i class="fa-solid text-justify accordion
+                        fa-user
+                    "></i>
+                </div>
+
+                <!-- Text -->
+                <div class='side-panel-pod-text col-7'>
+                    <p class='side-panel-pod-text-text m-0 mb-0'>
+                        Profile
+                    </p>
+                </div>
+            </div>
+            <!-- 
+                End of Pod - User
+            -->
+
+
+            <!-- 
+                Pod - Security
+            -->
+            <div 
+                data-pod-status=''
+                data-pod='security'
+            class='
+                side-panel-pod
+                text-light row d-flex
+                align-items-center
+                justify-content-start
+            '>
+                <!-- Icon -->
+                <div 
+                    class='
+                        side-panel-pod-icon
+                        col-2 d-flex
+                        align-items-center
+                        justify-content-center
+                    '
+                >
+                    <i class="fa-solid text-justify accordion
+                        fa-shield-check
+                    "></i>
+                </div>
+
+                <!-- Text -->
+                <div class='side-panel-pod-text col-7'>
+                    <p class='side-panel-pod-text-text m-0 mb-0'>
+                        Security
+                    </p>
+                </div>
+            </div>
+            <!-- 
+                End of Pod - Security
+            -->
+
+
+            <!-- 
+                Pod - Payment
+            -->
+            <div 
+                data-pod-status=''
+                data-pod='payment'
+            class='
+                side-panel-pod
+                text-light row d-flex
+                align-items-center
+                justify-content-start
+            '>
+                <!-- Icon -->
+                <div 
+                    class='
+                        side-panel-pod-icon
+                        col-2 d-flex
+                        align-items-center
+                        justify-content-center
+                    '
+                >
+                    <i class="fa-solid text-justify accordion
+                        fa-money-bill
+                    "></i>
+                </div>
+
+                <!-- Text -->
+                <div class='side-panel-pod-text col-7'>
+                    <p class='side-panel-pod-text-text m-0 mb-0'>
+                        Payment
+                    </p>
+                </div>
+            </div>
+            <!-- 
+                End of Pod - Payment
+            -->
+
+
+            <!-- 
+                Pod - Notifications
+            -->
+            <div 
+                data-pod-status=''
+                data-pod='notifications'
+                class='
+                side-panel-pod
+                text-light row d-flex
+                align-items-center
+                justify-content-start
+            '>
+                <!-- Icon -->
+                <div 
+                    class='
+                        side-panel-pod-icon
+                        col-2 d-flex
+                        align-items-center
+                        justify-content-center
+                    '
+                >
+                    <i class="fa-solid text-justify accordion
+                        fa-bell
+                    "></i>
+                </div>
+
+                <!-- Text -->
+                <div class='side-panel-pod-text col-7'>
+                    <p class='side-panel-pod-text-text m-0 mb-0'>
+                        Notifications
+                    </p>
+                </div>
+            </div>
+
+            <!--
+                Header - Other
+            -->
+            <div class='
+                side-panel-header
+                m-2
+            '>
+                <p class='
+                    side-panel-header-text
+                    mb-0
+                '>
+                    Other
+                </p>
+            </div>
+
+            
+            <!--
+                Pod - Help
+            -->
+            <div 
+                data-pod-status=''
+                data-pod='help'
+            class='
+                side-panel-pod
+                text-light row d-flex
+                align-items-center
+                justify-content-start
+            '>
+                <!-- Icon -->
+                <div 
+                    class='
+                        side-panel-pod-icon
+                        col-2 d-flex
+                        align-items-center
+                        justify-content-center
+                    '
+                >
+                    <i class="fa-solid text-justify accordion
+                        fa-handshake-angle
+                    "></i>
+                </div>
+
+                <!-- Text -->
+                <div class='side-panel-pod-text col-7'>
+                    <p class='side-panel-pod-text-text m-0 mb-0'>
+                        Help
+                    </p>
+                </div>
+            </div>
+            <!--
+                End of Pod - Help
+            -->
+            
+
+            <!-- 
+                Pod - Purchases
+            -->
+            <div 
+                data-pod-status=''
+                data-pod='purchases'
+            class='
+                side-panel-pod
+                text-light row d-flex
+                align-items-center
+                justify-content-start
+            '>
+                <!-- Icon -->
+                <div 
+                    class='
+                        side-panel-pod-icon
+                        col-2 d-flex
+                        align-items-center
+                        justify-content-center
+                    '
+                >
+                    <i class="fa-solid text-justify accordion
+                        fa-rectangle-history-circle-user
+                    "></i>
+                </div>
+
+                <!-- Text -->
+                <div class='side-panel-pod-text col-7'>
+                    <p class='side-panel-pod-text-text m-0 mb-0'>
+                        Purchases
+                    </p>
+                </div>
+            </div>
+            <!-- 
+                End of Pod - Purchases
+            -->
+
+
+
+            <!-- 
+                Header - Broadcaster
+            -->
+            <div 
+            data-pod-status=''
+            class='
+                side-panel-header
+                m-2
+            '>
+                <p class='
+                    side-panel-header-text
+                    mb-0
+                '>
+                    Broadcaster
+                </p>
+            </div>
+
+
+            <!-- 
+                Pod - Events
+            -->
+            <div 
+                data-pod-status=''
+                data-pod='events'
+            class='
+                side-panel-pod
+                text-light row d-flex
+                align-items-center
+                justify-content-start
+            '>
+                <!-- Icon -->
+                <div 
+                    class='
+                        side-panel-pod-icon
+                        col-2 d-flex
+                        align-items-center
+                        justify-content-center
+                    '
+                >
+                    <i class="fa-solid text-justify accordion
+                        fa-calendar-lines-pen
+                    "></i>
+                </div>
+
+                <!-- Text -->
+                <div class='side-panel-pod-text col-7'>
+                    <p class='side-panel-pod-text-text m-0 mb-0'>
+                        Events
+                    </p>
+                </div>
+            </div>
+            <!-- 
+                End of Pod - Events
+            -->
+
+
+            <!--
+                Pod - Publishers
+            -->
+            <div 
+                data-pod-status=''
+                data-pod='publishers'
+            class='
+                side-panel-pod
+                text-light row d-flex
+                align-items-center
+                justify-content-start
+            '>
+                <!-- Icon -->
+                <div 
+                    class='
+                        side-panel-pod-icon
+                        col-2 d-flex
+                        align-items-center
+                        justify-content-center
+                    '
+                >
+                    <i class="fa-solid text-justify accordion
+                        fa-user-group
+                    "></i>
+                </div>
+
+                <!-- Text -->
+                <div class='side-panel-pod-text col-7'>
+                    <p class='side-panel-pod-text-text m-0 mb-0'>
+                        Publishers
+                    </p>
+                </div>
+            </div>
+            <!--
+                End of Pod - Broadcasters
+            -->
+            
+
+
+            <!-- 
+                Header - Admin
+            -->
+            <div 
+            data-pod-status='hidden'
+            class='
+                side-panel-header
+                m-2
+                admin-header
+            '>
+                <p class='
+                    side-panel-header-text
+                    mb-0
+                '>
+                    Admin
+                </p>
+            </div>
+
+
+            <!-- 
+                Events request Pod 
+            -->
+            <div 
+                data-pod-status='hidden'
+                data-pod='event-request'
+            class='
+                admin-pod
+                side-panel-pod
+                text-light row d-flex
+                align-items-center
+                justify-content-start
+            '>
+                <!-- Icon -->
+                <div 
+                    class='
+                        side-panel-pod-icon
+                        col-2 d-flex
+                        align-items-center
+                        justify-content-center
+                    '
+                >
+                    <i class="fa-solid text-justify accordion
+                        fa-calendar-circle-plus
+                    "></i>
+                </div>
+
+                <!-- Text -->
+                <div class='side-panel-pod-text col-7'>
+                    <p class='side-panel-pod-text-text m-0 mb-0'>
+                        Event Requests
+                    </p>
+                </div>
+            </div>
+            <!-- 
+                End of events request pod 
+            -->
+
+
+            <!-- 
+                Venues Pod
+            -->
+            <div 
+                data-pod-status='hidden'
+                data-pod='venues'
+            class='
+                admin-pod
+                side-panel-pod
+                text-light row d-flex
+                align-items-center
+                justify-content-start
+            '>
+                <!-- Icon -->
+                <div 
+                    class='
+                        side-panel-pod-icon
+                        col-2 d-flex
+                        align-items-center
+                        justify-content-center
+                    '
+                >
+                    <i class="fa-solid text-justify accordion
+                        fa-map-location-dot
+                    "></i>
+                </div>
+
+                <!-- Text -->
+                <div class='side-panel-pod-text col-7'>
+                    <p class='side-panel-pod-text-text m-0 mb-0'>
+                        Venues
+                    </p>
+                </div>
+            </div>
+            <!-- 
+                End of Venues Pod
+            -->
+
+
+        <!-- End of menu -->
+        </div>
+
+        
+        <!-- 3/4 Of the page-->
+        <div class='
+            main-panel
+            container
+            col-md-9
+            col-sm-12
+            col-xs-12
+            col-lg-9
+            h-100
+        '>
+            <p>Main Panel</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Js -->
+    <script src="{% static 'js/settings_bin.js' %}"></script>
 {% endblock %}

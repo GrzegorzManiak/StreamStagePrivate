@@ -2,7 +2,7 @@ const path = require("path");
 
 module.exports = {
     entry: {
-        logout: './logout/index.ts',
+        settings: './settings/index.ts',
         authentication: './authentication/index.ts',
         toast: './toasts/index.ts',
     },

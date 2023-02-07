@@ -1,0 +1,83 @@
+.side-panel {
+    background-color: var(--theme-secondary-color);
+}
+
+.side-panel-header-text {
+    color: var(--greyed-out-font-color);
+    font-size: 1.25rem;
+    font-weight: 500;
+    padding-top: 1.5rem;
+}
+
+.main-container {
+    width: 100vw;
+    height: 100vh;
+}
+
+.side-panel-pod {
+    margin: 0.3rem;
+    padding: 0.6rem;
+    border-radius: 0.65rem;
+    transition: 
+        background-color 0.2s ease-in-out,
+        transform 0.2s ease-in-out;
+}
+
+.side-panel-pod:hover {
+    background-color: #15181d20;
+    cursor: pointer;
+}
+
+.side-panel-pod:active {
+    background-color: #15181d30;
+}
+
+.side-panel-pod-icon {
+    height: 2.15rem;
+    width: 2.15rem;
+    border-radius: 0.5rem;
+}
+
+.side-panel-pod-text { 
+    margin: 0; 
+    color: var(--greyed-out-font-color); 
+    user-select: none;
+}
+
+/* General */
+[data-pod='user'] .side-panel-pod-icon { background-color: #ffde4d; }
+[data-pod='security'] .side-panel-pod-icon { background-color: #ff6a6a; }
+[data-pod='payment'] .side-panel-pod-icon { background-color: #7ce04d; }
+[data-pod='notifications'] .side-panel-pod-icon { background-color: #4de096; }
+
+/* Other */
+[data-pod='help'] .side-panel-pod-icon { background-color: #4d74e0; }
+[data-pod='purchases'] .side-panel-pod-icon { background-color: #b362d3; }
+
+/* Broadcaster */
+[data-pod='events'] .side-panel-pod-icon { background-color: #e04d4d; }
+[data-pod='publishers'] .side-panel-pod-icon { background-color: #4de0e0; }
+
+/* Admin */
+[data-pod='event-request'] .side-panel-pod-icon { background-color: #4de09b; }
+[data-pod='venues'] .side-panel-pod-icon { background-color: #e04d8a; }
+
+
+/*  
+    Active pod
+*/
+[data-pod-status='active'] { 
+    background-color: #15181D30!important;
+}
+
+[data-pod-status='active'] .side-panel-pod-text { 
+    color: #fff!important;
+}
+
+
+/* 
+    Hidden pod
+*/
+[data-pod-status='hidden'] { 
+    display: none!important;
+}

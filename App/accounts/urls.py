@@ -1,5 +1,6 @@
 from django.urls import path, include
 from .email import email_patterns
+from .profile import profile_patterns
 from .views import (
     validate_token,
     get_token,
@@ -18,6 +19,7 @@ urlpatterns = [
     path('register/', register, name='register'),
 
     path('email/', include(email_patterns), name='email'),
+    path('profile/', include(profile_patterns), name='profile'),
 
     # -- Authentication
     path('token/', validate_token, name='token'),

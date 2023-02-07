@@ -2,7 +2,8 @@
 :root {
     --theme-color: #15181d;
     --theme-secondary-color: rgb(32, 38, 46);
-    --accent-color: #5A7FFF;
+    --accent-color: #ffb25a;
+    --greyed-out-font-color: #b3b3b3;
     --font-color: #ffffff;
     --muted-font-color: #b3b3b3;
 }
@@ -11,6 +12,11 @@
 * {
     font-family: 'montserrat', sans-serif;
     font-weight: 400;
+}
+
+body {
+    background-color: var(--theme-color)!important;
+    color: var(--font-color);
 }
 
 #toasts {
@@ -37,13 +43,44 @@
     color: var(--font-color)!important;
 }
 
+
 /***** Body/Base *****/
 
 /***** Navbar *****/
 
 
 /***** Header *****/
+header > div, header {
+    background-color: var(--theme-secondary-color)!important;
+    color: var(--font-color);
+}
 
+header {
+    border-bottom: 1px solid var(--theme-color)!important;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15)!important;
+    position: absolute;
+    width: 100vw;
+}
+
+header .accordion {
+    color: var(--accent-color)!important;
+    font-size: 1.5rem!important;
+}
+
+/* -- unfcoused */
+header .accordion:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+
+.search-bar {
+    border: 2px solid!important;
+    border-color: var(--accent-color)!important;
+    background-color: var(--theme-color-secondary)!important;
+    border-radius: 1rem;
+    color: var(--font-color)!important;
+}
 
 /***** Footer *****/
 

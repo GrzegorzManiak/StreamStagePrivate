@@ -1,0 +1,1 @@
+from .urls import urlpatterns as profile_patterns

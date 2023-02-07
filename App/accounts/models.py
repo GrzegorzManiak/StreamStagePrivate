@@ -22,6 +22,20 @@ class Member(AbstractUser):
     def __str__(self):
       return str(self.username)
 
+    def mask_email(self):
+        keep = 2
+        email = self.email.split('@')
+
+        # If the first part of the email is less than 3 characters, return the email
+        if len(email[0]) < keep:
+            return "****@" + email[1]
+
+        # keep x from the start and the end
+        return email[0][:keep] + "****" + email[0][-keep:] + "@" + email[1]
+
+
+
+
 
 class StreamerProfile(models.Model):
     user = models.OneToOneField(

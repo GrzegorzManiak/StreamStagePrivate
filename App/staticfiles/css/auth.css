@@ -24,7 +24,7 @@ body {
 
 
 .card-body {
-    background-color: var(--theme-color);
+    background-color: var(--theme-secondary-color)!important;
     border-radius: 1rem;
 }
 
