@@ -15,7 +15,7 @@ from .models import Event, EventReview
 # in doing so.
 def view_event(request, event_id):
     event = Event.objects.filter(event_id=event_id).first()
-    reviews = EventReview.objects.filter(event=Event).all()
+    reviews = EventReview.objects.filter(event=event).all()
     primary_media_idx = event.primary_media_idx
     
     media = event.media.all()
@@ -28,7 +28,7 @@ def view_event(request, event_id):
     return render(request, 'event.html', {
         'event': event, 
         'cover_pic': cover_pic,
-        'reviews' : reviews
+        'reviews' : reviews,
         })
 
 def get_all_events(request):
