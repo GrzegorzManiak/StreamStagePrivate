@@ -139,7 +139,6 @@ def start_email_verification(
         if oauth is not None:
             # -- Create an account with an oauth id
             # -- Remove the oauth id from the session
-            
             link_oauth_account(member, oauth)
             
             
@@ -170,7 +169,7 @@ def start_email_verification(
     # -- Create the key
     key = add_key(
         {
-            'email': email,
+            'email': email.lower(),
             'password': password,
             'username': username,
             'oauth': oauth,

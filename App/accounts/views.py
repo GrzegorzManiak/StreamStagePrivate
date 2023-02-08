@@ -4,6 +4,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
 from rest_framework import status
 from rest_framework.decorators import api_view
+from django.db.models.functions import Lower
 
 from accounts.auth_lib import authenticate_key, generate_key
 from accounts.email.verification import send_email, add_key
@@ -176,7 +177,8 @@ def get_token(request):
 
     # -- Probably a username
     else:
-        try: user = Member.objects.get(username=emailorusername.lower())
+        # -- We need to find the user by username even if they are in different cases
+        try: user = Member.objects.get(username__iexact=emailorusername)
         except Member.DoesNotExist:
             return JsonResponse({
                 'message': 'Invalid credentials',
