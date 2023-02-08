@@ -1,8 +1,9 @@
-from rest_framework.decorators import api_view
 from django.http.response import JsonResponse
-from rest_framework import status
-from .registration import verify, recent, resend, temp_users
 from django.shortcuts import render
+from rest_framework import status
+from rest_framework.decorators import api_view
+
+from .registration import recent, resend, temp_users, verify
 
 
 """

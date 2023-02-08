@@ -1,10 +1,12 @@
-from accounts.oauth.oauth import get_oauth_data, link_oauth_account
 from django.contrib.auth.hashers import make_password
 from django.http.response import JsonResponse
 from rest_framework import status
 
-from .email.registration import send_email
-from .models import Member
+from accounts.oauth.oauth import get_oauth_data, link_oauth_account
+
+from ..email.registration import send_email
+from ..models import Member
+
 
 """
     This file contains all things related to the

@@ -1,15 +1,16 @@
-from django.http import HttpResponseRedirect
-from rest_framework.decorators import api_view
-from django.urls import reverse, reverse_lazy
+import base64
+import json
+import secrets
+import time
+
 from django.apps import apps
+from django.http import HttpResponseRedirect
+from django.urls import reverse, reverse_lazy
+from rest_framework.decorators import api_view
 
 from .google import Google
-from .types import OAuthTypes, OAuthRespone
+from .types import OAuthRespone, OAuthTypes
 
-import secrets
-import base64
-import time
-import json
 
 """
     This function returns a formated message instructing the

@@ -6,10 +6,13 @@
 """
 
 # -- Imports
-from StreamStage.mail import send_email as sm
-from ..models import Member
 import secrets
 import time
+
+from StreamStage.mail import send_email as sm
+
+from ..models import Member
+
 
 REMOVE_AFTER = 60 * 60 * 24 * 7
 

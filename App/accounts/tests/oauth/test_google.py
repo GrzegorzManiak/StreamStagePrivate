@@ -1,5 +1,7 @@
 from django.test import TestCase
+
 from accounts.oauth.google import Google
+
 
 class GoogleTest(TestCase):
     def setUp(self):

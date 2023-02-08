@@ -1,5 +1,7 @@
-from StreamStage.secrets import OAUTH_PROVIDERS
 from enum import Enum
+
+from StreamStage.secrets import OAUTH_PROVIDERS
+
 
 class OAuthRespone(Enum):
     SUCCESS = 0

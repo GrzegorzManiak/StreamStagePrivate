@@ -1,15 +1,15 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import logout as dj_logout, login as dj_login
-from django.urls import reverse_lazy, reverse
+from django.contrib.auth import login as dj_login, logout as dj_logout
 from django.http.response import JsonResponse
-from rest_framework.decorators import api_view
+from django.shortcuts import redirect, render
+from django.urls import reverse, reverse_lazy
 from rest_framework import status
-from accounts.create import create_account_oauth
-from .auth_lib import authenticate_key, generate_key
-from .oauth.oauth import format_providers, get_oauth_data
-from .models import Member
-from .email.registration import send_email
+from rest_framework.decorators import api_view
 
+from accounts.auth_lib import authenticate_key, generate_key
+from accounts.create.create import create_account_oauth
+from accounts.email.registration import send_email
+from accounts.models import Member
+from accounts.oauth.oauth import format_providers, get_oauth_data
 
 
 """

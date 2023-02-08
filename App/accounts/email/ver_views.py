@@ -1,14 +1,14 @@
 from django.http.response import JsonResponse
-from rest_framework.decorators import api_view
-from rest_framework import status
 from django.shortcuts import render
+from rest_framework import status
+from rest_framework.decorators import api_view
 
 from .verification import (
-    remove_key,
-    verify_key,
-    send_email,
-    regenerate_key,
     check_if_verified_recently,
+    regenerate_key,
+    remove_key,
+    send_email,
+    verify_key,
 )
 
 

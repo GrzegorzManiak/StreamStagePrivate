@@ -4,14 +4,18 @@
 """
 
 # -- Imports
-from StreamStage.mail import send_email as sm
-from accounts.oauth.oauth import link_oauth_account
-from django.http.response import JsonResponse
-from django.contrib.auth.hashers import make_password
-from rest_framework import status
-from ..models import Member
 import secrets
 import time
+
+from django.contrib.auth.hashers import make_password
+from django.http.response import JsonResponse
+from rest_framework import status
+
+from StreamStage.mail import send_email as sm
+from accounts.oauth.oauth import link_oauth_account
+
+from ..models import Member
+
 
 REMOVE_AFTER = 60 * 60 * 24 * 7
 

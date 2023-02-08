@@ -10,16 +10,17 @@
 
 
 # -- Imports
-from .oauth.oauth import (
-    check_oauth_key, 
-    get_oauth_data,
-    remove_oauth_key,
-    get_oauth_user
-)
-
-from .models import Member
 import secrets
 import time
+
+from .models import Member
+from .oauth.oauth import (
+    check_oauth_key,
+    get_oauth_data,
+    get_oauth_user,
+    remove_oauth_key,
+)
+
 
 # 15 minutes
 TTL = 60 * 15

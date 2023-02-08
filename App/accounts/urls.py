@@ -1,29 +1,23 @@
-from django.urls import path, include
-from .views import (
-    validate_token,
-    get_token,
-    login,
-    register,
-    logout,
+from django.urls import include, path
+
+from .email.reg_views import recent_view, resend_view, verify_view
+from .email.ver_views import (
+    check_if_verified_recently_view,
+    remove_key_view,
+    resend_key_view,
+    verify_key_view,
 )
+from .oauth.oauth import OAuthTypes, determine_app
+from .profile.forms import change_basic_details
+from .profile.views import profile, send_verification
+from .views import get_token, login, logout, register, validate_token
 
 
 # Profile MODULE
-from .profile.forms import change_basic_details
-from .profile.views import profile, send_verification
 
 # OAuth2.0 MODULE
-from .oauth.oauth import determine_app, OAuthTypes
 
 # Email Verification MODULE
-from .email.reg_views import (
-    recent_view, verify_view, 
-    resend_view, verify_view
-)
-from .email.ver_views import (
-    remove_key_view, resend_key_view,
-    verify_key_view, check_if_verified_recently_view
-)
 
 
 

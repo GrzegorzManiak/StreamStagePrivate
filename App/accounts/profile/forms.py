@@ -1,9 +1,10 @@
 from django import forms
-from django.urls import reverse
 from django.apps import apps
-from rest_framework.decorators import api_view
 from django.http.response import JsonResponse
+from django.urls import reverse
 from rest_framework import status
+from rest_framework.decorators import api_view
+
 
 def beautify_form_errors(dict) -> str or None:
     error = ''
