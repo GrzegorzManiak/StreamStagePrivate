@@ -64,7 +64,7 @@ class EventReview(models.Model):
     title = models.CharField(max_length=50)
     body = models.TextField(max_length=500)
     created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(blank=True, null=True)
+    updated = models.DateTimeField(auto_now=True)
     likes = models.IntegerField(default=0)
 
     class Meta:
