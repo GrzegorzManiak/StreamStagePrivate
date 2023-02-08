@@ -29,18 +29,18 @@ def login(request):
     context = {
         'providers': format_providers(),
 
-        'token': reverse('token'),
-        'get_token': reverse('get_token'),
-        'register': reverse('register'),
-        'login': reverse('login'),
+        'token': reverse('token', urlconf='accounts.urls'),
+        'get_token': reverse('get_token', urlconf='accounts.urls'),
+        'register': reverse('register', urlconf='accounts.urls'),
+        'login': reverse('login', urlconf='accounts.urls'),
 
         # -- Security
         'has_tfa': False,
-        
+
         # -- Email
-        'email_recent': reverse('reg_recent', urlconf='accounts.email.urls'),
-        'email_verify': reverse('reg_verify', urlconf='accounts.email.urls'),
-        'email_resend': reverse('reg_resend', urlconf='accounts.email.urls'),
+        'email_recent': "/email" + reverse('reg_recent', urlconf='accounts.email.urls'),
+        'email_verify': "/email" + reverse('reg_verify', urlconf='accounts.email.urls'),
+        'email_resend': "/email" + reverse('reg_resend', urlconf='accounts.email.urls'),
     }
 
     # -- Render the login page
@@ -156,15 +156,15 @@ def register_get(request):
     context = {
         'providers': format_providers(),
 
-        'token': reverse('token'),
-        'get_token': reverse('get_token'),
-        'register': reverse('register'),
-        'login': reverse('login'),
+        'token': reverse('token', urlconf='accounts.urls'),
+        'get_token': reverse('get_token', urlconf='accounts.urls'),
+        'register': reverse('register', urlconf='accounts.urls'),
+        'login': reverse('login', urlconf='accounts.urls'),
 
         # -- Email
-        'email_recent': reverse('reg_recent', urlconf='accounts.email.urls'),
-        'email_verify': reverse('reg_verify', urlconf='accounts.email.urls'),
-        'email_resend': reverse('reg_resend', urlconf='accounts.email.urls'),
+        'email_recent': "/email" + reverse('reg_recent', urlconf='accounts.email.urls'),
+        'email_verify': "/email" + reverse('reg_verify', urlconf='accounts.email.urls'),
+        'email_resend': "/email" + reverse('reg_resend', urlconf='accounts.email.urls'),
     }
 
     # -- Render the register page

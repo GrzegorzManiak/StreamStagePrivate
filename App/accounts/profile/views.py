@@ -74,7 +74,7 @@ def profile(request):
 
     # -- Make sure that the user is logged in
     if not request.user.is_authenticated:
-        return redirect('login', urlconf='accounts.urls')
+        return redirect('login')
 
     # -- Construct the context
     context = {
