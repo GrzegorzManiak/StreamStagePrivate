@@ -42,7 +42,7 @@ def login(request):
         'email_verify': "/email" + reverse('reg_verify', urlconf='accounts.email.urls'),
         'email_resend': "/email" + reverse('reg_resend', urlconf='accounts.email.urls'),
     }
-
+    
     # -- Render the login page
     return render(
         request, 

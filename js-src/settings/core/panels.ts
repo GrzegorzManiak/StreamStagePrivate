@@ -1,5 +1,6 @@
-import { configuration } from '../';
+import { configuration, sleep } from '../';
 import { PanelType, Panel, Pod } from '../index.d';
+import { create_toast } from '../../toasts';
 
 let panels: Array<Panel> = [];
 export let pods: Array<Pod> = [];
@@ -54,6 +55,59 @@ export function get_active_pod(): Pod | undefined {
     }
 }
 
+function attach_to_sidepanel() {
+    // -- Get the sidepanel button #navbar-carrot and the sidepanel
+    const sidepanel_button = document.getElementById('navbar-carrot') as HTMLInputElement,
+        main_container = document.getElementById('main-container'),
+        sidepanel = document.getElementById('side-panel');
+
+    const allow_overflow = (status: boolean) => {
+        if (status) {
+            document.body.style.overflow = 'hidden';
+            main_container.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+            main_container.style.overflow = 'auto';
+        }
+    }
+
+    // -- Check if they both exist
+    if (!sidepanel_button || !sidepanel || !main_container) 
+        return create_toast('error', 'Error', 'There was an error loading the sidepanel, site functionality might be impaired.');
+
+    const anim_lenght = 1000;
+
+    // -- Attach the event listener
+    sidepanel_button.addEventListener('change', async() => {
+        // -- Disable the button
+        sidepanel_button.disabled = true;
+        
+        // -- Check the status of the checkbox
+        switch(sidepanel_button.checked) {
+            case true: 
+                sidepanel.setAttribute('side-panel', 'in'); 
+                allow_overflow(true);
+                break;
+
+            case false: 
+                sidepanel.setAttribute('side-panel', 'out');
+                allow_overflow(false);
+                break;
+        }
+
+        // -- Wait for the transition to finish
+        sleep(anim_lenght).then(() => {
+            // -- Check the status of the checkbox
+            switch(sidepanel_button.checked) {
+                case true: sidepanel.setAttribute('side-panel', 'visible'); break;
+                case false: sidepanel.setAttribute('side-panel', 'hidden'); break;
+            }
+
+            // -- Enable the button
+            sidepanel_button.disabled = false;
+        });
+    });
+}
 
 
 export function attach_event_listeners() {
@@ -61,7 +115,8 @@ export function attach_event_listeners() {
     //    data-pod attribute
     const pod_elms = document.querySelectorAll('[data-pod]');
     locate_panels();
-    
+    attach_to_sidepanel();
+
     // -- Loop through the pods
     pod_elms.forEach(pod => {
         // -- Get the panel type
@@ -103,21 +158,15 @@ export function attach_event_listeners() {
             active_pod.element.setAttribute('data-pod-status', '');
             pod.setAttribute('data-pod-status', 'active');
         });
-
-        // -- Check if the pod is an admin only pod
-        if (pod.classList.contains('admin-pod') && configuration.admin === true) 
-            pod.setAttribute('data-pod-status', '');
     });
 
 
     // -- Get all admin panel headers
-    const headers = Array.from(document.getElementsByClassName('admin-header'));
+    const admin_opts = document.querySelector('#admin-options');
 
     // -- Loop through the headers, and disable the 
     //    'data-pod-status' attribute, if the user
     //    is an admin
     if (configuration.admin === true) 
-    for (const element of headers) {
-        element.setAttribute('data-pod-status', '');
-    }
+        admin_opts?.setAttribute('data-pod-status', '');
 }

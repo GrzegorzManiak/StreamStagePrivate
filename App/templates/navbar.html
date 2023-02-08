@@ -1,18 +1,26 @@
 <header class="py-2 mb-2">
     <div class="container-fluid d-grid gap-3 align-items-center" style="grid-template-columns: 1fr 2fr;">
         <div class="dropdown">
-            <a href="#" class="d-flex align-items-center col-lg-4 mb-2 mb-lg-0 link-light text-decoration-none dropdown-toggle" id="dropdownNavLink" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="ps-4 accordion fa-solid fa-bars"> </i>
-            </a>
-            <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownNavLink" style="">
-                <li><a class="dropdown-item active" href="#" aria-current="page">Overview</a></li>
-                <li><a class="dropdown-item" href="#">Inventory</a></li>
-                <li><a class="dropdown-item" href="#">Customers</a></li>
-                <li><a class="dropdown-item" href="#">Products</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="#">Reports</a></li>
-                <li><a class="dropdown-item" href="#">Analytics</a></li>
-            </ul>
+            <div class='
+                carrot
+                d-flex
+                align-items-center                
+                ps-4
+            '>
+                <input 
+                    type="checkbox"
+                    name="navbar-carrot"
+                    id="navbar-carrot" 
+                    autocomplete="off"
+                > 
+
+                <label 
+                    for="navbar-carrot"
+                    id="navbar-carrot-label"
+                >
+                    <i class="fa-solid fa-square-caret-down"></i>
+                </label>
+            </div>
         </div>
 
 
@@ -36,3 +44,5 @@
       </div>
     </div>
 </header>
+
+<div class='header-spacer'></div>

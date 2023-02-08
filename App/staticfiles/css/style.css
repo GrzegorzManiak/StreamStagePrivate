@@ -6,6 +6,10 @@
     --greyed-out-font-color: #b3b3b3;
     --font-color: #ffffff;
     --muted-font-color: #b3b3b3;
+
+    --header-height: 3.5rem;
+    --header-fade-out: 0.5rem;
+    --header-button-speed: 1s;
 }
 
 
@@ -20,7 +24,7 @@ body {
 }
 
 #toasts {
-    position: fixed;
+    position: absolute;
     top: 0;
     right: 0;
     z-index: 9999;
@@ -48,6 +52,28 @@ body {
 
 /***** Navbar *****/
 
+/* 
+    So, we've got a dropdown button in the nav bar
+    #navbar-carrot, its a checkbox, and inside of it
+    there is a fontawesome carrot icon, which is rotated
+    180deg when the checkbox is checked, and 0deg when
+    it is unchecked. This is done by the :checked selector
+    in the css.
+*/
+#navbar-carrot { display: none; }
+#navbar-carrot-label { 
+    transition: transform var(--header-button-speed);
+    font-size: 1.75rem;
+    color: var(--accent-color);
+    cursor: pointer;
+    transform: rotate(90deg);
+}
+
+#navbar-carrot:checked ~ #navbar-carrot-label {
+    transform: rotate(0deg);
+}
+
+
 
 /***** Header *****/
 header > div, header {
@@ -58,8 +84,10 @@ header > div, header {
 header {
     border-bottom: 1px solid var(--theme-color)!important;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15)!important;
-    position: absolute;
+    position: fixed;
     width: 100vw;
+    z-index: 500;
+    height: var(--header-height);
 }
 
 header .accordion {
@@ -73,6 +101,9 @@ header .accordion:focus {
     box-shadow: none;
 }
 
+.header-spacer {
+    height: calc(var(--header-height) - var(--header-fade-out));
+}
 
 .search-bar {
     border: 2px solid!important;
