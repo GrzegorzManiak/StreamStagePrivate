@@ -1,12 +1,12 @@
-from django.urls import include, path
+from django.urls import  path
 
-from .email.reg_views import recent_view, resend_view, verify_view
-from .email.ver_views import (
+from .email.views import (
     check_if_verified_recently_view,
     remove_key_view,
     resend_key_view,
     verify_key_view,
 )
+from .create.views import send_reg_verification
 from .oauth.oauth import OAuthTypes, determine_app
 from .profile.forms import change_basic_details
 from .profile.views import profile, send_verification
@@ -45,10 +45,7 @@ urlpatterns = [
 
 
     # EMail Verification
-    path('email/reg/recent/', recent_view, name='reg_recent'),
-    path('email/reg/verify/', verify_view, name='reg_verify'),
-    path('email/reg/resend/', resend_view, name='reg_resend'),
-    path('email/reg/verify/', verify_view, name='reg_verify'),
+    path('register/email', send_reg_verification, name='send_reg_verification'),
 
     path('email/remove/', remove_key_view, name='remove_key'),
     path('email/resend/', resend_key_view, name='resend_key'),

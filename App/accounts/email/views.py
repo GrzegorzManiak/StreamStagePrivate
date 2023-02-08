@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view
 
 from .verification import (
     check_if_verified_recently,
+    get_key,
     regenerate_key,
     remove_key,
     send_email,
@@ -59,6 +60,29 @@ def resend_key_view(request):
             'status': 'error',
             'message': 'Missing key',
         }, status=status.HTTP_400_BAD_REQUEST)
+
+    # -- Get the key data
+    key_data = get_key(key)
+
+    # -- Check if they are allowed to change the email
+    if key_data is None:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Invalid key',
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    email = request.data.get('email', None)
+    if email is not None and key_data['allow_email_change'] is True:
+        key_data['user']['email'] = email
+
+        # -- Check if we have a callback function
+        if key_data['email_change_callback'] is not None:
+            try: key_data['email_change_callback'](key_data['user'], email)
+            except Exception as e:
+                return JsonResponse({
+                    'status': 'error',
+                    'message': 'Failed to change email',
+                }, status=status.HTTP_400_BAD_REQUEST)
 
 
     res = regenerate_key(key)

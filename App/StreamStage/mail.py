@@ -14,7 +14,7 @@ def send_email(to: str, subject: str, body: str):
         )
 
         sg = SendGridAPIClient(settings.SENDGIRD_TOKEN)
-        response = sg.send(message)
+        sg.send(message)
 
     except Exception as e:
         print(e.message)

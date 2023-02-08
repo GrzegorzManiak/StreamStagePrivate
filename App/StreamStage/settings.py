@@ -207,3 +207,7 @@ OUTBOUND_EMAIL = 'mail@streamstage.co'
 
 # DEV Key
 SENDGIRD_TOKEN = SENDGIRD_TOKEN
+
+
+# Key TTL's
+EMAIL_VERIFICATION_TTL = 60 * 60 * 24 * 2
