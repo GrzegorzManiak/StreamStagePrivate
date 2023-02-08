@@ -1,9 +1,10 @@
 from accounts.oauth.oauth import get_oauth_data, link_oauth_account
-from .models import Member
-from django.http.response import JsonResponse
 from django.contrib.auth.hashers import make_password
+from django.http.response import JsonResponse
 from rest_framework import status
-from .email.email import send_email
+
+from .email import send_email
+from .models import Member
 
 """
     This file contains all things related to the
@@ -52,7 +53,7 @@ def create_account_oauth(
     
     # -- Check if the user's choosen oauth method has a 
     #    verified email
-    if oauth_data['data']['verified_email'] is False:
+    if oauth_data['data']['email_verified'] is False:
         # -- The user's email is not verified
         #    so we'll need to send a verification email
         return send_email(email, password, username)
@@ -62,7 +63,7 @@ def create_account_oauth(
         #    so we can create the account
         member = Member.objects.create(
             username=username,
-            email=email,
+            email=oauth_data['data']['email'],
             password=make_password(password),
         )
 

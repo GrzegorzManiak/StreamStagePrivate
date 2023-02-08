@@ -9,3 +9,4 @@ django_hosts
 django_rest_framework
 pillow
 django-cors-headers
+django-countries

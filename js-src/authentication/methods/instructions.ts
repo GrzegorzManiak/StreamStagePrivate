@@ -6,6 +6,7 @@ import * as DOMPurify from 'dompurify';
 import { register_with_oauth } from '../api/register';
 import { login_with_token } from '../api/login';
 import { attach } from '../core/spinner';
+import { complete_verification } from './verification';
 
 // -- Handle instructions
 const instruction_parser = (instructions: string): Response | null => {
@@ -84,7 +85,7 @@ function handle_inputs(response: Response, panel: Panel) {
     email_input.value = DOMPurify.sanitize(response.user.email);
 
     // -- If the email is verified, hide the email input
-    if (response.user.verified_email)
+    if (response.instructions.email_verified)
         email_input.parentElement.style.display = 'none';
     
 
@@ -166,26 +167,39 @@ function handle_inputs(response: Response, panel: Panel) {
             email_input.value,
         );
 
+        
+        // -- 202 Means that the account has been created
+        // -- 200 means that we need to verify the email
+        if (register_attempt.code === 200) {
+            return await complete_verification(
+                email_input.value,
+                register_attempt
+            )
+        }
+
         // -- Check the status of the response
         if (register_attempt.status === 'error') {
             submit_button.disabled = false;
-            return create_toast('error', 'Error', register_attempt.message);
+            create_toast('error', 'Error', register_attempt.message);
+            return await stop_spinner();
         }
 
+        
         // -- If we get here, we can submit the form
         create_toast('success', 'Account created!', 'Your account has been created! You will be redirected to the home page shortly.');
 
+
         // -- Get the token
-        if (await !auth_token(register_attempt.token)) {
+        if (await !auth_token(register_attempt.data.token)) {
             submit_button.disabled = false;
-            return create_toast('error', 'Error', 'There was some issue logging you in, please try again.');
+            create_toast('error', 'Error', 'There was some issue logging you in, please try again.');
+            return await stop_spinner();
         }
 
-        else {
-            // -- Redirect the user to the home page
-            setTimeout(() => {
-                window.location.href = '/';
-            }, 3000);
-        }
+
+        // -- Redirect the user to the home page
+        else setTimeout(() => {
+            window.location.href = '/';
+        }, 3000);
     });
 }

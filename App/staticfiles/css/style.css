@@ -1,13 +1,117 @@
-/***** Body/Base *****/
-html, body, .container {
-    background-color: #999!important;
+/* Variables */
+:root {
+    --theme-color: #15181d;
+    --theme-secondary-color: rgb(32, 38, 46);
+    --accent-color: #ffb25a;
+    --greyed-out-font-color: #b3b3b3;
+    --font-color: #ffffff;
+    --muted-font-color: #b3b3b3;
+
+    --header-height: 3.5rem;
+    --header-fade-out: 0.5rem;
+    --header-button-speed: 1s;
 }
+
+
+* {
+    font-family: 'montserrat', sans-serif;
+    font-weight: 400;
+}
+
+body {
+    background-color: var(--theme-color)!important;
+    color: var(--font-color);
+}
+
+#toasts {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 9999;
+    margin: 20px;
+}
+
+.toast {
+    background-color: var(--theme-color)!important;
+    color: var(--font-color)!important;
+    border-radius: 1rem!important;
+}
+
+.toast-header {
+    background-color: var(--accent-color)!important;
+    color: var(--font-color)!important; 
+}
+
+.toast-body {
+    background-color: var(--theme-color)!important;
+    color: var(--font-color)!important;
+}
+
+
+/***** Body/Base *****/
 
 /***** Navbar *****/
 
+/* 
+    So, we've got a dropdown button in the nav bar
+    #navbar-carrot, its a checkbox, and inside of it
+    there is a fontawesome carrot icon, which is rotated
+    180deg when the checkbox is checked, and 0deg when
+    it is unchecked. This is done by the :checked selector
+    in the css.
+*/
+#navbar-carrot { display: none; }
+#navbar-carrot-label { 
+    transition: transform var(--header-button-speed);
+    font-size: 1.75rem;
+    color: var(--accent-color);
+    cursor: pointer;
+    transform: rotate(90deg);
+}
+
+#navbar-carrot:checked ~ #navbar-carrot-label {
+    transform: rotate(0deg);
+}
+
+
 
 /***** Header *****/
+header > div, header {
+    background-color: var(--theme-secondary-color)!important;
+    color: var(--font-color);
+}
 
+header {
+    border-bottom: 1px solid var(--theme-color)!important;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15)!important;
+    position: fixed;
+    width: 100vw;
+    z-index: 500;
+    height: var(--header-height);
+}
+
+header .accordion {
+    color: var(--accent-color)!important;
+    font-size: 1.5rem!important;
+}
+
+/* -- unfcoused */
+header .accordion:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.header-spacer {
+    height: calc(var(--header-height) - var(--header-fade-out));
+}
+
+.search-bar {
+    border: 2px solid!important;
+    border-color: var(--accent-color)!important;
+    background-color: var(--theme-color-secondary)!important;
+    border-radius: 1rem;
+    color: var(--font-color)!important;
+}
 
 /***** Footer *****/
 

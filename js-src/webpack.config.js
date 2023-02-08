@@ -2,9 +2,11 @@ const path = require("path");
 
 module.exports = {
     entry: {
-        logout: './logout/index.ts',
+        settings: './settings/index.ts',
         authentication: './authentication/index.ts',
         toast: './toasts/index.ts',
+        click_handler: './click_handler/index.ts',
+        form_handler: './form_handler/index.ts',
     },
     module: {
         rules: [
@@ -21,6 +23,6 @@ module.exports = {
     target: "web",
     output: {
         filename: '[name]_bin.js',
-        path: path.resolve(__dirname, '../App/static/js'),
+        path: path.resolve(__dirname, '../App/staticfiles/js'),
     },
 };

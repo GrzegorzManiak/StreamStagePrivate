@@ -119,10 +119,7 @@ async function handle_click(
     
     // -- Handle the response
     await complete_verification(
-        'register' as PanelType,
         email_input.value,
-        password_input.value,
-        name_input.value,
         response
     );
 

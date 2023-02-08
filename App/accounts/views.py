@@ -9,7 +9,7 @@ from accounts.create import create_account_oauth
 from .auth_lib import authenticate_key, generate_key
 from .oauth.oauth import format_providers, get_oauth_data
 from .models import Member
-from .email.email import send_email
+from .email import send_email
 
 
 
@@ -29,17 +29,20 @@ def login(request):
     context = {
         'providers': format_providers(),
 
-        'token': reverse('token'),
-        'get_token': reverse('get_token'),
-        'register': reverse('register'),
-        'login': reverse('login'),
+        'token': reverse('token', urlconf='accounts.urls'),
+        'get_token': reverse('get_token', urlconf='accounts.urls'),
+        'register': reverse('register', urlconf='accounts.urls'),
+        'login': reverse('login', urlconf='accounts.urls'),
+
+        # -- Security
+        'has_tfa': False,
 
         # -- Email
-        'email_recent': reverse('recent'),
-        'email_verify': reverse('verify'),
-        'email_resend': reverse('resend'),
+        'email_recent': "/email" + reverse('reg_recent', urlconf='accounts.email.urls'),
+        'email_verify': "/email" + reverse('reg_verify', urlconf='accounts.email.urls'),
+        'email_resend': "/email" + reverse('reg_resend', urlconf='accounts.email.urls'),
     }
-
+    
     # -- Render the login page
     return render(
         request, 
@@ -99,24 +102,38 @@ def register_post(request):
     password = request.data['password']
     username = request.data['username'].lower()
 
-    
-    # -- If we have an oauth token
+
+    # -- Check if an oauth token was provided
+    #    and if its email is verifiedq
     if oauth_token is not None:
-        new_member = create_account_oauth(oauth_token, email, username, password)
-        
-        # -- If the account was created successfully
-        if isinstance(new_member, JsonResponse):
-            return new_member
 
-        # -- Generate the token for the user
-        token = generate_key(new_member)
+        # -- Get the oauth data
+        oauth_data = get_oauth_data(oauth_token)
 
-        return JsonResponse({
-            'message': 'Account created successfully',
-            'token': token,
-            'status': 'success'
-        }, status=status.HTTP_201_CREATED)
+        # -- Check if the email is verified
+        if oauth_data['data']['email_verified'] is False:
+            return send_email(email, username, password, oauth_token)
 
+        else:
+            # -- Get the email from the oauth data
+            email = oauth_data['data']['email'].lower()
+
+            # -- Get the oauth data 
+            new_member = create_account_oauth(oauth_token, email, username, password)
+            
+            # -- If the account was not created successfully
+            if isinstance(new_member, JsonResponse):
+                return new_member
+
+            # -- Generate the token for the user
+            token = generate_key(new_member)
+
+            return JsonResponse({
+                'message': 'Account created successfully',
+                'token': token,
+                'status': 'success'
+            }, status=status.HTTP_201_CREATED)
+    
 
     # -- If we dont have an oauth token
     else: return send_email(email, username, password)
@@ -139,15 +156,15 @@ def register_get(request):
     context = {
         'providers': format_providers(),
 
-        'token': reverse('token'),
-        'get_token': reverse('get_token'),
-        'register': reverse('register'),
-        'login': reverse('login'),
+        'token': reverse('token', urlconf='accounts.urls'),
+        'get_token': reverse('get_token', urlconf='accounts.urls'),
+        'register': reverse('register', urlconf='accounts.urls'),
+        'login': reverse('login', urlconf='accounts.urls'),
 
         # -- Email
-        'email_recent': reverse('recent'),
-        'email_verify': reverse('verify'),
-        'email_resend': reverse('resend'),
+        'email_recent': "/email" + reverse('reg_recent', urlconf='accounts.email.urls'),
+        'email_verify': "/email" + reverse('reg_verify', urlconf='accounts.email.urls'),
+        'email_resend': "/email" + reverse('reg_resend', urlconf='accounts.email.urls'),
     }
 
     # -- Render the register page
@@ -271,29 +288,6 @@ def get_token(request):
         'token': token,
         'status': 'success'
     }, status=status.HTTP_200_OK)
-
-
-
-
-@api_view(['GET'])
-def profile(request):
-    
-    # -- Make sure that the user is logged in
-    if not request.user.is_authenticated:
-        return redirect('login')
-
-    # -- Construct the context
-    context = {
-        'user': request.user,
-    }
-
-    # -- Render the profile page
-    return render(
-        request, 
-        'profile.html', 
-        context=context
-    )
-
 
 
 

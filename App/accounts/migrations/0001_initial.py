@@ -30,10 +30,12 @@ class Migration(migrations.Migration):
                 ('date_joined', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date joined')),
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('username', models.CharField(max_length=30, unique=True, verbose_name='Username')),
+                ('display_username', models.CharField(max_length=30, unique=True, verbose_name='Display Username')),
                 ('email', models.EmailField(max_length=254, unique=True, verbose_name='Email')),
                 ('date_of_birth', models.DateField(default=None, null=True)),
                 ('over_18', models.BooleanField(default=False)),
                 ('profile_pic', models.ImageField(blank=True, upload_to='member', verbose_name='Profile Photo')),
+                ('description', models.TextField(blank=True, verbose_name='Description')),
                 ('access_level', models.SmallIntegerField(default=0, verbose_name='Access Level')),
                 ('max_keys', models.SmallIntegerField(default=1, verbose_name='Max Devices')),
                 ('groups', models.ManyToManyField(blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', related_name='user_set', related_query_name='user', to='auth.group', verbose_name='groups')),
@@ -53,6 +55,14 @@ class Migration(migrations.Migration):
             fields=[
                 ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False, to=settings.AUTH_USER_MODEL)),
                 ('category', models.CharField(max_length=100, verbose_name='Categories')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='TwoFactorAuth',
+            fields=[
+                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('secret', models.CharField(max_length=100, verbose_name='Secret')),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
