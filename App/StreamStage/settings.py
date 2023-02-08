@@ -35,6 +35,8 @@ ALLOWED_HOSTS = [
     'master.streamstage.co',
 ]
 
+X_FRAME_OPTIONS = 'ALLOW-FROM *://*.streamstage.co/*'
+
 CSRF_TRUSTED_ORIGINS = [
     'https://me.streamstage.co',
     'https://streamstage.co',
@@ -72,6 +74,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     # 'corsheaders',
     'crispy_bootstrap5',
+    'django_countries',
     'rest_framework',
     'django_hosts',
     'stripe',

@@ -1,71 +1,20 @@
 from django.http.response import JsonResponse
 from rest_framework import status
 from rest_framework.decorators import api_view
-from ..models import Member
+from accounts.models import Member
 from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 import time
 import secrets
-
-from .profile import (
-    change_username,
-    change_description,
-)
 
 from accounts.email.verification import (
     add_key,
     send_email
 )
 
-@api_view(['POST'])
-def change_details(request):
-    # -- Make sure the user is logged in
-    if request.user.is_authenticated is False:
-        return JsonResponse({
-            'status': 'error',
-            'message': 'You are not logged in',
-        }, status=status.HTTP_401_UNAUTHORIZED)
-
-
-    # -- Get the user
-    user = Member.objects.filter(id=request.user.id).first()
-    if user is None:
-        return JsonResponse({
-            'status': 'error',
-            'message': 'You are not logged in',
-        }, status=status.HTTP_401_UNAUTHORIZED)
-
-    # -- Get the data
-    data = request.data
-    if 'description' not in data:
-        return JsonResponse({
-            'status': 'error',
-            'message': 'Missing description',
-        }, status=status.HTTP_400_BAD_REQUEST)
-
-
-    if data['description'] is not None:
-        res = change_description(user, data['description'])
-        if res[0] is False:
-            return JsonResponse({
-                'status': 'error',
-                'message': res[1],
-            }, status=status.HTTP_400_BAD_REQUEST)
-
-    if data['username'] is not None:
-        res = change_username(user, data['username'])
-        if res[0] is False:
-            return JsonResponse({
-                'status': 'error',
-                'message': res[1],
-            }, status=status.HTTP_400_BAD_REQUEST)
-
-
-    return JsonResponse({
-        'status': 'success',
-        'message': 'Details changed',
-    }, status=status.HTTP_200_OK)
-
+from .forms import (
+    compile_objects
+)
 
 
 
@@ -80,13 +29,13 @@ def profile(request):
     context = {
         'user': request.user,
         'api': {
-            'change_details': "profile" + reverse('change_details', urlconf='accounts.profile.urls'),
+            'send_verification': "profile" + reverse_lazy('send_verification'),
+            'resend_verification': "email" + reverse_lazy('resend_key'),
+            'remove_verification': "email" + reverse_lazy('remove_key'),
+            'recent_verification': "email" + reverse_lazy('recent_key'),
+        },
 
-            'send_verification': "profile" + reverse('send_verification', urlconf='accounts.profile.urls'),
-            'resend_verification': "email" + reverse('resend_key', urlconf='accounts.email.urls'),
-            'remove_verification': "email" + reverse('remove_key', urlconf='accounts.email.urls'),
-            'recent_verification': "email" + reverse('recent_key', urlconf='accounts.email.urls'),
-        }
+        'pages': compile_objects(request.user),
     }
 
     # -- Render the profile page

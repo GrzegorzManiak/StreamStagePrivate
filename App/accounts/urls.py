@@ -1,6 +1,5 @@
 from django.urls import path, include
 from .email import email_patterns
-from .profile import profile_patterns
 from .views import (
     validate_token,
     get_token,
@@ -9,7 +8,14 @@ from .views import (
     logout,
 )
 
-from .profile.views import profile
+from .profile.views import (
+    profile,
+    send_verification
+)
+from .profile.forms import (
+    change_basic_details,
+)
+
 
 urlpatterns = [
     # path('signup/', MemberSignUpView.as_view(), name='signup'),
@@ -20,7 +26,10 @@ urlpatterns = [
     path('register/', register, name='register'),
 
     path('email/', include(email_patterns), name='email'),
-    path('profile/', include(profile_patterns), name='profile'),
+
+    path('send_verification/', send_verification, name='send_verification'),
+
+    path('edit/basic_details/', change_basic_details, name='edit_basic_details'),
 
     # -- Authentication
     path('token/', validate_token, name='token'),

@@ -26,7 +26,6 @@
         data-access-level='{{ user.access_level }}'
         data-profile-picture='data:{{ user.profile_picture }}'
 
-        data-change-details='{{api.change_details}}'
         data-csrf-token='{{ csrf_token }}'
 
         data-send-verification='{{ api.send_verification }}'
@@ -294,6 +293,44 @@
                         <!-- 
                             End of Pod - Purchases
                         -->
+
+
+                        <!--
+                            Reviews
+                        -->
+                        <div 
+                            data-pod-status=''
+                            data-pod='reviews'
+                        class='
+                            side-panel-pod
+                            text-light d-flex
+                            align-items-center
+                            justify-content-start
+                        '>
+                            <!-- Icon -->
+                            <div 
+                                class='
+                                    side-panel-pod-icon
+                                    d-flex
+                                    align-items-center
+                                    justify-content-center
+                                '
+                            >
+                                <i class="fa-solid text-justify accordion
+                                    fa-star-sharp-half-stroke
+                                "></i>
+                            </div>
+
+                            <!-- Text -->
+                            <div class='side-panel-pod-text'>
+                                <p class='side-panel-pod-text-text m-0 mb-0'>
+                                    Reviews
+                                </p>
+                            </div>
+                        </div>
+                        <!--
+                            End of Reviews
+                        -->
                     </div>
                 </section>
 
@@ -528,7 +565,7 @@
                                 <article 
                                     class='panel' 
                                     data-panel-type='security'
-                                    data-panel-status=''
+                                    data-panel-status='hidden'
                                 >
                                     <!-- 
                                         The security panel will require 
@@ -617,162 +654,12 @@
                                 <article 
                                     class='panel' 
                                     data-panel-type='profile'
-                                    data-panel-status='hidden'
+                                    data-panel-status=''
+                                    data-form-id='profile'
+                                    data-form-endpoint='{{ pages.profile.endpoint }}'
                                 >
-                                    <!-- Header -->
-                                    <div class="
-                                        mb-5
-                                        justify-content-start
-                                    ">
-                                        <!-- Header -->
-                                        <h1 class="
-                                            fw-bold 
-                                        ">Welcome, {{ user.username }}!</h1>
-
-                                        <!-- Descriptiopn -->
-                                        <p class="
-                                            text-muted
-                                        ">
-                                            Here you can view your profile, edit your details, and change your password.
-                                        </p>
-                                    </div>
-
-                                    <!-- Profile picture -->
-                                    <div class="
-                                        mb-5
-                                        d-flex
-                                        justify-content-center
-                                    ">
-                                        <img 
-                                            src="{{ user.profile_picture }}" 
-                                            alt="Profile picture" 
-                                            class="
-                                                profile-picture
-                                            "
-                                        >
-                                    </div>
-                                    
-
-                                    
-                                    <!-- Username input -->
-                                    <div class="mb-4">
-                                        <label class="form-label" for="username">Username</label>
-                                        <input 
-                                            name="username" 
-                                            id="username" 
-                                            placeholder="Sick name 13" 
-                                            value="{{ user.username }}"
-                                        class="
-                                            form-control 
-                                            form-control-lg
-                                            inp
-                                        ">
-                                    </div>
-
-
-                                    <!-- First and lastname -->
-                                    <div
-                                        class="
-                                            d-flex
-                                            gap-4
-                                        "
-                                    >
-                                        <!-- Firstname -->
-                                        <div class="mb-4">
-                                            <label class="form-label" for="fname">First name</label>
-                                            <input 
-                                                name="fname" 
-                                                id="fname" 
-                                                placeholder="Joe" 
-                                                value="{{ user.first_name }}"
-                                            class="
-                                                form-control 
-                                                form-control-lg
-                                                inp
-                                            ">
-                                        </div>
-
-                                        <!-- Lastname -->
-                                        <div class="mb-4">
-                                            <label class="form-label" for="lname">Last name</label>
-                                            <input 
-                                                name="lname" 
-                                                id="lname" 
-                                                placeholder="Fungus"
-                                                value="{{ user.last_name }}"
-                                            class="
-                                                form-control 
-                                                form-control-lg
-                                                inp
-                                            ">
-                                        </div>
-                                    </div>
-
-
-                                    <!-- Description -->
-                                    <div class="mb-4">
-                                        <label class="form-label" for="bio">Bio</label>
-                                        <textarea 
-                                            name="bio" 
-                                            id="bio" 
-                                            cols="40" rows="5"
-                                            placeholder="I like to eat cheese"
-                                            value="{{ user.description }}"
-                                            class="
-                                                form-control 
-                                                form-control-lg
-                                                inp
-                                            "> 
-                                        </textarea>
-                                    </div>
-
-
-                                    <!-- Save button -->
-                                    <div class="
-                                        text-center
-                                    ">
-                                        <p class='
-                                            mb-4
-                                            fs-5
-                                        '>
-                                            {{ message }}
-                                        </p>
-        
-
-                                        <!-- Buttons -->
-                                        <div class="
-                                            d-flex 
-                                            justify-content-lg-start
-                                            justify-content-center
-                                            flex-column
-                                        ">   
-                                                
-                                            <button 
-                                                type="submit" 
-                                                id="save-btn" 
-                                                class="
-                                                    btn 
-                                                    btn-primary
-                                                    mb-3
-                                                    btn-lg
-                                                    loader-btn
-                                                "
-                                                loader-state='default'
-                                            >   
-                                                <span>
-                                                    <div class='spinner-border' role='status'>
-                                                        <span class='visually-hidden'>Loading...</span>
-                                                    </div>
-                                                </span>
-                                                <p>Save</p>
-                                            </button>
-
-                                        </div>
-                                    </div>
-
-                            
+                                    {{ pages.profile.form.as_p }}
                                 </article>
-
                             </div>
                         </main>
                     </div>

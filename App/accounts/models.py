@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import get_user_model
 from .oauth.oauth import OAuthTypes
+from django_countries.fields import CountryField
+from timezone_field import TimeZoneField
 import uuid
 
 
@@ -12,6 +14,8 @@ class Member(AbstractUser):
     email = models.EmailField("Email", unique=True)
     profile_pic = models.ImageField("Profile Photo", upload_to='member', blank=True)
     description = models.TextField("Description", blank=True)
+    country = CountryField()
+    time_zone = TimeZoneField(default="UTC")
 
     # Access Level for member. 0 for basic. See list of access level codes for other levels.
     access_level = models.SmallIntegerField("Access Level", default=0)

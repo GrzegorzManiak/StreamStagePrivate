@@ -2,6 +2,7 @@ import { get_panel } from '../authentication/core/panel_manager';
 import { create_toast } from '../toasts';
 import { attach_event_listeners, get_pod } from './core/panels';
 import { manage_security_panel } from './core/security';
+import { handle_forms } from './forms/handler';
 import { PanelType } from './index.d';
 
 export function sleep(ms: number) {
@@ -32,7 +33,6 @@ export const configuration = {
     userlast: get_or_error<string>(config, 'data-userlast'),
     access_level: get_or_error<number>(config, 'data-access-level'),
     profile_picture: get_or_error<string>(config, 'data-profile-picture'),
-    change_details: get_or_error<string>(config, 'data-change-details'),
     csrf_token: get_or_error<string>(config, 'data-csrf-token'),
 
     send_verification: get_or_error<string>(config, 'data-send-verification'),
@@ -49,3 +49,7 @@ attach_event_listeners();
 // -- Attach to all panels
 let security_panel = get_pod('security');
 if (security_panel) manage_security_panel(security_panel);
+
+
+// -- Manage all forms
+handle_forms();

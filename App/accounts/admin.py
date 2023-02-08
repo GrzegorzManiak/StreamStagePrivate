@@ -6,7 +6,7 @@ from .models import Member, StreamerProfile, oAuth2
 # Register your models here.
 class MemberAdmin(UserAdmin):
     model = Member
-    list_display = ['username','email','is_staff',]
+    list_display = ['username','email','is_staff', 'country', 'time_zone']
     
 
 admin.site.register(Member, MemberAdmin)

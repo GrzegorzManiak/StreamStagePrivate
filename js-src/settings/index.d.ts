@@ -66,3 +66,11 @@ export interface RecentVerificationError {
 }
 
 export type RecentVerificationResponse = RecentVerificationSuccess | RecentVerificationError;
+
+
+
+export interface Form {
+    element: Element,
+    type: string,
+    endpoint: string,
+}
