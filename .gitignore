@@ -153,3 +153,6 @@ pyvenv.cfg
 
 node_modules/
 *.ts.map
+
+# db
+db.sqlite3
