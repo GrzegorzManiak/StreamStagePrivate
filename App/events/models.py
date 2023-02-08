@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from django_countries.fields import CountryField
 import uuid
 
 class Category(models.Model):
@@ -27,7 +28,9 @@ class EventMedia(models.Model):
         return self.description[:30]
 
 class EventShowing(models.Model):
-    location = models.CharField(blank=True, max_length=64)
+    country = CountryField()
+    city = models.CharField(max_length=25, blank=True)
+    venue = models.CharField(max_length=50, blank=True)
     time = models.DateTimeField()
 
     class Meta:
@@ -44,6 +47,7 @@ class Event(models.Model):
     event_id = models.CharField(primary_key=True, unique=True, max_length=32) # randomly generated 8 character ID
     title = models.TextField("Title", default="New Event")
     description = models.TextField("Description", blank=True, max_length=3096)
+    over_18s = models.BooleanField(default=False)
     # References member, but only "streamers" will be allowed to have an event
     streamer = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     categories = models.ManyToManyField(to=Category)
@@ -66,6 +70,7 @@ class EventReview(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     likes = models.IntegerField(default=0)
+    rating = models.SmallIntegerField()
 
     class Meta:
         verbose_name = 'Event Review'
