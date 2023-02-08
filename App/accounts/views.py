@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import logout as dj_logout, login as dj_login, authenticate
+from django.contrib.auth import logout as dj_logout, login as dj_login
 from django.urls import reverse_lazy, reverse
-from django.contrib.auth.hashers import check_password, make_password
 from django.http.response import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework import status
@@ -9,7 +8,7 @@ from accounts.create import create_account_oauth
 from .auth_lib import authenticate_key, generate_key
 from .oauth.oauth import format_providers, get_oauth_data
 from .models import Member
-from .email import send_email
+from .email.registration import send_email
 
 
 
@@ -22,25 +21,25 @@ def login(request):
     # -- Make sure that the user isint already logged in
     if request.user.is_authenticated:
         return redirect(
-            reverse_lazy('member_profile', urlconf='accounts.urls')
+            reverse_lazy('member_profile')
         )
 
     # -- Construct the context
     context = {
         'providers': format_providers(),
 
-        'token': reverse('token', urlconf='accounts.urls'),
-        'get_token': reverse('get_token', urlconf='accounts.urls'),
-        'register': reverse('register', urlconf='accounts.urls'),
-        'login': reverse('login', urlconf='accounts.urls'),
+        'token': reverse('token'),
+        'get_token': reverse('get_token'),
+        'register': reverse('register'),
+        'login': reverse('login'),
 
         # -- Security
         'has_tfa': False,
 
         # -- Email
-        'email_recent': "/email" + reverse('reg_recent', urlconf='accounts.email.urls'),
-        'email_verify': "/email" + reverse('reg_verify', urlconf='accounts.email.urls'),
-        'email_resend': "/email" + reverse('reg_resend', urlconf='accounts.email.urls'),
+        'email_recent': reverse('reg_recent'),
+        'email_verify': reverse('reg_verify'),
+        'email_resend': reverse('reg_resend'),
     }
     
     # -- Render the login page
@@ -149,22 +148,22 @@ def register_get(request):
     # -- Make sure that the user isint already logged in
     if request.user.is_authenticated:
         return redirect(
-            reverse_lazy('member_profile', urlconf='accounts.urls')
+            reverse_lazy('member_profile')
         )
 
     # -- Construct the context
     context = {
         'providers': format_providers(),
 
-        'token': reverse('token', urlconf='accounts.urls'),
-        'get_token': reverse('get_token', urlconf='accounts.urls'),
-        'register': reverse('register', urlconf='accounts.urls'),
-        'login': reverse('login', urlconf='accounts.urls'),
+        'token': reverse('token'),
+        'get_token': reverse('get_token'),
+        'register': reverse('register'),
+        'login': reverse('login'),
 
         # -- Email
-        'email_recent': "/email" + reverse('reg_recent', urlconf='accounts.email.urls'),
-        'email_verify': "/email" + reverse('reg_verify', urlconf='accounts.email.urls'),
-        'email_resend': "/email" + reverse('reg_resend', urlconf='accounts.email.urls'),
+        'email_recent': reverse('reg_recent'),
+        'email_verify': reverse('reg_verify'),
+        'email_resend': reverse('reg_resend'),
     }
 
     # -- Render the register page

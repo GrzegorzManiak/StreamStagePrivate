@@ -1,8 +1,5 @@
 from django import forms
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render, redirect
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse
 from django.apps import apps
 from rest_framework.decorators import api_view
 from django.http.response import JsonResponse
@@ -68,7 +65,7 @@ def get_change_basic_details_form(member):
 
     # -- Get the form for the user    
     return {
-        'endpoint': reverse('edit_basic_details', urlconf='accounts.urls'),
+        'endpoint': reverse('edit_basic_details'),
         'form': ChangeBasicDetailsForm(instance=member),
     }
 

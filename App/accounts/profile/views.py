@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from accounts.models import Member
 from django.shortcuts import render, redirect
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse_lazy
 import time
 import secrets
 

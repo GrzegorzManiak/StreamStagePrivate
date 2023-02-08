@@ -7,7 +7,6 @@
 from StreamStage.mail import send_email as sm
 from accounts.oauth.oauth import link_oauth_account
 from django.http.response import JsonResponse
-from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from rest_framework import status
 from ..models import Member

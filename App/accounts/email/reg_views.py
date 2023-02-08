@@ -2,7 +2,7 @@ from rest_framework.decorators import api_view
 from django.http.response import JsonResponse
 from rest_framework import status
 from .registration import verify, recent, resend, temp_users
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 
 
 """

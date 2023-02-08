@@ -3,7 +3,7 @@ from django.contrib.auth.hashers import make_password
 from django.http.response import JsonResponse
 from rest_framework import status
 
-from .email import send_email
+from .email.registration import send_email
 from .models import Member
 
 """
