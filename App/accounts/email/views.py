@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view
 
 from .verification import (
     check_if_verified_recently,
+    get_key_by_resend_key,
     get_key,
     regenerate_key,
     remove_key,
@@ -62,7 +63,7 @@ def resend_key_view(request):
         }, status=status.HTTP_400_BAD_REQUEST)
 
     # -- Get the key data
-    key_data = get_key(key)
+    key_data = get_key_by_resend_key(key)
 
     # -- Check if they are allowed to change the email
     if key_data is None:

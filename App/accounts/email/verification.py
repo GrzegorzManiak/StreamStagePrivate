@@ -231,7 +231,7 @@ def regenerate_key(
     if time.time() - key['created'] > key['ttl']: return None
 
     # -- Add the new key to the store
-    key['user'].email = new_email if new_email is not None else key['user'].email
+    key['user']['email'] = new_email if new_email is not None else key['user']['email']
     new_key = add_key(key['user'], key['callback'], key['ttl'])
 
     # -- Remove the old key from the store
