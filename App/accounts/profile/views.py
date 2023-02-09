@@ -1,21 +1,16 @@
+import secrets
+import time
+
 from django.http.response import JsonResponse
+from django.shortcuts import redirect, render
+from django.urls import reverse_lazy
 from rest_framework import status
 from rest_framework.decorators import api_view
+
+from accounts.email.verification import add_key, send_email
 from accounts.models import Member
-from django.shortcuts import render, redirect
-from django.urls import reverse, reverse_lazy
-import time
-import secrets
 
-from accounts.email.verification import (
-    add_key,
-    send_email
-)
-
-from .forms import (
-    compile_objects
-)
-
+from .forms import compile_objects
 
 
 @api_view(['GET'])

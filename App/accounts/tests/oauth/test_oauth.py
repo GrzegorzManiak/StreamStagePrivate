@@ -1,17 +1,18 @@
-from django.test import TestCase
 from django.contrib.auth import get_user_model
+from django.test import TestCase
+
 from accounts.models import oAuth2
 from accounts.oauth.oauth import (
-    check_oauth_key,
-    generate_oauth_key,
+    OAuthTypes,
     authentication_reqests,
+    check_oauth_key,
     clean_key_store,
     format_instructions,
-    OAuthTypes,
-
+    generate_oauth_key,
     get_oauth_data,
-    remove_oauth_key
+    remove_oauth_key,
 )
+
 
 class OAuthTest(TestCase):
     def setUp(self):

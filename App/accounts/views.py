@@ -1,16 +1,15 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import logout as dj_logout, login as dj_login, authenticate
-from django.urls import reverse_lazy, reverse
-from django.contrib.auth.hashers import check_password, make_password
+from django.contrib.auth import login as dj_login, logout as dj_logout
 from django.http.response import JsonResponse
-from rest_framework.decorators import api_view
+from django.shortcuts import redirect, render
+from django.urls import reverse, reverse_lazy
 from rest_framework import status
-from accounts.create import create_account_oauth
-from .auth_lib import authenticate_key, generate_key
-from .oauth.oauth import format_providers, get_oauth_data
-from .models import Member
-from .email import send_email
+from rest_framework.decorators import api_view
+from django.db.models.functions import Lower
 
+from accounts.auth_lib import authenticate_key, generate_key
+from accounts.email.verification import send_email, add_key
+from accounts.models import Member
+from accounts.oauth.oauth import format_providers, get_oauth_data
 
 
 """
@@ -22,25 +21,25 @@ def login(request):
     # -- Make sure that the user isint already logged in
     if request.user.is_authenticated:
         return redirect(
-            reverse_lazy('member_profile', urlconf='accounts.urls')
+            reverse_lazy('member_profile')
         )
 
     # -- Construct the context
     context = {
         'providers': format_providers(),
 
-        'token': reverse('token', urlconf='accounts.urls'),
-        'get_token': reverse('get_token', urlconf='accounts.urls'),
-        'register': reverse('register', urlconf='accounts.urls'),
-        'login': reverse('login', urlconf='accounts.urls'),
+        'token': reverse('token'),
+        'get_token': reverse('get_token'),
+        'register': reverse('send_reg_verification'),
+        'login': reverse('login'),
 
         # -- Security
         'has_tfa': False,
 
         # -- Email
-        'email_recent': "/email" + reverse('reg_recent', urlconf='accounts.email.urls'),
-        'email_verify': "/email" + reverse('reg_verify', urlconf='accounts.email.urls'),
-        'email_resend': "/email" + reverse('reg_resend', urlconf='accounts.email.urls'),
+        'email_recent': reverse('recent_key'),
+        'email_verify': reverse('verify_key'),
+        'email_resend': reverse('resend_key'),
     }
     
     # -- Render the login page
@@ -52,119 +51,31 @@ def login(request):
 
 
 
-
-"""
-    This function will be used to register a 
-    user, the client can provide the oauth data
-    or the email and password
-"""
-@api_view(['POST', 'GET'])
-def register(request):
-    match request.method:
-        case 'POST': return register_post(request)
-        case 'GET': return register_get(request)
-
-    return JsonResponse({
-        'message': 'Invalid method'
-    }, status=status.HTTP_400_BAD_REQUEST)
-
-
-def register_post(request):
-    # -- Make sure that the user isint already logged in
-    if request.user.is_authenticated:
-        return JsonResponse({
-            'message': 'You are already logged in'
-        }, status=status.HTTP_400_BAD_REQUEST)
-
-
-    # -- Check if have an authorization header
-    oauth_token = None
-    if 'Authorization' in request.headers:
-        oauth_token = request.headers['Authorization']
-
-        # -- Validate the token
-        if get_oauth_data(oauth_token) is None:
-            return JsonResponse({
-                'message': 'Invalid Authorization header, might be expired',
-                'status': 'error'
-            }, status=status.HTTP_400_BAD_REQUEST)
-
-
-    # -- Check the json data
-    if 'email' not in request.data or 'password' not in request.data or 'username' not in request.data:
-        return JsonResponse({
-            'message': 'Missing email or password or username',
-            'status': 'error'
-        }, status=status.HTTP_400_BAD_REQUEST)
-
-    # -- Get the email and password
-    email = request.data['email'].lower()
-    password = request.data['password']
-    username = request.data['username'].lower()
-
-
-    # -- Check if an oauth token was provided
-    #    and if its email is verifiedq
-    if oauth_token is not None:
-
-        # -- Get the oauth data
-        oauth_data = get_oauth_data(oauth_token)
-
-        # -- Check if the email is verified
-        if oauth_data['data']['email_verified'] is False:
-            return send_email(email, username, password, oauth_token)
-
-        else:
-            # -- Get the email from the oauth data
-            email = oauth_data['data']['email'].lower()
-
-            # -- Get the oauth data 
-            new_member = create_account_oauth(oauth_token, email, username, password)
-            
-            # -- If the account was not created successfully
-            if isinstance(new_member, JsonResponse):
-                return new_member
-
-            # -- Generate the token for the user
-            token = generate_key(new_member)
-
-            return JsonResponse({
-                'message': 'Account created successfully',
-                'token': token,
-                'status': 'success'
-            }, status=status.HTTP_201_CREATED)
-    
-
-    # -- If we dont have an oauth token
-    else: return send_email(email, username, password)
-
-        
-
-
 """
     This is the get method for the register view
     that is used to render the register page
 """
-def register_get(request):
+@api_view(['GET'])
+def register(request):
     # -- Make sure that the user isint already logged in
     if request.user.is_authenticated:
         return redirect(
-            reverse_lazy('member_profile', urlconf='accounts.urls')
+            reverse_lazy('member_profile')
         )
 
     # -- Construct the context
     context = {
         'providers': format_providers(),
 
-        'token': reverse('token', urlconf='accounts.urls'),
-        'get_token': reverse('get_token', urlconf='accounts.urls'),
-        'register': reverse('register', urlconf='accounts.urls'),
-        'login': reverse('login', urlconf='accounts.urls'),
+        'token': reverse('token'),
+        'get_token': reverse('get_token'),
+        'register': reverse('send_reg_verification'),
+        'login': reverse('login'),
 
         # -- Email
-        'email_recent': "/email" + reverse('reg_recent', urlconf='accounts.email.urls'),
-        'email_verify': "/email" + reverse('reg_verify', urlconf='accounts.email.urls'),
-        'email_resend': "/email" + reverse('reg_resend', urlconf='accounts.email.urls'),
+        'email_recent': reverse('recent_key'),
+        'email_verify': reverse('verify_key'),
+        'email_resend': reverse('resend_key'),
     }
 
     # -- Render the register page
@@ -266,7 +177,8 @@ def get_token(request):
 
     # -- Probably a username
     else:
-        try: user = Member.objects.get(username=emailorusername.lower())
+        # -- We need to find the user by username even if they are in different cases
+        try: user = Member.objects.get(username__iexact=emailorusername)
         except Member.DoesNotExist:
             return JsonResponse({
                 'message': 'Invalid credentials',

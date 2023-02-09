@@ -1,7 +1,8 @@
+import requests
+
 from StreamStage import secrets
 from accounts.oauth.types import OAuthRespone
 
-import requests
 
 class GoogleUser():
     def __init__(

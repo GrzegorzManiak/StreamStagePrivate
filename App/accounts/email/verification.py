@@ -6,10 +6,13 @@
 """
 
 # -- Imports
-from StreamStage.mail import send_email as sm
-from ..models import Member
 import secrets
 import time
+
+from StreamStage.mail import send_email as sm
+
+from ..models import Member
+
 
 REMOVE_AFTER = 60 * 60 * 24 * 7
 
@@ -41,7 +44,12 @@ recently_verified = []
     a touple, the first item is the key, the second item
     is the resend key
 """
-def add_key(user: Member, callback, ttl = REMOVE_AFTER) -> tuple[str, str, str]:
+def add_key(
+    user: Member, 
+    callback, 
+    email_change_callback = None,
+    ttl = REMOVE_AFTER
+) -> tuple[str, str, str]:
     # -- Create the keys
     key = secrets.token_urlsafe(32)
     resend_key = secrets.token_urlsafe(32)
@@ -53,8 +61,10 @@ def add_key(user: Member, callback, ttl = REMOVE_AFTER) -> tuple[str, str, str]:
         'user': user,
         'created': time.time(),
         'callback': callback,
+        'email_change_callback': email_change_callback,
         'verify_key': verify_key,
         'ttl': ttl,
+        'allow_email_change': email_change_callback is not None,
     }
 
     # -- Add the resend key to the resend key store
@@ -188,7 +198,7 @@ def send_email(
     else: 
         try:
             sm(
-                key['user'].email,
+                key['user']['email'],
                 'Verification Link',
                 message,
             )
@@ -207,7 +217,10 @@ def send_email(
         - We will need to remove the old key from the store
         - We'll have to update the resend key store
 """
-def regenerate_key(resend_key: str) -> dict or None:
+def regenerate_key(
+    resend_key: str,
+    new_email: str = None,
+) -> dict or None:
     # -- Get the key from the store
     key = get_key_by_resend_key(resend_key)
 
@@ -218,6 +231,7 @@ def regenerate_key(resend_key: str) -> dict or None:
     if time.time() - key['created'] > key['ttl']: return None
 
     # -- Add the new key to the store
+    key['user']['email'] = new_email if new_email is not None else key['user']['email']
     new_key = add_key(key['user'], key['callback'], key['ttl'])
 
     # -- Remove the old key from the store
