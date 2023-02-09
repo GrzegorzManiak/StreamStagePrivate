@@ -9,6 +9,7 @@ from django.urls import reverse, reverse_lazy
 from rest_framework.decorators import api_view
 
 from .google import Google
+from .github import Github
 from .types import OAuthRespone, OAuthTypes
 
 
@@ -206,6 +207,7 @@ def determine_app(oauth_service: OAuthTypes):
     # -- Determine the app
     match oauth_service:
         case OAuthTypes.GOOGLE: app = Google
+        case OAuthTypes.GITHUB: app = Github
 
 
     @api_view(['GET'])
@@ -248,7 +250,7 @@ def determine_app(oauth_service: OAuthTypes):
         key = generate_oauth_key(
             oauth_service,
             choosen_app.user.serialize(),
-            choosen_app.user.get_id()
+            str(choosen_app.user.get_id())
         )
 
         # -- Format the instructions

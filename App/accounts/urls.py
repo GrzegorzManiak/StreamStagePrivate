@@ -41,7 +41,7 @@ urlpatterns = [
     # -- OAuth2.0
     path('sso/google/', determine_app(OAuthTypes.GOOGLE), name='google'),
     path('sso/google/', determine_app(OAuthTypes.GOOGLE), name='discord'),
-    path('sso/google/', determine_app(OAuthTypes.GOOGLE), name='github'),
+    path('sso/github/', determine_app(OAuthTypes.GITHUB), name='github'),
 
 
     # EMail Verification

@@ -5,7 +5,7 @@ from .models import Event, EventMedia, Category, EventShowing, EventReview
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-    list_display = [ 'event_id', 'title', 'description', 'streamer' ]
+    list_display = [ 'event_id', 'title', 'description', 'over_18s', 'streamer']
 
 @admin.register(EventMedia)
 class EventMediaAdmin(admin.ModelAdmin):
@@ -17,9 +17,9 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(EventShowing)
 class EventShowingAdmin(admin.ModelAdmin):
-    list_display = [ 'location', 'time' ]
+    list_display = [ 'country', 'city', 'venue', 'time' ]
 
 @admin.register(EventReview)
 class EventReviewAdmin(admin.ModelAdmin):
-    list_display = ['review_id', 'author', 'title', 'body']
+    list_display = ['review_id', 'author', 'title', 'body', 'likes', 'rating']
 
