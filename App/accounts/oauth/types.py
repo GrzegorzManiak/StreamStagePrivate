@@ -48,5 +48,7 @@ class OAuthTypes():
             case OAuthTypes.GOOGLE:
                 return OAUTH_PROVIDERS['google']['ttl']
             
+            case OAuthTypes.GITHUB:
+                return OAUTH_PROVIDERS['github']['ttl']
         return 0
 
