@@ -192,13 +192,22 @@ def send_email(
 
     # -- Create the message
     message = f""" Your link is https://me.streamstage.co/email/verify?token={key['key']}"""
-
+    print(message)  
+    
     # -- Send the email
     if test: return (True, message)
     else: 
         try:
+            email = ''
+
+            if key['user'].email is not None:
+                email = key['user'].email
+
+            elif key['user']['email'] is not None:
+                email = key['user']['email']
+
             sm(
-                key['user']['email'],
+                email,
                 'Verification Link',
                 message,
             )

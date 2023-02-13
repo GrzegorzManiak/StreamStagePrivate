@@ -24,10 +24,10 @@ def profile(request):
     context = {
         'user': request.user,
         'api': {
-            'send_verification': "profile" + reverse_lazy('send_verification'),
-            'resend_verification': "email" + reverse_lazy('resend_key'),
-            'remove_verification': "email" + reverse_lazy('remove_key'),
-            'recent_verification': "email" + reverse_lazy('recent_key'),
+            'send_verification': reverse_lazy('send_verification'),
+            'resend_verification': reverse_lazy('resend_key'),
+            'remove_verification': reverse_lazy('remove_key'),
+            'recent_verification': reverse_lazy('recent_key'),
         },
 
         'pages': compile_objects(request.user),
