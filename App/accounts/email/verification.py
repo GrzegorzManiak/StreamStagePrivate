@@ -232,7 +232,7 @@ def regenerate_key(
 ) -> dict or None:
     # -- Get the key from the store
     key = get_key_by_resend_key(resend_key)
-
+    
     # -- Check if the key is valid
     if key is None: return None
 
@@ -240,7 +240,15 @@ def regenerate_key(
     if time.time() - key['created'] > key['ttl']: return None
 
     # -- Add the new key to the store
-    key['user']['email'] = new_email if new_email is not None else key['user']['email']
+    if new_email is not None:
+        # member.email
+        if key['user'].email is not None:
+            key['user'].email = new_email
+
+        # member['email']
+        elif key['user']['email'] is not None:
+            key['user']['email'] = new_email
+            
     new_key = add_key(key['user'], key['callback'], key['ttl'])
 
     # -- Remove the old key from the store

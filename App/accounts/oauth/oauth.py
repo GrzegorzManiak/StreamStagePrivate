@@ -36,8 +36,6 @@ def format_instructions(
 
     has_oauth_id = False
     if exisiting_link is not None:
-        # Make sure that the user matches
-        if exisiting_link.oauth_type == oauth_type:
             has_oauth_id = True
 
 

@@ -93,13 +93,6 @@ class OAuthTest(TestCase):
 
 
     def test_format_instructions(self):
-        # -- Generate a key
-        key = generate_oauth_key(
-            oauth_type=OAuthTypes.GOOGLE,
-            data={},
-            oauth_id=self.oauth_id
-        )
-
         # -- Add key to oauth model
         oAuth2.objects.create(
             user=self.member,
@@ -107,12 +100,18 @@ class OAuthTest(TestCase):
             oauth_id=self.oauth_id
         )
 
+        # -- ReGenerate a key
+        key = generate_oauth_key(
+            oauth_type=OAuthTypes.GOOGLE,
+            data={},
+            oauth_id=self.oauth_id
+        )
+
         # -- Generate instructions
         instructions = format_instructions(
-            email=self.member.email,
             email_verified=True,
             oauth_type=OAuthTypes.GOOGLE,
-            oauth_id=key
+            oauth_id=self.oauth_id
         )
 
         # -- Check if the instructions are correct
@@ -152,16 +151,17 @@ class OAuthTest(TestCase):
             oauth_id=self.oauth_id
         )
 
+        key_data = get_oauth_data(key)
+
         # -- Add key to oauth model
         oAuth2.objects.create(
             user=self.member,
             oauth_type=OAuthTypes.GOOGLE,
-            oauth_id=str(key['oauth_id'])
+            oauth_id=str(key_data['oauth_id'])
         )
 
         # -- Generate instructions
         instructions = format_instructions(
-            email=self.member.email,
             email_verified=True,
             oauth_type=None,
             oauth_id=key
