@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block metadescription %}
+  Register and start streaming.
+{% endblock %}
+
+{% block title %}
+    Register - StreamStage
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+    
+    <div class = '
+        container 
+        mt-4
+        d-flex
+        justify-content-center
+        align-items-center
+    '>
+
+        <div class = '
+            size-limiter
+        '>
+            <div class = '
+                rounded
+            '>
+                <div class = '
+                    row 
+                    g-0
+                    main-content
+                '>
+                    <main class="
+                        col-12
+                        d-flex 
+                        align-items-center
+                    ">
+                        <div class = "
+                            card-body 
+                            p-5
+                            text-light
+                            smoother
+                        ">
+
+                            <!-- Header -->
+                            <div class="
+                                mb-5
+                                justify-content-start
+                            ">
+                                <!-- Header -->
+                                <h1 class="
+                                    fw-bold 
+                                ">Stream Stage</h1>
+
+                                <!-- Slogan -->
+                                <p class="
+                                    text-muted
+                                ">
+                                    Dont ever miss out on another live event ever again.
+                                </p>
+                            </div>
+
+                    
+
+                            <article class='panel' data-panel-type='email-wait'>
+                                <div class="
+                                    text-center
+                                ">
+                                    <p class='
+                                        mb-4
+                                        fs-5
+                                    '>
+                                        {{ message }}
+                                    </p>
+       
+
+                                    <!-- Buttons -->
+                                    <div class="
+                                        d-flex 
+                                        justify-content-lg-start
+                                        justify-content-center
+                                        flex-column
+                                        mb-5
+                                    ">   
+                                        
+                                        <button 
+                                            type="resend" 
+                                            name="resend"
+                                            id="resend" 
+                                            class="
+                                                btn 
+                                                btn-primary
+                                                mb-3
+                                                btn-lg
+                                            "
+                                            onclick="location.href = '{% url 'member_profile' %}';"
+                                        >   
+                                            Return
+                                        </button>
+
+                                    </div>
+                                </div>
+
+                            </article>
+
+
+                            <!-- Divider -->
+                            <hr>
+
+                            <div class="
+                                text-center
+                                text-muted
+                            ">
+
+                                <!-- Tos, Privacy policy -->
+                                <p>
+                                    By proceeding with the "Loging in" or "Creation" of an account, you acknowledge and agree to abide by the
+                                    <a href="">Terms of Service</a> and 
+                                    <a href="#!">Privacy Policy</a>.
+                                </p>
+
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

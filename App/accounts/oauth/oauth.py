@@ -1,25 +1,21 @@
-from django.http.response import JsonResponse
 from django.http import HttpResponseRedirect
 from rest_framework.decorators import api_view
-from rest_framework import status
-from django.urls import reverse_lazy
-
-from django.contrib.auth import get_user_model
+from django.urls import reverse, reverse_lazy
 from django.apps import apps
 
 from .google import Google
 from .types import OAuthTypes, OAuthRespone
 
 import secrets
+import base64
 import time
-
+import json
 
 """
     This function returns a formated message instructing the
     Users browser on how to proceed.
 """
 def format_instructions(
-    email: str,
     email_verified: bool,
     oauth_type: OAuthTypes,
     oauth_id: str
@@ -32,26 +28,28 @@ def format_instructions(
 
     # -- Check if the user has an oauth id
     exisiting_link = oauth_model.objects.filter(
-        id=str(oauth_id),
+        oauth_id=str(oauth_id),
         oauth_type=oauth_type
     ).first()
 
-    # -- Check if the user has an account
-    member = get_user_model().objects.filter(email=email).first()
+    print(exisiting_link, oauth_id, oauth_type)
 
     has_oauth_id = False
-    if exisiting_link is not None and member is not None:
+    if exisiting_link is not None:
         # Make sure that the user matches
-        if exisiting_link.user == member and exisiting_link.oauth_type == oauth_type:
+        if exisiting_link.oauth_type == oauth_type:
             has_oauth_id = True
 
 
     # -- Return the instructions
     return {
-        'has_account': member is not None,
+        'has_account': exisiting_link is not None,
         'email_verified': email_verified,
         'oauth_type': oauth_type,
         'can_authenticate': has_oauth_id,
+        'needs_username': has_oauth_id is False,
+        'needs_password': has_oauth_id is False,
+        'needs_email': email_verified is False,
     }
 
 
@@ -75,16 +73,18 @@ authentication_reqests = {}
 def generate_oauth_key(
     oauth_type: OAuthTypes,
     data: dict,
+    oauth_id: str,
     created: float = time.time()
 ) -> str:
     # -- Generate a key
-    key = secrets.token_urlsafe(32)
+    key = f'OAUTH:{oauth_type}:{secrets.token_urlsafe(32)}'
 
     # -- Add the key to the list
     authentication_reqests[key] = {
         'type': oauth_type,
         'data': data,
-        'created': created
+        'created': created,
+        'oauth_id': oauth_id
     }
 
     # -- Return the key
@@ -112,7 +112,70 @@ def check_oauth_key(key: str) -> bool:
         del authentication_reqests[key]
         return False
 
+    
+    # -- Now make sure that the key exists in
+    #    the oauth model
+    oauth_model = apps.get_model('accounts.oAuth2')
+
+    # -- Check if the key exists
+    if oauth_model.objects.filter(
+        oauth_id=authentication_reqests[key]['oauth_id'],
+        oauth_type=authentication_reqests[key]['type']
+    ).first() is None:
+        return False
+
     # -- Key is valid
+    return True
+
+
+
+"""
+    Get the user from the ID not the KEY
+    very important distinction.
+"""
+def get_oauth_user(oauth_id: str, oauth_type: OAuthTypes):
+    # -- Get the oauth model
+    oauth_model = apps.get_model('accounts.oAuth2')
+
+    # -- Get the user
+    user = oauth_model.objects.filter(
+        oauth_id=oauth_id,
+        oauth_type=oauth_type
+    ).first()
+
+    # -- Return the user
+    return user.user
+
+
+
+"""
+    Get the oauth data from the key
+"""
+def get_oauth_data(key: str) -> dict or None:
+    # -- Check if the key is valid
+    if key not in authentication_reqests:
+        return None
+
+    # -- Get the data
+    data = authentication_reqests[key]
+
+    # -- Return the data
+    return data
+
+
+
+"""
+    Remove the key from the list
+"""
+def remove_oauth_key(key: str) -> bool:
+    # -- Check if the key is valid
+    if key not in authentication_reqests:
+        return False
+
+    # -- Remove the key
+    del authentication_reqests[key]
+
+    # -- Return true since the key was removed
     return True
 
 
@@ -150,8 +213,7 @@ def determine_app(oauth_service: OAuthTypes):
     def sso(request):
         # -- Check if the user is already authenticated
         if request.user.is_authenticated:
-            return reverse_lazy('login')
-        
+            return reverse('login')
 
         # -- Get the code from the request
         #    And if its none, just redirect
@@ -167,14 +229,18 @@ def determine_app(oauth_service: OAuthTypes):
         # -- Get the access token
         res = choosen_app.get_access_token()
         if res != OAuthRespone.SUCCESS:
-            return JsonResponse({'message': str(res)}, 
-            status=status.HTTP_400_BAD_REQUEST)
+            response = HttpResponseRedirect(reverse('login', urlconf='accounts.urls'))
+            response.set_cookie('oauth_error', str(res))
+
+            return response
 
         # -- Get the user info
         res = choosen_app.get_userinfo()
         if res != OAuthRespone.SUCCESS:
-            return JsonResponse({'message': str(res)}, 
-            status=status.HTTP_400_BAD_REQUEST)
+            response = HttpResponseRedirect(reverse('login', urlconf='accounts.urls'))
+            response.set_cookie('oauth_error', str(res))
+
+            return response
 
 
         # -- Generate a reference key
@@ -182,21 +248,86 @@ def determine_app(oauth_service: OAuthTypes):
         #    User later on
         key = generate_oauth_key(
             oauth_service,
-            choosen_app.user.serialize()
+            choosen_app.user.serialize(),
+            choosen_app.user.get_id()
         )
 
-
-        # -- Return success
-        return JsonResponse({
+        # -- Format the instructions
+        instructions = {
             'message': 'Success',
             'user': choosen_app.user.serialize(),
             'token': key,
             'instructions': format_instructions(
-                choosen_app.user.get_email(),
                 choosen_app.user.get_is_verified(),
                 oauth_service,
                 choosen_app.user.get_id()
             )
-        }, status=status.HTTP_200_OK)
+        }
+
+        # -- Convert the instructions to json
+        instructions = json.dumps(instructions)
+        enocded_instructions = base64.b64encode(instructions.encode('utf-8')).decode('utf-8')
+
+        # -- Return the instructions
+        return HttpResponseRedirect(
+            reverse_lazy(
+                'login', 
+                urlconf='accounts.urls',
+            ) + f'?instructions={enocded_instructions}'
+        )
 
     return sso
+
+
+
+"""
+    This function formats all available
+    oauth options for django templates to use
+"""
+def format_providers():
+
+    # -- Format the providers
+    providers = []
+    for provider in OAuthTypes.choices:
+        providers.append({
+            'name': provider[1],
+            'id': provider[1].lower(),
+            'url': reverse(provider[1].lower())
+        })
+
+    return providers
+
+
+
+"""
+    This function links the user to the oauth
+    account
+"""
+def link_oauth_account(user, oauth_key: str):
+    # -- Get the oauth data
+    oauth_data = get_oauth_data(oauth_key)
+
+    # -- Check if the key is valid
+    if oauth_data == None:
+        return False
+
+    # -- Make sure the user is valid
+    if user == None:
+        return False
+
+    # -- Remove the key
+    remove_oauth_key(oauth_key)
+
+    # -- Get the oauth model
+    oauth_model = apps.get_model('accounts.oAuth2')
+
+    try:
+        # -- Create the oauth model
+        oauth_model.objects.create(
+            user=user,
+            oauth_id=oauth_data['oauth_id'],
+            oauth_type=oauth_data['type']
+        )
+
+    except:
+        return False

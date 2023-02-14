@@ -1,0 +1,163 @@
+body {
+    background-color: var(--theme-secondary-color);
+    color: var(--font-color);
+}
+
+.main-content {
+    height: 100vh;
+}
+
+.size-limiter {
+    width: 55%;
+    min-width: 400px;
+    max-width: 60rem;
+}
+
+.smoother {
+    transition: height 0.3s ease-in-out;
+}
+
+.fill {
+    /* Image should use all of elemnt */
+    object-fit: cover;
+}
+
+
+.card-body {
+    background-color: var(--theme-secondary-color)!important;
+    border-radius: 1rem;
+}
+
+/* Inputs */
+.inp {
+    border: 2px solid!important;
+    border-color: var(--accent-color)!important;
+    background-color: var(--theme-color-secondary)!important;
+
+    color: var(--font-color)!important;
+}
+
+[data-strength="0"] {
+    border-color: #ff4340!important;
+}
+
+[data-strength="1"] {
+    border-color: #ff8040!important;
+}
+
+[data-strength="2"] {
+    border-color: #ecff40!important;
+}
+
+[data-strength="3"] {
+    border-color: #40ff53!important;
+}
+
+.text-muted {
+    color: var(--muted-font-color)!important;
+}
+
+hr {
+    border-top: 1px solid var(--accent-color)!important;
+}
+
+
+/* 
+    requirements animation, should only appear 
+    when the user is clicked onto a field that
+    requires a certain input, eg. name, password
+*/
+@keyframes requirements {
+    0% {
+        height: 0px;
+        opacity: 0;
+    }
+    100% {
+        height: 100%;
+        opacity: 1;
+    }
+}
+
+.requirements {
+    display: none;
+    animation: requirements 0.3s ease-in-out;
+}
+
+.requirements li {
+    transition: color 0.3s ease-in-out;
+}
+
+/* On focus */
+#password:focus ~ .requirements, 
+#username:focus + .requirements {
+    display: block;
+}
+
+
+/* 
+    data-error-x 
+    for every error that is displayed,
+    the x represents the name of the error 
+*/
+[data-error-length=''] ~ .requirements .length,
+[data-error-number=''] ~ .requirements .number,
+[data-error-spaces=''] ~ .requirements .spaces,
+[data-error-uppercase=''] ~ .requirements .uppercase,
+[data-error-lowercase=''] ~ .requirements .lowercase,
+[data-error-start=''] ~ .requirements .start,
+[data-error-characters=''] ~ .requirements .characters,
+[data-error-double-underscore=''] ~ .requirements .double-underscore,
+[data-error-end-underscore=''] ~ .requirements .end-underscore {
+    color: #ff4340!important;
+}
+
+
+/* 
+    Loader button
+    Grid that is 1x1, and we just fade
+    out the text and spinner depending
+    on the state of the button
+*/
+.loader-btn {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    grid-template-areas: "text";
+    align-items: center;
+    justify-items: center;
+
+    --anim-time: 0.3s;
+}
+
+/* Spiner */
+.loader-btn > span {
+    grid-area: text;
+    opacity: 0;
+}
+
+/* Text */  
+.loader-btn > p {
+    grid-area: text;
+    opacity: 1;
+    padding: 0;
+    margin: 0;
+}
+
+[loader-state='defualt'] > span { opacity: 0; }
+[loader-state='default'] > p { opacity: 1; }
+
+@keyframes hide-text {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+@keyframes show-text {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+[loader-state='hide-text'] > span { animation: hide-text var(--anim-time) ease-in forwards reverse; }
+[loader-state='hide-text'] > p { animation: hide-text var(--anim-time)ease-in forwards; }
+
+[loader-state='show-text'] > span { animation: show-text var(--anim-time) ease-in forwards reverse; }
+[loader-state='show-text'] > p { animation: show-text var(--anim-time) ease-in forwards; }

@@ -150,3 +150,9 @@ pyvenv.cfg
 .vscode/settings.json
 
 .vs/
+
+node_modules/
+*.ts.map
+
+# db
+db.sqlite3

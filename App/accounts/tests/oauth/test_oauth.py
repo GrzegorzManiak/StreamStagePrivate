@@ -7,7 +7,10 @@ from accounts.oauth.oauth import (
     authentication_reqests,
     clean_key_store,
     format_instructions,
-    OAuthTypes
+    OAuthTypes,
+
+    get_oauth_data,
+    remove_oauth_key
 )
 
 class OAuthTest(TestCase):
@@ -17,30 +20,34 @@ class OAuthTest(TestCase):
             email="email@streamstage.co",
         )
 
+        self.oauth_id = "1234567890"
+
 
     def test_generate_oauth_key(self):
         # -- Generate a key
         key = generate_oauth_key(
             oauth_type=OAuthTypes.GOOGLE,
-            data={}
+            data={},
+            oauth_id=self.oauth_id
         )
 
         # -- Check if the key is in the store
         self.assertTrue(key in authentication_reqests)
 
         # -- Check if the key is valid
-        self.assertTrue(check_oauth_key(key))
+        self.assertFalse(check_oauth_key(key))
 
     
     def test_check_oauth_key(self):
         # -- Generate a key
         key = generate_oauth_key(
             oauth_type=OAuthTypes.GOOGLE,
-            data={}
+            data={},
+            oauth_id=self.oauth_id
         )
 
         # -- Check if the key is valid
-        self.assertTrue(check_oauth_key(key))
+        self.assertFalse(check_oauth_key(key))
 
         # -- Check if the key is invalid
         self.assertFalse(check_oauth_key("invalid_key"))
@@ -51,7 +58,8 @@ class OAuthTest(TestCase):
         key = generate_oauth_key(
             oauth_type=OAuthTypes.GOOGLE,
             data={},
-            created=0
+            created=0,
+            oauth_id=self.oauth_id
         )
 
         # -- Check if the key is valid
@@ -66,7 +74,8 @@ class OAuthTest(TestCase):
             key = generate_oauth_key(
                 oauth_type=OAuthTypes.GOOGLE,
                 data={},
-                created=0
+                created=0,
+                oauth_id=self.oauth_id
             )
 
             # - Make sure the key is in the store
@@ -87,13 +96,14 @@ class OAuthTest(TestCase):
         key = generate_oauth_key(
             oauth_type=OAuthTypes.GOOGLE,
             data={},
+            oauth_id=self.oauth_id
         )
 
         # -- Add key to oauth model
         oAuth2.objects.create(
             user=self.member,
             oauth_type=OAuthTypes.GOOGLE,
-            id=key
+            oauth_id=self.oauth_id
         )
 
         # -- Generate instructions
@@ -116,18 +126,18 @@ class OAuthTest(TestCase):
         key = generate_oauth_key(
             oauth_type=OAuthTypes.GOOGLE,
             data={},
+            oauth_id=self.oauth_id
         )
 
         # -- Generate instructions
         instructions = format_instructions(
-            email=self.member.email,
             email_verified=True,
             oauth_type=OAuthTypes.GOOGLE,
             oauth_id=key
         )
 
         # -- Check if the instructions are correct
-        self.assertTrue(instructions['has_account'])
+        self.assertFalse(instructions['has_account'])
         self.assertTrue(instructions['email_verified'])
         self.assertTrue(instructions['oauth_type'] == OAuthTypes.GOOGLE)
         self.assertFalse(instructions['can_authenticate'])
@@ -138,13 +148,14 @@ class OAuthTest(TestCase):
         key = generate_oauth_key(
             oauth_type=OAuthTypes.GOOGLE,
             data={},
+            oauth_id=self.oauth_id
         )
 
         # -- Add key to oauth model
         oAuth2.objects.create(
             user=self.member,
             oauth_type=OAuthTypes.GOOGLE,
-            id=key
+            oauth_id=str(key['oauth_id'])
         )
 
         # -- Generate instructions
@@ -156,7 +167,93 @@ class OAuthTest(TestCase):
         )
 
         # -- Check if the instructions are correct
-        self.assertTrue(instructions['has_account'])
+        self.assertFalse(instructions['has_account'])
         self.assertTrue(instructions['email_verified'])
         self.assertTrue(instructions['oauth_type'] == None)
         self.assertFalse(instructions['can_authenticate'])
+
+
+    def test_format_instructions_no_oauth_id_no_oauth_type(self):
+        # -- Generate a key
+        key = generate_oauth_key(
+            oauth_type=OAuthTypes.GOOGLE,
+            data={},
+            oauth_id=self.oauth_id
+        )
+
+        # -- Generate instructions
+        instructions = format_instructions(
+            email_verified=True,
+            oauth_type=None,
+            oauth_id=key
+        )
+
+        # -- Check if the instructions are correct
+        self.assertFalse(instructions['has_account'])
+        self.assertTrue(instructions['email_verified'])
+        self.assertTrue(instructions['oauth_type'] == None)
+        self.assertFalse(instructions['can_authenticate'])
+
+    
+
+    def test_get_oauth_data(self):
+        # -- Generate a key
+        key = generate_oauth_key(
+            oauth_type=OAuthTypes.GOOGLE,
+            data={
+                "email": "test"
+            },
+            oauth_id=self.oauth_id
+        )
+
+        # -- Get the data
+        data = get_oauth_data(key)
+
+        # -- Check if the data is correct
+        self.assertTrue(data['data']['email'] == "test")
+
+
+    def test_get_oauth_data_invalid_key(self):
+
+        # -- Get the data
+        data = get_oauth_data("invalid_key")
+
+        # -- Check if the data is correct
+        self.assertTrue(data == None)
+    
+
+    def test_remove_oauth_data(self):
+        # -- Generate a key
+        key = generate_oauth_key(
+            oauth_type=OAuthTypes.GOOGLE,
+            data={
+                "email": "test"
+            },
+            oauth_id=self.oauth_id
+        )
+
+        # -- Get the data
+        data = get_oauth_data(key)
+
+        # -- Check if the data is correct
+        self.assertTrue(data['data']['email'] == "test")
+
+        # -- Remove the data
+        remove_oauth_key(key)
+
+        # -- Get the data
+        data = get_oauth_data(key)
+
+        # -- Check if the data is correct
+        self.assertTrue(data == None)
+
+    
+    def test_remove_oauth_data_invalid_key(self):
+        # -- Remove the data
+        remove_oauth_key("invalid_key")
+
+        # -- Get the data
+        data = get_oauth_data("invalid_key")
+
+        # -- Check if the data is correct
+        self.assertTrue(data == None)

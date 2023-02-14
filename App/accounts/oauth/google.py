@@ -24,7 +24,7 @@ class GoogleUser():
         return {
             'id': self.id,
             'email': self.email,
-            'verified_email': self.verified_email,
+            'email_verified': self.verified_email,
             'name': self.name,
             'given_name': self.given_name,
             'picture': self.picture,
@@ -88,7 +88,7 @@ class Google():
                 'code': code,
                 'client_id': client_id,
                 'client_secret': secret,
-                'redirect_uri': 'https://sso.streamstage.co/google',
+                'redirect_uri': secrets.OAUTH_PROVIDERS['google']['redirect_uri'],
                 'grant_type': 'authorization_code'
             }
 
