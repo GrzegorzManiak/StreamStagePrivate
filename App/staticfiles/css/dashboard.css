@@ -59,10 +59,11 @@
 
 /* Broadcaster */
 [data-pod='events'] .side-panel-pod-icon { background-color: #e04d4d; }
-[data-pod='publishers'] .side-panel-pod-icon { background-color: #4de0e0; }
+[data-pod='broadcaster'] .side-panel-pod-icon { background-color: #4de0e0; }
 
 /* Admin */
 [data-pod='event-request'] .side-panel-pod-icon { background-color: #4de09b; }
+[data-pod='broadcaster-request'] .side-panel-pod-icon { background-color: #b34de0; }
 [data-pod='venues'] .side-panel-pod-icon { background-color: #e04d8a; }
 
 
