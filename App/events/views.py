@@ -39,7 +39,7 @@ def get_all_events(request):
 
 class EventCreateView(CreateView):
     model = Event
-    fields = ['title', 'description', 'categories', 'showings', 'media']
+    fields = ['event_id', 'title', 'description', 'categories', 'showings', 'media']
     template_name = 'event_new.html'
     success_url = reverse_lazy('view_event')
 
@@ -90,7 +90,7 @@ class ReviewDetailView(DetailView):
 
 class ReviewCreateView(CreateView):
     model = EventReview
-    fields = ['title', 'body']
+    fields = ['title', 'body', 'rating']
     template_name = 'review_new.html'
     success_url = reverse_lazy('view_event')
 

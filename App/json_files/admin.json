@@ -1,0 +1,132 @@
+[
+    {
+        "model": "admin.logentry",
+        "pk": 1,
+        "fields": {
+            "action_time": "2023-02-15T23:15:15.142Z",
+            "user": "6a9ecb0e-212e-40fb-9c3e-1a01c172cf06",
+            "content_type": 13,
+            "object_id": "1",
+            "object_repr": "Comedy",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 2,
+        "fields": {
+            "action_time": "2023-02-15T23:15:47.996Z",
+            "user": "6a9ecb0e-212e-40fb-9c3e-1a01c172cf06",
+            "content_type": 13,
+            "object_id": "2",
+            "object_repr": "Stand Up Comedy",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 3,
+        "fields": {
+            "action_time": "2023-02-15T23:16:09.957Z",
+            "user": "6a9ecb0e-212e-40fb-9c3e-1a01c172cf06",
+            "content_type": 13,
+            "object_id": "3",
+            "object_repr": "Music",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 4,
+        "fields": {
+            "action_time": "2023-02-15T23:16:31.406Z",
+            "user": "6a9ecb0e-212e-40fb-9c3e-1a01c172cf06",
+            "content_type": 13,
+            "object_id": "4",
+            "object_repr": "Theatre",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 5,
+        "fields": {
+            "action_time": "2023-02-15T23:19:42.234Z",
+            "user": "6a9ecb0e-212e-40fb-9c3e-1a01c172cf06",
+            "content_type": 16,
+            "object_id": "1",
+            "object_repr": "The Gate",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 6,
+        "fields": {
+            "action_time": "2023-02-15T23:19:55.401Z",
+            "user": "6a9ecb0e-212e-40fb-9c3e-1a01c172cf06",
+            "content_type": 14,
+            "object_id": "Comedy Event A",
+            "object_repr": "New Event A",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 7,
+        "fields": {
+            "action_time": "2023-02-15T23:28:24.680Z",
+            "user": "6a9ecb0e-212e-40fb-9c3e-1a01c172cf06",
+            "content_type": 14,
+            "object_id": "1",
+            "object_repr": "New Event A",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Event id\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 8,
+        "fields": {
+            "action_time": "2023-02-15T23:28:47.313Z",
+            "user": "6a9ecb0e-212e-40fb-9c3e-1a01c172cf06",
+            "content_type": 14,
+            "object_id": "Comedy Event A",
+            "object_repr": "New Event A",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 9,
+        "fields": {
+            "action_time": "2023-02-15T23:29:21.710Z",
+            "user": "6a9ecb0e-212e-40fb-9c3e-1a01c172cf06",
+            "content_type": 14,
+            "object_id": "2",
+            "object_repr": "New Event B",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 10,
+        "fields": {
+            "action_time": "2023-02-16T00:09:02.146Z",
+            "user": "6a9ecb0e-212e-40fb-9c3e-1a01c172cf06",
+            "content_type": 6,
+            "object_id": "386a6bfd-0b22-4e7f-b050-3d72c2d7d4b6",
+            "object_repr": "CianBean",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}]"
+        }
+    }
+]
