@@ -1,5 +1,7 @@
-from StreamStage.secrets import OAUTH_PROVIDERS
 from enum import Enum
+
+from StreamStage.secrets import OAUTH_PROVIDERS
+
 
 class OAuthRespone(Enum):
     SUCCESS = 0
@@ -46,5 +48,7 @@ class OAuthTypes():
             case OAuthTypes.GOOGLE:
                 return OAUTH_PROVIDERS['google']['ttl']
             
+            case OAuthTypes.GITHUB:
+                return OAUTH_PROVIDERS['github']['ttl']
         return 0
 

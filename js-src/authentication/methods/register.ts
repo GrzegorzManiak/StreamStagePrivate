@@ -1,10 +1,8 @@
-import { Panel, PanelType, Response } from '../index.d';
-import { get_panel, hide_panel, show_panel } from '../core/panel_manager';
+import { Panel } from '../index.d';
+import { get_panel } from '../core/panel_manager';
 import { create_toast } from '../../toasts';
 import { name_monitor, password_monitor, rp_password_monitor, validate_name, validate_password } from '../core/validation';
-import * as DOMPurify from 'dompurify';
 import { register } from '../api/register';
-import { login_with_token } from '../api/login';
 import { attach } from '../core/spinner';
 import { complete_verification } from './verification';
 

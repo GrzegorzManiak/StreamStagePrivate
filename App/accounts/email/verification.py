@@ -6,10 +6,13 @@
 """
 
 # -- Imports
-from StreamStage.mail import send_email as sm
-from ..models import Member
 import secrets
 import time
+
+from StreamStage.mail import send_email as sm
+
+from ..models import Member
+
 
 REMOVE_AFTER = 60 * 60 * 24 * 7
 
@@ -41,7 +44,12 @@ recently_verified = []
     a touple, the first item is the key, the second item
     is the resend key
 """
-def add_key(user: Member, callback, ttl = REMOVE_AFTER) -> tuple[str, str, str]:
+def add_key(
+    user: Member, 
+    callback, 
+    email_change_callback = None,
+    ttl = REMOVE_AFTER
+) -> tuple[str, str, str]:
     # -- Create the keys
     key = secrets.token_urlsafe(32)
     resend_key = secrets.token_urlsafe(32)
@@ -53,8 +61,10 @@ def add_key(user: Member, callback, ttl = REMOVE_AFTER) -> tuple[str, str, str]:
         'user': user,
         'created': time.time(),
         'callback': callback,
+        'email_change_callback': email_change_callback,
         'verify_key': verify_key,
         'ttl': ttl,
+        'allow_email_change': email_change_callback is not None,
     }
 
     # -- Add the resend key to the resend key store
@@ -181,14 +191,26 @@ def send_email(
         return (False, 'Invalid key')
 
     # -- Create the message
-    message = f""" Your link is https://me.streamstage.co/email/verify?token={key['key']}"""
-
+    message = f""" 
+        URL: https://me.streamstage.co/email/verify?token={key['key']}
+        Local: http://localhost:8000/accounts/email/verify?token={key['key']}
+    """
+    print(message)  
+    
     # -- Send the email
     if test: return (True, message)
     else: 
         try:
+            email = ''
+
+            if key['user'].email is not None:
+                email = key['user'].email
+
+            elif key['user']['email'] is not None:
+                email = key['user']['email']
+
             sm(
-                key['user'].email,
+                email,
                 'Verification Link',
                 message,
             )
@@ -207,10 +229,13 @@ def send_email(
         - We will need to remove the old key from the store
         - We'll have to update the resend key store
 """
-def regenerate_key(resend_key: str) -> dict or None:
+def regenerate_key(
+    resend_key: str,
+    new_email: str = None,
+) -> dict or None:
     # -- Get the key from the store
     key = get_key_by_resend_key(resend_key)
-
+    
     # -- Check if the key is valid
     if key is None: return None
 
@@ -218,6 +243,15 @@ def regenerate_key(resend_key: str) -> dict or None:
     if time.time() - key['created'] > key['ttl']: return None
 
     # -- Add the new key to the store
+    if new_email is not None:
+        # member.email
+        if key['user'].email is not None:
+            key['user'].email = new_email
+
+        # member['email']
+        elif key['user']['email'] is not None:
+            key['user']['email'] = new_email
+            
     new_key = add_key(key['user'], key['callback'], key['ttl'])
 
     # -- Remove the old key from the store

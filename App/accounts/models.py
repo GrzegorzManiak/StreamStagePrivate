@@ -1,10 +1,12 @@
-from django.db import models
-from django.contrib.auth.models import AbstractUser
+import uuid
+
 from django.contrib.auth import get_user_model
-from .oauth.oauth import OAuthTypes
+from django.contrib.auth.models import AbstractUser
+from django.db import models
 from django_countries.fields import CountryField
 from timezone_field import TimeZoneField
-import uuid
+
+from .oauth.oauth import OAuthTypes
 
 
 # Create your models here.

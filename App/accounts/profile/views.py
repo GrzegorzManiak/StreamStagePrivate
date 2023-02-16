@@ -1,21 +1,16 @@
+import secrets
+import time
+
 from django.http.response import JsonResponse
+from django.shortcuts import redirect, render
+from django.urls import reverse_lazy
 from rest_framework import status
 from rest_framework.decorators import api_view
+
+from accounts.email.verification import add_key, send_email
 from accounts.models import Member
-from django.shortcuts import render, redirect
-from django.urls import reverse, reverse_lazy
-import time
-import secrets
 
-from accounts.email.verification import (
-    add_key,
-    send_email
-)
-
-from .forms import (
-    compile_objects
-)
-
+from .forms import compile_objects
 
 
 @api_view(['GET'])
@@ -29,10 +24,10 @@ def profile(request):
     context = {
         'user': request.user,
         'api': {
-            'send_verification': "profile" + reverse_lazy('send_verification'),
-            'resend_verification': "email" + reverse_lazy('resend_key'),
-            'remove_verification': "email" + reverse_lazy('remove_key'),
-            'recent_verification': "email" + reverse_lazy('recent_key'),
+            'send_verification': reverse_lazy('send_verification'),
+            'resend_verification': reverse_lazy('resend_key'),
+            'remove_verification': reverse_lazy('remove_key'),
+            'recent_verification': reverse_lazy('recent_key'),
         },
 
         'pages': compile_objects(request.user),

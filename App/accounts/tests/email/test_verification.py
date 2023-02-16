@@ -1,21 +1,22 @@
-from django.test import TestCase
 from django.contrib.auth import get_user_model
+from django.test import TestCase
 
 from accounts.email.verification import (
-    recently_verified,
-    temp_keys_store,
-    resend_keys,
     add_key,
-    get_key,
+    check_if_verified_recently,
     expire_key,
-    remove_key,
-    verify_key,
-    send_email,
-    regenerate_key,
+    get_key,
     get_key_by_resend_key,
     get_resend_key_by_key,
-    check_if_verified_recently,
+    recently_verified,
+    regenerate_key,
+    remove_key,
+    resend_keys,
+    send_email,
+    temp_keys_store,
+    verify_key,
 )
+
 
 class EmailVerificationTest(TestCase):
     def setUp(self):
