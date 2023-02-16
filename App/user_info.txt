@@ -1,0 +1,10 @@
+Superuser
+Username: Cian
+Email: X00074643@mytudublin.ie
+First name: Cian
+Last name: McArdle
+Password: Cian
+
+User 1
+Username: CianBean
+Password: Tallaght123

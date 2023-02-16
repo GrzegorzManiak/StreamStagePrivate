@@ -1,5 +1,5 @@
-<div>
-    <h1>Add Review</h1>
+<div class="col 3">
+    <h1>Add Review for {{ eventreview.event }}</h1>
     <form action="" method="post">
         {% csrf_token %}
         {{ form.as_p }}

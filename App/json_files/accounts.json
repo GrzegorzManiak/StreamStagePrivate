@@ -1,0 +1,56 @@
+[
+    {
+        "model": "accounts.member",
+        "pk": "386a6bfd-0b22-4e7f-b050-3d72c2d7d4b6",
+        "fields": {
+            "password": "pbkdf2_sha256$390000$brjSTmPNuVNx5c9l2CkhXl$+mbvqX9SLCNx0LIBEt5QiC4EIOUDiofmajalPqjubOE=",
+            "last_login": null,
+            "is_superuser": false,
+            "first_name": "",
+            "last_name": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2023-02-16T00:09:01.802Z",
+            "username": "CianBean",
+            "email": "",
+            "date_of_birth": null,
+            "over_18": false,
+            "profile_pic": "",
+            "description": "",
+            "country": "",
+            "time_zone": "UTC",
+            "access_level": 0,
+            "max_keys": 1,
+            "is_streamer": false,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "accounts.member",
+        "pk": "6a9ecb0e-212e-40fb-9c3e-1a01c172cf06",
+        "fields": {
+            "password": "pbkdf2_sha256$390000$M7bxjB5FozJHDwXbzvd04C$pkCh+2H7zTaHxNDgUhjhoCAZHHBy0qR97WB2tQIclMU=",
+            "last_login": "2023-02-16T00:08:12.894Z",
+            "is_superuser": true,
+            "first_name": "Cian",
+            "last_name": "McArdle",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2023-02-15T23:11:09.383Z",
+            "username": "Cian",
+            "email": "X00074643@mytudublin.ie",
+            "date_of_birth": null,
+            "over_18": false,
+            "profile_pic": "",
+            "description": "",
+            "country": "",
+            "time_zone": "UTC",
+            "access_level": 0,
+            "max_keys": 1,
+            "is_streamer": false,
+            "groups": [],
+            "user_permissions": []
+        }
+    }
+]

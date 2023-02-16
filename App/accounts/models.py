@@ -25,8 +25,9 @@ class Member(AbstractUser):
     access_level = models.SmallIntegerField("Access Level", default=0)
     # Maximum parallel devices for a Member to watch on
     max_keys = models.SmallIntegerField("Max Devices", default=1)
-    
-    is_streamer = models.BooleanField(default=False)
+    # 
+    is_streamer = models.BooleanField("Streamer Status", default=False)
+    is_broadcaster = models.BooleanField("Broadcaster Status", default=False)
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email', 'first_name', 'last_name']
@@ -65,9 +66,10 @@ class Broadcaster(models.Model):
         primary_key=True
     )
     # Members who can control a broadcast
-    contributors = models.ManyToManyField(get_user_model(), related_name="stream_broadcasters")
+    contributors = models.ManyToManyField(get_user_model(), related_name="stream_broadcasters", blank=True)
     # Categories of streaming content
     category = models.CharField("Categories", max_length=100)
+    approved = models.BooleanField("Approved", default=False)
 
     USERNAME_FIELD = 'streamer'
     REQUIRED_FIELDS = ['category']
