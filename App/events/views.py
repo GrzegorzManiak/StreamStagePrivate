@@ -1,10 +1,10 @@
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.shortcuts import render
-from django.urls import reverse_lazy
+from django.shortcuts import render, redirect
 from django.utils import timezone
 from .models import Event, EventReview
+from .forms import EventCreateForm, EventUpdateForm, EventDeleteForm
 
                                         # **************
                                         # *** Events ***                                        # ***************
@@ -13,7 +13,7 @@ from .models import Event, EventReview
 # could be done with a class view, running the queries in
 # get_context_objects, but currently I see no significant benefit
 # in doing so.
-def view_event(request, event_id):
+def event_view(request, event_id):
     event = Event.objects.filter(event_id=event_id).first()
     reviews = EventReview.objects.filter(event=event).all()
     primary_media_idx = event.primary_media_idx
@@ -37,37 +37,45 @@ def get_all_events(request):
 
     return render(request, "event_list.html", context)
 
-class EventCreateView(CreateView):
-    model = Event
-    fields = ['event_id', 'title', 'description', 'categories', 'showings', 'media']
-    template_name = 'event_new.html'
-    success_url = reverse_lazy('view_event')
+def event_create(request):
+    context = {}
 
-    def form_valid(self, form):
-            form.instance.streamer = self.request.user
-            form.save()
-            return super().form_valid(form)
-
-class EventUpdateView(UpdateView):
-    model = Event
-    fields = ['title', 'description', 'categories', 'showings', 'media']
-    template_name = 'event_edit.html'
-    success_url = reverse_lazy('view_event')
-
-    def form_valid(self, form):
-        form.instance.updated = timezone.now()
+    form = EventCreateForm(request.POST or None)
+    if request.user.is_streamer == True:
+        request.user.streamer = Event.streamer
+    if form.is_valid():
         form.save()
-        return super().form_valid(form)
+        return redirect('event_view')
 
-class EventDeleteView(DeleteView):
-    model = EventReview
-    template_name = 'review_delete.html'
-    success_url = reverse_lazy('all_events')
+    context['form']= form
+    return render(request, "event_new.html", context)
 
-    def form_valid(self, form):
-        form.instance.author = self.request.user
+def event_update(request):
+    context = {}
+
+    form = EventUpdateForm(request.POST or None)
+    if request.user.is_authenticated:
+        Event.streamer = request.user
+    if form.is_valid():
         form.save()
-        return super().form_valid(form)
+        return redirect('event_view')
+
+    context['form']= form
+    return render(request, "event_edit.html", context)
+        
+def event_delete(request):
+    context = {}
+
+    form = EventDeleteForm(request.POST or None)
+    if request.user.is_authenticated:
+        Event.streamer = request.user
+    if form.is_valid():
+        form.save()
+        return redirect('all_events')
+
+    context['form']= form
+    return render(request, "event_delete.html", context)
+
 
 
                                         # ***************
@@ -92,7 +100,7 @@ class ReviewCreateView(CreateView):
     model = EventReview
     fields = ['title', 'body', 'rating']
     template_name = 'review_new.html'
-    success_url = reverse_lazy('view_event')
+    # success_url = reverse_lazy('view_event')
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -112,7 +120,7 @@ class ReviewUpdateView(UpdateView):
 class ReviewDeleteView(DeleteView):
     model = EventReview
     template_name = 'review_delete.html'
-    success_url = reverse_lazy('all_events')
+    # success_url = reverse_lazy('all_events')
 
     def form_valid(self, form):
         form.instance.author = self.request.user

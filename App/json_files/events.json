@@ -34,51 +34,5 @@
             "description": "Dramatic Stuff",
             "splash_photo": "events/Theatre.jfif"
         }
-    },
-    {
-        "model": "events.eventshowing",
-        "pk": 1,
-        "fields": {
-            "country": "AQ",
-            "city": "Dublin",
-            "venue": "The Gate",
-            "time": "2024-02-15T23:19:37Z"
-        }
-    },
-    {
-        "model": "events.event",
-        "pk": "1",
-        "fields": {
-            "title": "New Event A",
-            "description": "asdasd",
-            "over_18s": false,
-            "streamer": "6a9ecb0e-212e-40fb-9c3e-1a01c172cf06",
-            "primary_media_idx": 0,
-            "categories": [],
-            "showings": [],
-            "media": [],
-            "contributors": []
-        }
-    },
-    {
-        "model": "events.event",
-        "pk": "2",
-        "fields": {
-            "title": "New Event B",
-            "description": "asasdasd",
-            "over_18s": false,
-            "streamer": "6a9ecb0e-212e-40fb-9c3e-1a01c172cf06",
-            "primary_media_idx": 0,
-            "categories": [
-                2
-            ],
-            "showings": [
-                1
-            ],
-            "media": [],
-            "contributors": [
-                "6a9ecb0e-212e-40fb-9c3e-1a01c172cf06"
-            ]
-        }
     }
 ]

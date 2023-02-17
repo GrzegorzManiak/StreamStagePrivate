@@ -4,10 +4,11 @@ from .models import Member, Broadcaster, oAuth2
 
 
 # Register your models here.
+
 @admin.register(Member)
 class MemberAdmin(UserAdmin):
     model = Member
-    list_display = ['username', 'email', 'is_staff', 'over_18', 'country', 'time_zone', 'max_keys', 'is_streamer']
+    list_display = ['username', 'email', 'is_staff', 'over_18', 'country', 'time_zone', 'max_keys', 'is_streamer', 'is_broadcaster']
 
 @admin.register(Broadcaster)
 class BroadcasterAdmin(admin. ModelAdmin):

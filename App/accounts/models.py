@@ -25,7 +25,7 @@ class Member(AbstractUser):
     access_level = models.SmallIntegerField("Access Level", default=0)
     # Maximum parallel devices for a Member to watch on
     max_keys = models.SmallIntegerField("Max Devices", default=1)
-    # 
+    # Is Member more than a basic member?
     is_streamer = models.BooleanField("Streamer Status", default=False)
     is_broadcaster = models.BooleanField("Broadcaster Status", default=False)
 
@@ -75,7 +75,7 @@ class Broadcaster(models.Model):
     REQUIRED_FIELDS = ['category']
 
     def __str__(self):
-        return str(self.user)
+        return str(self.streamer)
 
 
 class oAuth2(models.Model):

@@ -8,7 +8,6 @@ class EventAdmin(admin.ModelAdmin):
     list_display = [ 'event_id', 'title', 'description', 'over_18s', 'streamer', 'approved']
     filter_horizontal = ['contributors']
 
-
 @admin.register(EventMedia)
 class EventMediaAdmin(admin.ModelAdmin):
     list_display = [ 'picture', 'description' ]
