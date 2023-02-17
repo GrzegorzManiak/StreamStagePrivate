@@ -1,16 +1,17 @@
 from django import forms
-from .models import Event
- 
-# creating a form
+from .models import Event, EventReview
+
+                                        # ***************
+                                        # *** Events  ***                                        # ***************
+                                        # *************** 
+# Creating an Event
 class EventCreateForm(forms.ModelForm):
  
-    # create meta class
     class Meta:
-        # specify model to be used
         model = Event
  
-        # specify fields to be used
         fields = [
+            'streamer',
             'title', 
             'description', 
             'categories', 
@@ -18,14 +19,12 @@ class EventCreateForm(forms.ModelForm):
             'media',
         ]
 
+# Updating an Event
 class EventUpdateForm(forms.ModelForm):
  
-    # create meta class
     class Meta:
-        # specify model to be used
         model = Event
  
-        # specify fields to be used
         fields = [
             'title', 
             'description', 
@@ -34,12 +33,46 @@ class EventUpdateForm(forms.ModelForm):
             'media',
         ]
 
+# Deleting an Event
 class EventDeleteForm(forms.ModelForm):
  
-    # create meta class
     class Meta:
-        # specify model to be used
         model = Event
 
-        # specify fields to be used
+        fields = []
+
+                                        # ***************
+                                        # *** Reviews ***                                        # ***************
+                                        # ***************
+
+# Creating an Event Review
+class ReviewCreateForm(forms.ModelForm):
+ 
+    class Meta:
+        model = EventReview
+ 
+        fields = [
+            'title', 
+            'body', 
+            'rating'
+        ]
+
+# Updating an Event Review
+class ReviewUpdateForm(forms.ModelForm):
+ 
+    class Meta:
+        model = EventReview
+ 
+        fields = [
+            'title', 
+            'body', 
+            'rating'
+        ]
+
+# Deleting an Event Review
+class ReviewDeleteForm(forms.ModelForm):
+ 
+    class Meta:
+        model = EventReview
+
         fields = []

@@ -1,10 +1,15 @@
 from django.views.generic import ListView, DetailView
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth import get_user_model
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from .models import Event, EventReview
-from .forms import EventCreateForm, EventUpdateForm, EventDeleteForm
+from .forms import (EventCreateForm, 
+                    EventUpdateForm, 
+                    EventDeleteForm, 
+                    ReviewCreateForm, 
+                    ReviewUpdateForm, 
+                    ReviewDeleteForm)
 
                                         # **************
                                         # *** Events ***                                        # ***************
@@ -41,9 +46,10 @@ def event_create(request):
     context = {}
 
     form = EventCreateForm(request.POST or None)
-    if request.user.is_streamer == True:
-        request.user.streamer = Event.streamer
+    if not request.user.is_streamer:
+        return redirect('event_view')
     if form.is_valid():
+        form.streamer = request.user
         form.save()
         return redirect('event_view')
 
@@ -54,8 +60,8 @@ def event_update(request):
     context = {}
 
     form = EventUpdateForm(request.POST or None)
-    if request.user.is_authenticated:
-        Event.streamer = request.user
+    if not request.user.is_streamer:
+        return redirect('event_view')
     if form.is_valid():
         form.save()
         return redirect('event_view')
@@ -67,8 +73,8 @@ def event_delete(request):
     context = {}
 
     form = EventDeleteForm(request.POST or None)
-    if request.user.is_authenticated:
-        Event.streamer = request.user
+    if not request.user.is_streamer:
+        return redirect('event_view')
     if form.is_valid():
         form.save()
         return redirect('all_events')
@@ -81,11 +87,6 @@ def event_delete(request):
                                         # ***************
                                         # *** Reviews ***                                        # ***************
                                         # ***************
-
-class ReviewDetailView(DetailView):
-    model = EventReview
-    template_name = 'review_detail.html'
-
 # def get_all_reviews(request):
 #     context = {}
 #     context["reviews"] = EventReview.objects.filter(event=event)
@@ -95,34 +96,77 @@ class ReviewDetailView(DetailView):
 #         context,
 #         'event': event})
 
+def review_create(request):
+    context = {}
 
-class ReviewCreateView(CreateView):
-    model = EventReview
-    fields = ['title', 'body', 'rating']
-    template_name = 'review_new.html'
-    # success_url = reverse_lazy('view_event')
-
-    def form_valid(self, form):
-        form.instance.author = self.request.user
+    form = ReviewCreateForm(request.POST or None)
+    if request.user.is_authenticated:
+        request.user = get_user_model
+    if form.is_valid():
         form.save()
-        return super().form_valid(form)
+        return redirect('event_view')
 
-class ReviewUpdateView(UpdateView):
-    model = EventReview
-    fields = ['title', 'body']
-    template_name = 'review_edit.html'
+    context['form']= form
+    return render(request, "review_new.html", context)
 
-    def form_valid(self, form):
-        form.instance.updated = timezone.now()
+def review_update(request):
+    context = {}
+
+    form = ReviewUpdateForm(request.POST or None)
+    if request.user.is_authenticated:
+        request.user = get_user_model
+    if form.is_valid():
         form.save()
-        return super().form_valid(form)
+        return redirect('event_view')
 
-class ReviewDeleteView(DeleteView):
-    model = EventReview
-    template_name = 'review_delete.html'
-    # success_url = reverse_lazy('all_events')
+    context['form']= form
+    return render(request, "review_edit.html", context)
 
-    def form_valid(self, form):
-        form.instance.author = self.request.user
+def review_delete(request):
+    context = {}
+
+    form = ReviewDeleteForm(request.POST or None)
+    if request.user.is_authenticated:
+        request.user = get_user_model
+    if form.is_valid():
         form.save()
-        return super().form_valid(form)
+        return redirect('event_view')
+
+    context['form']= form
+    return render(request, "review_delete.html", context)
+
+
+# class ReviewDetailView(DetailView):
+#     model = EventReview
+#     template_name = 'review_detail.html'
+
+# class ReviewCreateView(CreateView):
+#     model = EventReview
+#     fields = ['title', 'body', 'rating']
+#     template_name = 'review_new.html'
+#     # success_url = reverse_lazy('view_event')
+
+#     def form_valid(self, form):
+#         form.instance.author = self.request.user
+#         form.save()
+#         return super().form_valid(form)
+
+# class ReviewUpdateView(UpdateView):
+#     model = EventReview
+#     fields = ['title', 'body']
+#     template_name = 'review_edit.html'
+
+#     def form_valid(self, form):
+#         form.instance.updated = timezone.now()
+#         form.save()
+#         return super().form_valid(form)
+
+# class ReviewDeleteView(DeleteView):
+#     model = EventReview
+#     template_name = 'review_delete.html'
+#     # success_url = reverse_lazy('all_events')
+
+#     def form_valid(self, form):
+#         form.instance.author = self.request.user
+#         form.save()
+#         return super().form_valid(form)

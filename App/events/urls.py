@@ -4,11 +4,10 @@ from .views import (event_create,
                     get_all_events,
                     event_update,
                     event_delete,
-                    ReviewCreateView,
-                    ReviewDetailView,
+                    review_create,
+                    review_update,
+                    review_delete,
                     # get_all_reviews,
-                    ReviewUpdateView,
-                    ReviewDeleteView
 )
 
 urlpatterns = [
@@ -18,5 +17,4 @@ urlpatterns = [
     path('', get_all_events, name='all_events'),
     path('<slug:event_id>/edit/', event_update, name='event_update'),
     path('<slug:event_id>/delete/', event_delete, name='event_delete'),
-    path('<slug:event_id>/new_review/', ReviewCreateView.as_view(), name='new_review')
 ]
