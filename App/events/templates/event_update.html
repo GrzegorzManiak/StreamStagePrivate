@@ -12,7 +12,7 @@ Update Event | StreamStage
 {% block content %}<div>
     <h1>Edit Event</h1>
     <div class="d-flex content_center">
-        <form class="form-layout" action="" method="post">
+        <form class="form-layout" action="" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
             <input type="submit" value="Update" />

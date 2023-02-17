@@ -13,7 +13,8 @@ class EventCreateForm(forms.ModelForm):
         fields = [
             'title', 
             'description', 
-            'categories', 
+            'categories',
+            'over_18s', 
             'showings', 
             'media',
         ]
@@ -28,6 +29,7 @@ class EventUpdateForm(forms.ModelForm):
             'title', 
             'description', 
             'categories', 
+            'over_18s',
             'showings', 
             'media',
         ]

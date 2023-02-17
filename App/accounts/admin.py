@@ -17,6 +17,7 @@ class MemberAdmin(UserAdmin):
 class BroadcasterAdmin(admin. ModelAdmin):
     model = Broadcaster
     list_display = ['streamer', 'category', 'approved']
+    list_editable = ['category', 'approved']
     filter_horizontal = ['contributors']
 
 @admin.register(oAuth2)
