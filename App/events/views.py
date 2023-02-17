@@ -10,6 +10,8 @@ from .forms import (EventCreateForm,
                     ReviewCreateForm, 
                     ReviewUpdateForm, 
                     ReviewDeleteForm)
+import string
+import random
 
                                         # **************
                                         # *** Events ***                                        # ***************
@@ -46,12 +48,17 @@ def event_create(request):
     context = {}
 
     form = EventCreateForm(request.POST or None)
-    if not request.user.is_streamer:
-        return redirect('event_view')
+    if not request.user.is_authenticated or not request.user.is_streamer:
+        return redirect('all_events')
     if form.is_valid():
+        new_event_id = generate_event_id()
+
+        form = form.save(commit=False)
         form.streamer = request.user
+        form.event_id = new_event_id
         form.save()
-        return redirect('event_view')
+
+        return redirect('event_view', new_event_id)
 
     context['form']= form
     return render(request, "event_new.html", context)
@@ -134,6 +141,21 @@ def review_delete(request):
 
     context['form']= form
     return render(request, "review_delete.html", context)
+
+
+
+EVENT_ID_CHARS = list(string.ascii_uppercase + string.ascii_lowercase + "1234567890")
+EVENT_ID_LEN = 8
+
+def generate_event_id():
+    event_id = ""
+    
+    random
+
+    for i in range(8):
+        event_id += EVENT_ID_CHARS[random.randint(0, len(EVENT_ID_CHARS)-1)]
+
+    return event_id
 
 
 # class ReviewDetailView(DetailView):

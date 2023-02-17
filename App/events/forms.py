@@ -11,7 +11,6 @@ class EventCreateForm(forms.ModelForm):
         model = Event
  
         fields = [
-            'streamer',
             'title', 
             'description', 
             'categories', 
