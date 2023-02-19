@@ -74,18 +74,24 @@ def event_create(request):
     context['form']= form
     return render(request, "event_new.html", context)
 
-def event_update(request):
+def event_update(request, event_id):
     context = {}
+    event = Event.objects.get(event_id=event_id)
 
-    form = EventUpdateForm(request.POST or None)
     if not request.user.is_authenticated or not request.user.is_streamer:
         return redirect('all_events')
-    if form.is_valid():
-        # form.event_id = request.event_id
+    if event == None: # if event id in URL is invalid
+        return redirect('all_events')
+    
+    if request.POST:
+        form = EventUpdateForm(instance=event, data=request.POST)
         form.save()
-        return redirect('event_view')
 
-    context['form']= form
+        return redirect('event_view', event.event_id)
+    else:
+        form = EventUpdateForm(instance=event)
+    
+    context['form']=  form
     return render(request, "event_update.html", context)
         
 def event_delete(request):
