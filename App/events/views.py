@@ -141,33 +141,42 @@ def review_create(request):
         return redirect('event_view')
 
     context['form']= form
-    return render(request, "review_new.html", context)
+    return render(request, "reviews/review_new.html", context)
 
-def review_update(request):
-    context = {}
+def review_update(request, event_id, review_id):
+    review = EventReview.objects.filter(review_id=review_id).first()
 
-    form = ReviewUpdateForm(request.POST or None)
-    if not request.user.is_authenticated:
-        return redirect('event_view')
+    if not request.user.is_authenticated or not review.author == request.user:
+        return redirect('event_view', event_id)
+    
+    form = ReviewUpdateForm(instance=review, data=request.POST)
     if form.is_valid():
         form.save()
-        return redirect('event_view')
+        return redirect('event_view', event_id)
+    else:
+        form = ReviewUpdateForm(instance=review)
 
-    context['form']= form
-    return render(request, "review_update.html", context)
+    context = {
+        'form': form
+    }
 
-def review_delete(request, review_id):
-    context = {}
-    review = EventReview.objects.get(review_id=review_id)
+    return render(request, "reviews/review_update.html", context)
+
+def review_delete(request, event_id, review_id):
+    review = EventReview.objects.filter(review_id=review_id).first()
 
     form = ReviewDeleteForm(instance=review)
     if not request.user.is_authenticated or review == None:
-        return redirect('event_view')
+        return redirect('event_view', event_id)
     if request.POST:
         review.delete()
-        return redirect('event_view')
+        return redirect('event_view', event_id)
     else:
         form = ReviewDeleteForm(instance = review)
 
-    context['form']= form
-    return render(request, "review_delete.html", context)
+    context = {
+        'form': form,
+        'review_obj': review
+    }
+
+    return render(request, "reviews/review_delete.html", context)
