@@ -33,15 +33,6 @@ class EventUpdateForm(forms.ModelForm):
             "primary_media_idx"
         ]
 
-        #fields = [
-        #    'title', 
-        #    'description', 
-        #    'categories', 
-        #    'over_18s',
-        #    'showings', 
-        #    'media',
-        #]
-
 # Deleting an Event
 class EventDeleteForm(forms.ModelForm):
  

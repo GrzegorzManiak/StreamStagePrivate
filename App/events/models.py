@@ -47,7 +47,7 @@ class EventShowing(models.Model):
 class Event(models.Model):
     event_id = models.CharField(primary_key=True, unique=True, max_length=32) # randomly generated 8 character ID
     title = models.TextField("Title", default="New Event")
-    description = models.TextField("Description", blank=True, max_length=3096)
+    description = models.TextField("Description", max_length=3096)
     over_18s = models.BooleanField(default=False)
     # References member, but only "streamers" will be allowed to create an event
     streamer = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
