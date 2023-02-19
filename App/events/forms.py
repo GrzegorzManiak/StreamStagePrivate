@@ -63,10 +63,13 @@ class ReviewUpdateForm(forms.ModelForm):
     class Meta:
         model = EventReview
  
-        fields = [
-            'title', 
-            'body', 
-            'rating'
+        exclude = [
+            'review_id',
+            'author',
+            'event',
+            'created',
+            'updated',
+            'likes'
         ]
 
 # Deleting an Event Review

@@ -156,15 +156,18 @@ def review_update(request):
     context['form']= form
     return render(request, "review_update.html", context)
 
-def review_delete(request):
+def review_delete(request, review_id):
     context = {}
+    review = EventReview.objects.get(review_id=review_id)
 
-    form = ReviewDeleteForm(request.POST or None)
-    if not request.user.is_authenticated:
+    form = ReviewDeleteForm(instance=review)
+    if not request.user.is_authenticated or review == None:
         return redirect('event_view')
-    if form.is_valid():
-        form.save()
+    if request.POST:
+        review.delete()
         return redirect('event_view')
+    else:
+        form = ReviewDeleteForm(instance = review)
 
     context['form']= form
     return render(request, "review_delete.html", context)
