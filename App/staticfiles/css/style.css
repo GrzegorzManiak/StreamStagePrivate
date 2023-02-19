@@ -144,6 +144,18 @@ header .accordion:focus {
     background-size: cover;
 }
 
+/***** Reviews *****/
+
+.review-form {
+    display: flex;
+    flex-direction: column;
+    margin: .5em;
+}
+
+.review-form * {
+    max-width: 100%;
+}
+
 /***** Upcoming Events Page *****/
 
 
