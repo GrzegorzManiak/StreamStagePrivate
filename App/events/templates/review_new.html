@@ -1,8 +1,10 @@
+{% if new_review_form %}
 <div class="col 3">
     <h4>Add Review</h4>
     <form class="form-layout" action="" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ new_review_form.as_p }}
         <input type="submit" value="Save" />
     </form>
 </div>
+{% endif %}

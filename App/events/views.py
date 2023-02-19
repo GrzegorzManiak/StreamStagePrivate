@@ -8,6 +8,8 @@ from .forms import (EventCreateForm,
                     ReviewUpdateForm, 
                     ReviewDeleteForm)
 
+from . import inline_reviews
+
 
                                         # **************
                                         # *** Events ***                                        # ***************
@@ -47,11 +49,18 @@ def event_view(request, event_id):
     else:
         cover_pic = media[primary_media_idx]
 
-    return render(request, 'event.html', {
+    context = {
         'event': event, 
         'cover_pic': cover_pic,
         'reviews' : reviews
-        })
+    }
+
+    review_form = inline_reviews.handle(request, event)
+
+    if review_form:
+        context['new_review_form'] = review_form
+
+    return render(request, 'event.html', context)
 
 # Display All Events
 def get_all_events(request):
