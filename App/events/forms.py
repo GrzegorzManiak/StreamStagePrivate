@@ -26,6 +26,7 @@ class EventUpdateForm(forms.ModelForm):
         model = Event
     
         exclude = [
+            "event_id",
             "streamer",
             "approved",
             "contributors",
