@@ -49,10 +49,19 @@ def event_view(request, event_id):
     else:
         cover_pic = media[primary_media_idx]
 
+    avg_rating = 0
+
+    if reviews.count() > 0:
+        for review in reviews:
+            avg_rating += review.rating
+        
+        avg_rating /= reviews.count()
+
     context = {
         'event': event, 
         'cover_pic': cover_pic,
-        'reviews' : reviews
+        'reviews' : reviews,
+        'avg_rating': avg_rating
     }
 
     review_form = inline_reviews.handle(request, event)
