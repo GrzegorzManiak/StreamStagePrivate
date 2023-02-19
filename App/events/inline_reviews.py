@@ -3,14 +3,22 @@ from django.shortcuts import redirect
 from .models import EventReview
 
 def handle(request, event):
+    context = {
+        'new_review_form': None
+    }
+
     # TODO: Check if user has watched event.
     if not request.user.is_authenticated:
-        return None
-
-    # checking if user has already reviewed this event
-    existing_review = EventReview.objects.filter(author=request.user,event=event)
-    if existing_review:
-        return None
+        return context
+        
+    # temporary override so we can add multiple reviews
+    # per user
+    override = request.GET.get('review_override', 'n')
+    if override == 'n':
+        # checking if user has already reviewed this event
+        existing_review = EventReview.objects.filter(author=request.user,event=event)
+        if existing_review:
+            return context
     
     form = ReviewCreateForm(request.POST or None)
 
@@ -19,7 +27,9 @@ def handle(request, event):
         form.author = request.user
         form.event = event
         form.save()
-        
-        return redirect('event_view', event.event_id)
+
+        return context 
     
-    return form
+    context['new_review_form'] = form
+
+    return context

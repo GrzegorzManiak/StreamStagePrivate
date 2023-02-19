@@ -38,36 +38,18 @@ def event_view(request, event_id):
 
     if event == None:
         return redirect('all_events')
-
-    reviews = EventReview.objects.filter(event=event).all()
-    primary_media_idx = event.primary_media_idx
     
-    media = event.media.all()
-
-    if media.count() == 0:
-        cover_pic = None
-    else:
-        cover_pic = media[primary_media_idx]
-
-    avg_rating = 0
-
-    if reviews.count() > 0:
-        for review in reviews:
-            avg_rating += review.rating
-        
-        avg_rating /= reviews.count()
+    reviews = event.get_reviews().order_by('-created')
+    review_context = inline_reviews.handle(request, event)
+    avg_rating = round(event.get_average_rating(reviews), 1)
 
     context = {
         'event': event, 
-        'cover_pic': cover_pic,
+        'cover_pic': event.get_cover_picture(),
         'reviews' : reviews,
-        'avg_rating': avg_rating
+        'avg_rating': avg_rating,
+        'new_review_form': review_context['new_review_form']
     }
-
-    review_form = inline_reviews.handle(request, event)
-
-    if review_form:
-        context['new_review_form'] = review_form
 
     return render(request, 'event.html', context)
 

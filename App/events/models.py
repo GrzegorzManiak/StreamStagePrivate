@@ -64,6 +64,31 @@ class Event(models.Model):
     def __str__(self):
         return self.title
     
+    def get_average_rating(self, reviews_in = None):
+        avg_rating = 0
+
+        reviews = reviews_in or self.get_reviews()
+        count = reviews.count()
+
+        if count > 0:
+            for review in reviews:
+                avg_rating += review.rating
+            
+            avg_rating /= count
+        
+        return avg_rating
+
+    def get_cover_picture(self):
+        media = self.media.all()
+
+        if media.count() == 0:
+            return None
+        else:
+            return media[self.primary_media_idx]
+
+    def get_reviews(self):
+        return EventReview.objects.filter(event=self).all()
+    
 class EventReview(models.Model):
 
     review_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
