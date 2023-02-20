@@ -4,7 +4,7 @@ from StreamStage import secrets
 from accounts.oauth.types import OAuthRespone
 
 
-class GoogleUser():
+class GithubUser():
     def __init__(
         self,
         id: int,
@@ -12,6 +12,7 @@ class GoogleUser():
         verified_email: bool,
         name: str,
         given_name: str,
+        description: str = None,
         picture: str = None,
     ):
         self.id = id
@@ -20,7 +21,7 @@ class GoogleUser():
         self.name = name
         self.given_name = given_name
         self.picture = picture
-        self.description = None
+        self.description = description
 
     def serialize(self):
         return {
@@ -53,7 +54,7 @@ class GoogleUser():
         return self.id
 
 
-class Google():
+class Github():
     def __init__(self, code=None):
         self.url = self.format_url()
         self.code = code
@@ -61,42 +62,53 @@ class Google():
         self.user = None
 
     """
-        Formats the URL for the Google OAuth2 login
+        Formats the URL for the Github OAuth2 login
     """
     def format_url(self):
-        redirect_uri = secrets.OAUTH_PROVIDERS['google']['redirect_uri']
-        client_id = secrets.OAUTH_PROVIDERS['google']['client_id']
+        redirect_uri = secrets.OAUTH_PROVIDERS['github']['redirect_uri']
+        client_id = secrets.OAUTH_PROVIDERS['github']['client_id']
+        api = secrets.OAUTH_PROVIDERS['github']['api_url']
+        scopes = secrets.OAUTH_PROVIDERS['github']['scopes']
 
-        return f'https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id={client_id}&redirect_uri={redirect_uri}&scope=openid%20email%20profile'    
+        scopes = ','.join(scopes)
+
+        return f'{api}?client_id={client_id}&redirect_uri={redirect_uri}&scope={scopes}&response_type=code'
 
 
 
     """
-        Gets the access token from Google
+        Gets the access token from Github
     """
     def get_access_token(self) -> OAuthRespone:
         json_response = None
 
         try:
             # -- Get the client id and secret
-            client_id = secrets.OAUTH_PROVIDERS['google']['client_id']
-            secret = secrets.OAUTH_PROVIDERS['google']['secret']
+            client_id = secrets.OAUTH_PROVIDERS['github']['client_id']
+            secret = secrets.OAUTH_PROVIDERS['github']['secret']
+            access_url = secrets.OAUTH_PROVIDERS['github']['access_url']
 
             # -- Get the code
             code = self.code
 
             # -- Format the request
-            url = 'https://oauth2.googleapis.com/token'
             data = {
-                'code': code,
                 'client_id': client_id,
                 'client_secret': secret,
-                'redirect_uri': secrets.OAUTH_PROVIDERS['google']['redirect_uri'],
-                'grant_type': 'authorization_code'
+                'code': code,
+                'redirect_uri': secrets.OAUTH_PROVIDERS['github']['redirect_uri'],
+            }
+
+            headers = {
+                'Accept': 'application/json',
             }
 
             # -- Send the request
-            response = requests.post(url, data=data)
+            response = requests.post(
+                access_url, 
+                data=data, 
+                headers=headers
+            )
 
             # -- Check the status code
             if response.status_code != 200:
@@ -110,31 +122,31 @@ class Google():
             return OAuthRespone.REQUEST_ERROR
 
         # -- Parse the data
-        self.access_token = json_response['access_token']
-        if self.access_token == None:
+        if 'access_token' not in json_response:
             return OAuthRespone.ERROR
+
+        self.access_token = json_response['access_token']
 
         # -- Return success
         return OAuthRespone.SUCCESS
 
 
-
     """
         Gets the user info from Google
     """
-    def get_userinfo(self) -> GoogleUser:
+    def get_userinfo(self) -> GithubUser:
         try:
             # -- Get the access token
             access_token = self.access_token
-            scope = secrets.OAUTH_PROVIDERS['google']['userinfo_url']
-
+            api = secrets.OAUTH_PROVIDERS['github']['userinfo_url']
+            
             # -- Format the request
             headers = {
-                'Authorization': f'Bearer {access_token}'
+                'Authorization': f'Bearer {access_token}',
             }
 
             # -- Send the request
-            response = requests.get(scope, headers=headers)
+            response = requests.get(api, headers=headers)
 
             # -- Check the status code
             if response.status_code != 200:
@@ -146,26 +158,28 @@ class Google():
 
         except:
             return OAuthRespone.REQUEST_ERROR
-
+        print(response)
         # -- Parse the data
-        google_id = response['id']
+        github_id = response['id']
         email = response['email']
-        verified_email = response['verified_email']
-        name = response['name']
-        given_name = response['given_name']
-        picture = response['picture']
+        verified_email = False
+        description = response['bio']
+        name = response['login']
+        given_name = response['name']
+        picture = response['avatar_url']
 
         # -- Make sure the data is valid
-        if google_id == None or email == None or verified_email == None or name == None or given_name == None:
+        if github_id == None or email == None or description == None or name == None or given_name == None:
             return OAuthRespone.ERROR
 
         # -- Create the user object
-        self.user = GoogleUser(
-            google_id, 
+        self.user = GithubUser(
+            github_id, 
             email,
             verified_email, 
             name, 
             given_name, 
+            description,
             picture
         )
 

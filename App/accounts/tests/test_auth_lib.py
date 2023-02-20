@@ -1,12 +1,14 @@
-from django.test import TestCase
 from django.contrib.auth import get_user_model
+from django.test import TestCase
+
 from accounts.auth_lib import (
-    generate_key,
+    authenticate_key,
     check_key,
     consume_key,
     determine_key,
-    authenticate_key,
+    generate_key,
 )
+
 
 class AuthLibTest(TestCase):
     def setUp(self):

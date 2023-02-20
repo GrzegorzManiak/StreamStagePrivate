@@ -6,7 +6,6 @@ module.exports = {
         authentication: './authentication/index.ts',
         toast: './toasts/index.ts',
         click_handler: './click_handler/index.ts',
-        form_handler: './form_handler/index.ts',
     },
     module: {
         rules: [

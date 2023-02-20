@@ -13,5 +13,16 @@ OAUTH_PROVIDERS = {
         'userinfo_url': 'https://www.googleapis.com/userinfo/v2/me',
         'redirect_uri': 'https://me.streamstage.co/sso/google',
         'ttl': 3600
+    },
+
+    'github': {
+        'client_id': '954a843cc41db453bcb6',
+        'secret': '528c4b4f3470b94225ba0e5ee4674c3dcfdcb1ac',
+        'scopes': [ 'read:user', 'user:email' ],
+        'api_url': 'https://github.com/login/oauth/authorize',
+        'access_url': 'https://github.com/login/oauth/access_token',
+        'userinfo_url': 'https://api.github.com/user',
+        'redirect_uri': 'https://me.streamstage.co/sso/github',
+        'ttl': 3600
     }
 }

@@ -8,9 +8,11 @@
     if it was not. The string will be a message
     describing the result of the function.
 """
-from accounts.models import Member
-from accounts.email.registration import username_taken
 from django.utils.html import escape
+
+from accounts.email.registration import username_taken
+from accounts.models import Member
+
 
 """
     This is a username validator

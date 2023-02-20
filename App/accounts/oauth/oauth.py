@@ -1,15 +1,17 @@
-from django.http import HttpResponseRedirect
-from rest_framework.decorators import api_view
-from django.urls import reverse, reverse_lazy
+import base64
+import json
+import secrets
+import time
+
 from django.apps import apps
+from django.http import HttpResponseRedirect
+from django.urls import reverse, reverse_lazy
+from rest_framework.decorators import api_view
 
 from .google import Google
-from .types import OAuthTypes, OAuthRespone
+from .github import Github
+from .types import OAuthRespone, OAuthTypes
 
-import secrets
-import base64
-import time
-import json
 
 """
     This function returns a formated message instructing the
@@ -32,12 +34,8 @@ def format_instructions(
         oauth_type=oauth_type
     ).first()
 
-    print(exisiting_link, oauth_id, oauth_type)
-
     has_oauth_id = False
     if exisiting_link is not None:
-        # Make sure that the user matches
-        if exisiting_link.oauth_type == oauth_type:
             has_oauth_id = True
 
 
@@ -207,6 +205,7 @@ def determine_app(oauth_service: OAuthTypes):
     # -- Determine the app
     match oauth_service:
         case OAuthTypes.GOOGLE: app = Google
+        case OAuthTypes.GITHUB: app = Github
 
 
     @api_view(['GET'])
@@ -229,7 +228,7 @@ def determine_app(oauth_service: OAuthTypes):
         # -- Get the access token
         res = choosen_app.get_access_token()
         if res != OAuthRespone.SUCCESS:
-            response = HttpResponseRedirect(reverse('login', urlconf='accounts.urls'))
+            response = HttpResponseRedirect(reverse('login'))
             response.set_cookie('oauth_error', str(res))
 
             return response
@@ -237,7 +236,7 @@ def determine_app(oauth_service: OAuthTypes):
         # -- Get the user info
         res = choosen_app.get_userinfo()
         if res != OAuthRespone.SUCCESS:
-            response = HttpResponseRedirect(reverse('login', urlconf='accounts.urls'))
+            response = HttpResponseRedirect(reverse('login'))
             response.set_cookie('oauth_error', str(res))
 
             return response
@@ -249,7 +248,7 @@ def determine_app(oauth_service: OAuthTypes):
         key = generate_oauth_key(
             oauth_service,
             choosen_app.user.serialize(),
-            choosen_app.user.get_id()
+            str(choosen_app.user.get_id())
         )
 
         # -- Format the instructions
@@ -270,10 +269,7 @@ def determine_app(oauth_service: OAuthTypes):
 
         # -- Return the instructions
         return HttpResponseRedirect(
-            reverse_lazy(
-                'login', 
-                urlconf='accounts.urls',
-            ) + f'?instructions={enocded_instructions}'
+            reverse_lazy('login') + f'?instructions={enocded_instructions}'
         )
 
     return sso
