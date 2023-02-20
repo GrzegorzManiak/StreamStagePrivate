@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     'accounts',
     'server_manager',
     'events',
+    'applications',
 
     # 3rd Party
     'crispy_forms',
