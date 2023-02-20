@@ -35,7 +35,7 @@
                     <h2>MEDIA</h2>
                     {% for media in event.media.all %}
                         <div class="event-media">
-                            <span class="elem" style="background-image: url({{ media.picture.url }})"></span>
+                            <span class="elem" style="background-image: url({{ media.picture }})"></span>
                             <p>{{ media.description }}</p>
                         </div>
                     {% endfor %}
@@ -57,7 +57,6 @@
                 <div class="mb-4 text-secondary">
                     <b>Avg User Rating: </b> <span>{{ avg_rating }}/10</span>
                 </div>
-
                 {% include 'reviews/review_new.html' %}
                 {% for review in reviews %}
                     {% include 'reviews/review.html' with review=review %}

@@ -17,6 +17,6 @@ urlpatterns = [
     path('<slug:event_id>/', event_view, name='event_view'),
     path('<slug:event_id>/update/', event_update, name='event_update'),
     path('<slug:event_id>/delete/', event_delete, name='event_delete'),
-    path('<slug:event_id>/review/<slug:review_id>/delete', review_delete, name='review_delete'),
     path('<slug:event_id>/review/<slug:review_id>/update', review_update, name='review_update'),
+    path('<slug:event_id>/review/<slug:review_id>/delete', review_delete, name='review_delete'),
 ]

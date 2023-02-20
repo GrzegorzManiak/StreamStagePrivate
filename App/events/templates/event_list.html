@@ -14,12 +14,17 @@ Events | StreamStage
     <h1>All Events</h1>
 
     {% for event in events %}
-        <p>{{ event.title }}</p>
-        <p>{{ event.description }}</p>
-        <p>{{ event.streamer }}</p>
-        <p>{{ event.categories }}</p>
-        <p>{{ event.showings }}</p>
-        <hr/>
+    <a href="{% url 'event_view' event.event_id %}">
+        <div>
+            <p>{{ event.title }}</p>
+            <p>{{ event.description }}</p>
+            <p>{{ event.streamer }}</p>
+            <p>{{ event.categories }}</p>
+            <p>{{ event.showings }}</p>
+            <p>{{ event.event_id }}</p>
+            <hr/>
+        </div>
+    </a>
 
     {% endfor %}
 </div>

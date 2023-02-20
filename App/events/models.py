@@ -59,7 +59,7 @@ class Event(models.Model):
     approved = models.BooleanField("Approved", default=False)
 
     def get_absolute_url(self):
-        return reverse('events.view_event', args=[self.event_id])
+        return reverse('event_view', args=[self.event_id])
     
     def __str__(self):
         return self.title

@@ -20,7 +20,9 @@
 
 body {
     background-color: var(--theme-color)!important;
-    color: var(--font-color);
+    /* color: var(--font-color); */
+    color: #ffffff;
+
 }
 
 #toasts {
