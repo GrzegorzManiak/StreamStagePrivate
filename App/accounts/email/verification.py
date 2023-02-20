@@ -191,7 +191,10 @@ def send_email(
         return (False, 'Invalid key')
 
     # -- Create the message
-    message = f""" Your link is https://me.streamstage.co/email/verify?token={key['key']}"""
+    message = f""" 
+        URL: https://me.streamstage.co/email/verify?token={key['key']}
+        Local: http://localhost:8000/accounts/email/verify?token={key['key']}
+    """
     print(message)  
     
     # -- Send the email
