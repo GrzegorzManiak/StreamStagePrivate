@@ -13,6 +13,7 @@ from .oauth.oauth import OAuthTypes
 class Member(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     username = models.CharField("Username", max_length=30, unique=True)
+    cased_username = models.CharField("Cased Username", max_length=30, unique=True)
     email = models.EmailField("Email", unique=True)
     date_of_birth = models.DateField(default=None, null=True)
     over_18 = models.BooleanField(default=False)
@@ -52,6 +53,7 @@ class Member(AbstractUser):
 
     def save(self, *args, **kwargs):
         self.is_over_18()
+        self.cased_username = self.username.lower()
         super(Member, self).save(*args, **kwargs)
 
 class StreamerProfile(models.Model):

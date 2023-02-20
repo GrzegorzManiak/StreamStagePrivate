@@ -100,6 +100,7 @@ def send_reg_verification(request):
             #    so we can create the account
             new_member = Member.objects.create(
                 username=username,
+                cased_username=username.lower(),
                 email=email.lower(),
                 password=make_password(password),
             )

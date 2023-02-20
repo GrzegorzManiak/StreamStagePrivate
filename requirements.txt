@@ -10,3 +10,4 @@ django_rest_framework
 pillow
 django-cors-headers
 django-countries
+django_timezone_field

@@ -29,7 +29,7 @@ temp_users = {}
 """
 def username_taken(username) -> bool:
     for key in temp_users:
-        if temp_users[key]['username'] == username:
+        if temp_users[key]['cased_username'] == username.lower():
             
             # -- Check if the username has expired
             if time.time() - temp_users[key]['created'] > settings.EMAIL_VERIFICATION_TTL:
@@ -39,12 +39,14 @@ def username_taken(username) -> bool:
             return True
 
     # -- Check the database
-    if Member.objects.filter(username=username).first() is not None:
+    if Member.objects.filter(cased_username=username.lower()).first() is not None:
         return True
 
     return False
     
 def email_taken(email) -> bool:
+    email = email.lower()
+
     for key in temp_users:
         if temp_users[key]['email'] == email:
             
@@ -131,6 +133,7 @@ def start_email_verification(
         #    so we can create the account
         member = Member.objects.create(
             username=username,
+            cased_username=username.lower(),
             email=user['email'].lower(),
             password=make_password(password),
         )
@@ -170,6 +173,7 @@ def start_email_verification(
     key = add_key(
         {
             'email': email.lower(),
+            'cased_username': username.lower(),
             'password': password,
             'username': username,
             'oauth': oauth,
@@ -182,6 +186,7 @@ def start_email_verification(
     # -- Create the account
     temp_users[temp_user_key] = {
         'email': email,
+        'cased_username': username.lower(),
         'password': password,
         'username': username,
         'created': time.time(),

@@ -178,7 +178,7 @@ def get_token(request):
     # -- Probably a username
     else:
         # -- We need to find the user by username even if they are in different cases
-        try: user = Member.objects.get(username__iexact=emailorusername)
+        try: user = Member.objects.get(cased_username=emailorusername)
         except Member.DoesNotExist:
             return JsonResponse({
                 'message': 'Invalid credentials',
