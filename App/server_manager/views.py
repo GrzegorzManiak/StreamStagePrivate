@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from StreamStage.secrets import NODE_ANNOUNCE_KEY
 import json
+import uuid
 
 from server_manager.library.server import add_server
 
@@ -35,15 +36,22 @@ def announce(request):
             }, status=status.HTTP_400_BAD_REQUEST)
 
         # -- Check if the body has the required fields
-        required = ['rtmp_ip', 'rtmp_port', 'http_ip', 'http_port']
+        required = ['rtmp_ip', 'rtmp_port', 'http_ip', 'http_port', 'server_uuid']
         for field in required:
             if body.get(field) is None:
                 return JsonResponse({
                     'error': 'Invalid body'
                 }, status=status.HTTP_400_BAD_REQUEST)
 
+        # -- Make sure the server UUID is a valid UUID
+        try: body['server_uuid'] = uuid.UUID(body['server_uuid'])
+        except: return JsonResponse({
+                'error': 'Invalid server UUID'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
         # -- Add the server to the database
         server = add_server(
+            body['server_uuid'],
             body['rtmp_ip'],
             body['rtmp_port'],
             body['http_ip'],

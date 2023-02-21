@@ -2,6 +2,8 @@ from . import ServerMode
 from server_manager.models.publisher import Publisher
 from server_manager.models.server import Server
 
+import uuid
+
 """
     :name: get_servers_by_mode
 
@@ -61,6 +63,7 @@ def get_publisher_by_server(server: Server) -> list[Publisher]:
            the ports will be different.
 """
 def add_server(
+    server_uuid: uuid.UUID,
     rtmp_ip: str,
     rtmp_port: int,
     http_ip: str,
@@ -72,10 +75,7 @@ def add_server(
 
     # -- Check if the server already exists
     try:
-        server = Server.objects.get(
-            rtmp_ip=rtmp_ip,
-            http_ip=http_ip,
-        )
+        server = Server.objects.get(server_uuid=server_uuid)
 
         if server is not None:
             # -- Update the server
@@ -88,10 +88,12 @@ def add_server(
                 return None
 
             return server
-    except: pass
-
+    except Exception as e:
+        print(e)
+        
     # -- Create the server
     server = Server(
+        server_uuid=server_uuid,
         rtmp_ip=rtmp_ip,
         rtmp_port=rtmp_port,
         http_ip=http_ip,

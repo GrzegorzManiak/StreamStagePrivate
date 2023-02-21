@@ -24,6 +24,12 @@ class Server(models.Model):
         editable=False
     )
 
+    server_uuid = models.UUIDField(
+        default=uuid.uuid4,
+        unique=True,
+        editable=False,
+    )
+
     region = models.CharField(
         max_length=3,
     )
@@ -68,6 +74,13 @@ class Server(models.Model):
         protocol='IPv4', null=True, blank=True)
     http_port = models.PositiveIntegerField(
         null=True, blank=True)
+
+    rtmp_url = models.URLField(
+        null=True, blank=True
+    )
+    http_url = models.URLField(
+        null=True, blank=True
+    )
 
 
     live = models.BooleanField(
@@ -136,6 +149,9 @@ class Server(models.Model):
             'http_ip': self.http_ip,
             'http_port': self.http_port,
             'secret': self.secret,
+            'live': self.live,
+            'rtmp_url': self.rtmp_url,
+            'http_url': self.http_url,
         }
 
     def set_region(self) -> None:
@@ -143,9 +159,9 @@ class Server(models.Model):
             cc = lookup.lookupStr(self.rtmp_ip)
             continent = country_converter.convert(names=cc, to='continent')
             continent = continent[:2]
-            self.region = f'{continent}-{cc}'
+            self.region = f'{cc}.{continent}'
         except: 
-            self.region = 'UNK-UNK'
+            self.region = 'UNKUNK'
 
         self.region = self.region.upper()
         
@@ -154,9 +170,38 @@ class Server(models.Model):
             We need to count all other servers
             with the same region so we can 
             generate a unique slug for this node
+
+            This method of looping through all the
+            same region servers is the most efficient
+            as it gets the lowest number that is not
+            taken, and it only has to loop through
+            the servers once.
         """
-        count = Server.objects.filter(region=self.region).count()
-        self.slug = f'{self.region}-{count}'.upper()
+        regions = Server.objects.filter(region=self.region).all()
+        count = 0
+
+        # -- Check if the server already has a slug
+        if self.slug is not None:
+            # -- Check if it has a count
+            split_slug = self.slug.split('-')
+            if len(split_slug) > 1 and split_slug[0].isdigit():
+                # -- set it
+                count = int(split_slug[0])
+
+                # -- Check if the slug is already taken
+                for region in regions:
+                    if region.slug == self.slug and region.id != self.id:
+                        # -- If it is, we need to generate a new one
+                        count = None
+
+        # -- If the count is None, we need to generate a new one
+        if count is None:
+            for region in regions:
+                if region.slug.startswith(f'{count}'): count += 1
+                else: break
+                
+
+        self.slug = f'{count}-{self.region}'.upper()
     
     def update_cloudflare(self) -> bool:
         """
@@ -176,13 +221,15 @@ class Server(models.Model):
         zone = acf.zones.get(params={'name': DOMAIN_NAME})
         name = f'{self.slug.lower()}.rtmp'
         zone_id = zone[0]['id']
-        records = acf.zones.dns_records.get(zone_id, params={"content": self.rtmp_ip, "type": "A"})
+        records = acf.zones.dns_records.get(zone_id, params={
+            "type": "A"
+        })
 
         # Get the DNS records
         dns_entry = {
             'type': 'A',
             'content': self.rtmp_ip,
-            'name': name,
+            'name': name.lower(),
             'ttl': 120,
             'proxied': False, # Can't proxy RTMP.
             'comment': f'{self.id}',
@@ -191,10 +238,7 @@ class Server(models.Model):
         try: 
             # Check if the record exists
             for record in records:
-                if (
-                    record['name'] == dns_entry['name'] or
-                    record['content'] == dns_entry['content']
-                ):
+                if record['name'].lower() == dns_entry['name'].lower() + '.' + DOMAIN_NAME.lower():
                     acf.zones.dns_records.put(zone_id, record['id'], data=dns_entry)
                     return True
 
@@ -210,5 +254,9 @@ class Server(models.Model):
     def save(self, *args, **kwargs):
         self.set_region()
         self.update_slug()
+
+        # -- Set the node url
+        self.rtmp_url = f'rtmp://{self.rtmp_ip}:{self.rtmp_port}/live'
+        self.http_url = f'http://{self.http_ip}:{self.http_port}/public'
 
         super(Server, self).save(*args, **kwargs)
