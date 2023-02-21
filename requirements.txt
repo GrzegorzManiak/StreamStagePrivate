@@ -11,3 +11,5 @@ pillow
 django-cors-headers
 django-countries
 django_timezone_field
+ip3country
+country_converter

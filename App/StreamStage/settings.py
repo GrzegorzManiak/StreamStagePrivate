@@ -11,7 +11,9 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-from .secrets import DJANGO_SECRET_KEY, SENDGIRD_TOKEN
+
+import CloudFlare
+from .secrets import DJANGO_SECRET_KEY, SENDGIRD_TOKEN, CLOUDFLARE_TOKEN
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,14 +31,28 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
+    '192.168.0.227',
     'www.streamstage.co',
     'me.streamstage.co',
     'streamstage.co',
     'master.streamstage.co',
+    '.streamstage.co',
 ]
 
 X_FRAME_OPTIONS = 'ALLOW-FROM *://*.streamstage.co/*'
 
+DOMAIN_NAME = 'streamstage.co'
+
+# Set to False if you don't use Cloudflare
+# As this will dictate if domain DNS is updated.
+# If its True and you don't use Cloudflare, 
+# you will get an error and the node wont be able to start.
+USE_CLOUDFLARE = True
+
+acf = None
+if USE_CLOUDFLARE:
+    acf = CloudFlare.CloudFlare(token=CLOUDFLARE_TOKEN)
+    
 CSRF_TRUSTED_ORIGINS = [
     'https://me.streamstage.co',
     'https://streamstage.co',

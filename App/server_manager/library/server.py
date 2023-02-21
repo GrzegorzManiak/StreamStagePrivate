@@ -74,12 +74,20 @@ def add_server(
     try:
         server = Server.objects.get(
             rtmp_ip=rtmp_ip,
-            rtmp_port=rtmp_port,
             http_ip=http_ip,
-            http_port=http_port,
         )
-        server.regenerate_secret()
-        return server
+
+        if server is not None:
+            # -- Update the server
+            server.rtmp_port = rtmp_port
+            server.http_port = http_port
+            server.save()
+            
+            server.regenerate_secret()
+            if server.update_cloudflare() == False:
+                return None
+
+            return server
     except: pass
 
     # -- Create the server
@@ -90,5 +98,7 @@ def add_server(
         http_port=http_port,
     )
     server.save()
-
+    if server.update_cloudflare() == False:
+        return None
+    
     return server
