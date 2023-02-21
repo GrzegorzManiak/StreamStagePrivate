@@ -34,6 +34,11 @@ class Server(models.Model):
         max_length=3,
     )
 
+    country = models.CharField(
+        max_length=2,
+    )
+    
+
     slug = models.CharField(
         max_length=64,
         unique=True,
@@ -159,11 +164,12 @@ class Server(models.Model):
             cc = lookup.lookupStr(self.rtmp_ip)
             continent = country_converter.convert(names=cc, to='continent')
             continent = continent[:2]
-            self.region = f'{cc}.{continent}'
-        except: 
-            self.region = 'UNKUNK'
+            self.region = continent.upper()
+            self.country = cc.upper()
 
-        self.region = self.region.upper()
+        except: 
+            self.region = 'UNK'
+            self.country = 'UNK'
         
     def update_slug(self) -> None:
         """
@@ -180,28 +186,13 @@ class Server(models.Model):
         regions = Server.objects.filter(region=self.region).all()
         count = 0
 
-        # -- Check if the server already has a slug
-        if self.slug is not None:
-            # -- Check if it has a count
-            split_slug = self.slug.split('-')
-            if len(split_slug) > 1 and split_slug[0].isdigit():
-                # -- set it
-                count = int(split_slug[0])
-
-                # -- Check if the slug is already taken
-                for region in regions:
-                    if region.slug == self.slug and region.id != self.id:
-                        # -- If it is, we need to generate a new one
-                        count = None
-
         # -- If the count is None, we need to generate a new one
-        if count is None:
-            for region in regions:
-                if region.slug.startswith(f'{count}'): count += 1
-                else: break
+        for region in regions:
+            if region.slug.startswith(f'{count}'): count += 1
+            else: break
                 
 
-        self.slug = f'{count}-{self.region}'.upper()
+        self.slug = f'{count}.{self.country}.{self.region}'.upper()
     
     def update_cloudflare(self) -> bool:
         """
