@@ -39,10 +39,12 @@ ALLOWED_HOSTS = [
     '.streamstage.co',
 ]
 
-X_FRAME_OPTIONS = 'ALLOW-FROM *://*.streamstage.co/*'
 
+
+#
+# Cloudflare
+#
 DOMAIN_NAME = 'streamstage.co'
-
 # Set to False if you don't use Cloudflare
 # As this will dictate if domain DNS is updated.
 # If its True and you don't use Cloudflare, 
@@ -52,18 +54,13 @@ USE_CLOUDFLARE = True
 acf = None
 if USE_CLOUDFLARE:
     acf = CloudFlare.CloudFlare(token=CLOUDFLARE_TOKEN)
-    
-CSRF_TRUSTED_ORIGINS = [
-    'https://me.streamstage.co',
-    'https://streamstage.co',
-]
 
-CORS_ALLOWED_ORIGIN_REGEXES = [
-    r"^https://.+$",
-]
 
+
+#
+# Subdomains
+#
 DEFAULT_HOST = 'www'
-
 ROOT_HOSTCONF = 'StreamStage.hosts'
 ROOT_URLCONF = 'StreamStage.urls'
 
@@ -71,8 +68,23 @@ SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_SAMESITE = None
 CSRF_COOKIE_SAMESITE = None
 
-# Application definition
 
+
+#
+# CSRF / CORS
+# 
+CSRF_TRUSTED_ORIGINS = [
+    'https://me.streamstage.co',
+    'https://streamstage.co',
+]
+X_FRAME_OPTIONS = 'ALLOW-FROM *://*.streamstage.co/*'
+CORS_ALLOWED_ORIGIN_REGEXES = [r"^https://.+$"]
+
+
+
+#
+# Application definition
+#
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -110,8 +122,6 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django_hosts.middleware.HostsResponseMiddleware',
 ]
-
-ROOT_URLCONF = 'StreamStage.urls'
 
 
 TEMPLATES = [
@@ -213,11 +223,6 @@ CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 # Password reset email
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-# Stripe keys
-# STRIPE_SECRET_KEY = ''
-# STRIPE_PUBLISHABLE_KEY = ''
-
 INBOUND_EMAIL = 'inquiries@StreamStage.co'
 OUTBOUND_EMAIL = 'mail@streamstage.co'
 
