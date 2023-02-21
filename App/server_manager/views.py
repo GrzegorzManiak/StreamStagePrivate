@@ -2,6 +2,10 @@ from django.http.response import JsonResponse
 from django.shortcuts import render
 from rest_framework import status
 from rest_framework.decorators import api_view
+from StreamStage.secrets import NODE_ANNOUNCE_KEY
+import json
+
+from server_manager.library.server import add_server
 
 @api_view(['POST'])
 def announce(request):
@@ -13,7 +17,55 @@ def announce(request):
         We will provide the node with a key that it can use
         to authenticate itself to the network.
     """
+    
+    # -- Check the autherization header for the announce key
+    if request.headers.get('Authorization') != NODE_ANNOUNCE_KEY:
+        return JsonResponse({
+            'error': 'Invalid announce key'
+        }, status=status.HTTP_401_UNAUTHORIZED)
 
+    # -- Try parsing the body of the request
+    try:
+        body = request.data
+        json_data = json.loads(body)
+
+        # -- Check if the body is valid
+        if not json_data:
+            return JsonResponse({
+                'error': 'Invalid body'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        # -- Check if the body has the required fields
+        required = ['rtmp_ip', 'rtmp_port', 'http_ip', 'http_port']
+        for field in required:
+            if field not in json_data:
+                return JsonResponse({
+                    'error': 'Invalid body'
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+        # -- Add the server to the database
+        server = add_server(
+            json_data['rtmp_ip'],
+            json_data['rtmp_port'],
+            json_data['http_ip'],
+            json_data['http_port'],
+        )
+
+        # -- Check if the server was added
+        if not server:
+            return JsonResponse({
+                'error': 'Error adding server'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        # -- Return the server's secret
+        return JsonResponse({
+            'secret': server.secret
+        }, status=status.HTTP_200_OK)
+
+    except:
+        return JsonResponse({
+            'error': 'Invalid body'
+        }, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST', 'GET'])

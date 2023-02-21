@@ -50,16 +50,17 @@ class Server(models.Model):
         default=secrets.token_urlsafe,
     )
 
-    ip = models.GenericIPAddressField(
-        protocol='IPv4',
-        null=True,
-        blank=True,
-    )
 
-    port = models.PositiveIntegerField(
-        null=True,
-        blank=True,
-    )
+    rtmp_ip = models.GenericIPAddressField(
+        protocol='IPv4', null=True, blank=True)
+    rtmp_port = models.PositiveIntegerField(
+        null=True, blank=True)
+
+    http_ip = models.GenericIPAddressField(
+        protocol='IPv4', null=True, blank=True)
+    http_port = models.PositiveIntegerField(
+        null=True, blank=True)
+
 
     live = models.BooleanField(
         default=False,
@@ -91,6 +92,10 @@ class Server(models.Model):
 
         if mode is not None: return mode
         else: raise ValueError('Invalid server mode')
+
+    def regenerate_secret(self) -> None:
+        self.secret = secrets.token_urlsafe()
+        self.save()
 
     def announce(self, ip, port, hb_id) -> None:
         self.live = True
