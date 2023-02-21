@@ -51,14 +51,14 @@ def event_view(request, event_id):
         'new_review_form': review_context['new_review_form']
     }
 
-    return render(request, 'event.html', context)
+    return render(request, 'eventcopy.html', context)
 
 # Display All Events
 def get_all_events(request):
     context = {}
     context["events"] = Event.objects.all()
 
-    return render(request, "event_list.html", context)
+    return render(request, "event_listcopy.html", context)
 
 def event_create(request):
     context = {}
@@ -121,14 +121,12 @@ def event_delete(request, event_id):
                                         # ***************
                                         # *** Reviews ***                                        # ***************
                                         # ***************
-# def get_all_reviews(request):
+# def get_event_reviews(request, event_id):
 #     context = {}
-#     context["reviews"] = EventReview.objects.filter(event=event)
+#     context["reviews"] = EventReview.objects.filter(event=event.event_id)
 
-#     for 
-#     return render(request, "event_reviews_list.html", {
-#         context,
-#         'event': event})
+#     return render(request, "event_reviews.html", context)
+
 
 def review_create(request):
     context = {}

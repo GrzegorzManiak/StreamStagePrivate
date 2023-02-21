@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Event{% endblock title %}
+
+{% comment %}
+{% block additional_styles %}
+<link rel="stylesheet" href="{% static 'css/events.css' %}">
+{% endblock %}
+{% endcomment %}
+
+{% block content %}
+<div class="container">
+
+    <!-- Main Details -->
+    <div class="row text-light">
+
+        <div class="col-3 mx-auto">
+
+            <!-- Category -->
+            <div class="mx-2 my-4">
+                {% for category in event.categories.all %}
+                <span class="badge bg-primary">{{category.name}}</span>
+                {% endfor %}
+            </div>
+
+            <!-- Event Poster -->
+            <div class="d-flex flex-row mx-2 my-4">
+                {% if event.media.all.count == 0 %}
+                <img class="event-cover" src="{% static 'images/default_event_cover.png' %}" alt="No Event Cover Photo">
+                {% else %}
+                <img class="event-cover" src="{{ cover_pic.picture.url }}">
+                {% endif %}
+            </div>
+            <!-- Overall Event Rating -->
+            <div class="mx-2 my-4">
+                <h4>Audience Rating <span class="text-light mt-2">{{ avg_rating }}/10</span></h4> 
+            </div>
+            <!-- Streamer Name -->
+            <div class="mx-2 my-4">
+                <h4>Streamer</h4>
+                <p>{{ event.streamer.username }}</p>
+            </div>
+        </div>
+
+        <div class="col-6 mx-auto p-2">
+            <!-- Event Title -->
+            <h1 class="my_title my-4">{{ event.title }}</h1>
+
+            <!-- Event Description -->
+            <div class="m-4">
+                <p>{{ event.description }}</p>
+
+                <!-- Showings -->
+                <div>
+                    <h4 class="my-4">Showings</h4>
+                    {% for showing in event.showings.all %}
+                    <p>{{showing.location}} - {{showing.time}}</p>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Event Reviews -->
+        <div class="col-3 text-start mx-auto p-2">
+            <div>
+                <h4 class="mx-2 my-4">Reviews</h4>
+                <div>
+                    <!-- Allow users to review -->
+                    {% if user.is_authenticated %}
+                    <!-- Need to add code for authenticating that user has seen event -->
+                    {% include 'reviews/review_new.html' %}
+                    {% endif %}
+                    {% for review in reviews %}
+                    {% include 'reviews/review.html' with review=review %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Media for Event -->
+    <div class="row text-light">
+                <!-- Media Carousel-->
+                <div class="col-9 content-center">
+                    {% for media in event.media.all %}
+                    <div class="event-media">
+                        <img src="{{ event.media }}">
+                        <p>{{ media.description }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+    </div>
+
+</div>
+
+{% endblock content %}

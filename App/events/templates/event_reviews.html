@@ -1,4 +1,10 @@
 <div>
+    {% for event in events %}
+        {% if event.event_id = event_id %}
+            {{ event.get_reviews }}
+        {% endif %}
+    {% endfor %} 
+     
     {% for review in reviews %}.
     
     {{ review.title }}<br/>

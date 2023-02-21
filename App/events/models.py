@@ -76,7 +76,7 @@ class Event(models.Model):
             
             avg_rating /= count
         
-        return avg_rating
+        return round(avg_rating,1)
 
     def get_cover_picture(self):
         media = self.media.all()
