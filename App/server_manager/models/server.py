@@ -115,3 +115,15 @@ class Server(models.Model):
 
         self.ip = ip
         self.port = port
+
+    def serialize(self) -> dict:
+        return {
+            'id': self.id,
+            'name': self.name,
+            'mode': self.mode,
+            'rtmp_ip': self.rtmp_ip,
+            'rtmp_port': self.rtmp_port,
+            'http_ip': self.http_ip,
+            'http_port': self.http_port,
+            'secret': self.secret,
+        }

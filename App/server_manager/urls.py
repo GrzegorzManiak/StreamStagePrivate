@@ -7,8 +7,8 @@ from .views import (
 )
 
 urlpatterns = [
-    path('announce/', announce, name='announce'),
-    path('heartbeat/', heartbeat, name='heartbeat'),
-    path('authenticate/', authenticate, name='authenticate'),
-    path('streams/', streams, name='streams'),
+    path('announce', announce, name='announce'),
+    path('heartbeat', heartbeat, name='heartbeat'),
+    path('authenticate', authenticate, name='authenticate'),
+    path('streams', streams, name='streams'),
 ]

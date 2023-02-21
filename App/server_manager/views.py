@@ -27,10 +27,9 @@ def announce(request):
     # -- Try parsing the body of the request
     try:
         body = request.data
-        json_data = json.loads(body)
 
         # -- Check if the body is valid
-        if not json_data:
+        if body is None:
             return JsonResponse({
                 'error': 'Invalid body'
             }, status=status.HTTP_400_BAD_REQUEST)
@@ -38,18 +37,18 @@ def announce(request):
         # -- Check if the body has the required fields
         required = ['rtmp_ip', 'rtmp_port', 'http_ip', 'http_port']
         for field in required:
-            if field not in json_data:
+            if body.get(field) is None:
                 return JsonResponse({
                     'error': 'Invalid body'
                 }, status=status.HTTP_400_BAD_REQUEST)
 
         # -- Add the server to the database
         server = add_server(
-            json_data['rtmp_ip'],
-            json_data['rtmp_port'],
-            json_data['http_ip'],
-            json_data['http_port'],
-        )
+            body['rtmp_ip'],
+            body['rtmp_port'],
+            body['http_ip'],
+            body['http_port'],
+        )   
 
         # -- Check if the server was added
         if not server:
@@ -57,10 +56,11 @@ def announce(request):
                 'error': 'Error adding server'
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        # -- Return the server's secret
-        return JsonResponse({
-            'secret': server.secret
-        }, status=status.HTTP_200_OK)
+        # -- Return the server
+        return JsonResponse(
+            server.serialize(),
+            status=status.HTTP_200_OK
+        )
 
     except:
         return JsonResponse({
