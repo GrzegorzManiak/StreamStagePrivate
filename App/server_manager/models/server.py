@@ -159,6 +159,18 @@ class Server(models.Model):
             'http_url': self.http_url,
         }
 
+    def display(self) -> dict:
+        return {
+            'id': self.id,
+            'name': self.name,
+            'mode': self.mode,
+            'slug': self.slug,
+            'region': self.region,
+            'rtmp_url': self.rtmp_url,
+            'http_url': self.http_url,
+            'live': self.live,
+        }
+
     def set_region(self) -> None:
         try: 
             cc = lookup.lookupStr(self.rtmp_ip)

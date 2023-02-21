@@ -7,5 +7,6 @@ host_patterns = patterns(
     host(r'me', 'accounts.urls', name='account'),
     host(r'events', 'events.urls', name='events'),
     host(r'master', 'server_manager.urls', name='master'),
+    host(r'stream', 'stream.urls', name='stream'),
     host(r'(?!www).*', settings.ROOT_URLCONF, name='wildcard'),
 )

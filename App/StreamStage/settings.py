@@ -97,9 +97,11 @@ INSTALLED_APPS = [
     'accounts',
     'server_manager',
     'events',
+    'stream',
 
     # 3rd Party
     'crispy_forms',
+
     # 'corsheaders',
     'crispy_bootstrap5',
     'django_countries',
