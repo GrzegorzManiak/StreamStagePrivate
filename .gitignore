@@ -156,3 +156,10 @@ node_modules/
 
 # db
 db.sqlite3
+
+# Im going to ignore migrations for now
+# as everyone has different migrations
+# and when we push it causes a million
+# conflicts, this will be removed later
+# once we have a stable prod version
+migrations/
