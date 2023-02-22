@@ -1,3 +1,11 @@
+"""
+    This file contains all things related to the
+    creation of a new account.
+
+    It also contains functions for creating 
+    temporary accounts and uniqueness checks.
+"""
+
 from django.contrib.auth.hashers import make_password
 from django.http.response import JsonResponse
 from rest_framework import status
@@ -15,17 +23,14 @@ from accounts.email.verification import (
     add_key,
 )
 
-"""
-    This file contains all things related to the
-    creation of a new account.
-"""
-
 temp_users = {}
 
 """
-    This function is responsible for cleaning up
-    the database checking if a specific user has
-    been expired
+    :name: username_taken
+    :description: This function checks if a username
+        exists in either the database or the temp_users.
+    :param username: String - The username to check
+    :return: Boolean - True if the username is taken
 """
 def username_taken(username) -> bool:
     for key in temp_users:
@@ -44,6 +49,15 @@ def username_taken(username) -> bool:
 
     return False
     
+
+
+"""
+    :name: email_taken
+    :description: This function checks if an email
+        exists in either the database or the temp_users.
+    :param email: String - The email to check
+    :return: Boolean - True if the email is taken
+"""
 def email_taken(email) -> bool:
     email = email.lower()
 
@@ -65,10 +79,16 @@ def email_taken(email) -> bool:
 
 
 
-
 """
-    Create a new account
-    with an email and password
+    :name: create_account_email
+    :description: This function is responsible for
+        creating a temporary account, it also sends
+        out an email to the provided email address
+        with a link to verify the email.
+    :param email: String - The email of the user
+    :param username: String - The username of the user
+    :param password: String - The password of the user
+    :return: JsonResponse - The response
 """
 def create_account_email(
     email: str,
@@ -100,10 +120,10 @@ def create_account_email(
 """
     :name: start_email_verification
     :description: This function is responsible for
-                  starting the email verification process,
-                  It creates the keys and sets up a callback
-                  to create the account once the user has
-                  verified their email
+        starting the email verification process,
+        It creates the keys and sets up a callback
+        to create the account once the user has
+        verified their email
 
     :param email: The email of the user
     :param password: The password of the user
