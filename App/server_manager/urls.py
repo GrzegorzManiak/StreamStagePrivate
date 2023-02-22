@@ -7,6 +7,7 @@ from .views import (
 )
 
 urlpatterns = [
+    # API's
     path('announce', announce, name='announce'),
     path('heartbeat', heartbeat, name='heartbeat'),
     path('authenticate', authenticate, name='authenticate'),

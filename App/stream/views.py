@@ -1,6 +1,6 @@
-from django.shortcuts import render
 from server_manager.models import Server
 from django.shortcuts import render
+from django.urls import reverse, reverse_lazy
 from rest_framework import status
 from rest_framework.decorators import api_view
 
@@ -20,4 +20,11 @@ def ingests(request):
     """
         Returns a list of servers back to the user
     """
-    return render(request, 'ingests.html', {})
+    servers = Server.objects.all()
+
+    # -- Serialize the servers
+    serialized = [server.display() for server in servers]
+
+    return render(request, 'ingests.html', {
+        'servers': serialized
+    })

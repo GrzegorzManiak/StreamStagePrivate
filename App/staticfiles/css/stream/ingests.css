@@ -1,0 +1,63 @@
+#servers {
+    margin: 0;
+    padding: 0;
+}
+
+#servers > li {
+    color: var(--font-color);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    height: 3rem;
+}
+
+#servers > li > div {
+    border: 1px solid var(--accent-color);
+    background-color: var(--theme-secondary-color);
+    border-radius: 0.2rem;
+    padding: 0.5rem;
+}
+
+#servers > li a, 
+#servers > li p {
+    margin: 0;
+    padding: 0;
+}
+
+
+.geo {
+    font-weight: 700;
+    font-size: 2rem;
+}
+
+.id {
+    color: var(--greyed-out-font-color);
+    font-size: 0.8rem;
+}
+
+.index {
+    background-color: var(--accent-color);
+    padding: 0.2rem 1.5rem;
+}
+
+
+.flag {
+    object-fit: cover;
+}
+
+.url {
+    flex-grow: 1;
+}
+
+.url p {
+    color: var(--greyed-out-font-color);    
+}
+
+.url > div {
+    display: flex;
+    width: 100%;
+    padding: 0.5rem;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+}

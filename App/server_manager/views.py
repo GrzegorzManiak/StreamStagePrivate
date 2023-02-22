@@ -1,9 +1,8 @@
 from django.http.response import JsonResponse
-from django.shortcuts import render
 from rest_framework import status
 from rest_framework.decorators import api_view
 from StreamStage.secrets import NODE_ANNOUNCE_KEY
-import json
+from server_manager.models import Server
 import uuid
 
 from server_manager.library.server import add_server

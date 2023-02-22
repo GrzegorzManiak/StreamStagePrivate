@@ -11,7 +11,6 @@ from server_manager.models import Publisher
 
 import uuid
 import secrets
-import CloudFlare
 import country_converter
 
 lookup = CountryLookup()
@@ -142,6 +141,12 @@ class Server(models.Model):
         self.ip = ip
         self.port = port
 
+    def build_rtmp_url(self) -> None:
+        # If the port is 1935, we don't need to include it
+        if self.rtmp_port == 1935:
+            return f'rtmp://{self.slug}.{DOMAIN_NAME}/live'.lower()
+        return f'rtmp://{self.slug}.{DOMAIN_NAME}:{self.rtmp_port}/live'.lower()
+
     def serialize(self) -> dict:
         return {
             'id': self.id,
@@ -166,9 +171,12 @@ class Server(models.Model):
             'mode': self.mode,
             'slug': self.slug,
             'region': self.region,
+            'country': self.country,
             'rtmp_url': self.rtmp_url,
             'http_url': self.http_url,
             'live': self.live,
+            'url': self.build_rtmp_url(),
+            'flag': f'https://flagcdn.com/w40/{self.country.lower()}.png',
         }
 
     def set_region(self) -> None:
@@ -252,6 +260,7 @@ class Server(models.Model):
         except Exception as e:
             print(e)
             return False
+
 
     # ========= Overrides ========= #
     def save(self, *args, **kwargs):
