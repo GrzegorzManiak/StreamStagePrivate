@@ -119,10 +119,11 @@ header .accordion:focus {
 
 
 /***** Fonts *****/
-h1, h2, h3, h4 {
+h1, h2, h3, h4, h5, h6 {
     color: #ffb25a;
     font-weight: bold;
 }
+
 
 /***** Forms *****/
 form > input {
@@ -131,8 +132,21 @@ form > input {
     font-weight: bold;
 }
 
+
 /***** Images *****/
 
+
+/***** Links *****/
+div > a {
+    text-decoration: none;
+    color: #ffb25a;
+
+}
+
+div > a:hover {
+    /* border: 1px solid #FFFFFF; */
+    color: #FFFFFF;
+}
 
 /***** Category Page *****/
 

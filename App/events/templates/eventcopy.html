@@ -70,10 +70,10 @@
                     <!-- Allow users to review -->
                     {% if user.is_authenticated %}
                     <!-- Need to add code for authenticating that user has seen event -->
-                    {% include 'reviews/review_new.html' %}
+                        {% include 'reviews/review_new.html' %}
                     {% endif %}
                     {% for review in reviews %}
-                    {% include 'reviews/review.html' with review=review %}
+                        {% include 'reviews/review.html' with review=review %}
                     {% endfor %}
                 </div>
             </div>

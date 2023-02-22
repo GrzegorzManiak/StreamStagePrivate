@@ -64,6 +64,10 @@ class Event(models.Model):
     def __str__(self):
         return self.title
     
+    def short_description(self):
+        return self.description[:200]
+
+    
     def get_average_rating(self, reviews_in = None):
         avg_rating = 0
 
@@ -88,6 +92,17 @@ class Event(models.Model):
 
     def get_reviews(self):
         return EventReview.objects.filter(event=self).all()
+    
+    def get_top_review(self, reviews_in = None):
+        reviews = reviews_in or self.get_reviews()
+
+        top_review = None
+        rating = 0
+        for review in reviews:
+            if review.rating > rating:
+                rating = review.rating
+                top_review = review
+        return top_review
     
 class EventReview(models.Model):
 
