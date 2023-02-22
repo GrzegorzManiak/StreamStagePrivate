@@ -61,3 +61,59 @@
     justify-content: flex-end;
     align-items: flex-end;
 }
+
+.main-body, .stacked {
+    display: flex;
+    gap: 1rem;
+}
+
+
+/* .flag {
+    display: none!important;
+} */
+.geo-top { display: none!important; }
+.id-1 { display: none!important; }
+.id-2 { display: block!important; }
+
+.stacked {
+    justify-content: space-between!important;
+    align-items: center!important;
+    flex-grow: 1;
+}
+
+.stacked > div { 
+    height: 100%!important; 
+    flex-grow:4 1;
+}
+
+.geo-top { display: block!important; }
+.geo-bottom { display: none!important; }
+.gapper { gap: 0.5rem!important; }
+
+
+@media only screen and (max-width: 500px) {
+    .flag {
+        display: none!important;
+    }
+
+    .stacked {
+        width: 100%!important;
+        display: block!important;
+    }
+
+    .stacked > div { width: 100%!important; }
+    .main-body { display: block!important; }
+
+    .stacked p {
+        text-align: center;
+        font-size: 0.6rem;
+    }
+
+    .url > div {
+        width: 100%!important;
+        justify-content: center!important;
+        align-items: center!important;
+    }
+    .geo-top { display: block!important; }
+    .geo-bottom { display: none!important; }
+}

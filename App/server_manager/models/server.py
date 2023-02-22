@@ -144,8 +144,8 @@ class Server(models.Model):
     def build_rtmp_url(self) -> None:
         # If the port is 1935, we don't need to include it
         if self.rtmp_port == 1935:
-            return f'rtmp://{self.slug}.{DOMAIN_NAME}/live'.lower()
-        return f'rtmp://{self.slug}.{DOMAIN_NAME}:{self.rtmp_port}/live'.lower()
+            return f'rtmp://{self.slug}.rtmp.{DOMAIN_NAME}/live'.lower()
+        return f'rtmp://{self.slug}.rtmp.{DOMAIN_NAME}:{self.rtmp_port}/live'.lower()
 
     def serialize(self) -> dict:
         return {

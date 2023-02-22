@@ -20,12 +20,18 @@
     ></span>
 
     <main>
-        <div class="container">
+        <div class="container my-5">
             <!-- Main text-->
-            <div class="row">
-                <div class="col-md-12">
-                    <h1 class="text-center">Recommended Ingres Nodes for you.</h1>
-                    <p class="text-center">A list of recommended ingest servers personally tailored to your network.</p>
+            <div class="row text-light">
+                <div class="
+                    col-md-12 
+                    d-flex
+                    flex-column
+                    justify-content-center
+                    align-items-center
+                ">
+                    <h1 class="text-center fw-bold">Recommended Ingres Nodes for you.</h1>
+                    <p class="text-center w-50">A list of recommended ingest servers personally tailored to your network.</p>
                 </div>
             </div>
 
@@ -36,22 +42,30 @@
                     <li>
                         
                         <!--Server details-->
-                        <div class='d-flex '>
+                        <div class='main-body'>
                             <!--index-->
                             <div class='
-                                col-1
                                 d-flex
                                 justify-content-center
                                 align-items-center
+                                gapper
                             '>
                                 <div class='index'>
                                     <p>#{{ forloop.counter }}</p>
+                                </div>
+
+                                <div class='
+                                    d-flex
+                                    justify-content-start
+                                    align-items-center
+                                    geo-top
+                                '>
+                                    <p class='geo'>{{ server.region }}:{{ server.country }}</h3>
                                 </div>
                             </div>
 
                             <!--Flag image-->
                             <div class='
-                                col-1
                                 d-flex
                                 justify-content-center
                                 align-items-center
@@ -64,23 +78,18 @@
                             <div class='
                                 d-flex
                                 flex-column
-                                justify-content-between
-                                align-items-start
                                 stacked
                             '>
                                 <!--Server name-->
                                 <div class='
-                                    col-12 
-                                    d-flex
-                                    justify-content-start
-                                    align-items-center
+                                    geo-bottom
                                 '>
                                     <p class='geo'>{{ server.region }}:{{ server.country }}</h3>
                                 </div>
 
                                 <!--Server id -->
-                                <div class='col-12'>
-                                    <p class='id'>ID: {{ server.id }}</p>
+                                <div>
+                                    <p class='id id-1'>ID: {{ server.id }}</p>
                                 </div>
                             </div>
 
@@ -93,6 +102,7 @@
                             '>
                                 <!--Align the text on the right--> 
                                 <div>
+                                    <p class='id id-2'>ID: {{ server.id }}</p>
                                     <p>{{ server.url }}/</p>
                                 </div>
                                     
