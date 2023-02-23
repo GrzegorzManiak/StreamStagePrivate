@@ -2,7 +2,8 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django_countries.fields import CountryField
-from .validation import validate_event_media, generate_file_media
+from django.core.validators import MaxValueValidator, MinValueValidator 
+
 import uuid
 
 class Category(models.Model):
@@ -46,13 +47,13 @@ class EventShowing(models.Model):
 
 
     def __str__(self):
-        return self.location
+        return self.venue
 
 # when the 'delete event' feature is implemented - all EventMedia objects will need to be deleted by code.
 class Event(models.Model):
     event_id = models.CharField(primary_key=True, unique=True, max_length=32) # randomly generated 8 character ID
     title = models.TextField("Title", default="New Event")
-    description = models.TextField("Description", blank=True, max_length=3096)
+    description = models.TextField("Description", max_length=3096)
     over_18s = models.BooleanField(default=False)
     # References member, but only "streamers" will be allowed to create an event
     streamer = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
@@ -60,24 +61,66 @@ class Event(models.Model):
     showings = models.ManyToManyField(to=EventShowing)
     primary_media_idx = models.IntegerField(default=0) # Points to an item in the 'media' field - used as a cover photo 
     media = models.ManyToManyField(to=EventMedia, blank=True)
-    contributors = models.ManyToManyField(get_user_model(), related_name="event_broadcasters")
+    contributors = models.ManyToManyField(get_user_model(), related_name="event_broadcasters", blank=True)
+    approved = models.BooleanField("Approved", default=False)
 
     def get_absolute_url(self):
-        return reverse('events.view_event', args=[self.event_id])
+        return reverse('event_view', args=[self.event_id])
     
     def __str__(self):
         return self.title
     
+    def short_description(self):
+        return self.description[:200]
+
+    
+    def get_average_rating(self, reviews_in = None):
+        avg_rating = 0
+
+        reviews = reviews_in or self.get_reviews()
+        count = reviews.count()
+
+        if count > 0:
+            for review in reviews:
+                avg_rating += review.rating
+            
+            avg_rating /= count
+        
+        return round(avg_rating,1)
+
+    def get_cover_picture(self):
+        media = self.media.all()
+
+        if media.count() == 0:
+            return None
+        else:
+            return media[self.primary_media_idx]
+
+    def get_reviews(self):
+        return EventReview.objects.filter(event=self).all()
+    
+    def get_top_review(self, reviews_in = None):
+        reviews = reviews_in or self.get_reviews()
+
+        top_review = None
+        rating = 0
+        for review in reviews:
+            if review.rating > rating:
+                rating = review.rating
+                top_review = review
+        return top_review
+    
 class EventReview(models.Model):
+
     review_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    title = models.CharField(max_length=50)
-    body = models.TextField(max_length=500)
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
-    likes = models.IntegerField(default=0)
-    rating = models.SmallIntegerField()
+    title = models.CharField("Review Title", max_length=50)
+    body = models.TextField("Review Body", max_length=500)
+    created = models.DateTimeField("Created", auto_now_add=True)
+    updated = models.DateTimeField("Updated", auto_now=True)
+    likes = models.IntegerField("Review Likes", default=0)
+    rating = models.SmallIntegerField("Event Rating", default=10, validators=[MinValueValidator(0), MaxValueValidator(10)])
 
     class Meta:
         verbose_name = 'Event Review'

@@ -3,8 +3,8 @@
     --theme-color: #15181d;
     --theme-secondary-color: rgb(32, 38, 46);
     --accent-color: #ffb25a;
-    --greyed-out-font-color: #b3b3b3;
     --font-color: #ffffff;
+    --greyed-out-font-color: #b3b3b3;
     --muted-font-color: #b3b3b3;
 
     --header-height: 3.5rem;
@@ -21,6 +21,8 @@
 body {
     background-color: var(--theme-color)!important;
     color: var(--font-color);
+    color: #ffffff;
+
 }
 
 #toasts {
@@ -95,7 +97,7 @@ header .accordion {
     font-size: 1.5rem!important;
 }
 
-/* -- unfcoused */
+/* -- unfocused */
 header .accordion:focus {
     outline: none;
     box-shadow: none;
@@ -117,10 +119,34 @@ header .accordion:focus {
 
 
 /***** Fonts *****/
+h1, h2, h3, h4, h5, h6 {
+    color: #ffb25a;
+    font-weight: bold;
+}
+
+
+/***** Forms *****/
+form > input {
+    background-color: #ffb25a;
+    color: rgb(32, 38, 46);
+    font-weight: bold;
+}
 
 
 /***** Images *****/
 
+
+/***** Links *****/
+div > a {
+    text-decoration: none;
+    color: #ffb25a;
+
+}
+
+div > a:hover {
+    /* border: 1px solid #FFFFFF; */
+    color: #FFFFFF;
+}
 
 /***** Category Page *****/
 
@@ -144,9 +170,16 @@ header .accordion:focus {
     background-size: cover;
 }
 
-.event-listing {
-    width: 350px;
-    height: 350px;
+/***** Reviews *****/
+
+.review-form {
+    display: flex;
+    flex-direction: column;
+    margin: .5em;
+}
+
+.review-form * {
+    max-width: 100%;
 }
 
 /***** Upcoming Events Page *****/

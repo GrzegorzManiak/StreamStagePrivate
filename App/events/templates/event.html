@@ -11,7 +11,7 @@
 
 {% block content %}
 <div class="container">
-    <div class="row">
+    <div class="row text-light">
         <div class="col-9 mx-auto p-2">
             <div class="m-3">
                 {% for category in event.categories.all %}
@@ -35,14 +35,15 @@
                     <h2>MEDIA</h2>
                     {% for media in event.media.all %}
                         <div class="event-media">
-                            <span class="elem" style="background-image: url({{ media.picture.url }})"></span>
+                            <span class="elem" style="background-image: url({{ media.picture }})"></span>
                             <p>{{ media.description }}</p>
                         </div>
                     {% endfor %}
                 </div>
             </div>
         </div>
-        <div class="col-2 text-start mx-auto">
+        
+        <div class="col-3 text-start mx-auto">
             <h1 class="my-4">STREAMER</h1>
             <p>{{ event.streamer.username }}</p>
 
@@ -53,11 +54,13 @@
                 {% endfor %}
             </div>
             <div>
-                <h1 class="my-4">REVIEWS</h1>
-
+                <h1 class="my-4 mb-1">REVIEWS</h1>
+                <div class="mb-4 text-secondary">
+                    <b>Avg User Rating: </b> <span>{{ avg_rating }}/10</span>
+                </div>
+                {% include 'reviews/review_new.html' %}
                 {% for review in reviews %}
-                    <p>{{ review.title }}</p>
-                    <p>{{ review.body }}</p>
+                    {% include 'reviews/review.html' with review=review %}
                 {% endfor %}
             </div>
         </div>

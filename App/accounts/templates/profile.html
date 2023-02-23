@@ -342,7 +342,7 @@
                     -->
                     <div class='side-panel-header'>
                         <p class='side-panel-header-text'>
-                            Broadcaster
+                            Streaming
                         </p>
                     </div>
 
@@ -390,7 +390,7 @@
                         -->
                         <div 
                             data-pod-status=''
-                            data-pod='publishers'
+                            data-pod='broadcaster'
                         class='
                             side-panel-pod
                             text-light d-flex
@@ -414,7 +414,7 @@
                             <!-- Text -->
                             <div class='side-panel-pod-text'>
                                 <p class='side-panel-pod-text-text m-0 mb-0'>
-                                    Publishers
+                                    Broadcasters
                                 </p>
                             </div>
                         </div>
@@ -478,6 +478,47 @@
                         <!-- 
                             End of events request pod 
                         -->
+
+
+
+                        <!-- 
+                            Publisher request Pod 
+                        -->
+                        <div 
+                            data-pod-status=''
+                            data-pod='broadcaster-request'
+                        class='
+                            admin-pod
+                            side-panel-pod
+                            text-light d-flex
+                            align-items-center
+                            justify-content-start
+                        '>
+                            <!-- Icon -->
+                            <div 
+                                class='
+                                    side-panel-pod-icon
+                                    d-flex
+                                    align-items-center
+                                    justify-content-center
+                                '
+                            >
+                                <i class="fa-solid text-justify accordion
+                                    fa-badge-check
+                                "></i>
+                            </div>
+
+                            <!-- Text -->
+                            <div class='side-panel-pod-text'>
+                                <p class='side-panel-pod-text-text m-0 mb-0'>
+                                    Broadcaster Requests
+                                </p>
+                            </div>
+                        </div>
+                        <!-- 
+                            End of events request pod 
+                        -->
+
 
 
                         <!-- 
@@ -659,6 +700,67 @@
                                     data-form-endpoint='{{ pages.profile.endpoint }}'
                                 >
                                     {{ pages.profile.form.as_p }}
+                                </article>
+
+
+
+                                <!--
+                                    Events Panel
+                                -->
+                                <article 
+                                    class='panel' 
+                                    data-panel-type='events'
+                                    data-panel-status='hidden'
+                                >
+
+                                </article>
+
+
+                                <!--
+                                    Broadcaster Panel
+                                -->
+                                <article 
+                                    class='panel' 
+                                    data-panel-type='broadcaster'
+                                    data-panel-status='hidden'
+                                >
+    
+                                </article>
+
+
+                                <!--
+                                    Admin: Events Request Panel
+                                -->
+                                <article 
+                                    class='panel' 
+                                    data-panel-type='event-request'
+                                    data-panel-status='hidden'
+
+                                >
+                                </article>
+
+
+                                <!--
+                                    Admin: Broadcaster Request Panel
+                                -->
+                                <article 
+                                    class='panel' 
+                                    data-panel-type='broadcaster-request'
+                                    data-panel-status='hidden'
+                                >
+    
+                                </article>
+
+
+                                <!--
+                                    Admin: Venues Panel
+                                -->
+                                <article 
+                                    class='panel' 
+                                    data-panel-type='venues'
+                                    data-panel-status='hidden'
+                                >
+
                                 </article>
                             </div>
                         </main>

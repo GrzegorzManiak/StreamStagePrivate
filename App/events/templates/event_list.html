@@ -11,16 +11,44 @@ Events | StreamStage
 
 {% block content %}
 <div>
-    <h1>All Events</h1>
+    <h1 class="text-center my-2">All Events</h1>
 
+    <!-- Listing All Events -->
     {% for event in events %}
-        <p>{{ event.title }}</p>
-        <p>{{ event.description }}</p>
-        <p>{{ event.streamer }}</p>
-        <p>{{ event.categories }}</p>
-        <p>{{ event.showings }}</p>
-        <hr/>
+    <div class = "row my-4">
+        <a href="{% url 'event_view' event.event_id %}">
 
+            <div class="col-1">
+                <p>{{ event.category }}</p>
+            </div>
+            <div class="col 3">
+                <h4>{{ event.streamer }}</h4>
+                    {% if event.media.all.count == 0 %}
+                        <img class="event-cover col-3" src="{% static 'images/default_event_cover.png' %}" alt="No Event Cover Photo">
+                    {% else %}
+                        <img class="event-cover col-3" src="{{ cover_pic.picture.url }}" >
+                    {% endif %}
+            </div>            
+            <div class="col 5">
+                <h2 class="text-left">{{ event.title }}</h1>
+                <p>{{ event.description }}</p>
+                <p>{{ event.showings }}</p>
+
+            </div>
+        </a>
+        
+    <!-- Reviews For Each event -->
+            <div class="col 3 text-center">
+                <h4>Reviews</h4>
+                <p>                
+                    {% for review in event.reviews %}
+                    {% include 'reviews/review.html' with review=review %}
+                    {% endfor %}
+                </p>
+            </div>
+        </a>
+        </div>
+        <hr/>
     {% endfor %}
 </div>
 {% endblock %}
