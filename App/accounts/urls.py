@@ -7,7 +7,7 @@ from .email.views import (
     verify_key_view,
 )
 from .create.views import send_reg_verification
-from .oauth.oauth import OAuthTypes, determine_app
+from .oauth import OAuthTypes, determine_app
 from .profile.forms import change_basic_details
 from .profile.views import profile, send_verification
 from .views import get_token, login, logout, register, validate_token

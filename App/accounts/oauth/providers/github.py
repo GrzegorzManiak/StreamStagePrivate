@@ -4,7 +4,7 @@ from StreamStage import secrets
 from accounts.oauth.types import OAuthRespone
 
 
-class GithubUser():
+class User():
     def __init__(
         self,
         id: int,
@@ -54,7 +54,7 @@ class GithubUser():
         return self.id
 
 
-class Github():
+class Oauth():
     def __init__(self, code=None):
         self.url = self.format_url()
         self.code = code
@@ -134,7 +134,7 @@ class Github():
     """
         Gets the user info from Google
     """
-    def get_userinfo(self) -> GithubUser:
+    def get_userinfo(self) -> User:
         try:
             # -- Get the access token
             access_token = self.access_token
@@ -173,7 +173,7 @@ class Github():
             return OAuthRespone.ERROR
 
         # -- Create the user object
-        self.user = GithubUser(
+        self.user = User(
             github_id, 
             email,
             verified_email, 

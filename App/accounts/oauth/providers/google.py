@@ -4,7 +4,7 @@ from StreamStage import secrets
 from accounts.oauth.types import OAuthRespone
 
 
-class GoogleUser():
+class User():
     def __init__(
         self,
         id: int,
@@ -53,7 +53,7 @@ class GoogleUser():
         return self.id
 
 
-class Google():
+class Oauth():
     def __init__(self, code=None):
         self.url = self.format_url()
         self.code = code
@@ -122,7 +122,7 @@ class Google():
     """
         Gets the user info from Google
     """
-    def get_userinfo(self) -> GoogleUser:
+    def get_userinfo(self) -> User:
         try:
             # -- Get the access token
             access_token = self.access_token
@@ -160,7 +160,7 @@ class Google():
             return OAuthRespone.ERROR
 
         # -- Create the user object
-        self.user = GoogleUser(
+        self.user = User(
             google_id, 
             email,
             verified_email, 

@@ -13,3 +13,4 @@ django-countries
 django_timezone_field
 ip3country
 country_converter
+cloudflare

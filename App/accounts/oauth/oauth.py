@@ -8,8 +8,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from rest_framework.decorators import api_view
 
-from .google import Google
-from .github import Github
+from .providers import google, github
 from .types import OAuthRespone, OAuthTypes
 
 
@@ -204,8 +203,8 @@ def determine_app(oauth_service: OAuthTypes):
 
     # -- Determine the app
     match oauth_service:
-        case OAuthTypes.GOOGLE: app = Google
-        case OAuthTypes.GITHUB: app = Github
+        case OAuthTypes.GOOGLE: app = google
+        case OAuthTypes.GITHUB: app = github
 
 
     @api_view(['GET'])
@@ -219,11 +218,11 @@ def determine_app(oauth_service: OAuthTypes):
         #    The user to the oauth url
         code = request.GET.get('code')
         if code == None:
-            return HttpResponseRedirect(app().url)
+            return HttpResponseRedirect(app.Oauth().url)
 
 
         # -- Create a new Google object
-        choosen_app = app(code)
+        choosen_app = app.Oauth(code)
 
         # -- Get the access token
         res = choosen_app.get_access_token()

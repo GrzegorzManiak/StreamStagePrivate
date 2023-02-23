@@ -6,7 +6,7 @@ from django.db import models
 from django_countries.fields import CountryField
 from timezone_field import TimeZoneField
 
-from .oauth.oauth import OAuthTypes
+from .oauth import OAuthTypes
 
 
 # Create your models here.

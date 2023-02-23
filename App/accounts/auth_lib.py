@@ -14,7 +14,7 @@ import secrets
 import time
 
 from .models import Member
-from .oauth.oauth import (
+from .oauth import (
     check_oauth_key,
     get_oauth_data,
     get_oauth_user,
