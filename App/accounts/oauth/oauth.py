@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from rest_framework.decorators import api_view
 
-from .providers import google, github
+from .providers import google, github, discord
 from .types import OAuthRespone, OAuthTypes
 
 
@@ -205,6 +205,7 @@ def determine_app(oauth_service: OAuthTypes):
     match oauth_service:
         case OAuthTypes.GOOGLE: app = google
         case OAuthTypes.GITHUB: app = github
+        case OAuthTypes.DISCORD: app = discord
 
 
     @api_view(['GET'])
@@ -239,7 +240,6 @@ def determine_app(oauth_service: OAuthTypes):
             response.set_cookie('oauth_error', str(res))
 
             return response
-
 
         # -- Generate a reference key
         #    So that we can fetch this

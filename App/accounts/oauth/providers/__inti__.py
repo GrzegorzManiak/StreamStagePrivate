@@ -6,3 +6,4 @@
 """
 from .google import Google, GoogleUser
 from .github import Github, GithubUser
+from .discord import Discord, DiscordUser

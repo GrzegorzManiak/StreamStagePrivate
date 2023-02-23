@@ -1,5 +1,4 @@
 from enum import Enum
-
 from StreamStage.secrets import OAUTH_PROVIDERS
 
 
@@ -50,5 +49,50 @@ class OAuthTypes():
             
             case OAuthTypes.GITHUB:
                 return OAUTH_PROVIDERS['github']['ttl']
+
+            case OAuthTypes.DISCORD:
+                return OAUTH_PROVIDERS['discord']['ttl']
         return 0
 
+
+
+class User():
+    def __init__(
+        self,
+        id: int,
+        email: str,
+        verified_email: bool,
+        name: str,
+        given_name: str,
+        picture: str = None,
+    ):
+        self.id = id
+        self.email = email
+        self.verified_email = verified_email
+        self.name = name
+        self.given_name = given_name
+        self.picture = picture
+        self.description = None
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'email': self.email,
+            'email_verified': self.verified_email,
+            'name': self.name,
+            'given_name': self.given_name,
+            'picture': self.picture,
+            'description': self.description,
+        }
+        
+    def get_email(self):
+        return self.email
+
+    def get_is_verified(self):
+        return self.verified_email
+
+    def get_name(self):
+        return self.name
+
+    def get_id(self):
+        return self.id

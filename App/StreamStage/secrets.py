@@ -26,5 +26,16 @@ OAUTH_PROVIDERS = {
         'userinfo_url': 'https://api.github.com/user',
         'redirect_uri': 'https://me.streamstage.co/sso/github',
         'ttl': 3600
+    },
+
+    'discord': {
+        'client_id': '1078294558162550864',
+        'secret': 'JSckKdMDeyHxqxG2OVfBOiX9QOTwVo4q',
+        'scopes': [ 'identify', 'email' ],
+        'api_url': 'https://discord.com/api/oauth2/authorize',
+        'access_url': 'https://discord.com/api/oauth2/token',
+        'userinfo_url': 'https://discord.com/api/users/@me',
+        'redirect_uri': 'https://me.streamstage.co/sso/discord',
+        'ttl': 3600
     }
 }

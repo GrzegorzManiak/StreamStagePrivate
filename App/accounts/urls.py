@@ -13,14 +13,6 @@ from .profile.views import profile, send_verification
 from .views import get_token, login, logout, register, validate_token
 
 
-# Profile MODULE
-
-# OAuth2.0 MODULE
-
-# Email Verification MODULE
-
-
-
 urlpatterns = [
     # path('signup/', MemberSignUpView.as_view(), name='signup'),
     path('', profile, name='member_profile'),
@@ -40,7 +32,7 @@ urlpatterns = [
 
     # -- OAuth2.0
     path('sso/google/', determine_app(OAuthTypes.GOOGLE), name='google'),
-    path('sso/google/', determine_app(OAuthTypes.GOOGLE), name='discord'),
+    path('sso/discord/', determine_app(OAuthTypes.DISCORD), name='discord'),
     path('sso/github/', determine_app(OAuthTypes.GITHUB), name='github'),
 
 

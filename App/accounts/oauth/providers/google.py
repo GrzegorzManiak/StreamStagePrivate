@@ -1,57 +1,7 @@
 import requests
 
 from StreamStage import secrets
-from accounts.oauth.types import OAuthRespone
-
-
-class User():
-    def __init__(
-        self,
-        id: int,
-        email: str,
-        verified_email: bool,
-        name: str,
-        given_name: str,
-        picture: str = None,
-    ):
-        self.id = id
-        self.email = email
-        self.verified_email = verified_email
-        self.name = name
-        self.given_name = given_name
-        self.picture = picture
-        self.description = None
-
-    def serialize(self):
-        return {
-            'id': self.id,
-            'email': self.email,
-            'email_verified': self.verified_email,
-            'name': self.name,
-            'given_name': self.given_name,
-            'picture': self.picture,
-            'description': self.description,
-        }
-
-    # 
-    #  Getters,
-    #  The reason for these is so that we can
-    #  use the same functions on all oauth providers
-    #  and some might have different names for the same
-    #  data
-    #
-    def get_email(self):
-        return self.email
-
-    def get_is_verified(self):
-        return self.verified_email
-
-    def get_name(self):
-        return self.name
-
-    def get_id(self):
-        return self.id
-
+from accounts.oauth.types import OAuthRespone, User
 
 class Oauth():
     def __init__(self, code=None):
