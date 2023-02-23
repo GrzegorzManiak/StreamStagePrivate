@@ -1,12 +1,15 @@
 from django.shortcuts import render, redirect
 import string, random
 from .models import Event, EventReview
-from .forms import (EventCreateForm, 
+from .forms import (EventApplyForm, 
                     EventUpdateForm, 
                     EventDeleteForm, 
                     ReviewCreateForm, 
                     ReviewUpdateForm, 
-                    ReviewDeleteForm)
+                    ReviewDeleteForm,
+                    ShowingCreateForm,
+                    ShowingUpdateForm,
+                    ShowingDeleteForm)
 
 from . import inline_reviews
 
@@ -51,19 +54,19 @@ def event_view(request, event_id):
         'new_review_form': review_context['new_review_form']
     }
 
-    return render(request, 'eventcopy.html', context)
+    return render(request, 'event.html', context)
 
 # Display All Events
 def get_all_events(request):
     context = {}
     context["events"] = Event.objects.all()
 
-    return render(request, "event_listcopy.html", context)
+    return render(request, "event_list.html", context)
 
 def event_create(request):
     context = {}
 
-    form = EventCreateForm(request.POST or None)
+    form = EventApplyForm(request.POST or None)
     if not request.user.is_authenticated or not request.user.is_streamer:
         return redirect('all_events')
     if form.is_valid():
@@ -118,16 +121,17 @@ def event_delete(request, event_id):
     return render(request, "event_delete.html", context)
 
 
+
+
+                                        # ****************
+                                        # *** Showings ***                                        # ***************
+                                        # ****************
+
+
+
                                         # ***************
                                         # *** Reviews ***                                        # ***************
                                         # ***************
-# def get_event_reviews(request, event_id):
-#     context = {}
-#     context["reviews"] = EventReview.objects.filter(event=event.event_id)
-
-#     return render(request, "event_reviews.html", context)
-
-
 def review_create(request):
     context = {}
 

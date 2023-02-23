@@ -52,7 +52,7 @@ class Event(models.Model):
     # References member, but only "streamers" will be allowed to create an event
     streamer = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     categories = models.ManyToManyField(to=Category)
-    showings = models.ManyToManyField(to=EventShowing)
+    showings = models.ManyToManyField(to=EventShowing, blank=True)
     primary_media_idx = models.IntegerField(default=0) # Points to an item in the 'media' field - used as a cover photo 
     media = models.ManyToManyField(to=EventMedia, blank=True)
     contributors = models.ManyToManyField(get_user_model(), related_name="event_broadcasters", blank=True)
