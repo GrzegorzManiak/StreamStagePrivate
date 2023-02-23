@@ -19,14 +19,8 @@ class Category(models.Model):
         return self.name
 
 class EventMedia(models.Model):
-    #picture = models.ImageField("Photograph", upload_to="events", null=True, editable=True)
-    media = models.FileField("Media", upload_to=generate_file_media, null=True, editable=True, validators=[validate_event_media])
-    description = models.TextField("Media Description", max_length=300, blank=True, null=False)
-    content_type = models.TextField("Content Type", editable=False)
-
-    def save(self, *args, **kwargs):
-        self.content_type = self.media.path.split("")
-        super(EventMedia, self).save(*args, **kwargs)
+    picture = models.ImageField("Photograph", upload_to="events", null=True, editable=True)
+    description = models.TextField("Photograph Description", max_length=300, blank=True, null=False)
     
     class Meta:
         verbose_name = 'Event Media'
