@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from .forms import *
 
 # Create your views here.
 
@@ -7,6 +8,12 @@ def apply_for_event(request):
 
 def landing_url(request):
     user = request.user
+
+    if True:
+        
+        form = StreamerAppForm()
+
+        return render(request, "apply.html", {'form': form})
 
     if user.is_authenticated:
         if user.is_staff:

@@ -193,3 +193,9 @@ div > a:hover {
 
 /***** Media Queries *****/
 
+
+/***** La Aplicación *****/
+
+#application-container {
+    color: white; /*  :/  */
+}

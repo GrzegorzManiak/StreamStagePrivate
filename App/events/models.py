@@ -66,7 +66,6 @@ class Event(models.Model):
     
     def short_description(self):
         return self.description[:200]
-
     
     def get_average_rating(self, reviews_in = None):
         avg_rating = 0

@@ -3,7 +3,7 @@ from .views import *
 
 urlpatterns = [
     # Events
-    path('review/<slug:application_id>/', None, name='review_application'),
+    #path('review/<slug:application_id>/', None, name='review_application'),
     path('apply/', apply_for_event, name='apply'),
     path('', landing_url, name='landing')
     #Reviews
