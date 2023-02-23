@@ -123,9 +123,9 @@ def expire_key(key: str) -> bool:
     :return: dict - The key or None if it does not exist
 """
 def get_key_by_resend_key(resend_key: str) -> dict:
-    for i in range(len(resend_keys)):
-        if resend_keys[i]['resend_key'] == resend_key:
-            return get_key(resend_keys[i]['key'])
+    for resend_key_obj in resend_keys:
+        if resend_key_obj['resend_key'] == resend_key:
+            return get_key(resend_key_obj['key'])
     return None
 
 
@@ -245,12 +245,9 @@ def send_email(
         try:
             email = ''
 
-            if key['user'].email is not None:
-                email = key['user'].email
-
-            elif key['user']['email'] is not None:
-                email = key['user']['email']
-
+            try: email = key['user']['email']
+            except: email = key['user'].email
+            
             sm(
                 email,
                 'Verification Link',
@@ -259,7 +256,7 @@ def send_email(
             return (True, 'Email sent')
 
         except Exception as e:
-            return (False, 'Failed to send email')
+            return (False, f'Failed to send email: {e}')
 
     
 
@@ -279,7 +276,7 @@ def regenerate_key(
 ) -> dict or None:
     # -- Get the key from the store
     key = get_key_by_resend_key(resend_key)
-    
+
     # -- Check if the key is valid
     if key is None: return None
 
@@ -302,7 +299,8 @@ def regenerate_key(
     remove_key(key['key'])
 
     # -- Return the new key
-    return new_key
+    if new_key is not None:
+        return new_key
 
 
 
