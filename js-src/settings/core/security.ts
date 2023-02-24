@@ -91,9 +91,8 @@ async function click_handler(
         if (res.code !== 200 || !Object.keys(res).includes('data')) 
             return create_toast('error', 'Oops, there appears to be an error', res.message);
         
-        // -- else, Inform the user
+        // -- Else, Get the data
         const data = (res as SecurityInfoSuccess).data;
-        create_toast('success', 'Congratulations!', 'Yuppy, we fetched your security info!');
         
         // -- Open the panel
         open_panel('security-verified');

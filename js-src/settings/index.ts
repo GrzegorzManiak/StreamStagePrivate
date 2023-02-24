@@ -1,7 +1,6 @@
 import { create_toast } from '../toasts';
 import { attach_event_listeners, get_pod } from './core/panels';
 import { manage_security_panel } from './core/security';
-import { handle_forms } from './forms/handler';
 
 export function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -49,7 +48,3 @@ attach_event_listeners();
 // -- Attach to all panels
 let security_panel = get_pod('security');
 if (security_panel) manage_security_panel(security_panel);
-
-
-// -- Manage all forms
-handle_forms();
