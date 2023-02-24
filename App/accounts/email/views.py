@@ -24,7 +24,14 @@ def remove_key_view(request):
             'message': 'Missing key',
         }, status=status.HTTP_400_BAD_REQUEST)
 
-    res = remove_key(key)
+    # -- Get the key data
+    key_data = get_key_by_resend_key(key)
+    if key_data is None:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Key not found',
+        }, status=status.HTTP_400_BAD_REQUEST)
+    res = remove_key(key_data['key'])
 
     return JsonResponse({
         'status': res[0],
@@ -72,33 +79,21 @@ def resend_key_view(request):
             'message': 'Invalid key',
         }, status=status.HTTP_400_BAD_REQUEST)
 
+
     email = request.data.get('email', None)
-    if email is not None and key_data['allow_email_change'] is True:
-        key_data['user']['email'] = email
-
-        # -- Check if we have a callback function
-        if key_data['email_change_callback'] is not None:
-            try: key_data['email_change_callback'](key_data['user'], email)
-            except Exception as e:
-                return JsonResponse({
-                    'status': 'error',
-                    'message': 'Failed to change email',
-                }, status=status.HTTP_400_BAD_REQUEST)
-
-
-    res = regenerate_key(key)
-    if key is None:
+    key_res = regenerate_key(key, email)
+    if key_res[0] is False:
         return JsonResponse({
             'status': 'error',
-            'message': 'Failed to regenerate key',
+            'message': key_res[1],
         }, status=status.HTTP_200_OK)
 
-    
-    res = send_email(res[1], res[2])
-
+    res = send_email(key_res[2][0])
     return JsonResponse({
         'status': res[0],
         'message': res[1],
+        'token': key_res[2][1],
+        'verify': key_res[2][2],
     }, status=status.HTTP_200_OK)
 
 

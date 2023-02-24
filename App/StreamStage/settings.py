@@ -11,7 +11,9 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-from .secrets import DJANGO_SECRET_KEY, SENDGIRD_TOKEN
+
+import CloudFlare
+from .secrets import DJANGO_SECRET_KEY, SENDGIRD_TOKEN, CLOUDFLARE_TOKEN
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,25 +31,36 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
+    '192.168.0.227',
     'www.streamstage.co',
     'me.streamstage.co',
     'streamstage.co',
     'master.streamstage.co',
+    '.streamstage.co',
 ]
 
-X_FRAME_OPTIONS = 'ALLOW-FROM *://*.streamstage.co/*'
 
-CSRF_TRUSTED_ORIGINS = [
-    'https://me.streamstage.co',
-    'https://streamstage.co',
-]
 
-CORS_ALLOWED_ORIGIN_REGEXES = [
-    r"^https://.+$",
-]
+#
+# Cloudflare
+#
+DOMAIN_NAME = 'streamstage.co'
+# Set to False if you don't use Cloudflare
+# As this will dictate if domain DNS is updated.
+# If its True and you don't use Cloudflare, 
+# you will get an error and the node wont be able to start.
+USE_CLOUDFLARE = True
 
+acf = None
+if USE_CLOUDFLARE:
+    acf = CloudFlare.CloudFlare(token=CLOUDFLARE_TOKEN)
+
+
+
+#
+# Subdomains
+#
 DEFAULT_HOST = 'www'
-
 ROOT_HOSTCONF = 'StreamStage.hosts'
 ROOT_URLCONF = 'StreamStage.urls'
 
@@ -55,8 +68,23 @@ SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_SAMESITE = None
 CSRF_COOKIE_SAMESITE = None
 
-# Application definition
 
+
+#
+# CSRF / CORS
+# 
+CSRF_TRUSTED_ORIGINS = [
+    'https://me.streamstage.co',
+    'https://streamstage.co',
+]
+X_FRAME_OPTIONS = 'ALLOW-FROM *://*.streamstage.co/*'
+CORS_ALLOWED_ORIGIN_REGEXES = [r"^https://.+$"]
+
+
+
+#
+# Application definition
+#
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -69,9 +97,11 @@ INSTALLED_APPS = [
     'accounts',
     'server_manager',
     'events',
+    'stream',
 
     # 3rd Party
     'crispy_forms',
+
     # 'corsheaders',
     'crispy_bootstrap5',
     'django_countries',
@@ -94,8 +124,6 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django_hosts.middleware.HostsResponseMiddleware',
 ]
-
-ROOT_URLCONF = 'StreamStage.urls'
 
 
 TEMPLATES = [
@@ -197,11 +225,6 @@ CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 # Password reset email
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-# Stripe keys
-# STRIPE_SECRET_KEY = ''
-# STRIPE_PUBLISHABLE_KEY = ''
-
 INBOUND_EMAIL = 'inquiries@StreamStage.co'
 OUTBOUND_EMAIL = 'mail@streamstage.co'
 

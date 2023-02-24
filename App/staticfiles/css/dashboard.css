@@ -102,9 +102,7 @@
 }
 
 .size-limiter {
-    width: 50%!important;
-    min-width: 200px;
-    max-width: 40rem!important;
+    width: unset!important;
 }
 
 .profile-picture {
@@ -161,17 +159,11 @@
     .side-panel {
         width: 20rem!important;
     }
-    .size-limiter {
-        width: 70%!important;
-    }
 }
 
 @media only screen and (max-width: 500px) {
     .side-panel {
         width: 100vw!important;
-    }
-    .size-limiter {
-        width: 95%!important;
     }
 }
 
