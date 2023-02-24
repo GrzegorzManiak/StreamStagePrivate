@@ -1,1 +1,156 @@
-[{"model": "events.category", "pk": 1, "fields": {"name": "Comedy", "description": "Funny Stuff", "splash_photo": "events/Comedy.jfif"}}, {"model": "events.category", "pk": 2, "fields": {"name": "Stand Up Comedy", "description": "Funny Stuff.. on stage", "splash_photo": "events/StandUp.jfif"}}, {"model": "events.category", "pk": 3, "fields": {"name": "Music", "description": "Dancey Stuff", "splash_photo": "events/Music.png"}}, {"model": "events.category", "pk": 4, "fields": {"name": "Theatre", "description": "Dramatic Stuff", "splash_photo": "events/Theatre.jfif"}}, {"model": "events.eventshowing", "pk": 1, "fields": {"country": "AO", "city": "Dublin", "venue": "The Gate", "time": "2024-02-20T15:28:48Z"}}, {"model": "events.event", "pk": "9rVETaTM", "fields": {"title": "New Event", "description": "sfsifjsodifjsdsdfas;dkaspodkpa", "over_18s": true, "streamer": "6a9ecb0e-212e-40fb-9c3e-1a01c172cf06", "primary_media_idx": 0, "approved": false, "categories": [], "showings": [], "media": [], "contributors": []}}, {"model": "events.eventreview", "pk": "19559335-dd42-41b5-bd02-e05121fd5243", "fields": {"author": "6a9ecb0e-212e-40fb-9c3e-1a01c172cf06", "event": "9rVETaTM", "title": "Yeeeeeeeeeeeeeeeeeee", "body": "wooooooooooooooooooooooooooooooo I love this event!", "created": "2023-02-20T15:32:12.151Z", "updated": "2023-02-20T15:32:12.151Z", "likes": 0, "rating": 10}}, {"model": "events.eventreview", "pk": "cb0ea2dc-a4a0-44f5-bebe-cb93fd237d93", "fields": {"author": "6a9ecb0e-212e-40fb-9c3e-1a01c172cf06", "event": "9rVETaTM", "title": "This Event", "body": "This event was indeed new as described in the title. I enjiyed teh newness immensely :)", "created": "2023-02-20T15:31:21.643Z", "updated": "2023-02-20T15:31:21.643Z", "likes": 0, "rating": 9}}]
+[
+    {
+        "model": "events.category",
+        "pk": 1,
+        "fields": {
+            "name": "Comedy",
+            "description": "Funny Stuff",
+            "splash_photo": "events/Comedy.jfif"
+        }
+    },
+    {
+        "model": "events.category",
+        "pk": 2,
+        "fields": {
+            "name": "Stand Up Comedy",
+            "description": "Funny Stuff.. on stage",
+            "splash_photo": "events/StandUp.jfif"
+        }
+    },
+    {
+        "model": "events.category",
+        "pk": 3,
+        "fields": {
+            "name": "Music",
+            "description": "Dancey Stuff",
+            "splash_photo": "events/Music.png"
+        }
+    },
+    {
+        "model": "events.category",
+        "pk": 4,
+        "fields": {
+            "name": "Theatre",
+            "description": "Dramatic Stuff",
+            "splash_photo": "events/Theatre.jfif"
+        }
+    },
+    {
+        "model": "events.eventmedia",
+        "pk": 1,
+        "fields": {
+            "picture": "events/Comedy_A2cJPoy.jfif",
+            "description": "The comedy photo"
+        }
+    },
+    {
+        "model": "events.eventmedia",
+        "pk": 2,
+        "fields": {
+            "picture": "events/Music_K9xOQYN.png",
+            "description": "The Music Photo"
+        }
+    },
+    {
+        "model": "events.eventmedia",
+        "pk": 3,
+        "fields": {
+            "picture": "events/Theatre_b4yzqjs.jfif",
+            "description": "The Theatre Photo"
+        }
+    },
+    {
+        "model": "events.event",
+        "pk": "89dY23oz",
+        "fields": {
+            "title": "The 2nd Event - Live in Concert!",
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\"",
+            "over_18s": true,
+            "streamer": "386a6bfd-0b22-4e7f-b050-3d72c2d7d4b6",
+            "primary_media_idx": 0,
+            "approved": false,
+            "categories": [
+                3
+            ],
+            "showings": [],
+            "media": [
+                1,
+                2,
+                3
+            ],
+            "contributors": []
+        }
+    },
+    {
+        "model": "events.event",
+        "pk": "9rVETaTM",
+        "fields": {
+            "title": "Test Event",
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            "over_18s": true,
+            "streamer": "6a9ecb0e-212e-40fb-9c3e-1a01c172cf06",
+            "primary_media_idx": 0,
+            "approved": true,
+            "categories": [
+                2
+            ],
+            "showings": [],
+            "media": [
+                1,
+                2,
+                3
+            ],
+            "contributors": []
+        }
+    },
+    {
+        "model": "events.event",
+        "pk": "kK5d90Vw",
+        "fields": {
+            "title": "The 3rd Event - Live At the Apollo",
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            "over_18s": false,
+            "streamer": "6a9ecb0e-212e-40fb-9c3e-1a01c172cf06",
+            "primary_media_idx": 0,
+            "approved": false,
+            "categories": [
+                2
+            ],
+            "showings": [],
+            "media": [
+                1,
+                2,
+                3
+            ],
+            "contributors": []
+        }
+    },
+    {
+        "model": "events.eventreview",
+        "pk": "19559335-dd42-41b5-bd02-e05121fd5243",
+        "fields": {
+            "author": "6a9ecb0e-212e-40fb-9c3e-1a01c172cf06",
+            "event": "9rVETaTM",
+            "title": "Yeeeeeeeeeeeeeeeeeee",
+            "body": "wooooooooooooooooooooooooooooooo I love this event!!!",
+            "created": "2023-02-20T15:32:12.151Z",
+            "updated": "2023-02-21T01:24:52.170Z",
+            "likes": 0,
+            "rating": 10
+        }
+    },
+    {
+        "model": "events.eventreview",
+        "pk": "8d70453c-da5e-4790-babb-ebbbe5f1ae75",
+        "fields": {
+            "author": "6a9ecb0e-212e-40fb-9c3e-1a01c172cf06",
+            "event": "9rVETaTM",
+            "title": "A+",
+            "body": "Amazing! Would go again",
+            "created": "2023-02-21T01:43:34.539Z",
+            "updated": "2023-02-21T01:43:34.539Z",
+            "likes": 0,
+            "rating": 10
+        }
+    }
+]

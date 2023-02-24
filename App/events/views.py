@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 import string, random
-from .models import Event, EventReview
+from .models import Event, EventReview, EventShowing
 from .forms import (EventApplyForm, 
                     EventUpdateForm, 
                     EventDeleteForm, 
@@ -126,8 +126,61 @@ def event_delete(request, event_id):
                                         # ****************
                                         # *** Showings ***                                        # ***************
                                         # ****************
+def showing_create(request, event_id):
+    context = {}
+    event = Event.objects.get(event_id=event_id)
+
+    form = ShowingCreateForm(request.POST or None)
+    if not request.user.is_authenticated or not request.user.is_streamer:
+        return redirect('event_view', event_id)
+    if form.is_valid():
+        form.save()
+        # Adding the new showing to the event
+        event.showings.add(form.save())
+
+        return redirect('event_view', event_id)
+
+    context['form']= form
+    return render(request, "showings/showing_new.html", context)
+
+def showing_update(request, event_id, showing_id):
+    context = {}
+    showing = EventShowing.objects.filter(showing_id=showing_id).first()
+
+    if not request.user.is_authenticated or not request.user.is_streamer:
+        return redirect('event_view', event_id)
+    
+    form = ShowingUpdateForm(instance=showing, data=request.POST)
+    if form.is_valid():
+        form.save()
+        return redirect('event_view', event_id)
+    else:
+        form = ShowingUpdateForm(instance=showing)
+    
+    context['form'] =  form
+    return render(request, "showings/showing_update.html", context)
 
 
+def showing_delete(request, event_id, showing_id):
+    showing = EventShowing.objects.filter(showing_id=showing_id).first()
+
+    form = ShowingDeleteForm(instance=showing)
+    if not request.user.is_authenticated or not request.user.is_streamer:
+        return redirect('event_view', event_id)
+    if showing == None:
+        return redirect('event_view', event_id)
+    if request.POST:
+        showing.delete()
+        return redirect('event_view', event_id)
+    else:
+        form = ShowingDeleteForm(instance = showing)
+
+    context = {
+        'form': form,
+        'showing_obj': showing
+    }
+
+    return render(request, "reviews/review_delete.html", context)
 
                                         # ***************
                                         # *** Reviews ***                                        # ***************

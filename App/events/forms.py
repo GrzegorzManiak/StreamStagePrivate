@@ -1,10 +1,12 @@
 from django import forms
+import datetime
+from django.contrib.admin.widgets import AdminDateWidget, AdminTimeWidget, AdminSplitDateTime
 from .models import Event, EventReview, Category, EventShowing
 
                                         # ***************
                                         # *** Events  ***                                        # ***************
                                         # *************** 
-# Creating an Event
+# Applying for an Event
 
 class CategoryMC(forms.ModelMultipleChoiceField):
     def label_from_instance(self, category):
@@ -56,10 +58,13 @@ class EventDeleteForm(forms.ModelForm):
 
         fields = []
 
+
                                         # ****************
                                         # *** Showings ***                                        # ***************
                                         # ****************
-class EventShowingCreate(forms.ModelForm):
+
+
+class ShowingCreateForm(forms.ModelForm):
     
     class Meta:
         model = EventShowing
@@ -71,7 +76,15 @@ class EventShowingCreate(forms.ModelForm):
             'country'
         ]
 
-class EventShowingUpdate(forms.ModelForm):
+        widgets = {
+            'time': forms.DateTimeInput(
+            attrs={
+                'type': 'datetime-local',
+                'class': 'form-control'},
+            format='%H:%M %d/%m/%Y')
+        }
+
+class ShowingUpdateForm(forms.ModelForm):
     
     class Meta:
         model = EventShowing
@@ -83,12 +96,14 @@ class EventShowingUpdate(forms.ModelForm):
             'country'
         ]
 
-class EventShowingDelete(forms.ModelForm):
+class ShowingDeleteForm(forms.ModelForm):
     
     class Meta:
         model = EventShowing
 
         fields = []
+
+
                                         # ***************
                                         # *** Reviews ***                                        # ***************
                                         # ***************
