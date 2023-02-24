@@ -10,26 +10,32 @@ import { login_url, sleep } from '..';
 //    to check if the email has been verified
 async function check_email_verification(
     verify_token: () => string,
-    button: HTMLButtonElement,
-) {
-    console.log(verify_token);
-    return setInterval(async () => {
-        const response = await recent(verify_token());
-
-        // -- If the email has been verified
-        if (response.code === 404) {} // -- Do nothing
-        else if (response.code === 200) {
-            // -- Login the user
-            button.disabled = true;
-            create_toast('success', 'Congratulations!', 'Your email has been verified, you\'ll be redirected to the home page in a few seconds.');
-            await sleep(3000);
-            window.location.href = login_url;
-        }
-        else {
-            // -- Show the error
-            create_toast('error', 'Error', response.message);
-        }
-    }, 3000);
+): Promise<boolean> {
+    return new Promise(async (resolve, reject) => {
+        const int = setInterval(async () => {
+            const response = await recent(verify_token());
+    
+            // -- If the email has been verified
+            if (response.code === 404) {} // -- Do nothing
+            else if (response.code === 200) {
+                // -- Login the user
+                create_toast('success', 'Congratulations!', 'Your email has been verified, you\'ll be redirected to the home page in a few seconds.');
+                clearInterval(int);
+                resolve(true);
+            }
+            else {
+                // -- Show the error
+                create_toast('error', 'Error', response.message);
+                clearInterval(int);
+                reject(false);
+            }
+        }, 3000);
+    
+        // -- Stop the interval after 15 minutes
+        setTimeout(() => {
+            clearInterval(int);
+        }, 15 * 60 * 1000);
+    });
 }
 
 
@@ -59,7 +65,6 @@ export async function complete_verification(
     // -- Start the verification checker
     check_email_verification(
         () => verify_token, 
-        resend_button
     );
 
 

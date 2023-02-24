@@ -40,6 +40,7 @@ def login(request):
         'email_recent': reverse('recent_key'),
         'email_verify': reverse('verify_key'),
         'email_resend': reverse('resend_key'),
+        'email_remove': reverse('remove_key'),
     }
     
     # -- Render the login page
@@ -76,6 +77,7 @@ def register(request):
         'email_recent': reverse('recent_key'),
         'email_verify': reverse('verify_key'),
         'email_resend': reverse('resend_key'),
+        'email_remove': reverse('remove_key'),
     }
 
     # -- Render the register page

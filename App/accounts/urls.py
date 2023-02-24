@@ -43,4 +43,5 @@ urlpatterns = [
     path('email/resend/', resend_key_view, name='resend_key'),
     path('email/verify/', verify_key_view, name='verify_key'),
     path('email/recent/', check_if_verified_recently_view, name='recent_key'),
+    
 ]

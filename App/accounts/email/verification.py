@@ -153,10 +153,11 @@ def get_resend_key_by_key(key: str) -> dict:
         It does it quite gracefully, it removes the key from 
         anything that it is in
     :param key: str - The key to remove
-    :return: bool - True if the key was removed, False if it was not
-        eg, if the key does not exist
+    :return: tuple[bool, str] - A tuple containing a bool
+        which is True if the key was removed, False if it was not
+        and a string which is the reason why it was not removed
 """
-def remove_key(key: str) -> bool:
+def remove_key(key: str) -> tuple[bool, str]:
     if key in temp_keys_store:
         del temp_keys_store[key]
         
@@ -166,8 +167,8 @@ def remove_key(key: str) -> bool:
                 del resend_keys[i]
                 break
 
-        return True
-    return False
+        return (True, 'The key was successfully terminated!')
+    return (False, 'Sorry, but it appears that the key does not exist')
 
 
 

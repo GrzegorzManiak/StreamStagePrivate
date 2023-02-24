@@ -21,6 +21,12 @@ class Member(AbstractUser):
     description = models.TextField("Description", blank=True)
     country = CountryField()
     time_zone = TimeZoneField(default="UTC")
+    tfa_secret = models.CharField(
+        "tfa_secret", 
+        max_length=100,
+        blank=True,
+        null=True,
+    )
 
     # Access Level for member. 0 for basic. See list of access level codes for other levels.
     access_level = models.SmallIntegerField("Access Level", default=0)
@@ -85,8 +91,3 @@ class oAuth2(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     oauth_type = models.SmallIntegerField("Type", choices=OAuthTypes.choices)
     oauth_id = models.CharField("OAuth ID", max_length=100, unique=True)
-    
-class TwoFactorAuth(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    secret = models.CharField("Secret", max_length=100)

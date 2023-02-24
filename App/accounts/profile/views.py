@@ -83,7 +83,7 @@ def send_verification(request):
     match mode:
         case'email':
             key = secrets.token_urlsafe(32)
-            new_key = add_key(request.user, validate(key))
+            new_key = add_key(request.user, request.user.email, validate(key))
 
             res = send_email(new_key[0])
 

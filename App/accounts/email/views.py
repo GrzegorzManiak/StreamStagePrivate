@@ -24,7 +24,14 @@ def remove_key_view(request):
             'message': 'Missing key',
         }, status=status.HTTP_400_BAD_REQUEST)
 
-    res = remove_key(key)
+    # -- Get the key data
+    key_data = get_key_by_resend_key(key)
+    if key_data is None:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Key not found',
+        }, status=status.HTTP_400_BAD_REQUEST)
+    res = remove_key(key_data['key'])
 
     return JsonResponse({
         'status': res[0],
