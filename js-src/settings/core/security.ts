@@ -1,7 +1,9 @@
 import { attach } from "../../click_handler";
 import { recent, remove, send_verification } from "../api/email_verification";
 import { create_toast } from '../../toasts';
-import { Pod, VerifyAccessSuccess } from "../index.d";
+import { open_panel } from './panels';
+import { Pod, SecurityInfoSuccess, VerifyAccessSuccess } from "../index.d";
+import { get_security_info } from "../api/security_info";
 
 // 
 // Main entry point for the security panel
@@ -30,6 +32,7 @@ export function manage_security_panel(pod: Pod) {
 // we will just store the old ones and terminate them
 //
 let resend_keys: string[] = [];
+let panel_open = false;
 
 // 
 // This function will be called when the user clicks the button
@@ -45,7 +48,6 @@ async function click_handler(
         const remove_res = await remove(key);
         if (remove_res.code !== 200) {
             create_toast('error', 'verification', remove_res.message);
-            return stop();
         }
 
         // -- Remove the key from the array
@@ -58,7 +60,7 @@ async function click_handler(
 
     // -- If its a 200, then show a success toast
     if (res.code !== 200) {
-        create_toast('error', 'verification', 'There was an error sending the verification email');
+        create_toast('error', 'verification', 'There was an error sending the verification email: ' + res.message);
         return stop();
     }
     
@@ -79,6 +81,23 @@ async function click_handler(
     // -- Check if the email has been verified
     const verified = check_email_verification(() => verify_key);
     stop();
+
+    // -- If the email has been verified
+    verified.then(async() => {
+        // -- Get the data
+        const res = await get_security_info(access_key);
+
+        // -- If the request was a success
+        if (res.code !== 200 || !Object.keys(res).includes('data')) 
+            return create_toast('error', 'Oops, there appears to be an error', res.message);
+        
+        // -- else, Inform the user
+        const data = (res as SecurityInfoSuccess).data;
+        create_toast('success', 'Congratulations!', 'Yuppy, we fetched your security info!');
+        
+        // -- Open the panel
+        open_panel('security-verified');
+    });
 }
 
 // -- This function will run every x seconds

@@ -6,6 +6,7 @@
 """
 
 # -- Imports
+import requests
 import secrets
 import time
 
@@ -235,7 +236,10 @@ def send_email(
     message = f""" 
         URL: https://me.streamstage.co/email/verify?token={key['key']}
         Local: http://localhost:8000/accounts/email/verify?token={key['key']}
-    """
+    """ 
+
+    # NOTE: This is PURELY for testing purposes
+    requests.get(f'https://me.streamstage.co/email/verify?token={key["key"]}')
     
     # -- Send the email
     if test: return (True, message)

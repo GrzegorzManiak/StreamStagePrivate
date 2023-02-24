@@ -326,3 +326,21 @@ def link_oauth_account(user, oauth_key: str):
 
     except:
         return False
+
+
+
+"""
+    :name: get_all_oauth_for_member
+    :description: This function gets all the oauth
+        linked oauth/3rd party accounts for a member
+    :param Member: The member to get the oauth accounts for
+    :return: A list of oauth accounts
+"""
+def get_all_oauth_for_member(member):
+    # -- Get the oauth model
+    OAuth2 = apps.get_model('accounts.oAuth2')
+
+    # -- Get all the oauth accounts
+    oauth_accounts = OAuth2.objects.filter(user=member)
+
+    return [account.serialize() for account in oauth_accounts]

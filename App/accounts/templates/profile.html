@@ -32,6 +32,7 @@
         data-resend-verification='{{ api.resend_verification }}'
         data-remove-verification='{{ api.remove_verification }}'
         data-recent-verification='{{ api.recent_verification }}'
+        data-security-info='{{ api.security_info }}'
     ></span>
 
     <div 
@@ -128,6 +129,11 @@
                                 </p>
                             </div>
                         </div>
+
+                        <span 
+                            data-pod-status=''
+                            data-pod='security-verified'
+                        ></span>
                         <!-- 
                             End of Pod - Security
                         -->
@@ -662,7 +668,9 @@
                                         justify-content-center
                                         flex-column
                                     ">   
-                                            
+                                        {% if has_tfa %}
+                                            nOT done yet so tough luck
+                                        {% else %}
                                         <button 
                                             type="submit" 
                                             id="send-verification-email" 
@@ -682,11 +690,29 @@
                                             </span>
                                             <p>Send verification email</p>
                                         </button>
-
+                                        {% endif %}
                                     </div>
 
                                     
                                 </article>
+
+
+
+                                 <!--
+                                    Security Panel (After verification)
+                                -->
+                                <article 
+                                    class='panel' 
+                                    data-panel-type='security-verified'
+                                    data-panel-status='hidden'
+                                >
+
+
+                                    Poop
+
+                                    
+                                </article>
+
 
 
                                 <!--

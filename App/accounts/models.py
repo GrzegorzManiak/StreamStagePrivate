@@ -91,3 +91,10 @@ class oAuth2(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     oauth_type = models.SmallIntegerField("Type", choices=OAuthTypes.choices)
     oauth_id = models.CharField("OAuth ID", max_length=100, unique=True)
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "oauth_type": self.oauth_type,
+            "oauth_id": self.oauth_id,
+        }

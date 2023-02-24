@@ -1,9 +1,7 @@
-import { get_panel } from '../authentication/core/panel_manager';
 import { create_toast } from '../toasts';
 import { attach_event_listeners, get_pod } from './core/panels';
 import { manage_security_panel } from './core/security';
 import { handle_forms } from './forms/handler';
-import { PanelType } from './index.d';
 
 export function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -23,7 +21,7 @@ export function get_or_error<e>(element: HTMLElement, attribute: string): e {
 
 
 const config = document.getElementById('config');
-console.log(config);
+
 export const configuration = {
     admin: get_or_error<string>(config, 'data-admin') === 'True',
     username: get_or_error<string>(config, 'data-username'),
@@ -39,6 +37,8 @@ export const configuration = {
     resend_verification: get_or_error<string>(config, 'data-resend-verification'),
     remove_verification: get_or_error<string>(config, 'data-remove-verification'),
     recent_verification: get_or_error<string>(config, 'data-recent-verification'),
+
+    security_info: get_or_error<string>(config, 'data-security-info'),
 }
 
 
