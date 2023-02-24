@@ -1,0 +1,624 @@
+<!--
+    Security Panel
+-->
+<article 
+    class='panel' 
+    data-panel-type='security'
+    data-panel-status='hidden'
+>
+    <!-- 
+        The security panel will require 
+        the user to click a link in their
+        email to verify their account.
+
+        or if they have TFA enabled, they
+        will be required to enter a code
+        from their authenticator app.
+    -->
+    <div class="
+        mb-5
+        justify-content-start
+    ">
+        <!-- Header -->
+        <h1 class="
+            fw-bold 
+        ">Security</h1>
+
+        <!-- Descriptiopn -->
+        <p class="
+            text-muted
+        ">
+            Here you can view your security settings, manage linked accounts and change your password.
+        </p>
+    </div>
+
+
+    <!-- 
+        2FA
+    -->
+    <div class="
+        mb-5
+        justify-content-start
+        text-center
+    ">
+        <!-- Descriptiopn -->
+        <p class="">
+            But, before you can make any changes,
+            {% if has_tfa %}
+                you must enter the code from your authenticator app.
+            {% else %}
+                you must click the link sent to {{ user.mask_email }}.
+            {% endif %}
+        </p>
+
+    </div>
+
+    <!-- Buttons -->
+    <div class="
+        d-flex 
+        justify-content-lg-start
+        justify-content-center
+        flex-column
+    ">   
+        {% if has_tfa %}
+            nOT done yet so tough luck
+        {% else %}
+        <button 
+            type="submit" 
+            id="send-verification-email" 
+            class="
+                btn 
+                btn-primary
+                mb-3
+                btn-lg
+                loader-btn
+            "
+            loader-state='default'
+        >   
+            <span>
+                <div class='spinner-border' role='status'>
+                    <span class='visually-hidden'>Loading...</span>
+                </div>
+            </span>
+            <p>Send verification email</p>
+        </button>
+        {% endif %}
+    </div>
+
+    
+</article>
+
+
+
+<!--
+    Security Panel (After verification)
+-->
+<article 
+    class='panel' 
+    data-panel-type='security-verified'
+    data-panel-status='hidden'
+>
+    <!--
+        Here will be a timer that will
+        count down to when till the user
+        gets locked out of the security
+        panel.
+
+        We will also have a button that
+        will allow the user to extend the
+        time they have to make changes.
+    -->
+    <div class="
+        justify-content-start
+        text-center
+
+        d-flex
+        flex-column
+        align-items-center
+    ">
+        <!-- Descriptiopn -->
+        <h5 class="fw-bold">
+            $time_left
+        </h5>
+
+        <p class="
+            text-muted
+        ">
+            If you do not make any changes within this time, you will be locked out of the security panel,
+            you can extend your session by clicking the button below.
+        </p>
+
+        
+        <!-- Button -->
+        <button 
+            type="submit" 
+            id="extend-verification-time" 
+            class="
+                btn 
+                btn-primary
+                mb-3
+                btn-lg
+                loader-btn
+            "
+            loader-state='default'
+        >
+            <span>
+                <div class='spinner-border' role='status'>
+                    <span class='visually-hidden'>Loading...</span>
+                </div>
+            </span>
+            <p>Extend Session</p>
+        </button>
+        
+    </div>
+
+
+    <hr>
+
+
+    <!-- 
+        2FA
+    -->
+    <div class="
+        mb-5
+        justify-content-start
+        text-left
+    ">
+        <!-- Descriptiopn -->
+        <p class="">
+            <h5 class="fw-bold">
+                Two Factor Authentication
+            </h5>
+
+            <p class="
+                text-muted
+            ">
+                Two factor authentication adds an extra layer of security to your account.
+                It requires you to enter a code from your authenticator app in addition to your password.
+            </p>
+        </p>
+
+        {% if has_tfa %}
+            <!--Remove-->
+            <button 
+                type="submit" 
+                id="remove-tfa" 
+                class="
+                    btn 
+                    btn-primary
+                    mb-3
+                    btn-lg
+                    loader-btn
+                "
+                loader-state='default'
+            >
+                Remove
+            </button>
+
+            {% else %}
+
+            <!--Add-->
+            <button 
+                type="submit" 
+                id="add-tfa" 
+                class="
+                    btn 
+                    btn-primary
+                    btn-lg
+                    loader-btn
+                    w-100
+                "
+                loader-state='default'
+            >
+                Setup
+            </button>
+            {% endif %}
+        </button>
+    </div>
+
+
+    <hr>
+
+
+    <!-- 
+        Linked Accounts
+    -->
+
+    <div class="
+        mb-5
+        justify-content-start
+        text-left
+    ">
+        <!-- Descriptiopn -->
+        <p class="">
+            <h5 class="fw-bold">
+                Linked Accounts
+            </h5>
+
+            <p class="
+                text-muted
+            ">
+                Linked accounts allow you to login to your account using a third party service, you can
+                set up more than one linked account.
+            </p>
+        </p>
+
+        <!--
+            Providers
+        -->
+        <div class="
+            d-flex
+            justify-content-between
+            align-items-center
+        ">
+            <!-- Dropdown -->
+            <select 
+                class="
+                    form-select
+                    btn 
+                    btn-success
+                    btn-lg
+                    loader-btn
+                " 
+                aria-label="OAuth Providers"
+                style='
+                    border-top-right-radius: 0;
+                    border-bottom-right-radius: 0;
+                    width: 70%;
+                '
+            >
+                <option selected>Provider</option>
+                {% for provider in oauth %}
+                    <option value="{{ provider.id }}">{{ provider.name }}</option>
+                {% endfor %}
+            </select>
+
+            <!-- Button -->
+            <button 
+                type="submit" 
+                id="add-tfa" 
+                class="
+                    btn 
+                    btn-primary
+                    btn-lg
+                    loader-btn
+                "
+                loader-state='default'
+                style='
+                    border-top-left-radius: 0;
+                    border-bottom-left-radius: 0;
+                    width: 30%;
+                '
+            >
+                Setup
+            </button>
+        </div>
+        
+
+        <!-- Currently linked accounts -->
+        <div class="
+            d-flex
+            p-3
+            row
+        ">
+            {% for provider in oauth %}
+                <div 
+                    class="
+                        w-100
+                        p-2
+                        mb-2
+                        rounded
+                    "
+                    style='
+                        background-color: var(--theme-color);
+                    '
+                >
+                    <div class="
+                        w-100
+                        container
+                        d-flex
+                        justify-content-between
+                        align-items-center
+                        mb-1
+                    ">
+                        <!-- Provider name -->
+                        <h5
+                            class="
+                                fw-bold
+                                col-3
+                                m-0
+                            "
+                        >{{ provider.name }}</h5>
+
+                        <!-- Provider Oauth ID -->
+                        <p class="
+                            col-6
+                            m-0
+                        ">
+                            Username: Gregor
+                        </p>
+
+                        <!-- Remove button -->
+                        <button 
+                            type="submit" 
+                            id="remove-tfa" 
+                            class="
+                                btn 
+                                btn-danger
+                                btn-sm
+                                loader-btn
+                                col-3
+                            "
+                            loader-state='default'
+                        >
+                            Remove
+                        </button>
+                    </div>
+
+                    <div
+                        class="
+                            w-100
+                            container
+                            d-flex
+                            justify-content-between
+                            align-items-center
+                        "
+                    >
+                        <!-- Date added -->
+                        <p class="
+                            text-muted
+                            col-4
+                            m-0
+                        ">
+                            Added: 12/12/2021
+                        </p>
+
+                        <!-- Last used -->
+                        <p class="
+                            text-muted
+                            col-4
+                            m-0
+                        ">
+                            Last used: 12/12/2021
+                        </p>
+
+                        <!-- Provider Oauth ID -->
+                        <p class="
+                            col-4
+                            text-muted
+                            m-0
+                        ">
+                            ID: 345623252367123
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <hr>
+
+    <!-- 
+        Change Password
+    -->
+    <div class="
+        mb-5
+        justify-content-start
+        text-left
+    ">
+        <!-- Descriptiopn -->
+        <p class="">
+            <h5 class="fw-bold">
+                Change Password
+            </h5>
+
+            <p class="
+                text-muted
+            ">
+                Change your password, you will be required to enter your current password and then your new password.
+            </p>
+        </p>
+
+        <!-- Form -->
+        <form 
+            id="change-password-form"
+            class="
+                w-100
+                d-flex
+                flex-column
+                align-items-center
+            "
+        >
+            <!-- Current Password -->
+            <div class="mb-4 w-100">
+                <label class="form-label" for="cpass">Current Password</label>
+                <input 
+                    name="cpass" 
+                    id="cpass" 
+                    placeholder="J0sFun66us123" 
+                class="
+                    form-control 
+                    form-control-lg
+                    inp
+                ">
+            </div>
+
+            <!-- New Password -->
+            <div
+                class="
+                    d-flex
+                    gap-4
+                    w-100
+                "
+            >
+                <div class="mb-4 w-100">
+                    <label class="form-label" for="npass">New Password</label>
+                    <input 
+                        name="npass" 
+                        id="npass" 
+                        placeholder="J0sFun66us123!" 
+                    class="
+                        form-control 
+                        form-control-lg
+                        inp
+                    ">
+                </div>
+
+                <div class="mb-4 w-100">
+                    <label class="form-label" for="cfpass">Confirm Password</label>
+                    <input 
+                        name="cfpass" 
+                        id="cfpass" 
+                        placeholder="1F0rget2!"
+                    class="
+                        form-control 
+                        form-control-lg
+                        inp
+                    ">
+                </div>
+            </div>
+
+            <!-- Button -->
+            <button 
+                type="submit" 
+                id="change-password" 
+                class="
+                    btn 
+                    btn-primary
+                    btn-lg
+                    loader-btn
+                    w-100
+                "
+                loader-state='default'
+            >
+                Change Password
+            </button>
+        </form>
+
+    </div>
+
+
+    <hr>
+
+
+    <!-- 
+        Login History
+    -->
+    <div class="
+        mb-5
+        justify-content-start
+        text-left
+    ">
+        <!-- Descriptiopn -->
+        <p class="">
+            <h5 class="fw-bold">
+                Login History
+            </h5>
+
+            <p class="
+                text-muted
+            ">
+                View your login history, this will show you the date and time of your last 10 logins.
+            </p>
+        </p>
+
+        <!-- Login History -->
+        <div class="
+            d-flex
+            p-3
+            row
+        ">
+            <div 
+                class="
+                    w-100
+                    p-2
+                    mb-2
+                    rounded
+                "
+                style='
+                    background-color: var(--theme-color);
+                '
+            >
+                <div class="
+                    w-100
+                    container
+                    d-flex
+                    justify-content-between
+                    align-items-center
+                    mb-1
+                ">
+                    <!-- Date added -->
+                    <p class="
+                        text-muted
+                        col-4
+                        m-0
+                    ">
+                        Date: 12/12/2021
+                    </p>
+
+                    <!-- Last used -->
+                    <p class="
+                        text-muted
+                        col-4
+                        m-0
+                    ">
+                        Time: 12:12:12
+                    </p>
+
+                    <!-- Provider Oauth ID -->
+                    <p class="
+                        col-4
+                        text-muted
+                        m-0
+                    ">
+                        IP: 192.168.0.1
+                    </p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <hr>
+
+
+    <!-- 
+        Delete Account
+    -->
+    <div class="
+        mb-5
+        justify-content-start
+        text-left
+    ">
+        <!-- Descriptiopn -->
+        <p class="">
+            <h5 class="fw-bold">
+                Delete Account
+            </h5>
+
+            <p class="
+                text-muted
+            ">
+                Delete your account, we're sad to see you go but we understand, Ps we will ask you once more to confirm.
+            </p>
+        </p>
+
+        <!-- Button -->
+        <button 
+            type="submit" 
+            id="delete-account" 
+            class="
+                btn 
+                btn-danger
+                btn-lg
+                loader-btn
+                w-100
+            "
+            loader-state='default'
+        >
+            Delete Account
+        </button>
+    </div>
+
+</article>

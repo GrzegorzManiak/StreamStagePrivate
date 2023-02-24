@@ -7,7 +7,10 @@ from django.urls import reverse_lazy
 from rest_framework import status
 from rest_framework.decorators import api_view
 
-from accounts.oauth.oauth import get_all_oauth_for_member
+from django_countries.fields import CountryField
+from timezone_field import TimeZoneField
+
+from accounts.oauth.oauth import get_all_oauth_for_member, format_providers
 from accounts.email.verification import add_key, send_email
 from accounts.models import Member
 
@@ -24,6 +27,8 @@ def profile(request):
     # -- Construct the context
     context = {
         'user': request.user,
+        'countries': CountryField().countries,
+        'timezones': TimeZoneField().get_choices(),
         'api': {
             'send_verification': reverse_lazy('send_verification'),
             'resend_verification': reverse_lazy('resend_key'),
@@ -33,6 +38,7 @@ def profile(request):
         },
 
         'pages': compile_objects(request.user),
+        'oauth': format_providers()
     }
 
     # -- Render the profile page
