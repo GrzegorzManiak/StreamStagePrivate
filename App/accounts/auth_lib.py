@@ -176,5 +176,3 @@ def authenticate_key(key: str) -> Member or None:
 
 
     return user
-
-

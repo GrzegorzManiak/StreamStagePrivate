@@ -10,7 +10,6 @@ import secrets
 import time
 
 from StreamStage.mail import send_email as sm
-
 from ..models import Member
 
 
@@ -44,14 +43,16 @@ recently_verified = []
     :name: add_key
     :description: This function adds a new key to the store
         NOTE: this key store is NOT persistent between restarts
-    :param user: Member - The user to add the key to
+    :param data: dict - The data to store
+    :param email: str - The email to send the verification email to
     :param callback: Function - The callback to call once the user has verified their email
     :param email_change_callback: Function - The callback to call once the user has verified their email
     :param ttl: int - The time to live of the key
     :return: tuple[str, str, str] - The key, the resend key and the verification key
 """
 def add_key(
-    user: Member, 
+    data: dict, 
+    email: str,
     callback, 
     email_change_callback = None,
     ttl = REMOVE_AFTER
@@ -64,7 +65,8 @@ def add_key(
     # -- Add the key to the store
     temp_keys_store[key] = {
         'key': key,
-        'user': user,
+        'data': data,
+        'email': email,
         'created': time.time(),
         'callback': callback,
         'email_change_callback': email_change_callback,
@@ -183,18 +185,15 @@ def verify_key(key) -> tuple[bool, str]:
     key = get_key(key)
 
     # -- Check if the key is valid
-    if key is None:
-        return (False, 'Invalid key')
+    if key is None: return (False, 'Invalid key')
 
     # -- Check if the key has expired
-    if time.time() - key['created'] > key['ttl']:
+    if time.time() - int(key['created']) > int(key['ttl']):
         remove_key(key['key'])
         return (False, 'expired')
 
     # -- Try to call the callback
-    try:
-        key['callback'](key['user'])
-
+    try: key['callback'](key['data'])
     except Exception as e:
         return (False, 'Failed to call callback')
 
@@ -202,7 +201,7 @@ def verify_key(key) -> tuple[bool, str]:
     recently_verified.append({
         'key': key['verify_key'],
         'created': time.time(),
-        'ttl': key['ttl'],
+        'ttl': REMOVE_AFTER,
     })
     remove_key(key['key'])
     return (True, 'Sick! You can now return to your previous page')
@@ -229,27 +228,20 @@ def send_email(
     key = get_key(key)
 
     # -- Check if the key is valid
-    if key is None:
-        return (False, 'Invalid key')
+    if key is None: return (False, 'Invalid key')
 
     # -- Create the message
     message = f""" 
         URL: https://me.streamstage.co/email/verify?token={key['key']}
         Local: http://localhost:8000/accounts/email/verify?token={key['key']}
     """
-    print(message)  
     
     # -- Send the email
     if test: return (True, message)
     else: 
-        try:
-            email = ''
-
-            try: email = key['user']['email']
-            except: email = key['user'].email
-            
+        try: 
             sm(
-                email,
+                key['email'],
                 'Verification Link',
                 message,
             )
@@ -267,8 +259,10 @@ def send_email(
         keys completely useless, which is a good thing.
     :param resend_key: str - The resend key to get the key from
     :param new_email: str - The new email to send the email to
-    :return: dict - The new key or None if it does not exist 
-        or it has expired etc
+    :return: tuple[bool, str, dict] - A tuple containing a bool
+        which is True if the key was regenerated, False if it was not
+        and a string which is the reason why it was not regenerated
+        and a dict which is the new key.
 """
 def regenerate_key(
     resend_key: str,
@@ -278,30 +272,43 @@ def regenerate_key(
     key = get_key_by_resend_key(resend_key)
 
     # -- Check if the key is valid
-    if key is None: return None
+    if key is None: return [False, 'Invalid key', None]
 
     # -- Make sure the key hasn't expired
-    if time.time() - key['created'] > key['ttl']: return None
+    if time.time() - key['created'] > key['ttl']:
+        remove_key(key['key'])
+        return [False, 'Key has expired', None]
 
-    # -- Add the new key to the store
-    if new_email is not None:
-        # member.email
-        if key['user'].email is not None:
-            key['user'].email = new_email
+    # -- Check if we are changing the email
+    if (
+        new_email is not None and
+        key['allow_email_change'] is True
+    ): 
+        # -- Check if we have a callback function
+        if key['email_change_callback'] is not None:
+            try: 
+                should_continue = key['email_change_callback'](key['data'], new_email)
+                if should_continue is False: return [False, 'Email already in use', None]
+            except Exception as e: return [False, f'Failed to call email change callback: {e}', None]
 
-        # member['email']
-        elif key['user']['email'] is not None:
-            key['user']['email'] = new_email
-            
-    new_key = add_key(key['user'], key['callback'], key['ttl'])
+        # -- Change the email
+        key['email'] = new_email
+
+    # -- Generate a new key
+    new_key = add_key(
+        key['data'], 
+        key['email'],
+        key['callback'], 
+        key['email_change_callback'],
+        key['ttl'],
+    )
 
     # -- Remove the old key from the store
     remove_key(key['key'])
 
-    # -- Return the new key
-    if new_key is not None:
-        return new_key
-
+    # -- Return the new key, or None if it failed
+    if new_key is not None: return [True, 'Key regenerated', new_key]
+    else: return [False, 'Failed to regenerate key', None]
 
 
 """

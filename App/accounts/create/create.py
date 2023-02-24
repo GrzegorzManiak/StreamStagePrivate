@@ -13,15 +13,10 @@ from django.conf import settings
 import time
 import secrets
 
-from accounts.oauth.oauth import get_oauth_data, link_oauth_account
-
+from accounts.oauth.oauth import link_oauth_account
 from accounts.email.verification import send_email
 from accounts.models import Member
-
-# -- Email Module
-from accounts.email.verification import (
-    add_key,
-)
+from accounts.email.verification import add_key
 
 temp_users = {}
 
@@ -154,40 +149,30 @@ def start_email_verification(
         member = Member.objects.create(
             username=username,
             cased_username=username.lower(),
-            email=user['email'].lower(),
+            email=temp_users[temp_user_key]['email'].lower(),
             password=make_password(password),
         )
 
         # -- Create the account
         if oauth is not None:
-            # -- Create an account with an oauth id
-            # -- Remove the oauth id from the session
             link_oauth_account(member, oauth)
-            
-            
-
-        else:
-            # -- Create an account with an email and password
-            create_account_email(email, username, password)
 
         # -- Attempt to remove the user from the temp_users
-        try: del temp_users[key]
+        try: del temp_users[temp_user_key]
         except KeyError: pass
 
     def change_email_callback(user, new_email):
         # -- First, make sure the 
         #    user is not None
-        if user is None or new_email is None: return
+        if user is None or new_email is None: return False
 
         # -- Check if its taken 
         if email_taken(new_email):
-            raise Exception('Email is taken')
+            return False
 
         # Find the user in the temp_users
-        for key in temp_users:
-            if temp_users[key]['email'] == email:
-                # -- Update the email
-                temp_users[key]['email'] = new_email.lower()
+        temp_users[temp_user_key]['email'] = new_email.lower()
+        return True
         
     # -- Create the key
     key = add_key(
@@ -199,6 +184,7 @@ def start_email_verification(
             'oauth': oauth,
             'provided_oauth': oauth is not None,
         },
+        email.lower(),
         callback,
         change_email_callback,
     )
