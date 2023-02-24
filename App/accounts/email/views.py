@@ -85,17 +85,19 @@ def resend_key_view(request):
                     'message': 'Failed to change email',
                 }, status=status.HTTP_400_BAD_REQUEST)
 
-    res = regenerate_key(key)
-    if res is None:
+    key_res = regenerate_key(key)
+    if key_res is None:
         return JsonResponse({
             'status': 'error',
             'message': 'Failed to regenerate key',
         }, status=status.HTTP_200_OK)
 
-    res = send_email(res[0])
+    res = send_email(key_res[0])
     return JsonResponse({
         'status': res[0],
         'message': res[1],
+        'token': key_res[1],
+        'verify': key_res[2],
     }, status=status.HTTP_200_OK)
 
 
