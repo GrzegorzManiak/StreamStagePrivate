@@ -25,7 +25,7 @@ export function manage_security_panel(pod: Pod) {
     // -- Add the click event listener
     button.addEventListener('click', async () => {
         const stop_spinner = attach(button);
-        await click_handler(stop_spinner, button, 'email');
+        await click_handler(stop_spinner, 'email');
     });
 }
 
@@ -43,7 +43,6 @@ let resend_keys: string[] = [];
 // 
 async function click_handler(
     stop: () => void, 
-    button: HTMLButtonElement,
     type: 'email' | 'tfa'
 ) {
     // -- Loop through the resend keys and terminate them
@@ -100,6 +99,9 @@ async function click_handler(
         open_panel('security-verified');
     });
 }
+
+
+
 
 // -- This function will run every x seconds
 //    to check if the email has been verified
