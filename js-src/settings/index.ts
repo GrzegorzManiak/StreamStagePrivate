@@ -40,6 +40,7 @@ export const configuration = {
     security_info: get_or_error<string>(config, 'data-security-info'),
     update_profile: get_or_error<string>(config, 'data-update-profile'),
     remove_oauth: get_or_error<string>(config, 'data-remove-oauth'),
+    extend_session: get_or_error<string>(config, 'data-extend-session'),
 }
 
 

@@ -36,6 +36,7 @@ def profile(request):
             'security_info': reverse_lazy('security_info'),
             'update_profile': reverse_lazy('update_profile'),
             'remove_oauth': reverse_lazy('remove_oauth'),
+            'extend_session': reverse_lazy('extend_session'),
         },
 
         'oauth': format_providers()
@@ -257,6 +258,36 @@ def remove_oauth(request):
     
     # -- Delete the oauth
     oauth.delete()
+
+    return JsonResponse({
+        'message': 'Success'
+    }, status=status.HTTP_200_OK)
+
+
+
+@api_view(['POST'])
+def extend_session(request):
+    # -- Make sure the user is authenticated
+    if not request.user.is_authenticated:
+        return JsonResponse({
+            'message': 'Not authenticated'
+        }, status=status.HTTP_401_UNAUTHORIZED)
+    
+    # -- Get the token
+    token = request.data.get('token', None)
+    if token is None:
+        return JsonResponse({
+            'message': 'No token provided'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    # -- Check if the token is valid
+    if not is_valid(token): return JsonResponse({
+        'status': 'error',
+        'message': 'Invalid token',
+    }, status=status.HTTP_400_BAD_REQUEST)
+
+    # -- Extend the session
+    request.session.set_expiry(60 * 60 * 24 * 7)
 
     return JsonResponse({
         'message': 'Success'

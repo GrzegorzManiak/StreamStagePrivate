@@ -8,7 +8,7 @@ from .email.views import (
 )
 from .create.views import send_reg_verification
 from .oauth import OAuthTypes, determine_app
-from .profile.views import profile, send_verification, security_info, update_profile, remove_oauth
+from .profile.views import profile, send_verification, security_info, update_profile, remove_oauth, extend_session
 from .views import get_token, login, logout, register, validate_token
 
 
@@ -25,6 +25,7 @@ urlpatterns = [
     path('send_verification/', send_verification, name='send_verification'),
     path('update_profile/', update_profile, name='update_profile'),
     path('security/', security_info, name='security_info'),
+    path('extend_session/', extend_session, name='extend_session'),
 
     # -- Authentication
     path('token/', validate_token, name='token'),

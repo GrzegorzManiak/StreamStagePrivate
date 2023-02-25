@@ -7,6 +7,7 @@ import { get_security_info } from "../api/security_info";
 
 import create_linked_account, { attach_lister } from '../elements/oauth';
 import create_login_history from '../elements/history';
+import extend_session from '../api/extend_session';
 
 // 
 // Main entry point for the security panel
@@ -128,6 +129,8 @@ async function check_email_verification(
         // -- Stop the interval after 15 minutes
         setTimeout(() => {
             clearInterval(int);
+            reject(false);
+            create_toast('error', 'Error', 'The verification email has expired');
         }, 15 * 60 * 1000);
     });
 }
@@ -149,9 +152,22 @@ function fill_data(
     const ES_ID = 'extend-verification-time-container',
         es_elm = panel.querySelector(`#${ES_ID}`) as HTMLDivElement;
 
-    const btn = es_elm.querySelector('button') as HTMLButtonElement;
-    console.log(btn);
+    const btn = es_elm.querySelector('button') as HTMLButtonElement,
+        timer = es_elm.querySelector('#extend-verification-time-timer') as HTMLHeadingElement;
 
+    let time_left = 15 * 60 * 1000; // -- 15 minutes
+    btn.addEventListener('click', async () => {
+        const stop_spinner = attach(btn);
+        const res = await extend_session(access_key);
+        stop_spinner();
+
+        if (res.code !== 200) return create_toast('error', 'Oops, there appears to be an error', res.message);
+        create_toast('success', 'Success', 'Your session has been extended by 15 minutes');
+
+        // -- Reset the timer
+        time_left = 15 * 60 * 1000;
+    });
+    
 
 
     //
@@ -240,6 +256,31 @@ function fill_data(
         linked_accounts.innerHTML = '';
         login_history.innerHTML = '';
     };
+
+    // -- Start the timer
+    const int = setInterval(() => {
+        // -- Update the timer
+        time_left -= 1000;
+        
+        let min = Math.floor(time_left / 1000 / 60);
+        let sec = Math.floor(time_left / 1000) % 60;
+
+        timer.innerText = `${min}:${sec < 10 ? '0' + sec : sec}`;
+
+        // -- If the time is up
+        if (time_left <= 0) {
+            clearInterval(int);
+
+            // -- Clear the intervals
+            clearInterval(data_interval);
+            clearInterval(panel_interval);
+
+            // -- Clear the data
+            wipe();
+            
+            create_toast('error', 'Oops, there appears to be an error', 'Your session has expired, please refresh the page to continue');
+        }
+    }, 1000);
 
     const data_interval = setInterval(async () => {
         const res = await get_security_info(access_key);
