@@ -1,11 +1,11 @@
 import { attach } from "../../click_handler";
 import { recent, remove, send_verification } from "../api/email_verification";
 import { create_toast } from '../../toasts';
-import { open_panel } from './panels';
+import { get_active_pod, open_panel } from './panels';
 import { Pod, SecurityInfoSuccess, VerifyAccessSuccess, SecurityInfo} from "../index.d";
 import { get_security_info } from "../api/security_info";
 
-import create_linked_account from '../elements/oauth';
+import create_linked_account, { attach_lister } from '../elements/oauth';
 import create_login_history from '../elements/history';
 
 // 
@@ -35,7 +35,6 @@ export function manage_security_panel(pod: Pod) {
 // we will just store the old ones and terminate them
 //
 let resend_keys: string[] = [];
-let panel_open = false;
 
 // 
 // This function will be called when the user clicks the button
@@ -49,10 +48,7 @@ async function click_handler(
     // -- Loop through the resend keys and terminate them
     for (const key of resend_keys) {
         const remove_res = await remove(key);
-        if (remove_res.code !== 200) {
-            create_toast('error', 'verification', remove_res.message);
-        }
-
+        if (remove_res.code !== 200) return;
         // -- Remove the key from the array
         resend_keys = resend_keys.filter(k => k !== key);
         create_toast('success', 'verification', 'The previous verification email has been terminated');
@@ -83,20 +79,20 @@ async function click_handler(
     
     // -- Check if the email has been verified
     const verified = check_email_verification(() => verify_key);
-    stop();
+
 
     // -- If the email has been verified
     verified.then(async() => {
         // -- Get the data
         const res = await get_security_info(access_key);
-
+        stop();
+        
         // -- If the request was a success
         if (res.code !== 200 || !Object.keys(res).includes('data')) 
             return create_toast('error', 'Oops, there appears to be an error', res.message);
         
         // -- Else, Get the data
         const data = (res as SecurityInfoSuccess).data;
-        console.log(data);
         fill_data(data, access_key);
         
         // -- Open the panel
@@ -173,13 +169,21 @@ function fill_data(
     const LA_ID = 'linked-accounts-container',
         la_elm = panel.querySelector(`#${LA_ID}`) as HTMLDivElement;
 
+    attach_lister(la_elm);
+
     // #linked-accounts
     const linked_accounts = la_elm.querySelector('#linked-accounts') as HTMLDivElement;
-    for (const account of data.service_providers) {
-        const new_elm = create_linked_account(account, access_key);
-        linked_accounts.appendChild(new_elm);
-    }
+    const update_providers = (data: SecurityInfo) => {
+        // -- Clear the linked accounts
+        linked_accounts.innerHTML = '';
 
+        // -- Add the new linked accounts
+        for (const account of data.service_providers) {
+            const new_elm = create_linked_account(account, access_key);
+            linked_accounts.appendChild(new_elm);
+        }
+    }
+    update_providers(data);
 
     //
     // -- Change Password
@@ -207,10 +211,16 @@ function fill_data(
 
     // #login-history
     const login_history = lh_elm.querySelector('#login-history') as HTMLDivElement;
-    for (const login of data.login_history) {
-        const new_elm = create_login_history(login);
-        login_history.appendChild(new_elm);
+    const update_history = (data: SecurityInfo) => {
+        // -- Clear the login history
+        login_history.innerHTML = '';
+
+        for (const login of data.login_history) {
+            const new_elm = create_login_history(login);
+            login_history.appendChild(new_elm);
+        }
     }
+    update_history(data);
 
 
 
@@ -220,5 +230,46 @@ function fill_data(
     const DA_ID = 'delete-account-container',
         da_elm = panel.querySelector(`#${DA_ID}`) as HTMLDivElement;
 
-    console.log(da_elm);
+    
+
+
+    // 
+    // -- Update interval (5 sec)
+    // 
+    const wipe = () => {
+        linked_accounts.innerHTML = '';
+        login_history.innerHTML = '';
+    };
+
+    const data_interval = setInterval(async () => {
+        const res = await get_security_info(access_key);
+        if (res.code !== 200) {
+            create_toast('error', 'Oops, there appears to be an error', res.message);
+            wipe();
+            open_panel('security');
+            return clearInterval(data_interval);
+        }
+
+        // -- Get the data
+        const data = (res as SecurityInfoSuccess).data;
+
+        // -- Update data
+        update_providers(data);
+        update_history(data);
+    }, 5000);
+
+    const panel_interval = setInterval(() => {
+        const active_pod = get_active_pod();
+        if (active_pod.type === 'security-verified') return;
+
+        // -- Clear the intervals
+        clearInterval(data_interval);
+        clearInterval(panel_interval);
+
+        // -- Clear the data
+        wipe();
+
+        // -- Inform the user
+        create_toast('success', 'Info', 'You have left the security panel, your data has been cleared');
+    }, 500);
 }

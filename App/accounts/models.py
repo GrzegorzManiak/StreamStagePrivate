@@ -123,3 +123,4 @@ class LoginHistory(models.Model):
             "date": self.date,
             "method": self.method,
         }
+    

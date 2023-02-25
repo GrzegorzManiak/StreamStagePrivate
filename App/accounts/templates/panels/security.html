@@ -257,6 +257,7 @@
         ">
             <!-- Dropdown -->
             <select 
+                id="oauth-providers"
                 class="
                     form-select
                     btn 
@@ -273,7 +274,10 @@
             >
                 <option selected>Provider</option>
                 {% for provider in oauth %}
-                    <option value="{{ provider.id }}">{{ provider.name }}</option>
+                    <option 
+                        value="{{ provider.id }}"
+                        redirect-url="{{ provider.redirect }}"
+                    >{{ provider.name }}</option>
                 {% endfor %}
             </select>
 

@@ -2,6 +2,7 @@ import { ServiceProvider } from '../index.d';
 import { attach } from '../../click_handler';
 import { create_toast } from '../../toasts';
 import remove_oauth from '../api/remove_oauth';
+import { get_security_info } from '../api/security_info';
 
 export default (
     data: ServiceProvider,
@@ -64,11 +65,6 @@ export default (
     btn.addEventListener('click', async () => {
         // -- Attach the spinner
         const stop = attach(btn);
-        create_toast(
-            'warning',
-            "Removing OAuth",
-            "Removing OAuth, please wait...",
-        );
 
         // -- Remove the oauth
         const res = await remove_oauth(token, data.id);
@@ -95,3 +91,24 @@ export default (
     // -- Return the element
     return div;
 };
+
+export async function attach_lister(la_elm: HTMLDivElement) {
+    const oauth_providers = la_elm.querySelector('#oauth-providers') as HTMLSelectElement,
+        add_tfa = la_elm.querySelector('#add-tfa') as HTMLButtonElement;
+
+    add_tfa.addEventListener('click', async () => {
+        // -- Get the selected provider
+        const provider = oauth_providers.value,
+            selected_elm = oauth_providers.querySelector(`option[value="${provider}"]`) as HTMLOptionElement;
+        
+        if (provider === 'Provider')
+            return create_toast('warning', 'Oops', 'Please select a provider');
+
+        // -- Open the oauth window
+        const oauth_window = window.open(
+            selected_elm.getAttribute('redirect-url'), '_blank', 
+            'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=600,height=700'
+        );
+        if (!oauth_window) return create_toast('error', 'Oops', 'There was an error opening the oauth window');
+    });
+}
