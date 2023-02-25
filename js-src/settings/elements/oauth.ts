@@ -1,9 +1,11 @@
 import { ServiceProvider } from '../index.d';
 import { attach } from '../../click_handler';
+import { create_toast } from '../../toasts';
+import remove_oauth from '../api/remove_oauth';
 
 export default (
     data: ServiceProvider,
-    remove_callback: (success: boolean, message: string) => void
+    token: string,
 ): HTMLDivElement => {
     // GOOGLE = 0, DISCORD = 1, GITHUB = 2
     let oauth_name = 'Unknown';
@@ -62,12 +64,29 @@ export default (
     btn.addEventListener('click', async () => {
         // -- Attach the spinner
         const stop = attach(btn);
+        create_toast(
+            'warning',
+            "Removing OAuth",
+            "Removing OAuth, please wait...",
+        );
 
-        // TODO: RIGHt now just wait for 2 seconds
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        // -- Remove this element
-        div.remove();
+        // -- Remove the oauth
+        const res = await remove_oauth(token, data.id);
+        if (res.code !== 200) create_toast(
+            'error',
+            "Failed to remove OAuth",
+            res.message,
+        )
+        else {
+            create_toast(
+                'success',
+                "OAuth removed",
+                "Successfully removed OAuth",
+            );
+
+            // -- Remove the element
+            div.remove();
+        }
 
         // -- Stop the spinner
         stop();

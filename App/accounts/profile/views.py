@@ -12,7 +12,7 @@ from timezone_field import TimeZoneField
 
 from accounts.oauth.oauth import get_all_oauth_for_member, format_providers
 from accounts.email.verification import add_key, send_email
-from accounts.models import Member, LoginHistory
+from accounts.models import Member, LoginHistory, oAuth2
 
 from .profile import update_profile
 
@@ -35,6 +35,7 @@ def profile(request):
             'recent_verification': reverse_lazy('recent_key'),
             'security_info': reverse_lazy('security_info'),
             'update_profile': reverse_lazy('update_profile'),
+            'remove_oauth': reverse_lazy('remove_oauth'),
         },
 
         'oauth': format_providers()
@@ -66,6 +67,23 @@ def validate(
         })
 
     return rf
+
+def is_valid(
+    key: str, 
+    valid_for: int = 60 * 60 * 15 # 15 Minutes
+) -> bool:
+    for req in validated_requests:
+        if req['key'] == key:
+            
+            # -- Check if the key is expired
+            if time.time() - req['time'] > valid_for:
+                validated_requests.remove(req)
+                return False
+            
+            else: return True
+
+
+    return False
 
 
 @api_view(['POST'])
@@ -130,13 +148,7 @@ def security_info(request):
     
 
     # -- Check if the token is valid
-    valid = False
-    for req in validated_requests:
-        if req['key'] == token:
-            validated_requests.remove(req)
-            valid = True
-
-    if not valid: return JsonResponse({
+    if not is_valid(token): return JsonResponse({
         'status': 'error',
         'message': 'Invalid token',
     }, status=status.HTTP_400_BAD_REQUEST)
@@ -202,3 +214,50 @@ def update_profile(request):
         # -- Update the profile
         return update_profile(data, False)
     
+
+
+@api_view(['POST'])
+def remove_oauth(request):
+    # -- Make sure the user is authenticated
+    if not request.user.is_authenticated:
+        return JsonResponse({
+            'message': 'Not authenticated'
+        }, status=status.HTTP_401_UNAUTHORIZED)
+    
+    # -- Get the token
+    token = request.data.get('token', None)
+    if token is None:
+        return JsonResponse({
+            'message': 'No token provided'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    # -- Check if the token is valid
+    if not is_valid(token): return JsonResponse({
+        'status': 'error',
+        'message': 'Invalid token',
+    }, status=status.HTTP_400_BAD_REQUEST)
+
+    # -- Get the oauth id
+    oauth_id = request.data.get('oauth_id', None)
+    if oauth_id is None:
+        return JsonResponse({
+            'message': 'No oauth id provided'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    # -- Get the oauth
+    oauth = oAuth2.objects.filter(
+        id=oauth_id,
+        user=request.user
+    ).first()
+
+    if oauth is None:
+        return JsonResponse({
+            'message': 'Invalid oauth'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    # -- Delete the oauth
+    oauth.delete()
+
+    return JsonResponse({
+        'message': 'Success'
+    }, status=status.HTTP_200_OK)

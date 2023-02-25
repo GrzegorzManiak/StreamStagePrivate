@@ -118,3 +118,21 @@ export interface SecurityInfoError {
 }
 
 export type SecurityInfoResponse = SecurityInfoSuccess | SecurityInfoError;
+
+
+
+export interface DefualtSuccess {
+    data: {
+        status: string,
+        message: string,
+    },
+    code: number,
+    message: string
+}
+
+export interface DefaultError {
+    code: number,
+    message: string
+}
+
+export type DefaultResponse = DefualtSuccess | DefaultError;

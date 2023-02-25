@@ -97,7 +97,7 @@ async function click_handler(
         // -- Else, Get the data
         const data = (res as SecurityInfoSuccess).data;
         console.log(data);
-        fill_data(data);
+        fill_data(data, access_key);
         
         // -- Open the panel
         open_panel('security-verified');
@@ -139,7 +139,8 @@ async function check_email_verification(
 
 // data-panel-type='security-verified'
 function fill_data(
-    data: SecurityInfo
+    data: SecurityInfo,
+    access_key: string
 ) {
     // -- Get the panel
     const panel = document.querySelector('[data-panel-type="security-verified"]');
@@ -175,11 +176,7 @@ function fill_data(
     // #linked-accounts
     const linked_accounts = la_elm.querySelector('#linked-accounts') as HTMLDivElement;
     for (const account of data.service_providers) {
-        const new_elm = create_linked_account(
-            account,
-            () => {}
-        );
-
+        const new_elm = create_linked_account(account, access_key);
         linked_accounts.appendChild(new_elm);
     }
 

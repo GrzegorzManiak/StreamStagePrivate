@@ -8,7 +8,7 @@ from .email.views import (
 )
 from .create.views import send_reg_verification
 from .oauth import OAuthTypes, determine_app
-from .profile.views import profile, send_verification, security_info, update_profile
+from .profile.views import profile, send_verification, security_info, update_profile, remove_oauth
 from .views import get_token, login, logout, register, validate_token
 
 
@@ -34,6 +34,7 @@ urlpatterns = [
     path('sso/google/', determine_app(OAuthTypes.GOOGLE), name='google'),
     path('sso/discord/', determine_app(OAuthTypes.DISCORD), name='discord'),
     path('sso/github/', determine_app(OAuthTypes.GITHUB), name='github'),
+    path('sso/remove/', remove_oauth, name='remove_oauth'),
 
 
     # EMail Verification
