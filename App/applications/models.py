@@ -11,7 +11,7 @@ class StreamerApplication(models.Model):
     application_id = models.CharField(primary_key=True,max_length=9,default=new_application_id)
     applicant = models.ForeignKey(Member, null=False, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.DO_NOTHING)
-    submitted = models.DateTimeField("Submitted On")
+    submitted = models.DateTimeField("Submitted On", auto_now=True)
     status = models.TextField(choices=STATUS_LIST, default="WAITING")
 
     submission_statement = models.TextField("Submission Statement", max_length=1000)
@@ -32,7 +32,7 @@ class EventApplication(models.Model):
     application_id = models.CharField(primary_key=True,max_length=9,default=new_application_id)
     applicant = models.ForeignKey(Member, null=False, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    submitted = models.DateTimeField("Submitted On")
+    submitted = models.DateTimeField("Submitted On", auto_now=True)
     status = models.TextField(choices=STATUS_LIST, default="WAITING")
 
     processed_by = models.ForeignKey(Member, related_name="event_processed_by", null=False, on_delete=models.DO_NOTHING)
@@ -43,7 +43,7 @@ class BroadcasterApplication(models.Model):
     application_id = models.CharField(primary_key=True,max_length=9,default=new_application_id)
     applicant = models.ForeignKey(Member, null=False, on_delete=models.CASCADE)
     broadcaster = models.ForeignKey(Broadcaster, null=False, on_delete=models.CASCADE)
-    submitted = models.DateTimeField("Submitted On")
+    submitted = models.DateTimeField("Submitted On", auto_now=True)
     status = models.TextField(choices=STATUS_LIST, default="WAITING")
 
     submission_statement = models.TextField("Submission Statement", max_length=1000)

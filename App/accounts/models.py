@@ -8,6 +8,7 @@ from timezone_field import TimeZoneField
 
 from .oauth.oauth import OAuthTypes
 
+from .validation import check_unique_broadcaster_handle
 
 # Create your models here.
 class Member(AbstractUser):
@@ -59,23 +60,35 @@ class Member(AbstractUser):
 
 # Broadcaster - entity that controls events/streams
 class Broadcaster(models.Model):
+    handle = models.SlugField("Broadcaster Handle", unique=True, primary_key=True, max_length=20, validators=[ check_unique_broadcaster_handle ])
     # Streamer who creates events/streams and invites contributors to broadcast event
     streamer = models.OneToOneField(
         get_user_model(),
         on_delete=models.CASCADE,
-        primary_key=True
+        primary_key=False
     )
     # Members who can control a broadcast
     contributors = models.ManyToManyField(get_user_model(), related_name="stream_broadcasters", blank=True)
     # Categories of streaming content
-    category = models.CharField("Categories", max_length=100)
-    approved = models.BooleanField("Approved", default=False)
+    category = models.ManyToManyField("events.Category", verbose_name="Categories")
 
+    # is this a individual/personality broadcaster
+    is_individual = models.BooleanField("Is Individual")
+
+    name = models.TextField("name", max_length=32)
+    biography = models.TextField("Biography", max_length=512)
+
+    # Should we hide this entire broadcaster from minor members?
+    over_18 = models.BooleanField()
+
+    # whether the application for this broadcaster has been approved
+    approved = models.BooleanField("Approved", default=False)
+    
     USERNAME_FIELD = 'streamer'
     REQUIRED_FIELDS = ['category']
 
     def __str__(self):
-        return str(self.streamer)
+        return str(self.name)
 
 
 class oAuth2(models.Model):
