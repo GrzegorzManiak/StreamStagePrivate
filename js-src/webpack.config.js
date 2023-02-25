@@ -6,6 +6,7 @@ module.exports = {
         authentication: './authentication/index.ts',
         toast: './toasts/index.ts',
         click_handler: './click_handler/index.ts',
+        streamer_apps: './streamer_apps/index.ts'
     },
     module: {
         rules: [

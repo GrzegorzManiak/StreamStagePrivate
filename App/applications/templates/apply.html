@@ -1,10 +1,16 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% load crispy_forms_tags %}
+
 {% block title %}Apply for Streamer{% endblock title %}
 
 {% block content %}
-<div id="application-container">
-{{ form.as_p }}
+<div id="application-container" class="m-4">
+
+<b>Apply To Become A Streamer!</b>
+
+{{ streamer_form.as_p }}
+
 </div>
 {% endblock %}

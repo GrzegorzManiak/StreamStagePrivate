@@ -13,7 +13,7 @@ def landing_url(request):
         
         form = StreamerAppForm()
 
-        return render(request, "apply.html", {'form': form})
+        return render(request, "apply.html", {'streamer_form': form})
 
     if user.is_authenticated:
         if user.is_staff:
@@ -23,3 +23,6 @@ def landing_url(request):
 
 
     return redirect('events:all_events')
+
+def broadcaster_app(request):
+    return render(request, "components/broadcaster.html", {'broadcaster_form': BroadcasterAppForm()})

@@ -60,7 +60,7 @@ class Member(AbstractUser):
 
 # Broadcaster - entity that controls events/streams
 class Broadcaster(models.Model):
-    handle = models.SlugField("Broadcaster Handle", unique=True, primary_key=True, max_length=20, validators=[ check_unique_broadcaster_handle ])
+    handle = models.CharField("Broadcaster Handle", unique=True, primary_key=True, max_length=20, validators=[ check_unique_broadcaster_handle ])
     # Streamer who creates events/streams and invites contributors to broadcast event
     streamer = models.OneToOneField(
         get_user_model(),
@@ -70,12 +70,12 @@ class Broadcaster(models.Model):
     # Members who can control a broadcast
     contributors = models.ManyToManyField(get_user_model(), related_name="stream_broadcasters", blank=True)
     # Categories of streaming content
-    category = models.ManyToManyField("events.Category", verbose_name="Categories")
+    #category = models.ManyToManyField("events.Category", verbose_name="Categories")
 
     # is this a individual/personality broadcaster
     is_individual = models.BooleanField("Is Individual")
 
-    name = models.TextField("name", max_length=32)
+    name = models.CharField("name", max_length=32)
     biography = models.TextField("Biography", max_length=512)
 
     # Should we hide this entire broadcaster from minor members?
