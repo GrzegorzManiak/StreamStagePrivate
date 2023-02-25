@@ -109,6 +109,7 @@ async function check_email_verification(
     verify_token: () => string,
 ): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
+        let verified = false;
         const int = setInterval(async () => {
             const response = await recent(verify_token());
     
@@ -118,21 +119,22 @@ async function check_email_verification(
                 // -- Login the user
                 create_toast('success', 'Congratulations!', 'Your email has been verified, you\'ll be given access to your account in a few seconds.');
                 clearInterval(int);
-                resolve(true);
+                verified = true;
+                return resolve(true);
             }
             else {
                 // -- Show the error
                 create_toast('error', 'Error', response.message);
                 clearInterval(int);
-                reject(false);
+                return reject(false);
             }
         }, 3000);
-    
+        
         // -- Stop the interval after 15 minutes
         setTimeout(() => {
             clearInterval(int);
             reject(false);
-            create_toast('error', 'Error', 'The verification email has expired');
+            if (!verified) create_toast('error', 'Error', 'The verification email has expired');
         }, 15 * 60 * 1000);
     });
 }
@@ -271,16 +273,8 @@ function fill_data(
 
         // -- If the time is up
         if (time_left <= 0) {
-            clearInterval(int);
-
-            // -- Clear the intervals
-            clearInterval(data_interval);
-            clearInterval(panel_interval);
-
-            // -- Clear the data
-            wipe();
-            
             create_toast('error', 'Oops, there appears to be an error', 'Your session has expired, please refresh the page to continue');
+            open_panel('security');
         }
     }, 1000);
 
@@ -308,6 +302,7 @@ function fill_data(
         // -- Clear the intervals
         clearInterval(data_interval);
         clearInterval(panel_interval);
+        clearInterval(int);
 
         // -- Clear the data
         wipe();

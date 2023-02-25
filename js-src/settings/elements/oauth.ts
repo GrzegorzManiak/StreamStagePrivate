@@ -2,7 +2,6 @@ import { ServiceProvider } from '../index.d';
 import { attach } from '../../click_handler';
 import { create_toast } from '../../toasts';
 import remove_oauth from '../api/remove_oauth';
-import { get_security_info } from '../api/security_info';
 
 export default (
     data: ServiceProvider,

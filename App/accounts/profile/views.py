@@ -153,7 +153,11 @@ def security_info(request):
         'status': 'error',
         'message': 'Invalid token',
     }, status=status.HTTP_400_BAD_REQUEST)
-
+    token_data = None
+    for req in validated_requests:
+        if req['key'] == token:
+            token_data = req
+            break
 
     # -- Return security data
     user = request.user
@@ -174,6 +178,10 @@ def security_info(request):
             'login_history': [
                 entry.serialize() for entry in LoginHistory.objects.filter(member=user).order_by('-time')[:10]
             ],
+            'meta': {
+                'started': token_data['time'],
+                'expires': token_data['time'] + 60 * 60 * 15,
+            }
         }
     }, status=status.HTTP_200_OK)
 
@@ -285,9 +293,14 @@ def extend_session(request):
         'status': 'error',
         'message': 'Invalid token',
     }, status=status.HTTP_400_BAD_REQUEST)
+    token_data = None
+    for req in validated_requests:
+        if req['key'] == token:
+            token_data = req
+            break
 
     # -- Extend the session
-    request.session.set_expiry(60 * 60 * 24 * 7)
+    token_data['time'] = time.time()
 
     return JsonResponse({
         'message': 'Success'
