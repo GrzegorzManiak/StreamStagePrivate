@@ -65,6 +65,8 @@ class Member(AbstractUser):
         self.cased_username = self.username.lower()
         super(Member, self).save(*args, **kwargs)
 
+        
+
 # Broadcaster - entity that controls events/streams
 class Broadcaster(models.Model):
     # Streamer who creates events/streams and invites contributors to broadcast event
@@ -92,9 +94,32 @@ class oAuth2(models.Model):
     oauth_type = models.SmallIntegerField("Type", choices=OAuthTypes.choices)
     oauth_id = models.CharField("OAuth ID", max_length=100, unique=True)
 
+    last_used = models.DateTimeField(auto_now=True)
+    added = models.DateTimeField(auto_now_add=True)
+
     def serialize(self):
         return {
             "id": self.id,
             "oauth_type": self.oauth_type,
             "oauth_id": self.oauth_id,
+            "last_used": self.last_used,
+            "added": self.added,
+        }
+
+
+class LoginHistory(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    member = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    ip = models.GenericIPAddressField("IP Address", protocol='IPv4')
+    time = models.TimeField(auto_now_add=True)
+    date = models.DateField(auto_now_add=True)
+    method = models.CharField("Method", max_length=64)
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "ip": self.ip,
+            "time": self.time,
+            "date": self.date,
+            "method": self.method,
         }

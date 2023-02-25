@@ -2,8 +2,11 @@ import { attach } from "../../click_handler";
 import { recent, remove, send_verification } from "../api/email_verification";
 import { create_toast } from '../../toasts';
 import { open_panel } from './panels';
-import { Pod, SecurityInfoSuccess, VerifyAccessSuccess } from "../index.d";
+import { Pod, SecurityInfoSuccess, VerifyAccessSuccess, SecurityInfo} from "../index.d";
 import { get_security_info } from "../api/security_info";
+
+import create_linked_account from '../elements/oauth';
+import create_login_history from '../elements/history';
 
 // 
 // Main entry point for the security panel
@@ -93,6 +96,8 @@ async function click_handler(
         
         // -- Else, Get the data
         const data = (res as SecurityInfoSuccess).data;
+        console.log(data);
+        fill_data(data);
         
         // -- Open the panel
         open_panel('security-verified');
@@ -129,4 +134,94 @@ async function check_email_verification(
             clearInterval(int);
         }, 15 * 60 * 1000);
     });
+}
+
+
+// data-panel-type='security-verified'
+function fill_data(
+    data: SecurityInfo
+) {
+    // -- Get the panel
+    const panel = document.querySelector('[data-panel-type="security-verified"]');
+
+    
+
+    //
+    // -- Extend session
+    //
+    const ES_ID = 'extend-verification-time-container',
+        es_elm = panel.querySelector(`#${ES_ID}`) as HTMLDivElement;
+
+    const btn = es_elm.querySelector('button') as HTMLButtonElement;
+    console.log(btn);
+
+
+
+    //
+    // -- 2FA
+    //
+    const TFA_ID = 'two-factor-authentication-container',
+        tfa_elm = panel.querySelector(`#${TFA_ID}`) as HTMLDivElement;
+    console.log(tfa_elm);
+    
+
+    
+    //
+    // -- Linked Accounts
+    //
+    const LA_ID = 'linked-accounts-container',
+        la_elm = panel.querySelector(`#${LA_ID}`) as HTMLDivElement;
+
+    // #linked-accounts
+    const linked_accounts = la_elm.querySelector('#linked-accounts') as HTMLDivElement;
+    for (const account of data.service_providers) {
+        const new_elm = create_linked_account(
+            account,
+            () => {}
+        );
+
+        linked_accounts.appendChild(new_elm);
+    }
+
+
+    //
+    // -- Change Password
+    //
+    const CP_ID = 'change-password-container',
+        cp_elm = panel.querySelector(`#${CP_ID}`) as HTMLDivElement;
+
+
+
+    //
+    // -- Change Email
+    //  
+    const CE_ID = 'change-email-container',
+        ce_elm = panel.querySelector(`#${CE_ID}`) as HTMLDivElement;
+
+    console.log(ce_elm);
+
+
+
+    //
+    // -- Login History
+    //
+    const LH_ID = 'login-history-container',
+        lh_elm = panel.querySelector(`#${LH_ID}`) as HTMLDivElement;
+
+    // #login-history
+    const login_history = lh_elm.querySelector('#login-history') as HTMLDivElement;
+    for (const login of data.login_history) {
+        const new_elm = create_login_history(login);
+        login_history.appendChild(new_elm);
+    }
+
+
+
+    //
+    // -- Delete Account
+    //
+    const DA_ID = 'delete-account-container',
+        da_elm = panel.querySelector(`#${DA_ID}`) as HTMLDivElement;
+
+    console.log(da_elm);
 }

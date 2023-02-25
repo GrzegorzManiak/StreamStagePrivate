@@ -9,8 +9,13 @@
     describing the result of the function.
 """
 from django.utils.html import escape
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 
-from accounts.email.registration import username_taken
+from django_countries.fields import CountryField
+from timezone_field import TimeZoneField
+
+from accounts.create.create import username_taken
 from accounts.models import Member
 
 
@@ -109,3 +114,121 @@ def change_description(user, new_description) -> tuple[bool, str]:
     user.save()
 
     return (True, 'Description changed successfully')
+
+
+
+""" 
+    :name: update_profile
+    :description: This function updates a user's profile
+        given a dictionary of data to update, it can update
+        sensitive information by being provided with a
+        validated_requests object (done by the view, not this function)
+    :param user: Member - The user to update the profile for
+    :param data: dict - A dictionary containing the data to update
+    :param sensitive: bool - Whether or not to update sensitive information
+    :return: tuple[bool, str] - A tuple containing a bool
+        which is True if the profile was updated, False if it was not
+        and a string which is the reason why it was not updated
+
+    Object Structure:
+    {
+        # -- Basic Information
+        'username': str,
+        'description': str,
+        'first_name': str,
+        'last_name': str,
+        'time_zone': str,
+        'country': str,
+
+        # -- Sensitive Information
+        'tfa_token': str or None, # -- If None, then the user is not using 2FA / Unsets it
+        'old_password': str,
+        'password': str,
+        'email': str,
+    }
+"""
+def update_profile(user, data, sensitive=False) -> tuple[bool, str]:
+    sensitive_fields = ['tfa_token', 'password', 'email']
+
+    # -- Check if the user is valid
+    if not isinstance(user, Member):
+        return (False, 'User is not valid')
+    
+    # -- Check if the data is valid
+    if not isinstance(data, dict):
+        return (False, 'Data is not valid')
+    
+    # -- Check if the data is empty
+    if len(data) == 0: return (False, 'Data is empty')
+
+    # -- Check if the user is trying to update sensitive information
+    if sensitive == False:
+        for field in sensitive_fields:
+            if field in data:
+                return (False, 'User is not allowed to update sensitive information')
+            
+
+    # -- Update the username
+    if 'username' in data:
+        change_username(user, data['username'])
+
+    # -- Update the description
+    if 'description' in data:
+        change_description(user, data['description'])
+
+    # -- Update the first name
+    if 'first_name' in data:
+        user.first_name = data['first_name']
+
+    # -- Update the last name
+    if 'last_name' in data:
+        user.last_name = data['last_name']
+
+    # -- Update the time zone
+    if 'time_zone' in data:
+        if TimeZoneField.validate(data['time_zone']) == False:
+            return (False, 'Time zone is not valid')
+        user.time_zone = data['time_zone']
+
+    # -- Update the country
+    if 'country' in data:
+        if CountryField.validate(data['country']) == False:
+            return (False, 'Country is not valid')
+        user.country = data['country']
+
+    # -- Update the 2FA token
+    if 'tfa_token' in data:
+        if data['tfa_token'] == None: user.tfa_token = None
+        else: user.tfa_token = data['tfa_token']
+
+    # -- Update the password
+    if 'password' in data:
+        if 'old_password' not in data:
+            return (False, 'Old password is not provided')
+        
+        if not user.check_password(data['old_password']):
+            return (False, 'Old password is incorrect')
+        
+        user.set_password(data['password'])
+
+    # -- Update the email
+    if 'email' in data:
+        try:
+            validate_email(data['email'])
+            user.email = data['email']
+
+        except ValidationError:
+            return (False, 'Email is not valid')
+
+
+    # -- Save the user
+    try: 
+        user.save()
+        return (True, 'Profile updated successfully')
+    
+    except Exception as e:
+        return (False, str(e))
+    
+
+
+    

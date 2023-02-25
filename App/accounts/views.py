@@ -8,7 +8,7 @@ from django.db.models.functions import Lower
 
 from accounts.auth_lib import authenticate_key, generate_key
 from accounts.email.verification import send_email, add_key
-from accounts.models import Member
+from accounts.models import Member, LoginHistory, oAuth2
 from accounts.oauth.oauth import format_providers, get_oauth_data
 
 
@@ -121,12 +121,18 @@ def validate_token(request):
 
     # Pass the header to the authenication function
     user = authenticate_key(auth_header)
-
-    if user is not None:
+    if user[0] is not None:
         # -- Log the user in
-        request._request.user = user
+        request._request.user = user[0]
         request._request.method = 'GET'
-        dj_login(request._request, user)
+        dj_login(request._request, user[0])
+
+        # -- Add to the login history
+        LoginHistory.objects.create(
+            member=user[0],
+            ip=request.META['REMOTE_ADDR'],
+            method=user[1]
+        )
 
         # -- Return the user to the member profile
         return JsonResponse({

@@ -30,7 +30,7 @@ export const get_security_info = async (
         }
 
         return {
-            data: data,
+            data: data.data,
             code: response.status,
             message: data.message as string,
         }

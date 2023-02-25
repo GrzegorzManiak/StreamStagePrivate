@@ -76,6 +76,21 @@ export interface Form {
     endpoint: string,
 }
 
+export interface ServiceProvider {
+    id: string,
+    oauth_type: string,
+    oauth_id: string,
+    last_used: string,
+    added: string,
+}
+
+export interface LoginHistory {
+    id: string,
+    ip: string,
+    time: string,
+    date: string,
+    method: string,
+}
 
 export interface SecurityInfo {
     email: string,
@@ -87,11 +102,8 @@ export interface SecurityInfo {
     is_broadcaster: boolean,
     is_admin: boolean,
     over_18: boolean,
-    service_providers: Array<{
-        id: string,
-        oauth_type: string,
-        oauth_id: string,
-    }>
+    service_providers: Array<ServiceProvider>,
+    login_history: Array<LoginHistory>
 }
 
 export interface SecurityInfoSuccess {

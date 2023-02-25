@@ -38,6 +38,7 @@ export const configuration = {
     recent_verification: get_or_error<string>(config, 'data-recent-verification'),
 
     security_info: get_or_error<string>(config, 'data-security-info'),
+    update_profile: get_or_error<string>(config, 'data-update-profile'),
 }
 
 

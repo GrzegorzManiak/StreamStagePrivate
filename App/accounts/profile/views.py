@@ -12,10 +12,9 @@ from timezone_field import TimeZoneField
 
 from accounts.oauth.oauth import get_all_oauth_for_member, format_providers
 from accounts.email.verification import add_key, send_email
-from accounts.models import Member
+from accounts.models import Member, LoginHistory
 
-from .forms import compile_objects
-
+from .profile import update_profile
 
 @api_view(['GET'])
 def profile(request):
@@ -35,9 +34,9 @@ def profile(request):
             'remove_verification': reverse_lazy('remove_key'),
             'recent_verification': reverse_lazy('recent_key'),
             'security_info': reverse_lazy('security_info'),
+            'update_profile': reverse_lazy('update_profile'),
         },
 
-        'pages': compile_objects(request.user),
         'oauth': format_providers()
     }
 
@@ -159,5 +158,47 @@ def security_info(request):
             'is_admin': user.is_staff,
             'over_18': user.is_over_18(),
             'service_providers': get_all_oauth_for_member(user),
+            'login_history': [
+                entry.serialize() for entry in LoginHistory.objects.filter(member=user).order_by('-time')[:10]
+            ],
         }
     }, status=status.HTTP_200_OK)
+
+
+
+@api_view(['POST'])
+def update_profile(request):
+
+    # -- Make sure that the user is logged in
+    if not request.user.is_authenticated: return JsonResponse({
+        'status': 'error',
+        'message': 'You are not logged in',
+    }, status=status.HTTP_401_UNAUTHORIZED)
+
+
+    # -- Get the data
+    data = request.data
+
+
+    # -- Check if they provided a token
+    token = request.data.get('token', None)
+    if token is not None:
+        # -- Check if the token is valid
+        valid = False
+        for req in validated_requests:
+            if req['key'] == token:
+                validated_requests.remove(req)
+                valid = True
+
+        if valid == False: return JsonResponse({
+            'status': 'error',
+            'message': 'Invalid token',
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+        # -- Update the profile
+        return update_profile(data, True)
+    
+    else:
+        # -- Update the profile
+        return update_profile(data, False)
+    

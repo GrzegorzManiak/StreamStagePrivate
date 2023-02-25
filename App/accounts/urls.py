@@ -8,8 +8,7 @@ from .email.views import (
 )
 from .create.views import send_reg_verification
 from .oauth import OAuthTypes, determine_app
-from .profile.forms import change_basic_details
-from .profile.views import profile, send_verification, security_info
+from .profile.views import profile, send_verification, security_info, update_profile
 from .views import get_token, login, logout, register, validate_token
 
 
@@ -24,8 +23,7 @@ urlpatterns = [
 
     # -- Profile
     path('send_verification/', send_verification, name='send_verification'),
-    # TODO: Change this to a basic edit, where we can provide any data to edit
-    path('edit/basic_details/', change_basic_details, name='edit_basic_details'), 
+    path('update_profile/', update_profile, name='update_profile'),
     path('security/', security_info, name='security_info'),
 
     # -- Authentication

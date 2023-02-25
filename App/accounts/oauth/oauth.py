@@ -113,13 +113,17 @@ def check_oauth_key(key: str) -> bool:
     # -- Now make sure that the key exists in
     #    the oauth model
     oauth_model = apps.get_model('accounts.oAuth2')
-
-    # -- Check if the key exists
-    if oauth_model.objects.filter(
+    entry = oauth_model.objects.filter(
         oauth_id=authentication_reqests[key]['oauth_id'],
         oauth_type=authentication_reqests[key]['type']
-    ).first() is None:
+    ).first()
+
+    # -- Check if the key exists
+    if entry is None:
         return False
+    
+    entry.last_used = time.time()
+    entry.save()
 
     # -- Key is valid
     return True

@@ -108,7 +108,9 @@
         will allow the user to extend the
         time they have to make changes.
     -->
-    <div class="
+    <div 
+    id='extend-verification-time-container'
+    class="
         justify-content-start
         text-center
 
@@ -159,8 +161,9 @@
     <!-- 
         2FA
     -->
-    <div class="
-        mb-5
+    <div 
+    id='two-factor-authentication-container'
+    class="
         justify-content-start
         text-left
     ">
@@ -224,8 +227,9 @@
         Linked Accounts
     -->
 
-    <div class="
-        mb-5
+    <div 
+    id='linked-accounts-container'
+    class="
         justify-content-start
         text-left
     ">
@@ -296,103 +300,14 @@
         
 
         <!-- Currently linked accounts -->
-        <div class="
+        <div 
+        id='linked-accounts'
+        class="
             d-flex
             p-3
             row
         ">
-            {% for provider in oauth %}
-                <div 
-                    class="
-                        w-100
-                        p-2
-                        mb-2
-                        rounded
-                    "
-                    style='
-                        background-color: var(--theme-color);
-                    '
-                >
-                    <div class="
-                        w-100
-                        container
-                        d-flex
-                        justify-content-between
-                        align-items-center
-                        mb-1
-                    ">
-                        <!-- Provider name -->
-                        <h5
-                            class="
-                                fw-bold
-                                col-3
-                                m-0
-                            "
-                        >{{ provider.name }}</h5>
-
-                        <!-- Provider Oauth ID -->
-                        <p class="
-                            col-6
-                            m-0
-                        ">
-                            Username: Gregor
-                        </p>
-
-                        <!-- Remove button -->
-                        <button 
-                            type="submit" 
-                            id="remove-tfa" 
-                            class="
-                                btn 
-                                btn-danger
-                                btn-sm
-                                loader-btn
-                                col-3
-                            "
-                            loader-state='default'
-                        >
-                            Remove
-                        </button>
-                    </div>
-
-                    <div
-                        class="
-                            w-100
-                            container
-                            d-flex
-                            justify-content-between
-                            align-items-center
-                        "
-                    >
-                        <!-- Date added -->
-                        <p class="
-                            text-muted
-                            col-4
-                            m-0
-                        ">
-                            Added: 12/12/2021
-                        </p>
-
-                        <!-- Last used -->
-                        <p class="
-                            text-muted
-                            col-4
-                            m-0
-                        ">
-                            Last used: 12/12/2021
-                        </p>
-
-                        <!-- Provider Oauth ID -->
-                        <p class="
-                            col-4
-                            text-muted
-                            m-0
-                        ">
-                            ID: 345623252367123
-                        </p>
-                    </div>
-                </div>
-            {% endfor %}
+            
         </div>
     </div>
     
@@ -401,8 +316,9 @@
     <!-- 
         Change Password
     -->
-    <div class="
-        mb-5
+    <div 
+    id='change-password-container'
+    class="
         justify-content-start
         text-left
     ">
@@ -500,12 +416,79 @@
 
     <hr>
 
+    <!--
+        Change Email
+    -->
+    <div
+    id='change-email-container'
+    class="
+        justify-content-start
+        text-left
+    ">
+        <!-- Descriptiopn -->
+        <p class="">
+            <h5 class="fw-bold">
+                Change Email
+            </h5>
+
+            <p class="
+                text-muted
+            ">
+                Change your email, you'll be required to verify the new email address for the change to take effect.
+            </p>
+        </p>
+
+        <!-- Form -->
+        <form 
+            id="change-password-form"
+            class="
+                w-100
+                d-flex
+                flex-column
+                align-items-center
+            "
+        >
+            <!-- email -->
+            <div class="mb-4 w-100">
+                <label class="form-label" for="email">Email address</label>
+                <input 
+                    name="email" 
+                    id="email" 
+                    placeholder="coolguy@streamstage.co" 
+                class="
+                    form-control 
+                    form-control-lg
+                    inp
+                ">
+            </div>
+
+            <!-- Button -->
+            <button 
+                type="submit" 
+                id="change-email" 
+                class="
+                    btn 
+                    btn-primary
+                    btn-lg
+                    loader-btn
+                    w-100
+                "
+                loader-state='default'
+            >
+                Change email
+            </button>
+        </form>
+
+
+    <hr>
+
 
     <!-- 
         Login History
     -->
-    <div class="
-        mb-5
+    <div 
+    id='login-history-container'
+    class="
         justify-content-start
         text-left
     ">
@@ -523,59 +506,14 @@
         </p>
 
         <!-- Login History -->
-        <div class="
+        <div 
+        id='login-history'
+        class="
             d-flex
             p-3
             row
         ">
-            <div 
-                class="
-                    w-100
-                    p-2
-                    mb-2
-                    rounded
-                "
-                style='
-                    background-color: var(--theme-color);
-                '
-            >
-                <div class="
-                    w-100
-                    container
-                    d-flex
-                    justify-content-between
-                    align-items-center
-                    mb-1
-                ">
-                    <!-- Date added -->
-                    <p class="
-                        text-muted
-                        col-4
-                        m-0
-                    ">
-                        Date: 12/12/2021
-                    </p>
-
-                    <!-- Last used -->
-                    <p class="
-                        text-muted
-                        col-4
-                        m-0
-                    ">
-                        Time: 12:12:12
-                    </p>
-
-                    <!-- Provider Oauth ID -->
-                    <p class="
-                        col-4
-                        text-muted
-                        m-0
-                    ">
-                        IP: 192.168.0.1
-                    </p>
-
-                </div>
-            </div>
+           
         </div>
     </div>
 
@@ -586,8 +524,9 @@
     <!-- 
         Delete Account
     -->
-    <div class="
-        mb-5
+    <div 
+    id='delete-account-container'
+    class="
         justify-content-start
         text-left
     ">
