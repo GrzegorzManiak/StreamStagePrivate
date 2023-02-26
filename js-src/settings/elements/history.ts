@@ -7,21 +7,23 @@ export default (
         <div class="w-100 p-2 mb-2 rounded" style="background-color: var(--theme-color);">
             <div class="w-100 container d-flex justify-content-between align-items-center mb-1">
                 <!-- Date added -->
-                <p class="text-muted col-4 m-0">
-                    Date: ${data.date}
-                </p>
-
-                <!-- When -->
-                <p class="text-muted col-5 m-0">
+                <p class="text-muted col-12 m-0">
                     On ${data.date} at ${data.time.split('.')[0]}
                 </p>
+            </div>
 
-                <!-- Provider Oauth ID -->
-                <p class="col-3 text-muted m-0">
+            <div class="w-100 container d-flex justify-content-between align-items-center">
+                <!-- Provider IP -->
+                <p class="col-6 text-muted m-0">
                     IP: ${data.ip}
                 </p>
 
+                <!-- Method -->
+                <p class="text-muted col-6 m-0">
+                    Method: ${data.method}
+                </p>
             </div>
+
         </div>
     `;
 

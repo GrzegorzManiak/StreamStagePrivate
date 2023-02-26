@@ -256,6 +256,7 @@
             d-flex
             justify-content-between
             align-items-center
+            oauth-providers
         ">
             <!-- Dropdown -->
             <select 
@@ -367,13 +368,15 @@
 
             <!-- New Password -->
             <div
+                id="new-password-container"
                 class="
                     d-flex
                     gap-4
                     w-100
+                    mb-4 
                 "
             >
-                <div class="mb-4 w-100">
+                <div class="w-100">
                     <label class="form-label" for="npass">New Password</label>
                     <input 
                         name="npass" 
@@ -386,7 +389,7 @@
                     ">
                 </div>
 
-                <div class="mb-4 w-100">
+                <div class="w-100">
                     <label class="form-label" for="cfpass">Confirm Password</label>
                     <input 
                         name="cfpass" 

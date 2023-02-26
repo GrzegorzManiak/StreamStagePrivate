@@ -32,3 +32,86 @@ export function attach(
         });
     };
 }
+
+export function confirmation_modal(
+    yes: () => void | Promise<void>,
+    no: () => void | Promise<void>,
+    message: string,
+    title: string = 'Are you sure?',
+) {
+    // -- String template for the modal
+    const modal = `
+    <div
+        style="z-index: 9999; position: fixed; top: 0; left: 0; width: 100vw;
+            height: 100vh; background-color: rgba(0, 0, 0, 0.5);">
+
+        <!-- Modal -->
+        <div class="modal d-flex justify-content-center align-items-center"
+            style="z-index: 9999; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
+            background-color: rgba(0, 0, 0, 0.5);">
+
+            <!-- Modal content -->
+            <div 
+                class="modal-content bg-dark text-light p-5 rounded"
+                style="width: 500px;"
+            >
+
+                <!-- Header -->
+                <div class="mb-5 justify-content-start">
+                    <!-- Header -->
+                    <h1 class="fw-bold ">${title}</h1>
+
+                    <!-- Descriptiopn -->
+                    <p class="text-muted">${message}</p>
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex justify-content-lg-start justify-content-center flex-column">
+
+                    <!-- Continue -->
+                    <button type="submit" class="btn yes btn-danger btn-lg w-100">
+                        Continue
+                    </button>
+
+
+                    <!-- Cancel button -->
+                    <button class="btn btn-secondary no btn-lg mt-3 w-100">
+                        Go back
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    `;
+
+    // -- Create a div element
+    const div = document.createElement('div');
+
+    // -- Set the innerHTML of the div to the modal
+    div.innerHTML = modal;
+
+    // -- Get the buttons
+    const yes_btn = div.querySelector('.yes') as HTMLButtonElement,
+        no_btn = div.querySelector('.no') as HTMLButtonElement;
+
+    // -- Add the event listeners
+    yes_btn.addEventListener('click', async() => {
+        // -- Call the yes function
+        yes();
+
+        // -- Remove the modal
+        div.remove();
+    });
+
+    no_btn.addEventListener('click', async() => {
+        // -- Call the no function
+        no();
+
+        // -- Remove the modal
+        div.remove();
+    });
+
+    // -- Append the modal to the body
+    document.body.appendChild(div);
+}

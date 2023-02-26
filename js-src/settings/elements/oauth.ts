@@ -1,5 +1,5 @@
 import { ServiceProvider } from '../index.d';
-import { attach } from '../../click_handler';
+import { attach, confirmation_modal } from '../../click_handler';
 import { create_toast } from '../../toasts';
 import remove_oauth from '../api/remove_oauth';
 
@@ -25,13 +25,13 @@ export default (
 
 
     const elm = `
-        <div class="w-100 p-2 mb-2 rounded" style="background-color: var(--theme-color);">
+        <div class="w-100 p-2 mb-2 rounded linked-account-continer" style="background-color: var(--theme-color);">
             <div class="w-100 container d-flex justify-content-between align-items-center mb-1">
                 <!-- Provider name -->
                 <h5 class="fw-bold col-3 m-0">${oauth_name}</h5>
                 
                 <!-- Provider Oauth ID -->
-                <p class="col-6 m-0">${data.id}</p>
+                <p class="col-6 m-0 oauth-id-top">${data.id}</p>
 
                 <!-- Remove button -->
                 <button
@@ -43,7 +43,11 @@ export default (
 
             </div>
 
-            <div class="w-100 container d-flex justify-content-between align-items-center">
+            <div class="oauth-id-bottom w-100 container d-flex justify-content-between align-items-center">
+                <p class="text-muted m-0">${data.id}</p>
+            </div>
+
+            <div class="w-100 container d-flex justify-content-between align-items-center oauth-times">
                 <!-- Date added -->
                 <p class="text-muted col-6 m-0">Added: ${added_date} at ${added_time}</p>
 
@@ -65,26 +69,30 @@ export default (
         // -- Attach the spinner
         const stop = attach(btn);
 
-        // -- Remove the oauth
-        const res = await remove_oauth(token, data.id);
-        if (res.code !== 200) create_toast(
-            'error',
-            "Failed to remove OAuth",
-            res.message,
+        // -- Confirm the action
+        confirmation_modal(
+            async () => {
+                // -- Remove the oauth
+                const res = await remove_oauth(token, data.id);
+                if (res.code !== 200) create_toast('error', "Failed to remove OAuth", res.message)
+
+                else {
+                    create_toast(
+                        'success',
+                        "OAuth removed",
+                        "Successfully removed OAuth",
+                    );
+        
+                    // -- Remove the element
+                    div.remove();
+                }
+        
+                // -- Stop the spinner
+                stop();
+            },
+            () => stop(),
+            'Are you sure you want to remove "' + oauth_name + '" from your linked accounts? This action cannot be undone.',
         )
-        else {
-            create_toast(
-                'success',
-                "OAuth removed",
-                "Successfully removed OAuth",
-            );
-
-            // -- Remove the element
-            div.remove();
-        }
-
-        // -- Stop the spinner
-        stop();
     });
 
     // -- Return the element

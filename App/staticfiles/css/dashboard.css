@@ -103,6 +103,7 @@
 
 .size-limiter {
     width: unset!important;
+    margin: auto;
 }
 
 .profile-picture {
@@ -159,14 +160,59 @@
     .side-panel {
         width: 20rem!important;
     }
+    .oauth-id-bottom { display: none!important; }
 }
 
 @media only screen and (max-width: 500px) {
     .side-panel {
         width: 100vw!important;
     }
+
+    #new-password-container {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    #login-history { padding: 0!important; }
+    #login-history p { width: 100%; }    
+    #login-history > div > div > div { 
+        display: block!important;
+    }
+
+
+    .oauth-id-top { display: none; }
+    .oauth-id-bottom { 
+        display: block!important; 
+        font-size: 0.9rem;
+        margin-bottom: 0.2rem;
+    }
+    .oauth-id-bottom p {
+        text-align: center;
+    }
+
+    .linked-account-continer {
+        padding: 0.5rem!important;
+        margin-top: 0.5rem!important;
+    }
+
+    .oauth-times {
+        display: flex!important;
+        flex-direction: column!important;
+        justify-content: space-between!important;
+    }
+
+    .oauth-times p {
+        width: 100%!important;
+    }
+
+    #linked-accounts { padding: 0rem!important; }
+    #linked-accounts > div > div {
+        padding: 0.5rem!important;
+    }
 }
 
+
+.oauth-id-bottom { display: none!important; }
 
 /* 
     Forms
