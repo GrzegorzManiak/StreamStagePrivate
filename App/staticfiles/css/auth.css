@@ -9,7 +9,6 @@ body {
 
 .size-limiter {
     width: 55%;
-    min-width: 400px;
     max-width: 60rem;
 }
 

@@ -140,7 +140,6 @@ export function attach_event_listeners() {
         pod.addEventListener('click', () => {
             // -- Get the current active pod button
             const active_pod = get_active_pod();
-            console.log(active_pod);
             if (!active_pod) return;
 
             // -- Make sure the active panel is not the same
@@ -169,4 +168,27 @@ export function attach_event_listeners() {
     //    is an admin
     if (configuration.admin === true) 
         admin_opts?.setAttribute('data-pod-status', '');
+}
+
+
+
+export function open_panel(panel_type: PanelType) {
+    // -- Get the panel and pod
+    const pod = get_pod(panel_type),
+        active_pod = get_active_pod();
+    
+    // -- Check if the panel exists
+    if (!pod || !active_pod) return;
+
+
+    // -- Set the active panel to inactive
+    active_pod.panel.element.setAttribute('data-panel-status', 'hidden');
+    pod.panel.element.setAttribute('data-panel-status', 'active');
+
+    // -- If the active pod is not the same as the
+    //    one that was clicked, then set the active
+    //    pod to inactive and set the clicked pod to
+    //    active
+    active_pod.element.setAttribute('data-pod-status', '');
+    pod.element.setAttribute('data-pod-status', 'active');
 }

@@ -78,7 +78,7 @@ def send_reg_verification(request):
         # -- Check if the email is verified
         if oauth_data['data']['email_verified'] is False:
             keys = start_email_verification(
-                oauth_data['data']['email'].lower(),
+                email.lower(),
                 password,
                 username,
                 oauth_token
@@ -100,6 +100,7 @@ def send_reg_verification(request):
             #    so we can create the account
             new_member = Member.objects.create(
                 username=username,
+                cased_username=username.lower(),
                 email=email.lower(),
                 password=make_password(password),
             )

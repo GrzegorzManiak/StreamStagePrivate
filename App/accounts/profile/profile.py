@@ -15,13 +15,18 @@ from accounts.models import Member
 
 
 """
-    This is a username validator
-    -- Must be between 3 and 20 characters
-    -- Must Start with a letter
-    -- Must only contain letters, numbers, and underscores
-    -- Must not contain two underscores in a row
-    -- Must not end with an underscore
-    -- Must not contain spaces
+    :name: validate_username
+    :description: This is a username validator
+        -- Must be between 3 and 20 characters
+        -- Must Start with a letter
+        -- Must only contain letters, numbers, and underscores
+        -- Must not contain two underscores in a row
+        -- Must not end with an underscore
+        -- Must not contain spaces
+    :param username: str - The username to validate
+    :return: tuple[bool, str] - A tuple containing a bool
+        which is True if the username is valid, False if it is not
+        and a string which is the reason why it is not valid
 """
 def validate_username(username) -> tuple[bool, str]:
     if len(username) < 3: return (False, 'Username is too short')
@@ -34,9 +39,17 @@ def validate_username(username) -> tuple[bool, str]:
     return (True, 'Username is valid')
 
 
+
 """
-    This function is responsible for changing
-    a user's username
+    :name: change_username
+    :description: This function changes a user's username   
+        it ensurs that the username complies with the rules
+        and that it is not already taken
+    :param user: Member - The user to change the username for
+    :param new_username: str - The new username
+    :return: tuple[bool, str] - A tuple containing a bool
+        which is True if the username was changed, False if it was not
+        and a string which is the reason why it was not changed
 """
 def change_username(user, new_username) -> tuple[bool, str]:
     # -- Check if the username is already taken
@@ -65,7 +78,15 @@ def change_username(user, new_username) -> tuple[bool, str]:
 
 
 """
-    This function changes a user's description
+    :name: change_description
+    :description: This function changes a user's description
+        it ensures that the description complies with the rules
+        which ive no clue on what they are
+    :param user: Member - The user to change the description for
+    :param new_description: str - The new description
+    :return: tuple[bool, str] - A tuple containing a bool
+        which is True if the description was changed, False if it was not
+        and a string which is the reason why it was not changed
 """
 def change_description(user, new_description) -> tuple[bool, str]:
     # -- Check if the user is valid
@@ -88,4 +109,3 @@ def change_description(user, new_description) -> tuple[bool, str]:
     user.save()
 
     return (True, 'Description changed successfully')
-

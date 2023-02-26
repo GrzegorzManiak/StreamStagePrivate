@@ -14,7 +14,7 @@ import secrets
 import time
 
 from .models import Member
-from .oauth.oauth import (
+from .oauth import (
     check_oauth_key,
     get_oauth_data,
     get_oauth_user,
@@ -176,5 +176,3 @@ def authenticate_key(key: str) -> Member or None:
 
 
     return user
-
-

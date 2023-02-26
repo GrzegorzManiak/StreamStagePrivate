@@ -8,8 +8,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from rest_framework.decorators import api_view
 
-from .google import Google
-from .github import Github
+from .providers import google, github, discord
 from .types import OAuthRespone, OAuthTypes
 
 
@@ -204,8 +203,9 @@ def determine_app(oauth_service: OAuthTypes):
 
     # -- Determine the app
     match oauth_service:
-        case OAuthTypes.GOOGLE: app = Google
-        case OAuthTypes.GITHUB: app = Github
+        case OAuthTypes.GOOGLE: app = google
+        case OAuthTypes.GITHUB: app = github
+        case OAuthTypes.DISCORD: app = discord
 
 
     @api_view(['GET'])
@@ -219,11 +219,11 @@ def determine_app(oauth_service: OAuthTypes):
         #    The user to the oauth url
         code = request.GET.get('code')
         if code == None:
-            return HttpResponseRedirect(app().url)
+            return HttpResponseRedirect(app.Oauth().url)
 
 
         # -- Create a new Google object
-        choosen_app = app(code)
+        choosen_app = app.Oauth(code)
 
         # -- Get the access token
         res = choosen_app.get_access_token()
@@ -240,7 +240,6 @@ def determine_app(oauth_service: OAuthTypes):
             response.set_cookie('oauth_error', str(res))
 
             return response
-
 
         # -- Generate a reference key
         #    So that we can fetch this
@@ -327,3 +326,21 @@ def link_oauth_account(user, oauth_key: str):
 
     except:
         return False
+
+
+
+"""
+    :name: get_all_oauth_for_member
+    :description: This function gets all the oauth
+        linked oauth/3rd party accounts for a member
+    :param Member: The member to get the oauth accounts for
+    :return: A list of oauth accounts
+"""
+def get_all_oauth_for_member(member):
+    # -- Get the oauth model
+    OAuth2 = apps.get_model('accounts.oAuth2')
+
+    # -- Get all the oauth accounts
+    oauth_accounts = OAuth2.objects.filter(user=member)
+
+    return [account.serialize() for account in oauth_accounts]
