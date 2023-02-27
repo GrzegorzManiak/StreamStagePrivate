@@ -2,16 +2,13 @@ from django import forms
 import datetime
 from django.contrib.admin.widgets import AdminDateWidget, AdminTimeWidget, AdminSplitDateTime
 from .models import Event, EventReview, Category, EventShowing
+from StreamStage.utilities import CategoryMC
 
                                         # ***************
                                         # *** Events  ***                                        # ***************
                                         # *************** 
 # Applying for an Event
 
-class CategoryMC(forms.ModelMultipleChoiceField):
-    def label_from_instance(self, category):
-        return category.name
-    
 # class MediaMC(forms.ModelMultipleChoiceField):
 #     def label_from_instance(self, media):
 #         return media.picture
