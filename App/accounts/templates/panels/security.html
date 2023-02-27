@@ -36,7 +36,9 @@
     <!-- 
         2FA
     -->
-    <div class="
+    <div 
+    data-has-tfa='{% if has_tfa %}true{% else %}false{% endif %}'
+    class="
         mb-5
         justify-content-start
         text-center
@@ -44,30 +46,57 @@
         <!-- Descriptiopn -->
         <p class="">
             But, before you can make any changes,
-            {% if has_tfa %}
+            <span class='mfa'>
                 you must enter the code from your authenticator app.
-            {% else %}
+            </span>
+
+            <span class='email'>
                 you must click the link sent to {{ user.mask_email }}.
-            {% endif %}
+            </span>
         </p>
 
     </div>
 
     <!-- Buttons -->
-    <div class="
+    <div 
+    data-has-tfa='{% if has_tfa %}true{% else %}false{% endif %}'
+    class="
         d-flex 
         justify-content-lg-start
         justify-content-center
         flex-column
     ">   
-        {% if has_tfa %}
-            nOT done yet so tough luck
-        {% else %}
+        
+        <div id='mfa-input' class='mfa form-group mt-1 mb-5 tfa-input d-flex gap-2 justify-content-center'>
+        </div>
+
+        <button 
+            type="submit" 
+            id="verify-tfa" 
+            class="
+                mfa
+                btn 
+                btn-primary
+                mb-3
+                btn-lg
+                loader-btn
+            "
+            loader-state='default'
+        >
+            <span>
+                <div class='spinner-border' role='status'>
+                    <span class='visually-hidden'>Loading...</span>
+                </div>
+            </span>
+            <p>Verify</p>
+        </button>
+
         <button 
             type="submit" 
             id="send-verification-email" 
             class="
                 btn 
+                email
                 btn-primary
                 mb-3
                 btn-lg
@@ -82,7 +111,6 @@
             </span>
             <p>Send verification email</p>
         </button>
-        {% endif %}
     </div>
 
     
@@ -108,7 +136,9 @@
         will allow the user to extend the
         time they have to make changes.
     -->
-    <div class="
+    <div 
+    id='extend-verification-time-container'
+    class="
         justify-content-start
         text-center
 
@@ -117,9 +147,11 @@
         align-items-center
     ">
         <!-- Descriptiopn -->
-        <h5 class="fw-bold">
-            $time_left
-        </h5>
+        <h1
+        id='extend-verification-time-timer'
+        class="fw-bold">
+            15:00
+        </h1>
 
         <p class="
             text-muted
@@ -159,10 +191,13 @@
     <!-- 
         2FA
     -->
-    <div class="
-        mb-5
+    <div 
+    id='two-factor-authentication-container'
+    data-has-tfa='{% if has_tfa %}true{% else %}false{% endif %}'
+    class="
         justify-content-start
         text-left
+
     ">
         <!-- Descriptiopn -->
         <p class="">
@@ -178,42 +213,44 @@
             </p>
         </p>
 
-        {% if has_tfa %}
-            <!--Remove-->
-            <button 
-                type="submit" 
-                id="remove-tfa" 
-                class="
-                    btn 
-                    btn-primary
-                    mb-3
-                    btn-lg
-                    loader-btn
-                "
-                loader-state='default'
-            >
-                Remove
-            </button>
-
-            {% else %}
-
-            <!--Add-->
-            <button 
-                type="submit" 
-                id="add-tfa" 
-                class="
-                    btn 
-                    btn-primary
-                    btn-lg
-                    loader-btn
-                    w-100
-                "
-                loader-state='default'
-            >
-                Setup
-            </button>
-            {% endif %}
+        
+        
+        <!--Remove-->
+        <button 
+            type="submit" 
+            id="remove-tfa" 
+            class="
+                btn 
+                btn-warning
+                btn-lg
+                loader-btn
+                w-100
+                mfa
+            "
+            loader-state='default'
+        >
+            Remove
         </button>
+
+        
+
+        <!--Add-->
+        <button 
+            type="submit" 
+            id="add-tfa" 
+            class="
+                btn 
+                btn-primary
+                btn-lg
+                loader-btn
+                w-100
+                email
+            "
+            loader-state='default'
+        >
+            Setup
+        </button>
+           
     </div>
 
 
@@ -224,8 +261,9 @@
         Linked Accounts
     -->
 
-    <div class="
-        mb-5
+    <div 
+    id='linked-accounts-container'
+    class="
         justify-content-start
         text-left
     ">
@@ -250,9 +288,11 @@
             d-flex
             justify-content-between
             align-items-center
+            oauth-providers
         ">
             <!-- Dropdown -->
             <select 
+                id="oauth-providers"
                 class="
                     form-select
                     btn 
@@ -269,7 +309,10 @@
             >
                 <option selected>Provider</option>
                 {% for provider in oauth %}
-                    <option value="{{ provider.id }}">{{ provider.name }}</option>
+                    <option 
+                        value="{{ provider.id }}"
+                        redirect-url="{{ provider.redirect }}"
+                    >{{ provider.name }}</option>
                 {% endfor %}
             </select>
 
@@ -296,103 +339,14 @@
         
 
         <!-- Currently linked accounts -->
-        <div class="
+        <div 
+        id='linked-accounts'
+        class="
             d-flex
             p-3
             row
         ">
-            {% for provider in oauth %}
-                <div 
-                    class="
-                        w-100
-                        p-2
-                        mb-2
-                        rounded
-                    "
-                    style='
-                        background-color: var(--theme-color);
-                    '
-                >
-                    <div class="
-                        w-100
-                        container
-                        d-flex
-                        justify-content-between
-                        align-items-center
-                        mb-1
-                    ">
-                        <!-- Provider name -->
-                        <h5
-                            class="
-                                fw-bold
-                                col-3
-                                m-0
-                            "
-                        >{{ provider.name }}</h5>
-
-                        <!-- Provider Oauth ID -->
-                        <p class="
-                            col-6
-                            m-0
-                        ">
-                            Username: Gregor
-                        </p>
-
-                        <!-- Remove button -->
-                        <button 
-                            type="submit" 
-                            id="remove-tfa" 
-                            class="
-                                btn 
-                                btn-danger
-                                btn-sm
-                                loader-btn
-                                col-3
-                            "
-                            loader-state='default'
-                        >
-                            Remove
-                        </button>
-                    </div>
-
-                    <div
-                        class="
-                            w-100
-                            container
-                            d-flex
-                            justify-content-between
-                            align-items-center
-                        "
-                    >
-                        <!-- Date added -->
-                        <p class="
-                            text-muted
-                            col-4
-                            m-0
-                        ">
-                            Added: 12/12/2021
-                        </p>
-
-                        <!-- Last used -->
-                        <p class="
-                            text-muted
-                            col-4
-                            m-0
-                        ">
-                            Last used: 12/12/2021
-                        </p>
-
-                        <!-- Provider Oauth ID -->
-                        <p class="
-                            col-4
-                            text-muted
-                            m-0
-                        ">
-                            ID: 345623252367123
-                        </p>
-                    </div>
-                </div>
-            {% endfor %}
+            
         </div>
     </div>
     
@@ -401,8 +355,9 @@
     <!-- 
         Change Password
     -->
-    <div class="
-        mb-5
+    <div 
+    id='change-password-container'
+    class="
         justify-content-start
         text-left
     ">
@@ -445,13 +400,15 @@
 
             <!-- New Password -->
             <div
+                id="new-password-container"
                 class="
                     d-flex
                     gap-4
                     w-100
+                    mb-4 
                 "
             >
-                <div class="mb-4 w-100">
+                <div class="w-100">
                     <label class="form-label" for="npass">New Password</label>
                     <input 
                         name="npass" 
@@ -464,7 +421,7 @@
                     ">
                 </div>
 
-                <div class="mb-4 w-100">
+                <div class="w-100">
                     <label class="form-label" for="cfpass">Confirm Password</label>
                     <input 
                         name="cfpass" 
@@ -500,12 +457,79 @@
 
     <hr>
 
+    <!--
+        Change Email
+    -->
+    <div
+    id='change-email-container'
+    class="
+        justify-content-start
+        text-left
+    ">
+        <!-- Descriptiopn -->
+        <p class="">
+            <h5 class="fw-bold">
+                Change Email
+            </h5>
+
+            <p class="
+                text-muted
+            ">
+                Change your email, you'll be required to verify the new email address for the change to take effect.
+            </p>
+        </p>
+
+        <!-- Form -->
+        <form 
+            id="change-password-form"
+            class="
+                w-100
+                d-flex
+                flex-column
+                align-items-center
+            "
+        >
+            <!-- email -->
+            <div class="mb-4 w-100">
+                <label class="form-label" for="email">Email address</label>
+                <input 
+                    name="email" 
+                    id="email" 
+                    placeholder="coolguy@streamstage.co" 
+                class="
+                    form-control 
+                    form-control-lg
+                    inp
+                ">
+            </div>
+
+            <!-- Button -->
+            <button 
+                type="submit" 
+                id="change-email" 
+                class="
+                    btn 
+                    btn-primary
+                    btn-lg
+                    loader-btn
+                    w-100
+                "
+                loader-state='default'
+            >
+                Change email
+            </button>
+        </form>
+
+
+    <hr>
+
 
     <!-- 
         Login History
     -->
-    <div class="
-        mb-5
+    <div 
+    id='login-history-container'
+    class="
         justify-content-start
         text-left
     ">
@@ -523,59 +547,14 @@
         </p>
 
         <!-- Login History -->
-        <div class="
+        <div 
+        id='login-history'
+        class="
             d-flex
             p-3
             row
         ">
-            <div 
-                class="
-                    w-100
-                    p-2
-                    mb-2
-                    rounded
-                "
-                style='
-                    background-color: var(--theme-color);
-                '
-            >
-                <div class="
-                    w-100
-                    container
-                    d-flex
-                    justify-content-between
-                    align-items-center
-                    mb-1
-                ">
-                    <!-- Date added -->
-                    <p class="
-                        text-muted
-                        col-4
-                        m-0
-                    ">
-                        Date: 12/12/2021
-                    </p>
-
-                    <!-- Last used -->
-                    <p class="
-                        text-muted
-                        col-4
-                        m-0
-                    ">
-                        Time: 12:12:12
-                    </p>
-
-                    <!-- Provider Oauth ID -->
-                    <p class="
-                        col-4
-                        text-muted
-                        m-0
-                    ">
-                        IP: 192.168.0.1
-                    </p>
-
-                </div>
-            </div>
+           
         </div>
     </div>
 
@@ -586,8 +565,9 @@
     <!-- 
         Delete Account
     -->
-    <div class="
-        mb-5
+    <div 
+    id='delete-account-container'
+    class="
         justify-content-start
         text-left
     ">

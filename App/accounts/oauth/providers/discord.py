@@ -98,7 +98,7 @@ class Oauth():
 
         except:
             return OAuthRespone.REQUEST_ERROR
-        print(response)
+
         # -- Parse the data
         discord_id = response['id']
         email = response['email']
@@ -107,7 +107,7 @@ class Oauth():
         given_name = response['username']
         if response['display_name'] != None:
             given_name = response['display_name']
-        picture = f'https://cdn.discordapp.com/avatars/{response["avatar"]}.png'
+        picture = f'https://cdn.discordapp.com/avatars/{discord_id}/{response["avatar"]}.png'
 
         # -- Make sure the data is valid
         if (

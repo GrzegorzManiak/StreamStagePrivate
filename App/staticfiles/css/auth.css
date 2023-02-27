@@ -8,7 +8,6 @@ body {
 }
 
 .size-limiter {
-    width: 55%;
     max-width: 60rem;
 }
 

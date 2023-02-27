@@ -5,6 +5,10 @@ import time
 
 from django.apps import apps
 from django.http import HttpResponseRedirect
+from django.shortcuts import render
+from django.http.response import JsonResponse
+from rest_framework import status
+
 from django.urls import reverse, reverse_lazy
 from rest_framework.decorators import api_view
 
@@ -113,13 +117,17 @@ def check_oauth_key(key: str) -> bool:
     # -- Now make sure that the key exists in
     #    the oauth model
     oauth_model = apps.get_model('accounts.oAuth2')
-
-    # -- Check if the key exists
-    if oauth_model.objects.filter(
+    entry = oauth_model.objects.filter(
         oauth_id=authentication_reqests[key]['oauth_id'],
         oauth_type=authentication_reqests[key]['type']
-    ).first() is None:
+    ).first()
+
+    # -- Check if the key exists
+    if entry is None:
         return False
+    
+    entry.last_used = time.time()
+    entry.save()
 
     # -- Key is valid
     return True
@@ -192,6 +200,58 @@ def clean_key_store():
 
     
 
+"""
+    This function links the user to the oauth
+    account
+"""
+def link_oauth_account(user, oauth_key: str) -> list[bool, str]:
+    # -- Get the oauth data
+    oauth_data = get_oauth_data(oauth_key)
+
+    # -- Check if the key is valid
+    if oauth_data == None:
+        return [False, 'Invalid key']
+
+    # -- Make sure the user is valid
+    if user == None:
+        return [False, 'Invalid user']
+
+    # -- Remove the key
+    remove_oauth_key(oauth_key)
+
+    # -- Get the oauth model
+    oauth_model = apps.get_model('accounts.oAuth2')
+
+    try:
+        # -- Check if a user already has this oauth account
+        existing_link = oauth_model.objects.filter(
+            oauth_id=oauth_data['oauth_id'],
+            oauth_type=oauth_data['type']
+        ).first()
+
+        # -- Check if the user already has this oauth account
+        if existing_link is not None:
+            # -- Check if the user is the same
+            if existing_link.user == user:
+                return [False, 'You already have this account linked']
+            
+            # -- The user is not the same
+            return [False, 'This account is already linked to another user']
+        
+        # -- Create the oauth model
+        oauth_model.objects.create(
+            user=user,
+            oauth_id=oauth_data['oauth_id'],
+            oauth_type=oauth_data['type']
+        )
+
+        # -- Return true since the user was linked
+        return [True, 'The account was linked successfully']
+
+    except:
+        return [False, 'An error occured while linking the account']
+
+
 
 """
     This is the OAuth view that is used to
@@ -210,9 +270,9 @@ def determine_app(oauth_service: OAuthTypes):
 
     @api_view(['GET'])
     def sso(request):
-        # -- Check if the user is already authenticated
-        if request.user.is_authenticated:
-            return reverse('login')
+        # # -- Check if the user is already authenticated
+        # if request.user.is_authenticated:
+        #     return reverse('login')
 
         # -- Get the code from the request
         #    And if its none, just redirect
@@ -241,6 +301,7 @@ def determine_app(oauth_service: OAuthTypes):
 
             return response
 
+
         # -- Generate a reference key
         #    So that we can fetch this
         #    User later on
@@ -250,27 +311,49 @@ def determine_app(oauth_service: OAuthTypes):
             str(choosen_app.user.get_id())
         )
 
-        # -- Format the instructions
-        instructions = {
-            'message': 'Success',
-            'user': choosen_app.user.serialize(),
-            'token': key,
-            'instructions': format_instructions(
-                choosen_app.user.get_is_verified(),
-                oauth_service,
-                choosen_app.user.get_id()
+
+        # -- Check if the user is already authenticated
+        if request.user.is_authenticated:
+            # -- Get the user
+            user = request.user
+
+            # -- Link the account   
+            res = link_oauth_account(user, key)
+            
+            return render(request, 'verify.html', {
+                'message': res[1],
+            })
+
+        else:
+            um = apps.get_model('accounts.Member')
+
+            # -- Check if an account already exists
+            #    With same email, if so, we cant automatically
+            #    verify the email
+            user = um.objects.filter(email=choosen_app.user.get_email()).first()
+            email_verified = choosen_app.user.get_is_verified()
+            if user != None: email_verified = False
+
+            # -- Format the instructions
+            instructions = {
+                'message': 'Success',
+                'user': choosen_app.user.serialize(),
+                'token': key,
+                'instructions': format_instructions(
+                    email_verified,
+                    oauth_service,
+                    choosen_app.user.get_id()
+                )
+            }
+
+            # -- Convert the instructions to json
+            instructions = json.dumps(instructions)
+            enocded_instructions = base64.b64encode(instructions.encode('utf-8')).decode('utf-8')
+
+            # -- Return the instructions
+            return HttpResponseRedirect(
+                reverse_lazy('login') + f'?instructions={enocded_instructions}'
             )
-        }
-
-        # -- Convert the instructions to json
-        instructions = json.dumps(instructions)
-        enocded_instructions = base64.b64encode(instructions.encode('utf-8')).decode('utf-8')
-
-        # -- Return the instructions
-        return HttpResponseRedirect(
-            reverse_lazy('login') + f'?instructions={enocded_instructions}'
-        )
-
     return sso
 
 
@@ -284,48 +367,22 @@ def format_providers():
     # -- Format the providers
     providers = []
     for provider in OAuthTypes.choices:
+        # -- Determine the app
+        app = google
+        match provider[0]:
+            case 0: app = google
+            case 1: app = discord
+            case 2: app = github
+
+
         providers.append({
             'name': provider[1],
             'id': provider[1].lower(),
-            'url': reverse(provider[1].lower())
+            'url': reverse(provider[1].lower()),
+            'redirect': app.Oauth().format_url()
         })
 
     return providers
-
-
-
-"""
-    This function links the user to the oauth
-    account
-"""
-def link_oauth_account(user, oauth_key: str):
-    # -- Get the oauth data
-    oauth_data = get_oauth_data(oauth_key)
-
-    # -- Check if the key is valid
-    if oauth_data == None:
-        return False
-
-    # -- Make sure the user is valid
-    if user == None:
-        return False
-
-    # -- Remove the key
-    remove_oauth_key(oauth_key)
-
-    # -- Get the oauth model
-    oauth_model = apps.get_model('accounts.oAuth2')
-
-    try:
-        # -- Create the oauth model
-        oauth_model.objects.create(
-            user=user,
-            oauth_id=oauth_data['oauth_id'],
-            oauth_type=oauth_data['type']
-        )
-
-    except:
-        return False
 
 
 

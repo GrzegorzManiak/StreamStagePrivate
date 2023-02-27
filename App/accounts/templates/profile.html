@@ -24,7 +24,7 @@
         data-userfirst='data:{{ user.first_name }}'
         data-userlast='data:{{ user.last_name }}'
         data-access-level='{{ user.access_level }}'
-        data-profile-picture='data:{{ user.profile_picture }}'
+        data-profile-picture='/media/{{ user.profile_pic }}'
 
         data-csrf-token='{{ csrf_token }}'
 
@@ -32,7 +32,15 @@
         data-resend-verification='{{ api.resend_verification }}'
         data-remove-verification='{{ api.remove_verification }}'
         data-recent-verification='{{ api.recent_verification }}'
+
         data-security-info='{{ api.security_info }}'
+        data-update-profile='{{ api.update_profile }}'
+        data-remove-oauth='{{ api.remove_oauth }}'
+        data-extend-session='{{ api.extend_session }}'
+
+        data-mfa-setup='{{ api.setup_mfa }}'
+        data-mfa-verify='{{ api.verify_mfa }}'
+        data-mfa-disable='{{ api.disable_mfa }}'
     ></span>
 
     <div 
@@ -579,7 +587,6 @@
             
             <div class = '
                 mt-4
-                d-flex
                 justify-content-center
                 align-items-center
             '>
@@ -595,14 +602,20 @@
                         g-0
                         main-content
                     '>
-                        <main class="
-                            col-12
-                            d-flex 
-                            align-items-center
-                        ">
+                        <main>
+                            <!--
+                                p-5 on large screens
+                                p-3 on small screens
+                            -->
                             <div class = "
                                 card-body 
-                                p-5
+                                rounded
+                                p-xxl-5
+                                p-xl-5
+                                p-lg-5
+                                p-md-3
+                                p-sm-3
+                                p-2
                                 text-light
                                 smoother
                             ">

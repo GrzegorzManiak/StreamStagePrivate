@@ -1,7 +1,32 @@
+import { sleep } from "../click_handler";
+
 export type ToastType = 'error' | 'success' | 'warning';
 
-// -- Create a toast
-export const create_toast = (type: ToastType, title: string, message: string) => {
+
+
+/**
+ * @name create_toast
+ * 
+ * @param type: ToastType - The type of toast to create EG, error, success, warning
+ * @param title: string - The title of the toast
+ * @param message: string - The message of the toast
+ * @param close_after: number - The amount of time to wait before closing the toast
+ * @param closed: () => void - The function to call when the toast is closed
+ * 
+ * @returns void
+ * 
+ * @description This function creates a toast and appends it to the DOM
+ *              it also handles the removal of the toast after x seconds.
+ *              This function is used to show the user that something
+ *              has happened.
+ */
+export const create_toast = (
+    type: ToastType, 
+    title: string, 
+    message: string,
+    close_after: number = 5000,
+    closed: () => void = () => {},
+) => {
     // -- Lets get the root toasts element
     const toasts = document.getElementById('toasts');
     if (!toasts) throw new Error('No toasts element found');
@@ -41,6 +66,9 @@ export const create_toast = (type: ToastType, title: string, message: string) =>
     close_button.addEventListener('click', () => {
         // -- Animate the toast out
         unanimate_toast(toast);
+
+        // -- Call the closed function
+        closed();
     });
 
     // -- Add the close button to the toast header
@@ -66,15 +94,20 @@ export const create_toast = (type: ToastType, title: string, message: string) =>
     // -- After 5 seconds, remove the toast
     setTimeout(() => {
         unanimate_toast(toast);
-    }, 5000);
+    }, close_after);
 }
 
 
-async function sleep(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
-
+/**
+ * @name animate_toast
+ * 
+ * @param toast: HTMLDivElement - The toast to animate
+ * 
+ * @returns void
+ *  
+ * @description This function animates the toast in
+ */
 async function animate_toast(toast: HTMLDivElement) {
     // -- We want to animate the height of the toast
     //    and its opacity
@@ -100,6 +133,18 @@ async function animate_toast(toast: HTMLDivElement) {
     }
 }
 
+
+
+/**
+ * @name unanimate_toast
+ * 
+ * @param toast: HTMLDivElement - The toast to animate
+ * 
+ * @returns void
+ * 
+ * @description This function animates the toast out
+ *              and then removes it from the DOM
+ */
 async function unanimate_toast(toast: HTMLDivElement) {
     // -- We want to animate its opacity 
     const animation_length = 500;

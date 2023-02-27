@@ -10,6 +10,7 @@
 
 
 # -- Imports
+from ast import Tuple
 import secrets
 import time
 
@@ -137,10 +138,10 @@ def determine_key(key: str) -> KeyType or None:
     This function will be used to authenticate
     the user with the key that they have provided
 """
-def authenticate_key(key: str) -> Member or None:
+def authenticate_key(key: str) -> list:
     # -- Determine the key type
     keytype = determine_key(key)
-    if keytype is None: return None
+    if keytype is None: return [None, None]
 
 
     # -- Authenticate the user
@@ -150,7 +151,7 @@ def authenticate_key(key: str) -> Member or None:
             data = check_oauth_key(key)
 
             # -- Check if the user is valid
-            if data == False: return None
+            if data == False: return [None, keytype]
 
             # -- Get the user
             oauth_data = get_oauth_data(key)
@@ -159,20 +160,19 @@ def authenticate_key(key: str) -> Member or None:
             user = get_oauth_user(
                 oauth_data['oauth_id'],
                 oauth_data['type']
-            )
+            ) 
 
             # -- Remove the key
             remove_oauth_key(key)
 
             # -- Check if the user is valid
-            if not user: return None
+            if not user: return [None, keytype]
 
         case KeyType.EMAIL:
             # -- Get the user
             user = consume_key(key)
 
             # -- Check if the user is valid
-            if not user: return None 
+            if not user: return [None, keytype]
 
-
-    return user
+    return [user, keytype]

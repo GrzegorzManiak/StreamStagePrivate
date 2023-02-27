@@ -8,10 +8,23 @@
     if it was not. The string will be a message
     describing the result of the function.
 """
-from django.utils.html import escape
 
-from accounts.email.registration import username_taken
+
+
+# -- Imports
+from django.utils.html import escape
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
+
+from django_countries.fields import CountryField
+from timezone_field import TimeZoneField
+
+from accounts.create.create import username_taken
 from accounts.models import Member
+
+import secrets
+import time
+
 
 
 """
@@ -109,3 +122,233 @@ def change_description(user, new_description) -> tuple[bool, str]:
     user.save()
 
     return (True, 'Description changed successfully')
+
+
+
+""" 
+    :name: update_profile
+    :description: This function updates a user's profile
+        given a dictionary of data to update, it can update
+        sensitive information by being provided with a
+        validated_requests object (done by the view, not this function)
+    :param user: Member - The user to update the profile for
+    :param data: dict - A dictionary containing the data to update
+    :param sensitive: bool - Whether or not to update sensitive information
+    :return: tuple[bool, str] - A tuple containing a bool
+        which is True if the profile was updated, False if it was not
+        and a string which is the reason why it was not updated
+
+    Object Structure:
+    {
+        # -- Basic Information
+        'username': str,
+        'description': str,
+        'first_name': str,
+        'last_name': str,
+        'time_zone': str,
+        'country': str,
+
+        # -- Sensitive Information
+        'tfa_token': str or None, # -- If None, then the user is not using 2FA / Unsets it
+        'old_password': str,
+        'password': str,
+        'email': str,
+    }
+"""
+def update_profile(user, data, sensitive=False) -> tuple[bool, str]:
+    sensitive_fields = ['tfa_token', 'password', 'email']
+
+    # -- Check if the user is valid
+    if not isinstance(user, Member):
+        return (False, 'User is not valid')
+    
+    # -- Check if the data is valid
+    if not isinstance(data, dict):
+        return (False, 'Data is not valid')
+    
+    # -- Check if the data is empty
+    if len(data) == 0: return (False, 'Data is empty')
+
+    # -- Check if the user is trying to update sensitive information
+    if sensitive == False:
+        for field in sensitive_fields:
+            if field in data:
+                return (False, 'User is not allowed to update sensitive information')
+            
+
+    # -- Update the username
+    if 'username' in data:
+        change_username(user, data['username'])
+
+    # -- Update the description
+    if 'description' in data:
+        change_description(user, data['description'])
+
+    # -- Update the first name
+    if 'first_name' in data:
+        user.first_name = data['first_name']
+
+    # -- Update the last name
+    if 'last_name' in data:
+        user.last_name = data['last_name']
+
+    # -- Update the time zone
+    if 'time_zone' in data:
+        if TimeZoneField.validate(data['time_zone']) == False:
+            return (False, 'Time zone is not valid')
+        user.time_zone = data['time_zone']
+
+    # -- Update the country
+    if 'country' in data:
+        if CountryField.validate(data['country']) == False:
+            return (False, 'Country is not valid')
+        user.country = data['country']
+
+    # -- Update the 2FA token
+    if 'tfa_token' in data:
+        if data['tfa_token'] == None: user.tfa_token = None
+        else: user.tfa_token = data['tfa_token']
+
+    # -- Update the password
+    if 'password' in data:
+        if 'old_password' not in data:
+            return (False, 'Old password is not provided')
+        
+        if not user.check_password(data['old_password']):
+            return (False, 'Old password is incorrect')
+        
+        user.set_password(data['password'])
+
+    # -- Update the email
+    if 'email' in data:
+        try:
+            validate_email(data['email'])
+            user.email = data['email']
+
+        except ValidationError:
+            return (False, 'Email is not valid')
+
+
+    # -- Save the user
+    try: 
+        user.save()
+        return (True, 'Profile updated successfully')
+    
+    except Exception as e:
+        return (False, str(e))
+    
+
+
+temporary_pats = []
+PAT_EXPIRY_TIME = 60 * 15 # -- 15 minutes
+
+"""
+    :name: generate_pat
+    :description: This function generates a new personal access token
+        for a user, this allows the user to access sensitive information
+        without having to provide their password
+    :param user: Member - The user to generate the token for
+    :param token: str - The token to use, optional
+    :return: str - The generated token
+"""
+def generate_pat(user, token: str = None) -> str:
+    # -- Check if the user is valid
+    if not isinstance(user, Member):
+        return None
+
+    # -- Generate the token
+    if token == None:
+        token = secrets.token_urlsafe(32)
+
+    # -- Add the token to the temporary list
+    temporary_pats.append({
+        'user': user,
+        'token': token,
+        'time': time.time()
+    })
+
+    return token
+
+
+
+"""
+    :name: get_pat
+    :description: This function gets a personal access token
+        from the temporary list
+    :param token: str - The token to get
+    :return: [dict, str] - A list containing a dict
+        which is the token if it is found, None if it is not
+        and a string which is the reason why it is not found
+"""
+def get_pat(token) -> list[dict, str]:
+    # -- Check if the token is in the temporary list
+    for pat in temporary_pats:
+        if pat['token'] == token:
+
+            # -- Check if the token has expired
+            if time.time() - pat['time'] > PAT_EXPIRY_TIME:
+                temporary_pats.remove(pat)
+                return [None, 'Sorry, but it appears that the token has expired']
+            
+            return [pat, None]
+
+    return [None, 'Sorry, but it appears that the token is not valid']
+
+
+
+"""
+    :name: validate_pat
+    :description: This function validates a personal access token
+        and returns the user that the token belongs to
+    :param token: str - The token to validate
+    :param member: Member - The member to validate the token for
+
+    :return: list[bool, str] - A list containing a bool
+        which is True if the token is valid, False if it is not
+        and a string which is the reason why it is not valid
+"""
+def validate_pat(token, member) -> list[bool, str]:
+    # -- Check if the token is in the temporary list
+    pat_data = get_pat(token)
+    if pat_data[0] == None:
+        return [False, pat_data[1]]
+    
+    # -- Check if the token belongs to the member
+    if pat_data[0]['user'] != member:
+        return [False, 'Sorry, but it appears that the token does not belong to you']
+
+    return [True, 'Congratulations, the token is valid']
+
+
+
+"""
+    :name: extend_pat
+    :description: This function extends the expiry time of a personal access token
+    :param token: str - The token to extend
+    :param member: Member - The member to extend the token for
+    :return: list[bool, str] - A list containing a bool
+        which is True if the token is extended, False if it is not
+        and a string which is the reason why it is not extended
+"""
+def extend_pat(token, member) -> list[bool, str]:
+    # -- Check if the token is valid
+    if not isinstance(token, str):
+        return [False, 'Sorry, but it appears that the token is not valid']
+
+    # -- Check if the member is valid
+    if not isinstance(member, Member):
+        return [False, 'Sorry, but it appears that the member is not valid']
+
+    # -- Check if the token is in the temporary list
+    pat_data = get_pat(token)
+    if pat_data[0] == None:
+        return [False, pat_data[1]]
+    
+    # -- Check if the token belongs to the member
+    if pat_data[0]['user'] != member:
+        return [False, 'Sorry, but it appears that the token does not belong to you']
+
+    # -- Extend the token
+    pat_data[0]['time'] = time.time()
+
+    return [True, 'Token extended successfully']

@@ -13,7 +13,7 @@ from django.conf import settings
 import time
 import secrets
 
-from accounts.oauth.oauth import link_oauth_account
+from accounts.oauth.oauth import link_oauth_account, get_oauth_data
 from accounts.email.verification import send_email
 from accounts.models import Member
 from accounts.email.verification import add_key
@@ -155,6 +155,13 @@ def start_email_verification(
 
         # -- Create the account
         if oauth is not None:
+            # -- Get the OAuth Data
+            oauth_data = get_oauth_data(oauth)
+
+            # -- Add the profile picture
+            member.add_profile_pic_from_url(oauth_data['data']['picture'])
+
+            # -- Link the account
             link_oauth_account(member, oauth)
 
         # -- Attempt to remove the user from the temp_users
