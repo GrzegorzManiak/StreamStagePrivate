@@ -74,14 +74,14 @@ def apply_event(request):
         return redirect('all_events')
     # if the skip button was pressed
     if request.POST.get('skip') is not None:
-        return redirect('apply_event')
+        return redirect('landing')
     
     user_broadcasters = Broadcaster.objects.filter(streamer=user).values_list('handle', flat=True)
     form = EventAppForm(request.POST or None, streamer=user)
     
     if form.is_valid():
         event = form.save() # allow form to create event
-        
+
         submit_event_application(user, event)
 
         return redirect('landing') # temporary
@@ -98,12 +98,7 @@ def landing_url(request):
     user = request.user
 
     if True:
-        context = {
-            'streamer_form': StreamerAppForm(),
-            'broadcaster_form': BroadcasterAppForm()
-        }
-
-        return render(request, "users/apply.html", context)
+        return render(request, "users/apply.html")
 
     if user.is_authenticated:
         if user.is_staff:
