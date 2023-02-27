@@ -1,5 +1,5 @@
 import { check_email_verification, remove, send_verification } from "../api/email_verification";
-import { Pod, SecurityInfoSuccess, VerifyAccessSuccess, SecurityInfo} from "../index.d";
+import { Pod, SecurityInfo, SecurityInfoSuccess, VerifyAccessSuccess} from "../index.d";
 import create_linked_account, { attach_lister } from '../elements/oauth';
 import { attach, handle_tfa_input } from "../../click_handler";
 import { get_security_info } from "../api/security_info";

@@ -3,13 +3,14 @@ import pyotp
 import time
 
 from django.http.response import JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from rest_framework import status
 from rest_framework.decorators import api_view
 
 from django_countries.fields import CountryField
 from timezone_field import TimeZoneField
+from accounts.com_lib import authenticated, invalid_response, required_data, success_response
 
 from accounts.oauth.oauth import get_all_oauth_for_member, format_providers
 from accounts.email.verification import add_key, send_email
@@ -18,12 +19,8 @@ from accounts.models import Member, LoginHistory, oAuth2
 from .profile import update_profile
 
 @api_view(['GET'])
+@authenticated()
 def profile(request):
-
-    # -- Make sure that the user is logged in
-    if not request.user.is_authenticated:
-        return redirect('login')
-
     # -- Construct the context
     context = {
         'user': request.user,
@@ -77,7 +74,7 @@ def validate(
 def is_valid(
     key: str, 
     valid_for: int = 60 * 60 * 15 # 15 Minutes
-) -> bool:
+) -> dict or bool:
     for req in validated_requests:
         if req['key'] == key:
             
@@ -86,22 +83,15 @@ def is_valid(
                 validated_requests.remove(req)
                 return False
             
-            else: return True
+            else: return req
 
 
     return False
 
 
 @api_view(['POST'])
+@authenticated()
 def send_verification(request):
-
-    # -- Check if the user is logged in
-    if not request.user.is_authenticated:
-        return JsonResponse({
-            'status': 'error',
-            'message': 'You are not logged in',
-        }, status=status.HTTP_401_UNAUTHORIZED)
-
     
     if request.user.tfa_secret is None:
         key = secrets.token_urlsafe(32)
@@ -119,13 +109,11 @@ def send_verification(request):
                 'message': res[1],
             }, status=status.HTTP_400_BAD_REQUEST)
 
-        return JsonResponse({
-            'status': 'success',
-            'message': 'Email sent',
+        return success_response('Email sent', {
             'access_key': key,
             'resend_key': new_key[1],
             'verify_key': new_key[2],
-        }, status=status.HTTP_200_OK)
+        })
 
 
     else: 
@@ -156,190 +144,110 @@ def send_verification(request):
         })
 
         # -- Send it back to the user
-        return JsonResponse({
-            'status': 'success',
-            'message': 'MFA code is valid',
+        return success_response('MFA code is valid', {
             'access_key': key,
             'resend_key': '',
             'verify_key': '',
-        }, status=status.HTTP_200_OK)
+        })
 
     
 
 @api_view(['POST'])
-def security_info(request):
-    # -- Make sure that the user is logged in
-    if not request.user.is_authenticated: return JsonResponse({
-            'status': 'error',
-            'message': 'You are not logged in',
-        }, status=status.HTTP_401_UNAUTHORIZED)
-
-
-    # -- Check if they provided a token
-    token = request.data.get('token', None)
-    if token is None: return JsonResponse({
-            'status': 'error',
-            'message': 'No token provided',
-        }, status=status.HTTP_400_BAD_REQUEST)
-    
-
+@authenticated()
+@required_data(['token'])
+def security_info(request, data):
+    print(data)
     # -- Check if the token is valid
-    if not is_valid(token): return JsonResponse({
-        'status': 'error',
-        'message': 'Invalid token',
-    }, status=status.HTTP_400_BAD_REQUEST)
-    token_data = None
-    for req in validated_requests:
-        if req['key'] == token:
-            token_data = req
-            break
+    token_data = is_valid(data['token'])
+    if token_data == False: return invalid_response(
+        'Sorry, but it looks like you have provided an invalid token. Please try again.')
 
     # -- Return security data
     user = request.user
-    return JsonResponse({
-        'status': 'success',
-        'message': 'Token is valid',
-        'data': {
-            'email': user.email,
-            'dob': user.date_of_birth,
-            'tfa': user.tfa_secret is not None,
-            'access_level': user.access_level,
-            'max_keys': user.max_keys,
-            'is_streamer': user.is_streamer,
-            'is_broadcaster': user.is_broadcaster,
-            'is_admin': user.is_staff,
-            'over_18': user.is_over_18(),
-            'service_providers': get_all_oauth_for_member(user),
-            'login_history': [
-                entry.serialize() for entry in LoginHistory.objects.filter(member=user).order_by('-time')[:10]
-            ],
-            'meta': {
-                'started': token_data['time'],
-                'expires': token_data['time'] + 60 * 60 * 15,
-            }
+    return success_response('Security data', {
+        'email': user.email,
+        'dob': user.date_of_birth,
+        'tfa': user.tfa_secret is not None,
+        'access_level': user.access_level,
+        'max_keys': user.max_keys,
+        'is_streamer': user.is_streamer,
+        'is_broadcaster': user.is_broadcaster,
+        'is_admin': user.is_staff,
+        'over_18': user.is_over_18(),
+        'service_providers': get_all_oauth_for_member(user),
+        'login_history': [
+            entry.serialize() for entry in LoginHistory.objects.filter(member=user).order_by('-time')[:10]
+        ],
+        'meta': {
+            'started': token_data['time'],
+            'expires': token_data['time'] + 60 * 60 * 15,
         }
-    }, status=status.HTTP_200_OK)
+    })
 
 
 
 @api_view(['POST'])
+@authenticated()
 def update_profile(request):
-
-    # -- Make sure that the user is logged in
-    if not request.user.is_authenticated: return JsonResponse({
-        'status': 'error',
-        'message': 'You are not logged in',
-    }, status=status.HTTP_401_UNAUTHORIZED)
-
 
     # -- Get the data
     data = request.data
 
-
     # -- Check if they provided a token
     token = request.data.get('token', None)
     if token is not None:
+
         # -- Check if the token is valid
-        valid = False
-        for req in validated_requests:
-            if req['key'] == token:
-                validated_requests.remove(req)
-                valid = True
-
-        if valid == False: return JsonResponse({
-            'status': 'error',
-            'message': 'Invalid token',
-        }, status=status.HTTP_400_BAD_REQUEST)
-
+        token_data = is_valid(token)
+        if token_data == False: return invalid_response(
+            'Sorry, but it looks like you have provided an invalid token. Please try again.')
+        
         # -- Update the profile
         return update_profile(data, True)
     
-    else:
-        # -- Update the profile
-        return update_profile(data, False)
+
+    # -- Update the profile
+    else: return update_profile(data, False)
     
 
 
 @api_view(['POST'])
-def remove_oauth(request):
-    # -- Make sure the user is authenticated
-    if not request.user.is_authenticated:
-        return JsonResponse({
-            'message': 'Not authenticated'
-        }, status=status.HTTP_401_UNAUTHORIZED)
-    
-    # -- Get the token
-    token = request.data.get('token', None)
-    if token is None:
-        return JsonResponse({
-            'message': 'No token provided'
-        }, status=status.HTTP_400_BAD_REQUEST)
+@authenticated()
+@required_data(['token', 'oauth_id'])
+def remove_oauth(request, data):
     
     # -- Check if the token is valid
-    if not is_valid(token): return JsonResponse({
-        'status': 'error',
-        'message': 'Invalid token',
-    }, status=status.HTTP_400_BAD_REQUEST)
-
-    # -- Get the oauth id
-    oauth_id = request.data.get('oauth_id', None)
-    if oauth_id is None:
-        return JsonResponse({
-            'message': 'No oauth id provided'
-        }, status=status.HTTP_400_BAD_REQUEST)
+    if is_valid(data['token']) == False: return invalid_response(
+        'Sorry, but it looks like you have provided an invalid token. Please try again.')
     
     # -- Get the oauth
     oauth = oAuth2.objects.filter(
-        id=oauth_id,
+        id=data['oauth_id'],
         user=request.user
     ).first()
 
-    if oauth is None:
-        return JsonResponse({
-            'message': 'Invalid oauth'
-        }, status=status.HTTP_400_BAD_REQUEST)
+    if oauth is None: return invalid_response(
+        'Sorry, but it looks like you have provided an invalid OAuth ID. Please try again.')
     
     # -- Delete the oauth
     oauth.delete()
-
-    return JsonResponse({
-        'message': 'Success'
-    }, status=status.HTTP_200_OK)
+    return success_response('OAuth removed successfully')
 
 
 
 @api_view(['POST'])
-def extend_session(request):
-    # -- Make sure the user is authenticated
-    if not request.user.is_authenticated:
-        return JsonResponse({
-            'message': 'Not authenticated'
-        }, status=status.HTTP_401_UNAUTHORIZED)
-    
-    # -- Get the token
-    token = request.data.get('token', None)
-    if token is None:
-        return JsonResponse({
-            'message': 'No token provided'
-        }, status=status.HTTP_400_BAD_REQUEST)
+@authenticated()
+@required_data(['token'])
+def extend_session(request, data):
     
     # -- Check if the token is valid
-    if not is_valid(token): return JsonResponse({
-        'status': 'error',
-        'message': 'Invalid token',
-    }, status=status.HTTP_400_BAD_REQUEST)
-    token_data = None
-    for req in validated_requests:
-        if req['key'] == token:
-            token_data = req
-            break
+    token_data = is_valid(data['token'])
+    if token_data == False: return invalid_response(
+        'Sorry, but it looks like you have provided an invalid token. Please try again.')
 
     # -- Extend the session
     token_data['time'] = time.time()
-
-    return JsonResponse({
-        'message': 'Success'
-    }, status=status.HTTP_200_OK)
+    return success_response('Session extended successfully')
 
 
 
@@ -368,31 +276,18 @@ def extend_session(request):
 temp_mfa_tokens = []
 
 @api_view(['POST'])
-def setup_mfa(request):
-    # -- Make sure the user is authenticated
-    if not request.user.is_authenticated:
-        return JsonResponse({
-            'message': 'Not authenticated'
-        }, status=status.HTTP_401_UNAUTHORIZED)
-    
-    # -- Get the token
-    token = request.data.get('token', None)
-    if token is None:
-        return JsonResponse({
-            'message': 'No token provided'
-        }, status=status.HTTP_400_BAD_REQUEST)
-    
+@authenticated()
+@required_data(['token'])
+def setup_mfa(request, data):
+
     # -- Check if the token is valid
-    if not is_valid(token): return JsonResponse({
-        'status': 'error',
-        'message': 'Invalid token',
-    }, status=status.HTTP_400_BAD_REQUEST)
+    token_data = is_valid(data['token'])
+    if token_data == False: return invalid_response(
+        'Sorry, but it looks like you have provided an invalid token. Please try again.')
    
     # -- Check if the user has MFA enabled
     if request.user.tfa_secret is not None:
-        return JsonResponse({
-            'message': 'MFA is already enabled'
-        }, status=status.HTTP_400_BAD_REQUEST)
+        return invalid_response('MFA is already enabled for this account')
     
     # -- Check if a user already has a token
     #    if so, remove it
@@ -410,49 +305,29 @@ def setup_mfa(request):
     })
 
     # -- Send the token to the user
-    return JsonResponse({
-        'message': 'Success',
-        'data': {
-            'token': mfa_token
-        }
-    }, status=status.HTTP_200_OK)
+    return success_response('MFA token generated', { 'token': mfa_token })
 
 
 
 @api_view(['POST'])
-def verify_mfa(request):
-    # -- Make sure the user is authenticated
-    if not request.user.is_authenticated:
-        return JsonResponse({
-            'message': 'Not authenticated'
-        }, status=status.HTTP_401_UNAUTHORIZED)
-    
-    # -- Get the token
-    token = request.data.get('token', None)
-    if token is None:
-        return JsonResponse({
-            'message': 'No token provided'
-        }, status=status.HTTP_400_BAD_REQUEST)
+@authenticated()
+@required_data(['token', 'otp'])
+def verify_mfa(request, data):
+
+    # -- Get the data
+    token = data['token']
+    otp = data['otp']
     
     # -- Check if the token is valid
-    if not is_valid(token): return JsonResponse({
-        'status': 'error',
-        'message': 'Invalid token',
-    }, status=status.HTTP_400_BAD_REQUEST)
-
-    # -- Get the mfa token
-    otp = request.data.get('otp', None)
-    if otp is None:
-        return JsonResponse({
-            'message': 'No mfa token provided'
-        }, status=status.HTTP_400_BAD_REQUEST)
+    token_data = is_valid(token)
+    if token_data == False: return invalid_response(
+        'Sorry, but it looks like you have provided an invalid token. Please try again.')
     
     # -- Check if the user has MFA enabled
     if request.user.tfa_secret is not None:
-        return JsonResponse({
-            'message': 'MFA is already enabled'
-        }, status=status.HTTP_400_BAD_REQUEST)
+        return invalid_response('MFA is already enabled for this account')
     
+
     # -- Check if the user has a token
     temp_token = None
     for temp in temp_mfa_tokens:
@@ -460,62 +335,37 @@ def verify_mfa(request):
             temp_token = temp
             break
 
-    if temp_token is None:
-        return JsonResponse({
-            'message': 'No token found'
-        }, status=status.HTTP_400_BAD_REQUEST)
+
+    if temp_token is None: return invalid_response(
+        'Sorry, but it looks like you have not generated a token. Please try again.')
     
     # -- Check if the token is expired
     if time.time() - temp_token['time'] > 60 * 60 * 15: # 15 minutes
-        return JsonResponse({
-            'message': 'Token expired'
-        }, status=status.HTTP_400_BAD_REQUEST)
-    
+        return invalid_response('Sorry, but it looks like your token has expired. Please try again.')
 
     # -- Check if the otp is valid
     if not pyotp.TOTP(temp_token['token']).verify(otp):
-        return JsonResponse({
-            'message': 'Invalid token'
-        }, status=status.HTTP_401_UNAUTHORIZED)
+        return invalid_response('Sorry, but it looks like you have provided an invalid OTP. Please try again.')
+        
     
-    # -- Remove the token
+    # -- Remove the token and enable MFA
     temp_mfa_tokens.remove(temp_token)
-
-    # -- Enable MFA
     request.user.tfa_secret = temp_token['token']
     request.user.save()
-
-    return JsonResponse({
-        'message': 'Success'
-    }, status=status.HTTP_200_OK)
+    return success_response('MFA has been enabled successfully')
 
     
 
 @api_view(['POST'])
-def disable_mfa(request):
-    # -- Make sure the user is authenticated
-    if not request.user.is_authenticated:
-        return JsonResponse({
-            'message': 'Not authenticated'
-        }, status=status.HTTP_401_UNAUTHORIZED)
-    
-    # -- Get the token
-    token = request.data.get('token', None)
-    if token is None:
-        return JsonResponse({
-            'message': 'No token provided'
-        }, status=status.HTTP_400_BAD_REQUEST)
-    
+@authenticated()
+@required_data(['token'])
+def disable_mfa(request, data):
     # -- Check if the token is valid
-    if not is_valid(token): return JsonResponse({
-        'status': 'error',
-        'message': 'Invalid token',
-    }, status=status.HTTP_400_BAD_REQUEST)
-
+    if not is_valid(data['token']): return invalid_response(
+        'Sorry, but it looks like you have provided an invalid token. Please try again.')
+    
     # -- Remove MFA
     request.user.tfa_secret = None
     request.user.save()
 
-    return JsonResponse({
-        'message': 'Success'
-    }, status=status.HTTP_200_OK)
+    return success_response('MFA has been disabled successfully')

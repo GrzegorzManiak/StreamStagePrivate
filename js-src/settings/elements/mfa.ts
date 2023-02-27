@@ -1,5 +1,5 @@
 import { attach, confirmation_modal, construct_modal, handle_tfa_input } from '../../click_handler';
-import { SecurityInfo, DefualtSuccess } from '../index.d';
+import { SecurityInfo, DefaultResponseData } from '../index.d';
 import { create_toast } from '../../toasts';
 import disable_tfa from '../api/disable_tfa';
 import verify_tfa from '../api/verify_tfa';
@@ -117,7 +117,7 @@ async function add_listner(
     }
 
     // -- Else get the token
-    const token = (res as DefualtSuccess).data.token as string;
+    const token = (res as any).data.token as string;
     if (!token) {
         create_toast('error', 'Oops, there appears to be an error', 'No token was returned');
         return stop_spinner();

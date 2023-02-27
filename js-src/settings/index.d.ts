@@ -22,58 +22,16 @@ export interface Pod {
 }
 
 
-export interface VerifyAccessSuccess {
-    data: {
-        status: 'success',
-        message: 'Email sent',
-        access_key: string,
-        resend_key: string,
-        verify_key: string
-    },
-    code: 200,
-    message: 'Email sent'
-}
-
-export interface VerifyAccessPartialSuccess {
-    data: {
-        status: string,
-        message: string,
-    },
-    code: number,
-    message: string
-}
-
-export interface VerifyAccessError {
-    code: number,
-    message: string
-}
-
-export type VerifyAccessResponse = VerifyAccessSuccess | VerifyAccessPartialSuccess | VerifyAccessError;
 
 
+//
+// Success scenarios
+//
 
-export interface RecentVerificationSuccess {
-    data: {
-        status: string,
-        message: string,
-    },
-    code: number,
-    message: string
-}
-
-export interface RecentVerificationError {
-    code: number,
-    message: string
-}
-
-export type RecentVerificationResponse = RecentVerificationSuccess | RecentVerificationError;
-
-
-
-export interface Form {
-    element: Element,
-    type: string,
-    endpoint: string,
+export type VerifyAccess = {
+    access_key: string,
+    resend_key: string,
+    verify_key: string
 }
 
 export interface ServiceProvider {
@@ -106,34 +64,36 @@ export interface SecurityInfo {
     login_history: Array<LoginHistory>
 }
 
-export interface SecurityInfoSuccess {
-    data: SecurityInfo,
+
+
+// 
+// Default Server response structure
+// 
+export interface DefaultResponseNoData {
     code: number,
     message: string
 }
 
-export interface SecurityInfoError {
+export interface DefaultResponseData {
+    data: { 
+        message: string
+        status: string
+    }
     code: number,
     message: string
 }
 
-export type SecurityInfoResponse = SecurityInfoSuccess | SecurityInfoError;
+
+export type DefaultResponse = DefaultResponseNoData | DefaultResponseNoData;
 
 
 
-export interface DefualtSuccess {
-    data: {
-        [key: string]: string | number | boolean,
-        status: string,
-        message: string,
-    },
-    code: number,
-    message: string
-}
+//
+// Custom Responses
+//
 
-export interface DefaultError {
-    code: number,
-    message: string
-}
+export type VerifyAccessSuccess = DefaultResponseData & { data: VerifyAccess } 
+export type VerifyAccessResponse = VerifyAccessSuccess | DefaultResponse;
 
-export type DefaultResponse = DefualtSuccess | DefaultError;
+export type SecurityInfoSuccess = DefaultResponseData & { data: SecurityInfo }
+export type SecurityInfoResponse =SecurityInfoSuccess | DefaultResponse;

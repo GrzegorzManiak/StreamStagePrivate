@@ -5,6 +5,7 @@ from django.urls import reverse, reverse_lazy
 from rest_framework import status
 from rest_framework.decorators import api_view
 from django.db.models.functions import Lower
+from accounts.com_lib import authenticated
 
 from accounts.auth_lib import authenticate_key, generate_key
 from accounts.email.verification import send_email, add_key
