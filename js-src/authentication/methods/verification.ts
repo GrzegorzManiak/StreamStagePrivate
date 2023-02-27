@@ -9,27 +9,33 @@ import { login_url, sleep } from '..';
 // -- This function will run every x seconds
 //    to check if the email has been verified
 async function check_email_verification(
-    verify_token: string,
-    button: HTMLButtonElement,
-) {
-    console.log(verify_token);
-    return setInterval(async () => {
-        const response = await recent(verify_token);
-
-        // -- If the email has been verified
-        if (response.code === 404) {} // -- Do nothing
-        else if (response.code === 200) {
-            // -- Login the user
-            button.disabled = true;
-            create_toast('success', 'Congratulations!', 'Your email has been verified, you\'ll be redirected to the home page in a few seconds.');
-            await sleep(3000);
-            window.location.href = login_url;
-        }
-        else {
-            // -- Show the error
-            create_toast('error', 'Error', response.message);
-        }
-    }, 3000);
+    verify_token: () => string,
+): Promise<boolean> {
+    return new Promise(async (resolve, reject) => {
+        const int = setInterval(async () => {
+            const response = await recent(verify_token());
+    
+            // -- If the email has been verified
+            if (response.code === 404) {} // -- Do nothing
+            else if (response.code === 200) {
+                // -- Login the user
+                create_toast('success', 'Congratulations!', 'Your email has been verified, you\'ll be redirected to the home page in a few seconds.');
+                clearInterval(int);
+                resolve(true);
+            }
+            else {
+                // -- Show the error
+                create_toast('error', 'Error', response.message);
+                clearInterval(int);
+                reject(false);
+            }
+        }, 3000);
+    
+        // -- Stop the interval after 15 minutes
+        setTimeout(() => {
+            clearInterval(int);
+        }, 15 * 60 * 1000);
+    });
 }
 
 
@@ -57,7 +63,10 @@ export async function complete_verification(
 
 
     // -- Start the verification checker
-    check_email_verification(verify_token, resend_button);
+    check_email_verification(
+        () => verify_token, 
+    );
+
 
     // -- Add the click handler
     resend_button.addEventListener('click', async () => {
@@ -66,7 +75,8 @@ export async function complete_verification(
             email_input.value,
             resend_button,
             resend_token,
-            (token: string) => resend_token = token
+            (token: string) => resend_token = token,
+            (token: string) => verify_token = token
         );
     });
 }
@@ -76,7 +86,8 @@ async function handle_click(
     new_email: string,
     button: HTMLButtonElement,
     token: string,
-    set_token: (token: string) => void
+    set_token: (token: string) => void,
+    set_verify_token: (token: string) => void,
 ) {
     // -- Attach the spinner
     const stop_spinner = attach(button);
@@ -110,6 +121,7 @@ async function handle_click(
     // -- Email sent
     create_toast(response.status as ToastType, 'Email', response.message);
     set_token(response.data.token);
+    set_verify_token(response.data.verify);
     await stop_spinner();
     button.disabled = true;
 

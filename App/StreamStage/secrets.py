@@ -1,5 +1,7 @@
 DJANGO_SECRET_KEY = 'django-insecure-69z7g4z57r(g_rd4ott1mca#)^hykt681ig5znx!ra1+7q#9_-'
 SENDGIRD_TOKEN = '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'
+NODE_ANNOUNCE_KEY = 'DB917464A48CEDE87A22225ED67BEF95A97E45A3A389C9DE5D8A78E779'
+CLOUDFLARE_TOKEN = 'WVviIoo2j-eDgSzyno5llaF_EHNqnGp7F9RUP_iD'
 
 # OAUTH
 OAUTH_PROVIDERS = {
@@ -23,6 +25,17 @@ OAUTH_PROVIDERS = {
         'access_url': 'https://github.com/login/oauth/access_token',
         'userinfo_url': 'https://api.github.com/user',
         'redirect_uri': 'https://me.streamstage.co/sso/github',
+        'ttl': 3600
+    },
+
+    'discord': {
+        'client_id': '1078294558162550864',
+        'secret': 'JSckKdMDeyHxqxG2OVfBOiX9QOTwVo4q',
+        'scopes': [ 'identify', 'email' ],
+        'api_url': 'https://discord.com/api/oauth2/authorize',
+        'access_url': 'https://discord.com/api/oauth2/token',
+        'userinfo_url': 'https://discord.com/api/users/@me',
+        'redirect_uri': 'https://me.streamstage.co/sso/discord',
         'ttl': 3600
     }
 }

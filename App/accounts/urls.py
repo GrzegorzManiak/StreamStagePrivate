@@ -7,18 +7,10 @@ from .email.views import (
     verify_key_view,
 )
 from .create.views import send_reg_verification
-from .oauth.oauth import OAuthTypes, determine_app
+from .oauth import OAuthTypes, determine_app
 from .profile.forms import change_basic_details
-from .profile.views import profile, send_verification
+from .profile.views import profile, send_verification, security_info
 from .views import get_token, login, logout, register, validate_token
-
-
-# Profile MODULE
-
-# OAuth2.0 MODULE
-
-# Email Verification MODULE
-
 
 
 urlpatterns = [
@@ -32,7 +24,9 @@ urlpatterns = [
 
     # -- Profile
     path('send_verification/', send_verification, name='send_verification'),
-    path('edit/basic_details/', change_basic_details, name='edit_basic_details'),
+    # TODO: Change this to a basic edit, where we can provide any data to edit
+    path('edit/basic_details/', change_basic_details, name='edit_basic_details'), 
+    path('security/', security_info, name='security_info'),
 
     # -- Authentication
     path('token/', validate_token, name='token'),
@@ -40,7 +34,7 @@ urlpatterns = [
 
     # -- OAuth2.0
     path('sso/google/', determine_app(OAuthTypes.GOOGLE), name='google'),
-    path('sso/google/', determine_app(OAuthTypes.GOOGLE), name='discord'),
+    path('sso/discord/', determine_app(OAuthTypes.DISCORD), name='discord'),
     path('sso/github/', determine_app(OAuthTypes.GITHUB), name='github'),
 
 
@@ -51,4 +45,5 @@ urlpatterns = [
     path('email/resend/', resend_key_view, name='resend_key'),
     path('email/verify/', verify_key_view, name='verify_key'),
     path('email/recent/', check_if_verified_recently_view, name='recent_key'),
+    
 ]

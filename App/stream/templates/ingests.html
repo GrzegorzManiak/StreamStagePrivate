@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block metadescription %}
+    A list of recommended ingest servers personally tailored to your network.
+{% endblock %}
+
+{% block title %}
+    Ingest Servers - StreamStage
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/stream/ingests.css' %}">
+{% endblock %}
+
+{% block content %}
+    <span
+        id='config'
+        data-csrf-token="{{ csrf_token }}"
+    ></span>
+
+    <main>
+        <div class="container my-5">
+            <!-- Main text-->
+            <div class="row text-light">
+                <div class="
+                    col-md-12 
+                    d-flex
+                    flex-column
+                    justify-content-center
+                    align-items-center
+                ">
+                    <h1 class="text-center fw-bold">Recommended Ingres Nodes for you.</h1>
+                    <p class="text-center w-50">A list of recommended ingest servers personally tailored to your network.</p>
+                </div>
+            </div>
+
+            <!-- List of servers -->
+            <div class="row">
+                <ol class='col-12' id='servers'>
+                    {% for server in servers %}
+                    <li>
+                        
+                        <!--Server details-->
+                        <div class='main-body'>
+                            <!--index-->
+                            <div class='
+                                d-flex
+                                justify-content-center
+                                align-items-center
+                                gapper
+                            '>
+                                <div class='index'>
+                                    <p>#{{ forloop.counter }}</p>
+                                </div>
+
+                                <div class='
+                                    d-flex
+                                    justify-content-start
+                                    align-items-center
+                                    geo-top
+                                '>
+                                    <p class='geo'>{{ server.region }}:{{ server.country }}</h3>
+                                </div>
+                            </div>
+
+                            <!--Flag image-->
+                            <div class='
+                                d-flex
+                                justify-content-center
+                                align-items-center
+                                flag
+                            '>
+                                <img class='flag' src="{{ server.flag }}" alt="{{ server.country }}">
+                            </div>
+
+                            <!--Stacked content-->
+                            <div class='
+                                d-flex
+                                flex-column
+                                stacked
+                            '>
+                                <!--Server name-->
+                                <div class='
+                                    geo-bottom
+                                '>
+                                    <p class='geo'>{{ server.region }}:{{ server.country }}</h3>
+                                </div>
+
+                                <!--Server id -->
+                                <div>
+                                    <p class='id id-1'>ID: {{ server.id }}</p>
+                                </div>
+                            </div>
+
+                            <!--Url-->
+                            <div class='
+                                d-flex
+                                justify-content-flex-end
+                                align-items-center
+                                url
+                            '>
+                                <!--Align the text on the right--> 
+                                <div>
+                                    <p class='id id-2'>ID: {{ server.id }}</p>
+                                    <p>{{ server.url }}/</p>
+                                </div>
+                                    
+                            </div>
+                        </div>
+
+                    </li>
+                    {% endfor %}
+                </ol>
+            </div>
+        </div>
+    </main>
+
+    <!-- This is what pings all the servers to determine the best one -->
+    <script src="{% static 'js/ping_server_bin.js' %}"></script>
+{% endblock %}

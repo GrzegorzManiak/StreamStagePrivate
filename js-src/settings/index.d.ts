@@ -3,6 +3,7 @@ export type PanelType =
     'security' |
     'payment' |
     'notifications' |
+    'security-verified' |
     'help' |
     'purchases' |
     'events' |
@@ -74,3 +75,34 @@ export interface Form {
     type: string,
     endpoint: string,
 }
+
+
+export interface SecurityInfo {
+    email: string,
+    dob: string,
+    tfa: boolean,
+    access_level: number,
+    max_keys: number,
+    is_streamer: boolean,
+    is_broadcaster: boolean,
+    is_admin: boolean,
+    over_18: boolean,
+    service_providers: Array<{
+        id: string,
+        oauth_type: string,
+        oauth_id: string,
+    }>
+}
+
+export interface SecurityInfoSuccess {
+    data: SecurityInfo,
+    code: number,
+    message: string
+}
+
+export interface SecurityInfoError {
+    code: number,
+    message: string
+}
+
+export type SecurityInfoResponse = SecurityInfoSuccess | SecurityInfoError;

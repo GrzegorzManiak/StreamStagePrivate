@@ -1,11 +1,22 @@
 from django import forms
-from .models import Event, EventReview
+import datetime
+from django.contrib.admin.widgets import AdminDateWidget, AdminTimeWidget, AdminSplitDateTime
+from .models import Event, EventReview, Category, EventShowing
 
                                         # ***************
                                         # *** Events  ***                                        # ***************
                                         # *************** 
-# Creating an Event
-class EventCreateForm(forms.ModelForm):
+# Applying for an Event
+
+class CategoryMC(forms.ModelMultipleChoiceField):
+    def label_from_instance(self, category):
+        return category.name
+    
+# class MediaMC(forms.ModelMultipleChoiceField):
+#     def label_from_instance(self, media):
+#         return media.picture
+
+class EventApplyForm(forms.ModelForm):
  
     class Meta:
         model = Event
@@ -13,11 +24,17 @@ class EventCreateForm(forms.ModelForm):
         fields = [
             'title', 
             'description', 
-            'categories',
-            'over_18s', 
-            'showings', 
-            'media',
-        ]
+            'over_18s',  
+            'categories']
+
+    categories = CategoryMC(
+        queryset=Category.objects.all(),
+        widget=forms.CheckboxSelectMultiple
+    )
+    # media = MediaMC(
+    #     queryset=EventMedia.objects.all(),
+    #     widget=forms.CheckboxSelectMultiple
+    # )
 
 # Updating an Event
 class EventUpdateForm(forms.ModelForm):
@@ -40,6 +57,52 @@ class EventDeleteForm(forms.ModelForm):
         model = Event
 
         fields = []
+
+
+                                        # ****************
+                                        # *** Showings ***                                        # ***************
+                                        # ****************
+
+
+class ShowingCreateForm(forms.ModelForm):
+    
+    class Meta:
+        model = EventShowing
+ 
+        fields = [
+            'time', 
+            'venue', 
+            'city',
+            'country'
+        ]
+
+        widgets = {
+            'time': forms.DateTimeInput(
+            attrs={
+                'type': 'datetime-local',
+                'class': 'form-control'},
+            format='%H:%M %d/%m/%Y')
+        }
+
+class ShowingUpdateForm(forms.ModelForm):
+    
+    class Meta:
+        model = EventShowing
+ 
+        fields = [
+            'time', 
+            'venue', 
+            'city',
+            'country'
+        ]
+
+class ShowingDeleteForm(forms.ModelForm):
+    
+    class Meta:
+        model = EventShowing
+
+        fields = []
+
 
                                         # ***************
                                         # *** Reviews ***                                        # ***************

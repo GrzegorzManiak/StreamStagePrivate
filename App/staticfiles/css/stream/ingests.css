@@ -1,0 +1,119 @@
+#servers {
+    margin: 0;
+    padding: 0;
+}
+
+#servers > li {
+    color: var(--font-color);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    height: 3rem;
+}
+
+#servers > li > div {
+    border: 1px solid var(--accent-color);
+    background-color: var(--theme-secondary-color);
+    border-radius: 0.2rem;
+    padding: 0.5rem;
+}
+
+#servers > li a, 
+#servers > li p {
+    margin: 0;
+    padding: 0;
+}
+
+
+.geo {
+    font-weight: 700;
+    font-size: 2rem;
+}
+
+.id {
+    color: var(--greyed-out-font-color);
+    font-size: 0.8rem;
+}
+
+.index {
+    background-color: var(--accent-color);
+    padding: 0.2rem 1.5rem;
+}
+
+
+.flag {
+    object-fit: cover;
+}
+
+.url {
+    flex-grow: 1;
+}
+
+.url p {
+    color: var(--greyed-out-font-color);    
+}
+
+.url > div {
+    display: flex;
+    width: 100%;
+    padding: 0.5rem;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+.main-body, .stacked {
+    display: flex;
+    gap: 1rem;
+}
+
+
+/* .flag {
+    display: none!important;
+} */
+.geo-top { display: none!important; }
+.id-1 { display: none!important; }
+.id-2 { display: block!important; }
+
+.stacked {
+    justify-content: space-between!important;
+    align-items: center!important;
+    flex-grow: 1;
+}
+
+.stacked > div { 
+    height: 100%!important; 
+    flex-grow:4 1;
+}
+
+.geo-top { display: block!important; }
+.geo-bottom { display: none!important; }
+.gapper { gap: 0.5rem!important; }
+
+
+@media only screen and (max-width: 500px) {
+    .flag {
+        display: none!important;
+    }
+
+    .stacked {
+        width: 100%!important;
+        display: block!important;
+    }
+
+    .stacked > div { width: 100%!important; }
+    .main-body { display: block!important; }
+
+    .stacked p {
+        text-align: center;
+        font-size: 0.6rem;
+    }
+
+    .url > div {
+        width: 100%!important;
+        justify-content: center!important;
+        align-items: center!important;
+    }
+    .geo-top { display: block!important; }
+    .geo-bottom { display: none!important; }
+}

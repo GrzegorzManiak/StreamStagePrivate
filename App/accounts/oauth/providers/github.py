@@ -1,60 +1,8 @@
 import requests
-
 from StreamStage import secrets
-from accounts.oauth.types import OAuthRespone
+from accounts.oauth.types import OAuthRespone, User
 
-
-class GithubUser():
-    def __init__(
-        self,
-        id: int,
-        email: str,
-        verified_email: bool,
-        name: str,
-        given_name: str,
-        description: str = None,
-        picture: str = None,
-    ):
-        self.id = id
-        self.email = email
-        self.verified_email = verified_email
-        self.name = name
-        self.given_name = given_name
-        self.picture = picture
-        self.description = description
-
-    def serialize(self):
-        return {
-            'id': self.id,
-            'email': self.email,
-            'email_verified': self.verified_email,
-            'name': self.name,
-            'given_name': self.given_name,
-            'picture': self.picture,
-            'description': self.description,
-        }
-
-    # 
-    #  Getters,
-    #  The reason for these is so that we can
-    #  use the same functions on all oauth providers
-    #  and some might have different names for the same
-    #  data
-    #
-    def get_email(self):
-        return self.email
-
-    def get_is_verified(self):
-        return self.verified_email
-
-    def get_name(self):
-        return self.name
-
-    def get_id(self):
-        return self.id
-
-
-class Github():
+class Oauth():
     def __init__(self, code=None):
         self.url = self.format_url()
         self.code = code
@@ -69,7 +17,6 @@ class Github():
         client_id = secrets.OAUTH_PROVIDERS['github']['client_id']
         api = secrets.OAUTH_PROVIDERS['github']['api_url']
         scopes = secrets.OAUTH_PROVIDERS['github']['scopes']
-
         scopes = ','.join(scopes)
 
         return f'{api}?client_id={client_id}&redirect_uri={redirect_uri}&scope={scopes}&response_type=code'
@@ -134,7 +81,7 @@ class Github():
     """
         Gets the user info from Google
     """
-    def get_userinfo(self) -> GithubUser:
+    def get_userinfo(self) -> User:
         try:
             # -- Get the access token
             access_token = self.access_token
@@ -163,23 +110,21 @@ class Github():
         github_id = response['id']
         email = response['email']
         verified_email = False
-        description = response['bio']
         name = response['login']
         given_name = response['name']
         picture = response['avatar_url']
 
         # -- Make sure the data is valid
-        if github_id == None or email == None or description == None or name == None or given_name == None:
+        if github_id == None or email == None or name == None or given_name == None:
             return OAuthRespone.ERROR
 
         # -- Create the user object
-        self.user = GithubUser(
+        self.user = User(
             github_id, 
             email,
             verified_email, 
             name, 
             given_name, 
-            description,
             picture
         )
 

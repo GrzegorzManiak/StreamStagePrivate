@@ -6,7 +6,7 @@ from django.db import models
 from django_countries.fields import CountryField
 from timezone_field import TimeZoneField
 
-from .oauth.oauth import OAuthTypes
+from .oauth import OAuthTypes
 
 from .validation import check_unique_broadcaster_handle
 
@@ -14,6 +14,7 @@ from .validation import check_unique_broadcaster_handle
 class Member(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     username = models.CharField("Username", max_length=30, unique=True)
+    cased_username = models.CharField("Cased Username", max_length=30, unique=True)
     email = models.EmailField("Email", unique=True)
     date_of_birth = models.DateField(default=None, null=True)
     over_18 = models.BooleanField(default=False)
@@ -21,6 +22,12 @@ class Member(AbstractUser):
     description = models.TextField("Description", blank=True)
     country = CountryField()
     time_zone = TimeZoneField(default="UTC")
+    tfa_secret = models.CharField(
+        "tfa_secret", 
+        max_length=100,
+        blank=True,
+        null=True,
+    )
 
     # Access Level for member. 0 for basic. See list of access level codes for other levels.
     access_level = models.SmallIntegerField("Access Level", default=0)
@@ -56,6 +63,7 @@ class Member(AbstractUser):
 
     def save(self, *args, **kwargs):
         self.is_over_18()
+        self.cased_username = self.username.lower()
         super(Member, self).save(*args, **kwargs)
 
 # Broadcaster - entity that controls events/streams
@@ -93,8 +101,10 @@ class oAuth2(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     oauth_type = models.SmallIntegerField("Type", choices=OAuthTypes.choices)
     oauth_id = models.CharField("OAuth ID", max_length=100, unique=True)
-    
-class TwoFactorAuth(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    secret = models.CharField("Secret", max_length=100)
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "oauth_type": self.oauth_type,
+            "oauth_id": self.oauth_id,
+        }

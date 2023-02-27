@@ -40,6 +40,7 @@ def login(request):
         'email_recent': reverse('recent_key'),
         'email_verify': reverse('verify_key'),
         'email_resend': reverse('resend_key'),
+        'email_remove': reverse('remove_key'),
     }
     
     # -- Render the login page
@@ -76,6 +77,7 @@ def register(request):
         'email_recent': reverse('recent_key'),
         'email_verify': reverse('verify_key'),
         'email_resend': reverse('resend_key'),
+        'email_remove': reverse('remove_key'),
     }
 
     # -- Render the register page
@@ -178,7 +180,7 @@ def get_token(request):
     # -- Probably a username
     else:
         # -- We need to find the user by username even if they are in different cases
-        try: user = Member.objects.get(username__iexact=emailorusername)
+        try: user = Member.objects.get(cased_username=emailorusername)
         except Member.DoesNotExist:
             return JsonResponse({
                 'message': 'Invalid credentials',

@@ -32,6 +32,7 @@
         data-resend-verification='{{ api.resend_verification }}'
         data-remove-verification='{{ api.remove_verification }}'
         data-recent-verification='{{ api.recent_verification }}'
+        data-security-info='{{ api.security_info }}'
     ></span>
 
     <div 
@@ -128,6 +129,11 @@
                                 </p>
                             </div>
                         </div>
+
+                        <span 
+                            data-pod-status=''
+                            data-pod='security-verified'
+                        ></span>
                         <!-- 
                             End of Pod - Security
                         -->
@@ -600,109 +606,13 @@
                                 text-light
                                 smoother
                             ">
-                                <!--
-                                    Security Panel
-                                -->
-                                <article 
-                                    class='panel' 
-                                    data-panel-type='security'
-                                    data-panel-status='hidden'
-                                >
-                                    <!-- 
-                                        The security panel will require 
-                                        the user to click a link in their
-                                        email to verify their account.
+                            
 
-                                        or if they have TFA enabled, they
-                                        will be required to enter a code
-                                        from their authenticator app.
-                                    -->
-                                    <div class="
-                                        mb-5
-                                        justify-content-start
-                                    ">
-                                        <!-- Header -->
-                                        <h1 class="
-                                            fw-bold 
-                                        ">Security</h1>
+                                <!-- Profile Panel -->
+                                {% include 'panels/profile.html' %}
 
-                                        <!-- Descriptiopn -->
-                                        <p class="
-                                            text-muted
-                                        ">
-                                            Here you can view your security settings, manage linked accounts and change your password.
-                                        </p>
-                                    </div>
-
-
-                                    <!-- 
-                                        2FA
-                                    -->
-                                    <div class="
-                                        mb-5
-                                        justify-content-start
-                                        text-center
-                                    ">
-                                        <!-- Descriptiopn -->
-                                        <p class="">
-                                            But, before you can make any changes,
-                                            {% if has_tfa %}
-                                                you must enter the code from your authenticator app.
-                                            {% else %}
-                                                you must click the link sent to {{ user.mask_email }}.
-                                            {% endif %}
-                                        </p>
-
-                                    </div>
-
-                                    <!-- Buttons -->
-                                    <div class="
-                                        d-flex 
-                                        justify-content-lg-start
-                                        justify-content-center
-                                        flex-column
-                                    ">   
-                                            
-                                        <button 
-                                            type="submit" 
-                                            id="send-verification-email" 
-                                            class="
-                                                btn 
-                                                btn-primary
-                                                mb-3
-                                                btn-lg
-                                                loader-btn
-                                            "
-                                            loader-state='default'
-                                        >   
-                                            <span>
-                                                <div class='spinner-border' role='status'>
-                                                    <span class='visually-hidden'>Loading...</span>
-                                                </div>
-                                            </span>
-                                            <p>Send verification email</p>
-                                        </button>
-
-                                    </div>
-
-                                    
-                                </article>
-
-
-                                <!--
-                                    Profile Panel
-                                -->
-                                <article 
-                                    class='panel' 
-                                    data-panel-type='profile'
-                                    data-panel-status=''
-                                    data-form-id='profile'
-                                    data-form-endpoint='{{ pages.profile.endpoint }}'
-                                >
-                                    {{ pages.profile.form.as_p }}
-                                </article>
-
-
+                                <!-- Security panel -->
+                                {% include 'panels/security.html' %}
 
                                 <!--
                                     Events Panel
