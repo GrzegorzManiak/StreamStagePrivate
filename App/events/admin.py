@@ -5,16 +5,16 @@ from .models import Event, EventMedia, Category, EventShowing, EventReview
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-    list_display = [ 'event_id', 'title', 'description', 'over_18s', 'broadcaster', 'media', 'approved']
-    list_editable = [ 'title', 'description', 'over_18s', 'broadcaster', 'media', 'approved']
+    list_display = [ 'event_id', 'title', 'description', 'over_18s', 'broadcaster', 'approved']
+    list_editable = [ 'title', 'description', 'over_18s', 'broadcaster', 'approved']
     list_display_links = []
-    filter_horizontal = ['contributors', 'showings']
+    filter_horizontal = ['contributors']
 
 @admin.register(EventMedia)
 class EventMediaAdmin(admin.ModelAdmin):
-    list_display = [ 'picture', 'description' ]
-    # list_editable = [ 'picture', 'description' ]
-    # link_display_links = []
+    list_display = [ 'event', 'picture', 'description' ]
+    list_editable = [ 'picture', 'description' ]
+    link_display_links = []
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -24,8 +24,8 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(EventShowing)
 class EventShowingAdmin(admin.ModelAdmin):
-    list_display = [ 'showing_id', 'country', 'city', 'venue', 'time' ]
-    list_editable = [ 'country', 'city', 'venue', 'time' ]
+    list_display = [ 'showing_id', 'event', 'country', 'city', 'venue', 'time' ]
+    list_editable = [ 'event', 'country', 'city', 'venue', 'time' ]
     list_displaylinks = []
 
 @admin.register(EventReview)

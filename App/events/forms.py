@@ -1,6 +1,4 @@
 from django import forms
-import datetime
-from django.contrib.admin.widgets import AdminDateWidget, AdminTimeWidget, AdminSplitDateTime
 from .models import Event, EventReview, Category, EventShowing
 
                                         # ***************
@@ -17,13 +15,14 @@ class CategoryMC(forms.ModelMultipleChoiceField):
 #         return media.picture
 
 class EventApplyForm(forms.ModelForm):
- 
+
     class Meta:
         model = Event
  
         fields = [
             'title', 
-            'description', 
+            'description',
+            'broadcaster',
             'over_18s',  
             'categories']
 
@@ -44,7 +43,7 @@ class EventUpdateForm(forms.ModelForm):
     
         exclude = [
             "event_id",
-            "streamer",
+            "broadcaster",
             "approved",
             "contributors",
             "primary_media_idx"
@@ -127,6 +126,7 @@ class ReviewUpdateForm(forms.ModelForm):
         model = EventReview
  
         exclude = [
+            'event',
             'review_id',
             'author',
             'event',

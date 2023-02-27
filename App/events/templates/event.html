@@ -26,7 +26,7 @@
 
             <!-- Event Poster -->
             <div class="d-flex flex-row mx-2 my-4">
-                {% if event.media.all.count == 0 %}
+                {% if media.event.all.count == 0 %}
                 <img class="event-cover" src="{% static 'images/default_event_cover.png' %}" alt="No Event Cover Photo">
                 {% else %}
                 <img class="event-cover" src="{{ cover_pic.picture.url }}">
@@ -60,7 +60,7 @@
                     </div>
 
                     <div class="row">
-                        {% for showing in event.showings.all %}
+                        {% for showing in get_showings %}
                         <div class="col-6">
                             <p>{{showing.time }}</p>
                         </div>
@@ -101,12 +101,12 @@
     <div class="row text-light">
         <!-- Media Carousel-->
         <div class="col-9 content-center">
-            {% for media in event.media.all %}
+            <!-- {% for media in event.media.all %}
             <div class="event-media">
                 <img src="{{ event.media }}">
                 <p>{{ media.description }}</p>
             </div>
-            {% endfor %}
+            {% endfor %} -->
         </div>
     </div>
 
