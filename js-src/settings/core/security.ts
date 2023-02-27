@@ -47,11 +47,13 @@ async function click_handler(
 ) {
     // -- Loop through the resend keys and terminate them
     for (const key of resend_keys) {
-        const remove_res = await remove(key);
-        if (remove_res.code !== 200) return;
+        remove(key).then(res => {
+            if (res.code === 200) 
+                create_toast('success', 'verification', 'The previous verification email has been terminated');
+        });
+
         // -- Remove the key from the array
         resend_keys = resend_keys.filter(k => k !== key);
-        create_toast('success', 'verification', 'The previous verification email has been terminated');
     }
 
     // -- Send the verification request
