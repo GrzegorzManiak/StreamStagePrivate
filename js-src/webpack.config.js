@@ -25,7 +25,7 @@ module.exports = {
                 loader: "string-replace-loader",
                 options: {
                     // -- replace multiple non-indent spaces with a single space
-                    search: /(?<!\n\s*)[ ]+/,
+                    search: /[ ]{2,}/,
                     replace: ' ',
                 }
             }
