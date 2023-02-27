@@ -1,6 +1,7 @@
 import { create_toast } from '../toasts';
 import { attach_event_listeners, get_pod } from './core/panels';
 import { manage_security_panel } from './core/security';
+import { handle_tfa_input } from './elements/mfa';
 
 export function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -41,6 +42,10 @@ export const configuration = {
     update_profile: get_or_error<string>(config, 'data-update-profile'),
     remove_oauth: get_or_error<string>(config, 'data-remove-oauth'),
     extend_session: get_or_error<string>(config, 'data-extend-session'),
+
+    setup_mfa: get_or_error<string>(config, 'data-mfa-setup'),
+    verify_mfa: get_or_error<string>(config, 'data-mfa-verify'),
+    disable_mfa: get_or_error<string>(config, 'data-mfa-disable'),
 }
 
 

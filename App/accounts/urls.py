@@ -8,7 +8,17 @@ from .email.views import (
 )
 from .create.views import send_reg_verification
 from .oauth import OAuthTypes, determine_app
-from .profile.views import profile, send_verification, security_info, update_profile, remove_oauth, extend_session
+from .profile.views import (
+    profile, 
+    send_verification, 
+    security_info, 
+    update_profile, 
+    remove_oauth, 
+    extend_session,
+    setup_mfa,
+    verify_mfa,
+    disable_mfa
+)
 from .views import get_token, login, logout, register, validate_token
 
 from django.conf import settings
@@ -33,6 +43,9 @@ urlpatterns = [
     # -- Authentication
     path('token/', validate_token, name='token'),
     path('get_token/', get_token, name='get_token'),
+    path('mfa/setup', setup_mfa, name='setup_mfa'),
+    path('mfa/verify', verify_mfa, name='verify_mfa'),
+    path('mfa/disable', disable_mfa, name='disable_mfa'),
 
     # -- OAuth2.0
     path('sso/google/', determine_app(OAuthTypes.GOOGLE), name='google'),

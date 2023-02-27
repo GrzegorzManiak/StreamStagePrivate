@@ -36,7 +36,9 @@
     <!-- 
         2FA
     -->
-    <div class="
+    <div 
+    data-has-tfa='{% if has_tfa %}true{% else %}false{% endif %}'
+    class="
         mb-5
         justify-content-start
         text-center
@@ -44,30 +46,57 @@
         <!-- Descriptiopn -->
         <p class="">
             But, before you can make any changes,
-            {% if has_tfa %}
+            <span class='mfa'>
                 you must enter the code from your authenticator app.
-            {% else %}
+            </span>
+
+            <span class='email'>
                 you must click the link sent to {{ user.mask_email }}.
-            {% endif %}
+            </span>
         </p>
 
     </div>
 
     <!-- Buttons -->
-    <div class="
+    <div 
+    data-has-tfa='{% if has_tfa %}true{% else %}false{% endif %}'
+    class="
         d-flex 
         justify-content-lg-start
         justify-content-center
         flex-column
     ">   
-        {% if has_tfa %}
-            nOT done yet so tough luck
-        {% else %}
+        
+        <div id='mfa-input' class='mfa form-group mt-1 mb-5 tfa-input d-flex gap-2 justify-content-center'>
+        </div>
+
+        <button 
+            type="submit" 
+            id="verify-tfa" 
+            class="
+                mfa
+                btn 
+                btn-primary
+                mb-3
+                btn-lg
+                loader-btn
+            "
+            loader-state='default'
+        >
+            <span>
+                <div class='spinner-border' role='status'>
+                    <span class='visually-hidden'>Loading...</span>
+                </div>
+            </span>
+            <p>Verify</p>
+        </button>
+
         <button 
             type="submit" 
             id="send-verification-email" 
             class="
                 btn 
+                email
                 btn-primary
                 mb-3
                 btn-lg
@@ -82,7 +111,6 @@
             </span>
             <p>Send verification email</p>
         </button>
-        {% endif %}
     </div>
 
     
@@ -165,9 +193,11 @@
     -->
     <div 
     id='two-factor-authentication-container'
+    data-has-tfa='{% if has_tfa %}true{% else %}false{% endif %}'
     class="
         justify-content-start
         text-left
+
     ">
         <!-- Descriptiopn -->
         <p class="">
@@ -183,42 +213,44 @@
             </p>
         </p>
 
-        {% if has_tfa %}
-            <!--Remove-->
-            <button 
-                type="submit" 
-                id="remove-tfa" 
-                class="
-                    btn 
-                    btn-primary
-                    mb-3
-                    btn-lg
-                    loader-btn
-                "
-                loader-state='default'
-            >
-                Remove
-            </button>
-
-            {% else %}
-
-            <!--Add-->
-            <button 
-                type="submit" 
-                id="add-tfa" 
-                class="
-                    btn 
-                    btn-primary
-                    btn-lg
-                    loader-btn
-                    w-100
-                "
-                loader-state='default'
-            >
-                Setup
-            </button>
-            {% endif %}
+        
+        
+        <!--Remove-->
+        <button 
+            type="submit" 
+            id="remove-tfa" 
+            class="
+                btn 
+                btn-warning
+                btn-lg
+                loader-btn
+                w-100
+                mfa
+            "
+            loader-state='default'
+        >
+            Remove
         </button>
+
+        
+
+        <!--Add-->
+        <button 
+            type="submit" 
+            id="add-tfa" 
+            class="
+                btn 
+                btn-primary
+                btn-lg
+                loader-btn
+                w-100
+                email
+            "
+            loader-state='default'
+        >
+            Setup
+        </button>
+           
     </div>
 
 

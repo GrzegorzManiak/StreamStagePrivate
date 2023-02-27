@@ -33,6 +33,66 @@ export function attach(
     };
 }
 
+export function construct_modal(
+    title: string,
+    message: string,
+    buttons: boolean,
+    custom: string = '',
+) {
+    const buttons_template = `
+        <!-- Continue -->
+        <button type="submit" class="btn yes btn-danger btn-lg w-100">
+            Continue
+        </button>
+
+
+        <!-- Cancel button -->
+        <button class="btn btn-secondary no btn-lg mt-3 w-100">
+            Go back
+        </button>
+    `;
+
+    // -- String template for the modal
+    return `
+        <div
+            style="z-index: 9999; position: fixed; top: 0; left: 0; width: 100vw;
+                height: 100vh; background-color: rgba(0, 0, 0, 0.5);">
+
+            <!-- Modal -->
+            <div class="modal d-flex justify-content-center align-items-center"
+                style="z-index: 9999; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
+                background-color: rgba(0, 0, 0, 0.5);">
+
+                <!-- Modal content -->
+                <div 
+                    class="modal-content bg-dark text-light p-5 rounded"
+                    style="width: 500px;"
+                >
+
+                    <!-- Header -->
+                    <div class="mb-5 justify-content-start header">
+                        <!-- Header -->
+                        <h1 class="fw-bold ">${title}</h1>
+
+                        <!-- Descriptiopn -->
+                        <p class="text-muted">${message}</p>
+                    </div>
+                    
+                    <!-- Custom -->
+                    <div class="d-flex justify-content-lg-start justify-content-center flex-column custom">
+                        ${custom ? custom : ''}
+                    </div>
+                    
+                    <!-- Buttons -->
+                    <div class="d-flex justify-content-lg-start justify-content-center flex-column buttons">
+                        ${buttons ? buttons_template : ''}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
 export function confirmation_modal(
     yes: () => void | Promise<void>,
     no: () => void | Promise<void>,
@@ -40,50 +100,7 @@ export function confirmation_modal(
     title: string = 'Are you sure?',
 ) {
     // -- String template for the modal
-    const modal = `
-    <div
-        style="z-index: 9999; position: fixed; top: 0; left: 0; width: 100vw;
-            height: 100vh; background-color: rgba(0, 0, 0, 0.5);">
-
-        <!-- Modal -->
-        <div class="modal d-flex justify-content-center align-items-center"
-            style="z-index: 9999; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
-            background-color: rgba(0, 0, 0, 0.5);">
-
-            <!-- Modal content -->
-            <div 
-                class="modal-content bg-dark text-light p-5 rounded"
-                style="width: 500px;"
-            >
-
-                <!-- Header -->
-                <div class="mb-5 justify-content-start">
-                    <!-- Header -->
-                    <h1 class="fw-bold ">${title}</h1>
-
-                    <!-- Descriptiopn -->
-                    <p class="text-muted">${message}</p>
-                </div>
-
-                <!-- Buttons -->
-                <div class="d-flex justify-content-lg-start justify-content-center flex-column">
-
-                    <!-- Continue -->
-                    <button type="submit" class="btn yes btn-danger btn-lg w-100">
-                        Continue
-                    </button>
-
-
-                    <!-- Cancel button -->
-                    <button class="btn btn-secondary no btn-lg mt-3 w-100">
-                        Go back
-                    </button>
-
-                </div>
-            </div>
-        </div>
-    </div>
-    `;
+    const modal = construct_modal(title, message, true);
 
     // -- Create a div element
     const div = document.createElement('div');

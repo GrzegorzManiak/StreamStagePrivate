@@ -2,7 +2,8 @@ import { configuration } from "../";
 import { RecentVerificationResponse, VerifyAccessResponse } from "../index.d";
 
 export const send_verification = async (
-    mode: 'email' | 'tfa'
+    mode: 'email' | 'tfa',
+    mfa_code?: string,
 ): Promise<VerifyAccessResponse> => {
 
     const response = await fetch(
@@ -15,6 +16,7 @@ export const send_verification = async (
             },
             body: JSON.stringify({
                 mode,
+                mfa: mfa_code,
             }),
         },
     );

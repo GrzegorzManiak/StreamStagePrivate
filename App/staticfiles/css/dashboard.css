@@ -223,3 +223,8 @@
 
 #id_country-container { width: 60%; }
 #id_time_zone-container { width: 40%; }
+
+
+/* Security */
+[data-has-tfa='true'] .email { display: none!important; }
+[data-has-tfa='false'] .mfa { display: none!important; }

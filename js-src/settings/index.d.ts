@@ -123,6 +123,7 @@ export type SecurityInfoResponse = SecurityInfoSuccess | SecurityInfoError;
 
 export interface DefualtSuccess {
     data: {
+        [key: string]: string | number | boolean,
         status: string,
         message: string,
     },

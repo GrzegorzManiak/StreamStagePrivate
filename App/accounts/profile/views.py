@@ -1,4 +1,5 @@
 import secrets
+import pyotp
 import time
 
 from django.http.response import JsonResponse
@@ -26,6 +27,7 @@ def profile(request):
     # -- Construct the context
     context = {
         'user': request.user,
+        'has_tfa': request.user.tfa_secret is not None,
         'countries': CountryField().countries,
         'timezones': TimeZoneField().get_choices(),
         'api': {
@@ -37,6 +39,9 @@ def profile(request):
             'update_profile': reverse_lazy('update_profile'),
             'remove_oauth': reverse_lazy('remove_oauth'),
             'extend_session': reverse_lazy('extend_session'),
+            'setup_mfa': reverse_lazy('setup_mfa'),
+            'verify_mfa': reverse_lazy('verify_mfa'),
+            'disable_mfa': reverse_lazy('disable_mfa'),
         },
 
         'oauth': format_providers()
@@ -124,11 +129,41 @@ def send_verification(request):
 
 
     else: 
+        # -- Get the mfa code
+        mfa_code = request.data.get('mfa', None)
+
+        # -- Check if the mfa code is valid
+        if mfa_code is None:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'No MFA code provided',
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # -- Check if the mfa code is valid
+        totp = pyotp.TOTP(request.user.tfa_secret)
+        if not totp.verify(mfa_code):
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Invalid MFA code',
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # -- Add the key
+        key = secrets.token_urlsafe(32)
+        validated_requests.append({
+            'user': request.user,
+            'key': key,
+            'time': time.time(),
+        })
+
+        # -- Send it back to the user
         return JsonResponse({
-            'status': 'error',
-            'message': '2FA not implemented',
-        }, status=status.HTTP_400_BAD_REQUEST)
-            
+            'status': 'success',
+            'message': 'MFA code is valid',
+            'access_key': key,
+            'resend_key': '',
+            'verify_key': '',
+        }, status=status.HTTP_200_OK)
+
     
 
 @api_view(['POST'])
@@ -301,6 +336,185 @@ def extend_session(request):
 
     # -- Extend the session
     token_data['time'] = time.time()
+
+    return JsonResponse({
+        'message': 'Success'
+    }, status=status.HTTP_200_OK)
+
+
+
+
+"""
+    2FA
+
+    Once a user request to setup MFA, a token will be generated
+    and added to the below list with a reference to the user,
+    the token will be valid for 15 minutes, after which it will
+    be removed from the list.
+
+    The user will then take the token and use it to setup MFA
+    and they will be prompted to enter the token, if the token
+    is valid, MFA will be setup for the user.
+
+    If not, the user will be prompted to try again.
+
+
+    {
+        'user': <user>,
+        'token': <token>,
+        'time': <time>
+    }
+"""
+temp_mfa_tokens = []
+
+@api_view(['POST'])
+def setup_mfa(request):
+    # -- Make sure the user is authenticated
+    if not request.user.is_authenticated:
+        return JsonResponse({
+            'message': 'Not authenticated'
+        }, status=status.HTTP_401_UNAUTHORIZED)
+    
+    # -- Get the token
+    token = request.data.get('token', None)
+    if token is None:
+        return JsonResponse({
+            'message': 'No token provided'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    # -- Check if the token is valid
+    if not is_valid(token): return JsonResponse({
+        'status': 'error',
+        'message': 'Invalid token',
+    }, status=status.HTTP_400_BAD_REQUEST)
+   
+    # -- Check if the user has MFA enabled
+    if request.user.tfa_secret is not None:
+        return JsonResponse({
+            'message': 'MFA is already enabled'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    # -- Check if a user already has a token
+    #    if so, remove it
+    for temp_token in temp_mfa_tokens:
+        if str(temp_token['user']['id']) == str(request.user.id):
+            temp_mfa_tokens.remove(temp_token)
+            break
+
+    # -- Generate a token
+    mfa_token = pyotp.random_base32()
+    temp_mfa_tokens.append({
+        'user': request.user,
+        'token': mfa_token,
+        'time': time.time()
+    })
+
+    # -- Send the token to the user
+    return JsonResponse({
+        'message': 'Success',
+        'data': {
+            'token': mfa_token
+        }
+    }, status=status.HTTP_200_OK)
+
+
+
+@api_view(['POST'])
+def verify_mfa(request):
+    # -- Make sure the user is authenticated
+    if not request.user.is_authenticated:
+        return JsonResponse({
+            'message': 'Not authenticated'
+        }, status=status.HTTP_401_UNAUTHORIZED)
+    
+    # -- Get the token
+    token = request.data.get('token', None)
+    if token is None:
+        return JsonResponse({
+            'message': 'No token provided'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    # -- Check if the token is valid
+    if not is_valid(token): return JsonResponse({
+        'status': 'error',
+        'message': 'Invalid token',
+    }, status=status.HTTP_400_BAD_REQUEST)
+
+    # -- Get the mfa token
+    otp = request.data.get('otp', None)
+    if otp is None:
+        return JsonResponse({
+            'message': 'No mfa token provided'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    # -- Check if the user has MFA enabled
+    if request.user.tfa_secret is not None:
+        return JsonResponse({
+            'message': 'MFA is already enabled'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    # -- Check if the user has a token
+    temp_token = None
+    for temp in temp_mfa_tokens:
+        if str(temp['user'].id) == str(request.user.id):
+            temp_token = temp
+            break
+
+    if temp_token is None:
+        return JsonResponse({
+            'message': 'No token found'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    # -- Check if the token is expired
+    if time.time() - temp_token['time'] > 60 * 60 * 15: # 15 minutes
+        return JsonResponse({
+            'message': 'Token expired'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+
+    # -- Check if the otp is valid
+    if not pyotp.TOTP(temp_token['token']).verify(otp):
+        return JsonResponse({
+            'message': 'Invalid token'
+        }, status=status.HTTP_401_UNAUTHORIZED)
+    
+    # -- Remove the token
+    temp_mfa_tokens.remove(temp_token)
+
+    # -- Enable MFA
+    request.user.tfa_secret = temp_token['token']
+    request.user.save()
+
+    return JsonResponse({
+        'message': 'Success'
+    }, status=status.HTTP_200_OK)
+
+    
+
+@api_view(['POST'])
+def disable_mfa(request):
+    # -- Make sure the user is authenticated
+    if not request.user.is_authenticated:
+        return JsonResponse({
+            'message': 'Not authenticated'
+        }, status=status.HTTP_401_UNAUTHORIZED)
+    
+    # -- Get the token
+    token = request.data.get('token', None)
+    if token is None:
+        return JsonResponse({
+            'message': 'No token provided'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    # -- Check if the token is valid
+    if not is_valid(token): return JsonResponse({
+        'status': 'error',
+        'message': 'Invalid token',
+    }, status=status.HTTP_400_BAD_REQUEST)
+
+    # -- Remove MFA
+    request.user.tfa_secret = None
+    request.user.save()
 
     return JsonResponse({
         'message': 'Success'

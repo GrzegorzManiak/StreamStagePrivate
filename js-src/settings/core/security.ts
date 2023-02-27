@@ -8,6 +8,7 @@ import { get_security_info } from "../api/security_info";
 import create_linked_account, { attach_lister } from '../elements/oauth';
 import create_login_history from '../elements/history';
 import extend_session from '../api/extend_session';
+import mfa, { handle_tfa_input } from "../elements/mfa";
 
 // 
 // Main entry point for the security panel
@@ -16,16 +17,33 @@ export function manage_security_panel(pod: Pod) {
     console.log('Managing security panel');
 
     // -- Get the panel
-    const panel = pod.panel.element;
+    const panel = pod.panel.element,
+        mfa_input = panel.querySelector('#mfa-input') as HTMLInputElement;
 
     // -- Get the verify access button
-    // #send-verification-email
-    const button = panel.querySelector('#send-verification-email') as HTMLButtonElement;
+    // #send-verification-email, #verify-tfa
+    const button = panel.querySelector('#send-verification-email') as HTMLButtonElement,
+        tfa_button = panel.querySelector('#verify-tfa') as HTMLButtonElement;
+
+    let mfa_code = '';
+    handle_tfa_input(mfa_input, 
+        (code) => {
+            tfa_button.disabled = false;
+            mfa_code = code;
+        },
+        () => tfa_button.disabled = true
+    );
 
     // -- Add the click event listener
     button.addEventListener('click', async () => {
         const stop_spinner = attach(button);
-        await click_handler(stop_spinner, 'email');
+        await email_click_handler(stop_spinner);
+    });
+
+    // -- Add the click event listener
+    tfa_button.addEventListener('click', async () => {
+        const stop_spinner = attach(tfa_button);
+        await mfa_click_handler(stop_spinner, () => mfa_code);
     });
 }
 
@@ -41,9 +59,8 @@ let resend_keys: string[] = [];
 // This function will be called when the user clicks the button
 // to send a verification email to their email address 
 // 
-async function click_handler(
+async function email_click_handler(
     stop: () => void, 
-    type: 'email' | 'tfa'
 ) {
     // -- Loop through the resend keys and terminate them
     for (const key of resend_keys) {
@@ -57,7 +74,7 @@ async function click_handler(
     }
 
     // -- Send the verification request
-    const res = await send_verification(type);
+    const res = await send_verification('email');
 
     // -- If its a 200, then show a success toast
     if (res.code !== 200) {
@@ -80,28 +97,59 @@ async function click_handler(
     resend_keys.push(resend_key);
     
     // -- Check if the email has been verified
-    const verified = check_email_verification(() => verify_key);
-
-
-    // -- If the email has been verified
-    verified.then(async() => {
-        // -- Get the data
-        const res = await get_security_info(access_key);
-        stop();
-        
-        // -- If the request was a success
-        if (res.code !== 200 || !Object.keys(res).includes('data')) 
-            return create_toast('error', 'Oops, there appears to be an error', res.message);
-        
-        // -- Else, Get the data
-        const data = (res as SecurityInfoSuccess).data;
-        fill_data(data, access_key);
-        
-        // -- Open the panel
-        open_panel('security-verified');
-    });
+    check_email_verification(() => verify_key).then(
+        async() => open_security_panel(stop, access_key)
+    );
 }
 
+//
+// This function will be called when the user clicks the button
+// to verify their 2FA code
+//
+async function mfa_click_handler(
+    stop: () => void,
+    get_code: () => string = () => ''
+) {
+    // -- Send the verification request
+    const res = await send_verification('tfa', get_code());
+
+    // -- If its a 200, then show a success toast, 401 is invalid code
+    if (res.code === 401) {
+        create_toast('error', 'verification', 'The code you entered is invalid');
+        return stop();
+    }
+    else if (res.code !== 200) {
+        create_toast('error', 'verification', 'There was an error verifying your code: ' + res.message);
+        return stop();
+    }
+    
+    // -- The request was a success
+    create_toast('success', 'verification', 'Your code has been verified');
+
+    // -- Get the access key
+    const { access_key } = (res as VerifyAccessSuccess).data;
+
+    // -- Open the security panel
+    open_security_panel(stop, access_key);
+}
+
+
+async function open_security_panel(stop: () => void, access_key: string) {
+    // -- Get the data
+    const res = await get_security_info(access_key);
+    stop();
+    
+    // -- If the request was a success
+    if (res.code !== 200 || !Object.keys(res).includes('data')) 
+        return create_toast('error', 'Oops, there appears to be an error', res.message);
+    
+    // -- Else, Get the data
+    const data = (res as SecurityInfoSuccess).data;
+    fill_data(data, access_key);
+    
+    // -- Open the panel
+    open_panel('security-verified');
+}
 
 
 
@@ -181,8 +229,8 @@ function fill_data(
     //
     const TFA_ID = 'two-factor-authentication-container',
         tfa_elm = panel.querySelector(`#${TFA_ID}`) as HTMLDivElement;
-    console.log(tfa_elm);
-    
+
+    mfa(data, tfa_elm, access_key);
 
     
     //
