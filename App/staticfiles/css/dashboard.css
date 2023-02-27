@@ -122,7 +122,6 @@
 
 
 .side-panel {
-    padding-top: var(--header-height);
     padding-left: 1rem;
     position: fixed;
     background-color: var(--theme-secondary-color);
@@ -130,9 +129,9 @@
     height: 100vh;
     overflow-y: auto;
     width: 25rem;
-    top: 0;
+    top: var(--header-height);
     left: 0;
-
+    z-index: 99999;
     border-right: 1px solid var(--theme-color)!important;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15)!important;
 }

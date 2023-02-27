@@ -77,7 +77,7 @@ def is_valid(
         if req['key'] == key:
             
             # -- Check if the key is expired
-            if time.time() - req['time'] > valid_for:
+            if time.time() - int(req['time']) > valid_for:
                 validated_requests.remove(req)
                 return False
             

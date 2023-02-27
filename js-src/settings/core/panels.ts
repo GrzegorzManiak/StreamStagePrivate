@@ -75,7 +75,7 @@ function attach_to_sidepanel() {
     if (!sidepanel_button || !sidepanel || !main_container) 
         return create_toast('error', 'Error', 'There was an error loading the sidepanel, site functionality might be impaired.');
 
-    const anim_lenght = 1000;
+    const anim_lenght = 500;
 
     // -- Attach the event listener
     sidepanel_button.addEventListener('change', async() => {
