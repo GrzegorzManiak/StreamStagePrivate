@@ -325,13 +325,22 @@ def determine_app(oauth_service: OAuthTypes):
             })
 
         else:
+            um = apps.get_model('accounts.Member')
+
+            # -- Check if an account already exists
+            #    With same email, if so, we cant automatically
+            #    verify the email
+            user = um.objects.filter(email=choosen_app.user.get_email()).first()
+            email_verified = choosen_app.user.get_is_verified()
+            if user != None: email_verified = False
+
             # -- Format the instructions
             instructions = {
                 'message': 'Success',
                 'user': choosen_app.user.serialize(),
                 'token': key,
                 'instructions': format_instructions(
-                    choosen_app.user.get_is_verified(),
+                    email_verified,
                     oauth_service,
                     choosen_app.user.get_id()
                 )

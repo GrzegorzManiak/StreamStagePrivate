@@ -24,7 +24,7 @@
         data-userfirst='data:{{ user.first_name }}'
         data-userlast='data:{{ user.last_name }}'
         data-access-level='{{ user.access_level }}'
-        data-profile-picture='data:{{ user.profile_picture }}'
+        data-profile-picture='/media/{{ user.profile_pic }}'
 
         data-csrf-token='{{ csrf_token }}'
 

@@ -86,7 +86,7 @@ class User():
         }
         
     def get_email(self):
-        return self.email
+        return self.email.lower()
 
     def get_is_verified(self):
         return self.verified_email
@@ -96,3 +96,6 @@ class User():
 
     def get_id(self):
         return self.id
+    
+    def get_picture(self):
+        return self.picture

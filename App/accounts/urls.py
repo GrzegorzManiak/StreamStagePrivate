@@ -11,6 +11,9 @@ from .oauth import OAuthTypes, determine_app
 from .profile.views import profile, send_verification, security_info, update_profile, remove_oauth, extend_session
 from .views import get_token, login, logout, register, validate_token
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 urlpatterns = [
     # path('signup/', MemberSignUpView.as_view(), name='signup'),
@@ -38,12 +41,11 @@ urlpatterns = [
     path('sso/remove/', remove_oauth, name='remove_oauth'),
 
 
-    # EMail Verification
+    # -- EMail Verification
     path('register/email', send_reg_verification, name='send_reg_verification'),
 
     path('email/remove/', remove_key_view, name='remove_key'),
     path('email/resend/', resend_key_view, name='resend_key'),
     path('email/verify/', verify_key_view, name='verify_key'),
     path('email/recent/', check_if_verified_recently_view, name='recent_key'),
-    
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

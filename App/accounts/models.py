@@ -1,4 +1,5 @@
 import uuid
+import requests
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
@@ -8,6 +9,8 @@ from timezone_field import TimeZoneField
 
 from .oauth import OAuthTypes
 
+from django.core.files import File
+from django.core.files.temp import NamedTemporaryFile
 
 # Create your models here.
 class Member(AbstractUser):
@@ -59,6 +62,29 @@ class Member(AbstractUser):
             self.over_18 = False
         elif (datetime.date.today() - self.date_of_birth) > datetime.timedelta(days=18*365):
             self.over_18 = True
+
+    def add_profile_pic_from_url(self, url):
+        try:
+            img_tmp = NamedTemporaryFile(delete=True)
+            img_content = requests.get(
+                url,
+                headers={
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36'
+                }
+            ).content
+
+            img_tmp.write(img_content)
+            img_tmp.flush()
+            
+            img = File(img_tmp, name=f'profile_pictures/{self.id}.jpg')
+            self.profile_pic = img
+
+            self.save()
+
+        
+        except Exception as e:
+            print(e)
+            return False
 
     def save(self, *args, **kwargs):
         self.is_over_18()
