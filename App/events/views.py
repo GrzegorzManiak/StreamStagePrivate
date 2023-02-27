@@ -11,8 +11,9 @@ from .forms import (EventApplyForm,
                     ShowingUpdateForm,
                     ShowingDeleteForm)
 
-from . import inline_reviews, identifier
+from . import inline_reviews
 
+from StreamStage import identifiers
 
                                         # **************
                                         # *** Events ***                                        # ***************
@@ -59,7 +60,7 @@ def event_create(request):
     if not request.user.is_authenticated or not request.user.is_streamer:
         return redirect('all_events')
     if form.is_valid():
-        new_event_id = identifier.generate_event_id()
+        new_event_id = identifiers.generate_event_id()
         form = form.save(commit=False)
         form.streamer = request.user
         form.event_id = new_event_id
