@@ -6,5 +6,6 @@ Last name: McArdle
 Password: Cian
 
 User 1
-Username: CianBean
-Password: Tallaght123
+Username: CianTest1
+Email: c@gmail.com
+Password: Tallaght123.

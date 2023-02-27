@@ -1,4 +1,5 @@
 from django.db import models
+from accounts.models import Broadcaster
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django_countries.fields import CountryField
@@ -18,45 +19,17 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-class EventMedia(models.Model):
-    picture = models.ImageField("Photograph", upload_to="events", null=True, editable=True)
-    description = models.TextField("Photograph Description", max_length=300, blank=True, null=False)
-    
-    class Meta:
-        verbose_name = 'Event Media'
-        verbose_name_plural = 'Event Media'
 
-    def __str__(self):
-        return self.description[:30]
-
-class EventShowing(models.Model):
-    showing_id = (models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False))
-    country = CountryField()
-    city = models.CharField(max_length=25, blank=True)
-    venue = models.CharField(max_length=50, blank=True)
-    time = models.DateTimeField()
-
-    class Meta:
-        verbose_name = 'Event Showing'
-        verbose_name_plural = 'Event Showings'
-
-
-    def __str__(self):
-        return self.venue
-
-# when the 'delete event' feature is implemented - all EventMedia objects will need to be deleted by code.
 class Event(models.Model):
     event_id = models.CharField(primary_key=True, unique=True, max_length=32) # randomly generated 8 character ID
     title = models.TextField("Title", default="New Event")
     description = models.TextField("Description", max_length=3096)
     over_18s = models.BooleanField(default=False)
     # References member, but only "streamers" will be allowed to create an event
-    streamer = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    broadcaster = models.ForeignKey(Broadcaster, on_delete=models.CASCADE)
     categories = models.ManyToManyField(to=Category)
-    showings = models.ManyToManyField(to=EventShowing, blank=True, related_name="showings")
     primary_media_idx = models.IntegerField(default=0) # Points to an item in the 'media' field - used as a cover photo 
-    media = models.ManyToManyField(to=EventMedia, blank=True)
-    contributors = models.ManyToManyField(get_user_model(), related_name="event_broadcasters", blank=True)
+    contributors = models.ManyToManyField(get_user_model(), related_name="event_contributors", blank=True)
     approved = models.BooleanField("Approved", default=False)
 
     def get_absolute_url(self):
@@ -94,6 +67,10 @@ class Event(models.Model):
     def get_reviews(self):
         return EventReview.objects.filter(event=self).all()
     
+    def get_review_count(self):
+        count = EventReview.objects.filter(event=self).all().count()
+        return count
+
     def get_top_review(self, reviews_in = None):
         reviews = reviews_in or self.get_reviews()
 
@@ -104,6 +81,13 @@ class Event(models.Model):
                 rating = review.rating
                 top_review = review
         return top_review
+    
+    def get_showings(self):
+        return EventShowing.objects.filter(event=self).all()
+           
+    def get_next_showing(self):
+        next_showing = EventShowing.objects.filter(event=self).all().order_by('time').first()
+        return next_showing
     
 class EventReview(models.Model):
 
@@ -123,3 +107,34 @@ class EventReview(models.Model):
 
     def __str__(self):
         return self.body[:100]
+    
+    def short_review(self):
+        return self.body[:25]
+
+class EventMedia(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    picture = models.ImageField("Photograph", upload_to="events", null=True, editable=True)
+    description = models.TextField("Photograph Description", max_length=300, blank=True, null=False)
+    
+    class Meta:
+        verbose_name = 'Event Media'
+        verbose_name_plural = 'Event Media'
+
+    def __str__(self):
+        return self.description[:30]
+
+class EventShowing(models.Model):
+    showing_id = (models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False))
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    country = CountryField()
+    city = models.CharField(max_length=25, blank=True)
+    venue = models.CharField(max_length=50, blank=True)
+    time = models.DateTimeField()
+
+    class Meta:
+        verbose_name = 'Event Showing'
+        verbose_name_plural = 'Event Showings'
+
+
+    def __str__(self):
+        return self.venue
