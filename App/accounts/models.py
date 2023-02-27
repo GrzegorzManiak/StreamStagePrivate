@@ -35,7 +35,6 @@ class Member(AbstractUser):
     max_keys = models.SmallIntegerField("Max Devices", default=1)
     # Is Member more than a basic member?
     is_streamer = models.BooleanField("Streamer Status", default=False)
-    is_broadcaster = models.BooleanField("Broadcaster Status", default=False)
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email', 'first_name', 'last_name']

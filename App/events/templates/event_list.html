@@ -20,10 +20,11 @@ Events | StreamStage
             <a href="{% url 'event_view' event.event_id %}">
                 <div class="row">
 
-                    <div class="col-1">
-                        <p>{{ event.categories }}</p>
-                    </div>
                     <div class="col-3">
+                        {% for category in event.categories.all %}
+                        <span class="badge bg-primary">{{category.name}}</span>
+                        {% endfor %}
+
                         <h4>{{ event.streamer }}</h4>
                         {% if event.media.all.count == 0 %}
                         <img class="event-cover col-3" src="{% static 'images/default_event_cover.png' %}"
@@ -32,21 +33,23 @@ Events | StreamStage
                         <img class="event-cover col-3" src="{{ cover_pic.picture.url }}">
                         {% endif %}
                     </div>
-                    <div class="col-8">
+                    <div class="col-9">
                         <h4>{{ event.title }}</h4>
                         <p>{{ event.short_description }}</p>
-                        <p>{{ event.showings }}</p>
-
+                        <h6>Next Showing: </h6>
+                        <p>{{ event.get_next_showing }}</p>
                     </div>
                 </div>
             </a>
         </div>
         <!-- Reviews For Each event -->
         <div class="col-3 text-center">
-            <h6>Reviews</h6>
-            <p>
+            <div class="m-4">
+                {% if event.get_review_count > 0 %}
+                <h6>Top Review</h6>
                 {% include 'reviews/review.html' with review=event.get_top_review %}
-            </p>
+                {% endif %}
+            </div>
         </div>
     </div>
     {% endfor %}
