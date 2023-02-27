@@ -1,5 +1,4 @@
 from django.db import models
-from accounts.models import Broadcaster
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django_countries.fields import CountryField
@@ -56,7 +55,7 @@ class Event(models.Model):
         return round(avg_rating,1)
 
     def get_cover_picture(self):
-        media = self.media.all()
+        media = EventMedia.objects.filter(event=self).all()
 
         if media.count() == 0:
             return None
@@ -65,13 +64,15 @@ class Event(models.Model):
 
     def get_media(self):
         return EventMedia.objects.filter(event=self).all()
+    
+    def get_media_count(self):
+        return EventMedia.objects.filter(event=self).all().count()
 
     def get_reviews(self):
         return EventReview.objects.filter(event=self).all()
     
     def get_review_count(self):
-        count = EventReview.objects.filter(event=self).all().count()
-        return count
+        return EventReview.objects.filter(event=self).all().count()
 
     def get_top_review(self, reviews_in = None):
         reviews = reviews_in or self.get_reviews()
@@ -92,7 +93,6 @@ class Event(models.Model):
         return next_showing
     
 class EventReview(models.Model):
-
     review_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
