@@ -7,6 +7,7 @@ module.exports = {
         toast: './toasts/index.ts',
         click_handler: './click_handler/index.ts',
         ping_server: './ping_server/index.ts',
+        streamer_apps: './streamer_apps/index.ts'
     },
     module: {
         rules: [

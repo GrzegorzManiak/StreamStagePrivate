@@ -98,6 +98,7 @@ INSTALLED_APPS = [
     'server_manager',
     'events',
     'stream',
+    'applications',
 
     # 3rd Party
     'crispy_forms',
