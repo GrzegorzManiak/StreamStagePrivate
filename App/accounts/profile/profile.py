@@ -8,6 +8,10 @@
     if it was not. The string will be a message
     describing the result of the function.
 """
+
+
+
+# -- Imports
 from django.utils.html import escape
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
@@ -17,6 +21,10 @@ from timezone_field import TimeZoneField
 
 from accounts.create.create import username_taken
 from accounts.models import Member
+
+import secrets
+import time
+
 
 
 """
@@ -231,4 +239,116 @@ def update_profile(user, data, sensitive=False) -> tuple[bool, str]:
     
 
 
+temporary_pats = []
+PAT_EXPIRY_TIME = 60 * 15 # -- 15 minutes
+
+"""
+    :name: generate_pat
+    :description: This function generates a new personal access token
+        for a user, this allows the user to access sensitive information
+        without having to provide their password
+    :param user: Member - The user to generate the token for
+    :param token: str - The token to use, optional
+    :return: str - The generated token
+"""
+def generate_pat(user, token: str = None) -> str:
+    # -- Check if the user is valid
+    if not isinstance(user, Member):
+        return None
+
+    # -- Generate the token
+    if token == None:
+        token = secrets.token_urlsafe(32)
+
+    # -- Add the token to the temporary list
+    temporary_pats.append({
+        'user': user,
+        'token': token,
+        'time': time.time()
+    })
+
+    return token
+
+
+
+"""
+    :name: get_pat
+    :description: This function gets a personal access token
+        from the temporary list
+    :param token: str - The token to get
+    :return: [dict, str] - A list containing a dict
+        which is the token if it is found, None if it is not
+        and a string which is the reason why it is not found
+"""
+def get_pat(token) -> list[dict, str]:
+    # -- Check if the token is in the temporary list
+    for pat in temporary_pats:
+        if pat['token'] == token:
+
+            # -- Check if the token has expired
+            if time.time() - pat['time'] > PAT_EXPIRY_TIME:
+                temporary_pats.remove(pat)
+                return [None, 'Sorry, but it appears that the token has expired']
+            
+            return [pat, None]
+
+    return [None, 'Sorry, but it appears that the token is not valid']
+
+
+
+"""
+    :name: validate_pat
+    :description: This function validates a personal access token
+        and returns the user that the token belongs to
+    :param token: str - The token to validate
+    :param member: Member - The member to validate the token for
+
+    :return: list[bool, str] - A list containing a bool
+        which is True if the token is valid, False if it is not
+        and a string which is the reason why it is not valid
+"""
+def validate_pat(token, member) -> list[bool, str]:
+    # -- Check if the token is in the temporary list
+    pat_data = get_pat(token)
+    if pat_data[0] == None:
+        return [False, pat_data[1]]
     
+    # -- Check if the token belongs to the member
+    if pat_data[0]['user'] != member:
+        return [False, 'Sorry, but it appears that the token does not belong to you']
+
+    return [True, 'Congratulations, the token is valid']
+
+
+
+"""
+    :name: extend_pat
+    :description: This function extends the expiry time of a personal access token
+    :param token: str - The token to extend
+    :param member: Member - The member to extend the token for
+    :return: list[bool, str] - A list containing a bool
+        which is True if the token is extended, False if it is not
+        and a string which is the reason why it is not extended
+"""
+def extend_pat(token, member) -> list[bool, str]:
+    # -- Check if the token is valid
+    if not isinstance(token, str):
+        return [False, 'Sorry, but it appears that the token is not valid']
+
+    # -- Check if the member is valid
+    if not isinstance(member, Member):
+        return [False, 'Sorry, but it appears that the member is not valid']
+
+    # -- Check if the token is in the temporary list
+    pat_data = get_pat(token)
+    if pat_data[0] == None:
+        return [False, pat_data[1]]
+    
+    # -- Check if the token belongs to the member
+    if pat_data[0]['user'] != member:
+        return [False, 'Sorry, but it appears that the token does not belong to you']
+
+    # -- Extend the token
+    pat_data[0]['time'] = time.time()
+
+    return [True, 'Token extended successfully']

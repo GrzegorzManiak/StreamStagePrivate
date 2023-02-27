@@ -8,13 +8,15 @@ from .email.views import (
 )
 from .create.views import send_reg_verification
 from .oauth import OAuthTypes, determine_app
-from .profile.views import (
+from .profile import (
     profile, 
     send_verification, 
     security_info, 
     update_profile, 
     remove_oauth, 
     extend_session,
+)
+from .mfa import (
     setup_mfa,
     verify_mfa,
     disable_mfa
