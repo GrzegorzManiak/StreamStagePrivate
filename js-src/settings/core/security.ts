@@ -1,14 +1,15 @@
-import { attach } from "../../click_handler";
+import { attach, handle_tfa_input } from "../../click_handler";
 import { recent, remove, send_verification } from "../api/email_verification";
 import { create_toast } from '../../toasts';
 import { get_active_pod, open_panel } from './panels';
 import { Pod, SecurityInfoSuccess, VerifyAccessSuccess, SecurityInfo} from "../index.d";
 import { get_security_info } from "../api/security_info";
-
 import create_linked_account, { attach_lister } from '../elements/oauth';
 import create_login_history from '../elements/history';
 import extend_session from '../api/extend_session';
-import mfa, { handle_tfa_input } from "../elements/mfa";
+import mfa from "../elements/mfa";
+
+
 
 // 
 // Main entry point for the security panel
@@ -55,6 +56,8 @@ export function manage_security_panel(pod: Pod) {
 //
 let resend_keys: string[] = [];
 
+
+
 // 
 // This function will be called when the user clicks the button
 // to send a verification email to their email address 
@@ -64,10 +67,11 @@ async function email_click_handler(
 ) {
     // -- Loop through the resend keys and terminate them
     for (const key of resend_keys) {
-        remove(key).then(res => {
-            if (res.code === 200) 
-                create_toast('success', 'verification', 'The previous verification email has been terminated');
-        });
+        remove(key).then(res => { if (res.code === 200) create_toast(
+            'success', 
+            'verification', 
+            'The previous verification email has been terminated'
+        )});
 
         // -- Remove the key from the array
         resend_keys = resend_keys.filter(k => k !== key);
@@ -78,19 +82,24 @@ async function email_click_handler(
 
     // -- If its a 200, then show a success toast
     if (res.code !== 200) {
-        create_toast('error', 'verification', 'There was an error sending the verification email: ' + res.message);
+        create_toast(
+            'error', 
+            'verification', 
+            'There was an error sending the verification email: ' + res.message
+        );
         return stop();
     }
     
     // -- The request was a success
-    create_toast('success', 'Please check your email', 'We have sent you a verification email, It will be valid for 15 Minutes');
+    create_toast(
+        'success', 
+        'Please check your email', 
+        'We have sent you a verification email, It will be valid for 15 Minutes'
+    );
 
 
     // -- Get the request details 
-    let { 
-        access_key, 
-        resend_key, 
-        verify_key 
+    let { access_key, resend_key, verify_key 
     } = (res as VerifyAccessSuccess).data;
 
     // -- Store the resend key
@@ -101,6 +110,8 @@ async function email_click_handler(
         async() => open_security_panel(stop, access_key)
     );
 }
+
+
 
 //
 // This function will be called when the user clicks the button
@@ -115,25 +126,40 @@ async function mfa_click_handler(
 
     // -- If its a 200, then show a success toast, 401 is invalid code
     if (res.code === 401) {
-        create_toast('error', 'verification', 'The code you entered is invalid');
+        create_toast(
+            'error', 
+            'verification', 
+            'The code you entered is invalid'
+        ); 
         return stop();
     }
     else if (res.code !== 200) {
-        create_toast('error', 'verification', 'There was an error verifying your code: ' + res.message);
+        create_toast(
+            'error', 
+            'verification', 
+            'There was an error verifying your code: ' + res.message
+        );
         return stop();
     }
     
     // -- The request was a success
-    create_toast('success', 'verification', 'Your code has been verified');
+    create_toast(
+        'success', 
+        'verification', 
+        'Your code has been verified'
+    );
 
-    // -- Get the access key
+    // -- Get the access key, and open the security panel
     const { access_key } = (res as VerifyAccessSuccess).data;
-
-    // -- Open the security panel
     open_security_panel(stop, access_key);
 }
 
 
+
+//
+// This fuction actually opens the panel, it also fills the data
+// into the panel
+//
 async function open_security_panel(stop: () => void, access_key: string) {
     // -- Get the data
     const res = await get_security_info(access_key);
@@ -167,7 +193,11 @@ async function check_email_verification(
             if (response.code === 404) {} // -- Do nothing
             else if (response.code === 200) {
                 // -- Login the user
-                create_toast('success', 'Congratulations!', 'Your email has been verified, you\'ll be given access to your account in a few seconds.');
+                create_toast(
+                    'success', 
+                    'Congratulations!', 
+                    'Your email has been verified, you\'ll be given access to your account in a few seconds.'
+                );
                 clearInterval(int);
                 verified = true;
                 return resolve(true);
@@ -233,6 +263,7 @@ function fill_data(
     mfa(data, tfa_elm, access_key);
 
     
+
     //
     // -- Linked Accounts
     //
@@ -254,6 +285,8 @@ function fill_data(
         }
     }
     update_providers(data);
+
+
 
     //
     // -- Change Password

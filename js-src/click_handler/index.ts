@@ -5,7 +5,8 @@ export function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// 
+
+
 export function attach(
     button: HTMLButtonElement,
 ): () => Promise<void> {
@@ -32,6 +33,8 @@ export function attach(
         });
     };
 }
+
+
 
 export function construct_modal(
     title: string,
@@ -93,6 +96,8 @@ export function construct_modal(
     `;
 }
 
+
+
 export function confirmation_modal(
     yes: () => void | Promise<void>,
     no: () => void | Promise<void>,
@@ -131,4 +136,101 @@ export function confirmation_modal(
 
     // -- Append the modal to the body
     document.body.appendChild(div);
+}
+
+
+
+export function handle_tfa_input(
+    parent_elm: HTMLElement,
+    complete: (code: string) => void,
+    invalid: () => void,
+) {
+    const check = () => {
+        // -- Check if the code is valid
+        const code = Array.from(parent_elm.querySelectorAll('input')).map((i) => i.value)
+        if (code.length === inputs) {
+            if (code.every((i) => !isNaN(parseInt(i)))) complete(code.join(''));
+            else invalid();
+        }
+        else invalid();
+    };
+
+    const inputs = 6;
+
+    for (let i = 0; i < inputs; i++) {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'text');
+        input.setAttribute('name', 'tfa');
+        input.setAttribute('maxlength', '1');
+        input.setAttribute('autocomplete', 'off');
+        input.setAttribute('autocorrect', 'off');
+        input.setAttribute('autocapitalize', 'off');
+        input.setAttribute('spellcheck', 'false');
+        input.setAttribute('pattern', '[0-9]*');
+        input.setAttribute('inputmode', 'numeric');
+
+        input.style.caretColor = 'transparent';
+        input.style.width = '3rem';
+
+        input.classList.add('form-control');
+        input.classList.add('text-center');
+        input.classList.add('form-control-lg');
+        input.classList.add('inp');
+
+        // -- Add the event listener
+        input.addEventListener('keyup', (e) => {
+            const elm = e.target as HTMLInputElement;
+            
+            switch (e.key) {
+                // -- Backspace
+                case 'Backspace':
+                    const prev = elm.previousElementSibling as HTMLInputElement;
+                    if (prev) prev.focus();
+                    check(); 
+                    return;
+
+                // -- Arrow keys
+                case 'ArrowLeft':
+                    const prev2 = elm.previousElementSibling as HTMLInputElement;
+                    if (prev2) prev2.focus();
+                    return;
+
+                case 'ArrowRight':
+                    const next2 = elm.nextElementSibling as HTMLInputElement;
+                    if (next2) next2.focus();
+                    return;
+            }
+
+            // -- Check if the value is a number
+            if (isNaN(parseInt(e.key)))
+                return elm.value = '';
+            
+            // -- Set the value to the first character
+            elm.value = e.key;
+
+            // -- Check if the code is valid
+            check();    
+
+            // -- Move to the next input
+            const next = elm.nextElementSibling as HTMLInputElement;
+            if (next) next.focus();
+        });
+
+        // -- Add the input to the parent
+        parent_elm.appendChild(input);
+
+        // -- Watch for paste
+        input.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const paste = (e.clipboardData.getData('text/plain') as string).slice(0, inputs);
+
+            for (let i = 0; i < paste.length; i++) {
+                const char = paste.charAt(i);
+                if (isNaN(parseInt(char))) continue;
+
+                const elm = parent_elm.querySelectorAll('input')[i] as HTMLInputElement;
+                elm.value = char;
+            }
+        });
+    }
 }
