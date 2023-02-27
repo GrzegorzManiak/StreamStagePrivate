@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}Apply for Streamer{% endblock title %}
+
+{% block content %}
+<div id="application-container" class="m-4">
+
+<b>Apply To Become A Streamer!</b>
+
+<div id="app-streamer">
+    <form class="form-layout" action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ streamer_form.as_p }}
+
+        <div class="d-flex content_center my-4">
+            <button class="btn btn-success ml-2 m-1" type="submit">Next</button>
+        </div>
+    </form>
+</div>
+
+<div id="app-broadcaster">
+    <form class="form-layout" action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ broadcaster_form.as_p }}
+        <div class="d-flex content_center my-4">
+            <button class="btn btn-success ml-2 m-1" type="submit">Next</button>
+            <button class="btn btn-secondary ml-2 m-1" type="submit">Skip</button>
+        </div>
+    </form>
+</div>
+
+</div>
+{% endblock %}

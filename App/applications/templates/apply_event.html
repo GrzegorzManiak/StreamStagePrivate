@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}Apply for Event{% endblock title %}
+
+{% block content %}
+<div id="application-container" class="m-4">
+
+<b>Apply For An Event.</b>
+
+<div id="app-streamer">
+    {% if has_broadcaster %}
+    <form class="form-layout" action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="d-flex content_center my-4">
+                <button class="btn btn-success ml-2 m-1" name="next" type="submit">Submit</button>
+                <button class="btn btn-secondary ml-2 m-1" name="skip" type="submit">Later</button>
+            </div>
+    </form>
+    {% else %}
+        <p>You must set up a broadcaster first before you can apply for an event.</p>
+        <a href="{% url 'apply_broadcaster' %}" class="btn btn-success ml-2 m-1" name="next" type="submit">Setup Broadcster</a>
+        <a href="{% url 'all_events' %}" class="btn btn-secondary ml-2 m-1" name="skip">Skip</a>
+    {% endif %}
+</div>
+
+<!-- Js -->
+<script src="{% static 'js/settings_bin.js' %}"></script>
+{% endblock %}

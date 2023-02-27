@@ -62,7 +62,7 @@ class Member(AbstractUser):
 class Broadcaster(models.Model):
     handle = models.CharField("Broadcaster Handle", unique=True, primary_key=True, max_length=20, validators=[ check_unique_broadcaster_handle ])
     # Streamer who creates events/streams and invites contributors to broadcast event
-    streamer = models.OneToOneField(
+    streamer = models.ForeignKey(
         get_user_model(),
         on_delete=models.CASCADE,
         primary_key=False
@@ -71,10 +71,7 @@ class Broadcaster(models.Model):
     contributors = models.ManyToManyField(get_user_model(), related_name="stream_broadcasters", blank=True)
     # Categories of streaming content
     #category = models.ManyToManyField("events.Category", verbose_name="Categories")
-
-    # is this a individual/personality broadcaster
-    is_individual = models.BooleanField("Is Individual")
-
+    
     name = models.CharField("name", max_length=32)
     biography = models.TextField("Biography", max_length=512)
 
@@ -88,7 +85,7 @@ class Broadcaster(models.Model):
     REQUIRED_FIELDS = ['category']
 
     def __str__(self):
-        return str(self.name)
+        return str("@" + self.handle)
 
 
 class oAuth2(models.Model):

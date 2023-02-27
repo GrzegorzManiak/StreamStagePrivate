@@ -4,6 +4,8 @@ from django.urls import reverse
 from django_countries.fields import CountryField
 from django.core.validators import MaxValueValidator, MinValueValidator 
 
+from accounts.models import Broadcaster
+
 import uuid
 
 class Category(models.Model):
@@ -49,8 +51,10 @@ class Event(models.Model):
     title = models.TextField("Title", default="New Event")
     description = models.TextField("Description", max_length=3096)
     over_18s = models.BooleanField(default=False)
+    # Which broadcaster this event is going to be attributed to.
+    broadcaster = models.ForeignKey(Broadcaster, on_delete=models.CASCADE)
     # References member, but only "streamers" will be allowed to create an event
-    streamer = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    #streamer = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     categories = models.ManyToManyField(to=Category)
     showings = models.ManyToManyField(to=EventShowing)
     primary_media_idx = models.IntegerField(default=0) # Points to an item in the 'media' field - used as a cover photo 

@@ -5,8 +5,8 @@ from .models import Event, EventMedia, Category, EventShowing, EventReview
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-    list_display = [ 'event_id', 'title', 'description', 'over_18s', 'streamer', 'media', 'approved']
-    list_editable = [ 'title', 'description', 'over_18s', 'streamer', 'media', 'approved']
+    list_display = [ 'event_id', 'title', 'description', 'over_18s', 'broadcaster', 'media', 'approved']
+    list_editable = [ 'title', 'description', 'over_18s', 'broadcaster', 'media', 'approved']
     list_display_links = []
     filter_horizontal = ['contributors']
 

@@ -21,12 +21,31 @@ class BroadcasterAppForm(forms.ModelForm):
         fields = [
             'handle',
             'name',
-            'biography',
-            'is_individual'
+            'biography'
         ]
 
     # less work doing it this way than generating a Broadcaster with code i think.
     submission_statement = forms.CharField(widget=forms.Textarea(attrs={'name':'body', 'rows':5, 'cols':32}))
     
+class EventAppForm(forms.ModelForm):
+    class Meta:
+        model = Event
 
+        fields = [
+            'broadcaster',
+            'title', 
+            'description', 
+            'categories',
+            'over_18s', 
+            'showings', 
+            'media',
+        ]
+    
+    
+    def __init__(self, *args, **kwargs):
+        streamer = kwargs.pop('streamer','')
+        super(EventAppForm, self).__init__(*args, **kwargs)
+
+        # Ensure only this user's broadcasters can be selected.
+        self.fields['broadcaster']=forms.ModelChoiceField(queryset=Broadcaster.objects.filter(streamer=streamer))
 
