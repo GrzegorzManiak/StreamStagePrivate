@@ -21,7 +21,6 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-
 class Event(models.Model):
     event_id = models.CharField(primary_key=True, unique=True, max_length=32) # randomly generated 8 character ID
     title = models.TextField("Title", default="New Event")
@@ -63,6 +62,9 @@ class Event(models.Model):
             return None
         else:
             return media[self.primary_media_idx]
+
+    def get_media(self):
+        return EventMedia.objects.filter(event=self).all()
 
     def get_reviews(self):
         return EventReview.objects.filter(event=self).all()
