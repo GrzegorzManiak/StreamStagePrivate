@@ -41,8 +41,7 @@ class EventShowing(models.Model):
     class Meta:
         verbose_name = 'Event Showing'
         verbose_name_plural = 'Event Showings'
-
-
+    
     def __str__(self):
         return self.venue
 
@@ -93,6 +92,9 @@ class Event(models.Model):
             return None
         else:
             return media[self.primary_media_idx]
+
+    def get_media(self):
+        return EventMedia.objects.filter(event=self).all()
 
     def get_reviews(self):
         return EventReview.objects.filter(event=self).all()
