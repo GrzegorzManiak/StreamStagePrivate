@@ -2,10 +2,6 @@ import { create_toast } from '../toasts';
 import { attach_event_listeners, get_pod } from './core/panels';
 import { manage_security_panel } from './core/security';
 
-export function sleep(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 export function get_or_error<e>(element: HTMLElement, attribute: string): e {
     const value = element.getAttribute(attribute);
     if (!value) {

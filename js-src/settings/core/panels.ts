@@ -1,6 +1,7 @@
-import { configuration, sleep } from '../';
+import { configuration } from '../';
 import { PanelType, Panel, Pod } from '../index.d';
 import { create_toast } from '../../toasts';
+import { sleep } from '../../click_handler';
 
 let panels: Array<Panel> = [];
 export let pods: Array<Pod> = [];
