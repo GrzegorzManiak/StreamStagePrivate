@@ -26,7 +26,7 @@
 
             <!-- Event Poster -->
             <div class="d-flex flex-row mx-2 my-4">
-                {% if media.event.all.count == 0 %}
+                {% if event.get_media_count == 0 %}
                 <img class="event-cover" src="{% static 'images/default_event_cover.png' %}" alt="No Event Cover Photo">
                 {% else %}
                 <img class="event-cover" src="{{ cover_pic.picture.url }}">
@@ -60,7 +60,7 @@
                     </div>
 
                     <div class="row">
-                        {% for showing in get_showings %}
+                        {% for showing in event.get_showings %}
                         <div class="col-6">
                             <p>{{showing.time }}</p>
                         </div>
