@@ -11,7 +11,7 @@ from .forms import (EventApplyForm,
                     ShowingUpdateForm,
                     ShowingDeleteForm)
 
-from . import inline_reviews
+from . import inline_reviews, identifier
 
 
                                         # **************
@@ -19,18 +19,7 @@ from . import inline_reviews
                                         # **************
 
 # Generating Event' s Random Event ID
-EVENT_ID_CHARS = list(string.ascii_uppercase + string.ascii_lowercase + "1234567890")
-EVENT_ID_LEN = 8
 
-def generate_event_id():
-    event_id = ""
-    
-    random
-
-    for i in range(EVENT_ID_LEN):
-        event_id += EVENT_ID_CHARS[random.randint(0, len(EVENT_ID_CHARS)-1)]
-
-    return event_id
 
 # could be done with a class view, running the queries in
 # get_context_objects, but currently I see no significant benefit
@@ -70,7 +59,7 @@ def event_create(request):
     if not request.user.is_authenticated or not request.user.is_streamer:
         return redirect('all_events')
     if form.is_valid():
-        new_event_id = generate_event_id()
+        new_event_id = identifier.generate_event_id()
         form = form.save(commit=False)
         form.streamer = request.user
         form.event_id = new_event_id

@@ -80,11 +80,13 @@ def apply_event(request):
     form = EventAppForm(request.POST or None, streamer=user)
     
     if form.is_valid():
-        event = form.save() # allow form to create event
+        # Unchecked checkboxes do not get sent in POST requests.
+        if 'is_18s' not in form.data.keys():
+            form.cleaned_data['is_18s'] = False
 
-        submit_event_application(user, event)
+        event = submit_event_application(user, form.cleaned_data)
 
-        return redirect('landing') # temporary
+        return redirect('event_view', event.event_id) # temporary
 
     context = {
         'form': form,

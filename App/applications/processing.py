@@ -1,5 +1,7 @@
 from .models import *
 
+from StreamStage import identifiers
+
 # Submitting + Amending / User Functionality
 
 def submit_streamer_application(user, data):
@@ -33,24 +35,24 @@ def submit_broadcaster_application(user, data):
     application.save()
 
 def submit_event_application(user, data):
-    submission_statement = data['submission_statement']
-
-    broadcaster = Event(
-        streamer = user,
-        handle = data['handle'],
-        name = data['name'],
-        over_18 = False
+    event = Event(
+        broadcaster = data['broadcaster'],
+        title = data['title'],
+        description = data['description'],
+        over_18s = data['over_18s'],
+        event_id = identifiers.generate_event_id()
     )
 
-    broadcaster.save()
+    event.save()
 
-    application = BroadcasterApplication(
-        submission_statement = submission_statement,
+    application = EventApplication(
         applicant = user,
-        broadcaster = broadcaster
+        event = event,
     )
     
     application.save()
+
+    return event
 
 # Reviewal / Admin Functionality
 def approveStreamerApplication(application, admin):
