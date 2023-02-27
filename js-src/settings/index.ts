@@ -18,7 +18,6 @@ export function get_or_error<e>(element: HTMLElement, attribute: string): e {
     return value as unknown as e;
 }
 
-
 const config = document.getElementById('config');
 
 export const configuration = {

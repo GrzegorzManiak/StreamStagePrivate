@@ -18,7 +18,18 @@ module.exports = {
               exclude: /node_modules/,
               loader: "babel-loader",
             },
-          ],
+
+            {
+                test: /\.ts$/,
+                exclude: /node_modules/,
+                loader: "string-replace-loader",
+                options: {
+                    // -- replace multiple non-indent spaces with a single space
+                    search: /(?<!\n\s*)[ ]+/,
+                    replace: ' ',
+                }
+            }
+        ],
     },
     resolve: {
         extensions: [ '.ts', '.js' ]

@@ -1,12 +1,27 @@
-// 
-// All this function dose is that it changes the text of the button to a spinner
-// whilst retaining the original text.
+/**
+ * @name sleep
+ * 
+ * @param ms: number - The number of milliseconds to sleep
+ * @returns A promise that resolves after the specified number of milliseconds
+ * 
+ * @description This function sleeps for the specified number of milliseconds
+ */
 export function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 
 
+/**
+ * @name attach
+ * 
+ * @param button: HTMLButtonElement - The button to attach the spinner to
+ * @returns A function that will revert the button to its original state
+ * 
+ * @description This function attaches a spinner to the button and disables
+ *              the button, it returns a function that will revert the button    
+ *              to its original state.
+ */
 export function attach(
     button: HTMLButtonElement,
 ): () => Promise<void> {
@@ -36,6 +51,18 @@ export function attach(
 
 
 
+/**
+ * @name construct_modal
+ * 
+ * @param title: string - The title of the modal
+ * @param message: string - The message of the modal
+ * @param buttons: boolean - Whether or not to show the buttons (Continue, Cancel)
+ * @param custom: string - Custom HTML to add to the modal (optional)
+ * @returns A string template for the modal
+ * 
+ * @description This function constructs a string template for a modal
+ *              that can be used to show a message to the user   
+ */
 export function construct_modal(
     title: string,
     message: string,
@@ -98,6 +125,19 @@ export function construct_modal(
 
 
 
+/**
+ * @name confirmation_modal
+ * 
+ * @param yes: () => void | Promise<void> - The function to call if the user clicks 'Continue'
+ * @param no: () => void | Promise<void> - The function to call if the user clicks 'Cancel'
+ * @param message: string - The message of the modal
+ * @param title: string - The title of the modal (optional)
+ *  
+ * @description This function creates a modal that asks the user to confirm
+ *              an action, if the user clicks 'Continue' the yes function is
+ *              called, if the user clicks 'Cancel' the no function is called.
+ *              quite simple.
+ */
 export function confirmation_modal(
     yes: () => void | Promise<void>,
     no: () => void | Promise<void>,
@@ -140,6 +180,15 @@ export function confirmation_modal(
 
 
 
+/**
+ * @name handle_tfa_input
+ * 
+ * @param parent_elm: HTMLElement - The parent element of the inputs
+ * @param complete: (code: string) => void - The function to call when the user has entered a valid code
+ * @param invalid: () => void - The function to call when the user has entered an invalid code
+ * 
+ * @description This function handles the input of a TFA code
+ */
 export function handle_tfa_input(
     parent_elm: HTMLElement,
     complete: (code: string) => void,

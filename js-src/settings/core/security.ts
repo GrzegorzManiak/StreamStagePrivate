@@ -1,10 +1,11 @@
-import { attach, handle_tfa_input } from "../../click_handler";
-import { check_email_verification, recent, remove, send_verification } from "../api/email_verification";
-import { create_toast } from '../../toasts';
-import { get_active_pod, open_panel } from './panels';
+import { check_email_verification, remove, send_verification } from "../api/email_verification";
 import { Pod, SecurityInfoSuccess, VerifyAccessSuccess, SecurityInfo} from "../index.d";
-import { get_security_info } from "../api/security_info";
 import create_linked_account, { attach_lister } from '../elements/oauth';
+import { attach, handle_tfa_input } from "../../click_handler";
+import { get_security_info } from "../api/security_info";
+import { get_active_pod, open_panel } from './panels';
+import { create_toast } from '../../toasts';
+
 import create_login_history from '../elements/history';
 import extend_session from '../api/extend_session';
 import mfa from "../elements/mfa";
@@ -19,7 +20,6 @@ import mfa from "../elements/mfa";
  * @description This function manages the security panel
  */
 export function manage_security_panel(pod: Pod) {
-    console.log('Managing security panel');
 
     // -- Get the panel
     const panel = pod.panel.element,
@@ -28,6 +28,7 @@ export function manage_security_panel(pod: Pod) {
     // -- Get the verify access buttons
     const email_button = panel.querySelector('#send-verification-email') as HTMLButtonElement,
         tfa_button = panel.querySelector('#verify-tfa') as HTMLButtonElement;
+
 
     tfa_button.disabled = true;
     let mfa_code = '';
