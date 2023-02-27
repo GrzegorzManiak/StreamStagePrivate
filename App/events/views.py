@@ -121,8 +121,6 @@ def event_delete(request, event_id):
     return render(request, "event_delete.html", context)
 
 
-
-
                                         # ****************
                                         # *** Showings ***                                        # ***************
                                         # ****************
@@ -134,9 +132,10 @@ def showing_create(request, event_id):
     if not request.user.is_authenticated or not request.user.is_streamer:
         return redirect('event_view', event_id)
     if form.is_valid():
+        form = form.save(commit=False)
+        form.streamer = request.user
+        form.event = event
         form.save()
-        # Adding the new showing to the event
-        event.showings.add(form.save())
 
         return redirect('event_view', event_id)
 

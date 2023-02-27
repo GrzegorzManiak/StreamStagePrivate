@@ -86,11 +86,10 @@ class Event(models.Model):
         return top_review
     
     def get_showings(self):
-        return EventShowing.objects.filter(event=self).all()
+        return EventShowing.objects.filter(event=self).all().order_by('time')
            
     def get_next_showing(self):
-        next_showing = EventShowing.objects.filter(event=self).all().order_by('time').first()
-        return next_showing
+        return self.get_showings().first()
     
 class EventReview(models.Model):
     review_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -139,4 +138,4 @@ class EventShowing(models.Model):
 
 
     def __str__(self):
-        return self.venue
+        return self.time.strftime("%H:%M %d-%m-%Y")
