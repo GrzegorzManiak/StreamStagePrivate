@@ -81,10 +81,10 @@ def send_verification(request):
         # -- Check if the mfa code is valid
         if mfa_code is None: return error_response(
             'Please provide a MFA code')
-        
+
         # -- Check if the mfa code is valid
         totp = pyotp.TOTP(request.user.tfa_secret)
-        if not totp.verify(mfa_code): invalid_response(
+        if totp.verify(mfa_code) == False: return invalid_response(
             'Sorry, but it looks like you have provided an invalid MFA code. Please try again.')
         
         # -- Send it back to the user
