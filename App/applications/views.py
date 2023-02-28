@@ -166,15 +166,11 @@ def review_event_application(request, id):
 def landing_url(request):
     user = request.user
 
-    if True:
-        return render(request, "users/apply.html")
+    if not user.is_authenticated:
+        return redirect('event_list')
 
-    if user.is_authenticated:
-        if user.is_staff:
-            return render(request, "admin/review.html")
-        elif user.is_streamer:
-            return render(request, "users/apply.html")
-
-
-    return redirect('events:all_events')
+    if user.is_staff:
+        return redirect('review_applications')
+    else:
+        return redirect('apply_streamer')
 
