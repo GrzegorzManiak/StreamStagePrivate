@@ -130,7 +130,7 @@ async function unanimate_toast(
     const toast_index = Array.from(toasts_children).indexOf(toast);
 
     // -- Check if the child is animating
-    if (toast.style.animation) {
+    if (toast.style.animation) 
         toast.style.animation = '';
 
     // -- Animate the rest of the toasts
@@ -148,14 +148,14 @@ async function unanimate_toast(
     await sleep(animation_length);
     toast.classList.remove('toast-out');
 
-    
+
     for (let i = 0; i < toasts_children.length; i++) {
         const child = toasts_children[i] as HTMLDivElement;
         if (i <= toast_index) continue;
         child.style.animation = '';
     }
 
-
+    
     // -- Remove the toast from the DOM
     toast.remove();
 }
