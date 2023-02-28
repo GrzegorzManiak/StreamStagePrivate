@@ -103,10 +103,6 @@ header .accordion:focus {
 
 
 /***** Fonts *****/
-h1, h2, h3, h4, h5, h6 {
-    color: #ffb25a;
-    font-weight: bold;
-}
 
 .page-title {
     margin: .5em auto;

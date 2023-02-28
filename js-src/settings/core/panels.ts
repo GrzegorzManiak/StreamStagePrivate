@@ -220,3 +220,52 @@ export function open_panel(panel_type: PanelType) {
     active_pod.element.setAttribute('data-pod-status', '');
     pod.element.setAttribute('data-pod-status', 'active');
 }
+
+
+
+/**
+ * @name hide_pod
+ * @param panel_type: PanelType - The panel type
+ * @param redirect: PanelType - The panel type to redirect to
+ * @returns void
+ * 
+ * @description This function hides the pod
+ *              that matches the panel type  
+ *              that was passed in.
+ * 
+ *              Also, it redirects to the
+ *              panel type that was passed in.
+ */
+export function hide_pod(panel_type: PanelType, redirect: PanelType) {
+    // -- Get the pod
+    const pod = get_pod(panel_type);
+
+    // -- Check if the pod exists
+    if (!pod) return;
+
+    // -- Open the panel that was passed in only if the 
+    //    panel was active
+    if (pod.element.getAttribute('data-pod-status') === 'active')
+        open_panel(redirect);
+
+    // -- Set the pod to hidden
+    pod.element.setAttribute('data-pod-status', 'hidden');
+}
+
+
+
+/**
+ * @name show_pod
+ * @param panel_type: PanelType - The panel type
+ * @returns void
+ */
+export function show_pod(panel_type: PanelType) {
+    // -- Get the pod
+    const pod = get_pod(panel_type);
+
+    // -- Check if the pod exists
+    if (!pod) return;
+
+    // -- Set the pod to nothing
+    pod.element.setAttribute('data-pod-status', '');
+}

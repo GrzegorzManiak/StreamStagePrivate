@@ -1,14 +1,22 @@
-import { Pod, SecurityInfo, SecurityInfoSuccess, VerifyAccessSuccess} from "../index.d";
+import { PanelType, Pod, SecurityInfo, SecurityInfoSuccess, VerifyAccessSuccess} from "../index.d";
 import create_linked_account, { attach_lister } from '../elements/oauth';
 import { attach, handle_tfa_input } from "../../click_handler";
-import { get_active_pod, open_panel } from './panels';
+import { get_active_pod, hide_pod, open_panel, show_pod } from './panels';
 import { create_toast } from '../../toasts';
 
 import create_login_history from '../elements/history';
 import mfa from "../elements/mfa";
 import { check_email_verification, extend_session, get_security_info, remove, send_verification } from "../apis";
 
-
+const security_panels = [
+    'security-preferences',
+    'security-mfa',
+    'security-linked-accounts',
+    'security-password',
+    'security-email',
+    'security-history',
+    'security-delete'
+]
 
 /**
  * @param pod: Pod - The pod that this panel is attached to
@@ -226,6 +234,11 @@ async function open_security_panel(stop: () => void, access_key: string) {
     // -- Else, Get the data and open the security panel
     const data = (res as SecurityInfoSuccess).data;
     fill_data(data, access_key);
+    // -- Show all the panels 
+    for (let sec_panel in security_panels) {
+        show_pod(security_panels[sec_panel] as PanelType);
+        console.log("Showing panel: " + sec_panel);
+    }
     open_panel('security-verified');
 }
 
@@ -247,9 +260,15 @@ function fill_data(
     data: SecurityInfo,
     access_key: string
 ) {
-    // -- Get the panel
-    const panel = document.querySelector('[data-panel-type="security-verified"]');
-
+    // -- Get the timer panel
+    const timer_panel = document.querySelector('#security-timer');
+    timer_panel.setAttribute('data-panel-status', '');
+    
+    // -- Get the security panel
+    const security_panel = document.querySelector('#security-panel');
+    security_panel.setAttribute('data-panel-status', 'hidden');
+    
+    const panel = document;
     
 
     //
@@ -388,7 +407,19 @@ function fill_data(
         if (res.code !== 200) {
             create_toast('error', 'Oops, there appears to be an error', res.message);
             wipe();
+
+            show_pod('security');
             open_panel('security');
+            clearInterval(int);
+
+            timer_panel.setAttribute('data-panel-status', 'hidden');
+            security_panel.setAttribute('data-panel-status', '');
+            
+            // -- Hide all the panels
+            for (let sec_panel in security_panels) {
+                hide_pod(security_panels[sec_panel] as PanelType, 'security');
+                console.log("Hiding panel: " + sec_panel);
+            }
             return clearInterval(data_interval);
         }
 
@@ -400,19 +431,4 @@ function fill_data(
         update_history(data);
     }, 5000);
 
-    const panel_interval = setInterval(() => {
-        const active_pod = get_active_pod();
-        if (active_pod.type === 'security-verified') return;
-
-        // -- Clear the intervals
-        clearInterval(data_interval);
-        clearInterval(panel_interval);
-        clearInterval(int);
-
-        // -- Clear the data
-        wipe();
-
-        // -- Inform the user
-        create_toast('success', 'Info', 'You have left the security panel, your data has been cleared');
-    }, 500);
 }
