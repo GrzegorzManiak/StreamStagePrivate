@@ -1,15 +1,23 @@
 /* Variables */
 :root {
-    --theme-color: #15181d;
-    --theme-secondary-color: rgb(32, 38, 46);
-    --accent-color: #ffb25a;
+    --theme-color: #0d1116;
+    --theme-secondary-color: #161a1f;
+    --theme-backdrop-color: #1e242b;
+    --accent-color: #E5BA73;
     --greyed-out-font-color: #b3b3b3;
     --font-color: #ffffff;
+    --font-color-inverted: #111111;
     --muted-font-color: #b3b3b3;
 
     --header-height: 3.5rem;
     --header-fade-out: 0.5rem;
     --header-button-speed: 0.5s;
+
+    
+    --ss-warning: #E3C567;
+    --ss-error: #FF6666;
+    --ss-success: #6FD08C;
+    --ss-info: #39A9DB;
 }
 
 
@@ -155,3 +163,32 @@ header .accordion:focus {
 
 /***** Media Queries *****/
 
+
+/***** Site wide *****/
+.inp {
+    border: 0px solid!important;
+    /* border-color: var(--accent-color)!important; */
+    background-color: var(--theme-backdrop-color)!important;
+    color: var(--font-color)!important;
+}
+
+.info { 
+    background-color: var(--ss-info)!important; 
+    color: var(--font-color)!important; 
+    border: 0px solid!important;
+}
+.success { 
+    background-color: var(--ss-success)!important; 
+    color: var(--font-color)!important; 
+    border: 0px solid!important;
+}
+.warning { 
+    background-color: var(--ss-warning)!important; 
+    color: var(--font-color-inverted)!important; 
+    border: 0px solid!important;
+}
+.error { 
+    background-color: var(--ss-error)!important; 
+    color: var(--font-color)!important; 
+    border: 0px solid!important;
+}
