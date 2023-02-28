@@ -48,7 +48,11 @@ class EventAppForm(forms.ModelForm):
         super(EventAppForm, self).__init__(*args, **kwargs)
 
         # Ensure only this user's broadcasters can be selected.
-        self.fields['broadcaster'] = forms.ModelChoiceField(queryset=Broadcaster.objects.filter(streamer=streamer))
+        
+        user_broadcasters = Broadcaster.objects.filter(streamer=streamer)
+        most_recent_broadcaster = user_broadcasters.last()
+
+        self.fields['broadcaster'] = forms.ModelChoiceField(queryset=user_broadcasters, initial=most_recent_broadcaster)
         
         self.fields['categories'] = CategoryMC(
              queryset=Category.objects.all(),

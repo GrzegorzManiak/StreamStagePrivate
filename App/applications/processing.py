@@ -2,6 +2,8 @@ from .models import *
 
 from StreamStage import identifiers
 
+from .models import STATUS_APPROVED, STATUS_REJECTED
+
 # Submitting + Amending / User Functionality
 
 def submit_streamer_application(user, data):
@@ -21,7 +23,8 @@ def submit_broadcaster_application(user, data):
         streamer = user,
         handle = data['handle'],
         name = data['name'],
-        over_18 = False
+        over_18 = False,
+        biography = data['biography']
     )
 
     broadcaster.save()
@@ -38,11 +41,14 @@ def submit_event_application(user, data):
     event = Event(
         broadcaster = data['broadcaster'],
         title = data['title'],
-        categories = data['categories'],
         description = data['description'],
         over_18s = data['over_18s'],
         event_id = identifiers.generate_event_id()
     )
+
+    #print(data['categories'])
+    #for category in data['categories']:
+    #    event.categories.add(category)
 
     event.save()
 
@@ -56,23 +62,50 @@ def submit_event_application(user, data):
     return event
 
 # Reviewal / Admin Functionality
-def approveStreamerApplication(application, admin):
-    application.status = "APPROVED"
+def approve_streamer_application(application, admin):
+    application.status = STATUS_APPROVED
     application.processed_by = admin
 
     application.applicant.is_streamer = True
+    application.applicant.save()
+    application.save()
 
-    if application.event:
-        application.event.approved = True
-
-def rejectStreamerApplication(application, admin):
-    application.status = "REJECTED"
+def reject_streamer_application(application, admin):
+    application.status = STATUS_REJECTED
     application.processed_by = admin
+    application.save()
+
+def approve_broadcaster_application(application, admin):
+    application.status = STATUS_APPROVED
+    application.processed_by = admin
+
+    application.broadcaster.approved = True
+    application.save()
+
+def reject_broadcaster_application(application, admin):
+    application.status = STATUS_REJECTED
+    application.processed_by = admin
+    application.save()
+
+def approve_event_application(application, admin):
+    application.status = STATUS_APPROVED
+    application.processed_by = admin
+
+    application.event.approved = True
+    application.event.save()
+    application.save()
+
+def reject_event_application(application, admin):
+    application.status = STATUS_REJECTED
+    application.processed_by = admin
+    application.save()
+
+
 
 # Utility Functions
 
 def get_broadcaster_application(user):
-    return None
+    return BroadcasterApplication.objects.filter(applicant=user).first()
 
 def get_streamer_application(user):
-    return None
+    return StreamerApplication.objects.filter(applicant=user).first()
