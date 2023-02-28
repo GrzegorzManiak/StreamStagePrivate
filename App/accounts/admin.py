@@ -4,6 +4,7 @@ from .models import Member, Broadcaster, oAuth2
 
 
 # Register your models here.
+
 @admin.register(Member)
 class MemberAdmin(UserAdmin):
     model = Member
@@ -14,7 +15,8 @@ class MemberAdmin(UserAdmin):
 @admin.register(Broadcaster)
 class BroadcasterAdmin(admin. ModelAdmin):
     model = Broadcaster
-    list_display = ['streamer', 'category', 'approved']
+    list_display = ['streamer', 'approved']
+    list_editable = ['approved']
     filter_horizontal = ['contributors']
 
 @admin.register(oAuth2)

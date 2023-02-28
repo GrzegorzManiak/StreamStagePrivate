@@ -1,0 +1,13 @@
+
+{% if new_review_form %}
+<div class="col 3">
+    <h4>Add Review</h4>
+    <form class="form-layout review-form" action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ new_review_form.as_p }}
+        <input type="submit" value="Save" />
+    </form>
+</div>
+{% else %}
+    <a class="btn btn-sm btn-secondary" href="?review_override=y">Add another</a>
+{% endif %}

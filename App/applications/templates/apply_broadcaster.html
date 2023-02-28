@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}Apply for a Broadcaster Profile{% endblock title %}
+
+{% block content %}
+<div id="application-container" class="m-4">
+
+<b>Set up a Broadcaster Profile.</b>
+
+<div id="app-streamer">
+    <form class="form-layout" action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <div class="d-flex content_center my-4">
+            <button class="btn btn-success ml-2 m-1" name="next" type="submit">Next</button>
+            <button formnovalidate class="btn btn-secondary ml-2 m-1" name="skip" type="submit">Skip</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
