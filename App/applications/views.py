@@ -1,24 +1,12 @@
 from django.shortcuts import render, redirect
 from .forms import *
 
+from .models import STATUS_WAITING, STATUS_APPROVED, STATUS_REJECTED, status_friendly_list
+
 from .processing import submit_streamer_application, submit_event_application, submit_broadcaster_application, get_broadcaster_application, get_streamer_application
+from .processing import approve_streamer_application, reject_streamer_application, approve_broadcaster_application, reject_broadcaster_application, approve_event_application, reject_event_application
 
-# Create your views here.
-
-def apply_for_event(request):
-    pass
-
-# def broadcaster_apply(request):
-#     user = request.user
-
-#     if not user.is_authenticated:
-#         return redirect("events:all_events")
-#     if user.is_staff:
-#         return redirect("landing")
-#     if not user.is_streamer and GetStreamerApplication(user) is None:
-#         return redirect("landing")
-#     if GetBroadcasterApplication(user) is not None:
-#         return redirect("landing")
+# User views
 
 def apply_broadcaster(request):
     user = request.user
@@ -95,19 +83,94 @@ def apply_event(request):
     
     return render(request, "apply_event.html", context)
 
+# Admin views
+
+def list_applications(request):
+    user = request.user
+
+    if not (user.is_authenticated and user.is_staff):
+        return redirect('all_events')
+    
+    streamer_apps = StreamerApplication.objects.filter(status=STATUS_WAITING).all()
+    broadcaster_apps = BroadcasterApplication.objects.filter(status=STATUS_WAITING).all()
+    event_apps = EventApplication.objects.filter(status=STATUS_WAITING).all()
+
+    context = {
+        'streamer_apps': streamer_apps,
+        'broadcaster_apps': broadcaster_apps,
+        'event_apps': event_apps
+    }
+
+    return render(request, "admin/applications.html", context)
+
+def review_streamer_application(request, id):
+    application = StreamerApplication.objects.filter(application_id=id).first()
+
+    user = request.user
+
+    if not (user.is_authenticated and user.is_staff):
+        return redirect('all_events')
+    if application is None:
+        return redirect('review_applications')
+
+    if request.POST.get("reject") is not None:
+        reject_streamer_application(application, user)
+        return redirect('review_applications')
+        
+    elif request.POST.get("approve") is not None:
+        approve_streamer_application(application, user)
+        return redirect('review_applications')
+
+    return render(request, "admin/review_streamer.html", { 'app' : application })
+
+def review_broadcaster_application(request, id):
+    application = BroadcasterApplication.objects.filter(application_id=id).first()
+
+    user = request.user
+
+    if not (user.is_authenticated and user.is_staff):
+        return redirect('all_events')
+    if application is None:
+        return redirect('review_applications')
+
+    if request.POST.get("reject") is not None:
+        reject_streamer_application(application, user)
+        return redirect('review_applications')
+        
+    elif request.POST.get("approve") is not None:
+        approve_streamer_application(application, user)
+        return redirect('review_applications')
+
+    return render(request, "admin/review_broadcaster.html", { 'app' : application })
+
+def review_event_application(request, id):
+    application = EventApplication.objects.filter(application_id=id).first()
+
+    user = request.user
+
+    if not (user.is_authenticated and user.is_staff):
+        return redirect('all_events')
+    if application is None:
+        return redirect('review_applications')
+
+    if request.POST.get("reject") is not None:
+        reject_streamer_application(application, user)
+        return redirect('review_applications')
+        
+    elif request.POST.get("approve") is not None:
+        approve_streamer_application(application, user)
+        return redirect('review_applications')
+
+    return render(request, "admin/review_event.html", { 'app' : application })
 
 def landing_url(request):
     user = request.user
 
-    if True:
-        return render(request, "users/apply.html")
+    if not user.is_authenticated:
+        return redirect('all_events')
 
-    if user.is_authenticated:
-        if user.is_staff:
-            return render(request, "admin/review.html")
-        elif user.is_streamer:
-            return render(request, "users/apply.html")
-
-
-    return redirect('events:all_events')
+    if user.is_staff:
+        return redirect('review_applications')
+    else:
+        return redirect('apply_streamer')
 

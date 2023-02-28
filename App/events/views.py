@@ -55,7 +55,7 @@ def get_all_events(request):
 
 def event_create(request):
     context = {}
-
+    
     form = EventApplyForm(request.POST or None)
     if not request.user.is_authenticated or not request.user.is_streamer:
         return redirect('all_events')

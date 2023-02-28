@@ -347,3 +347,22 @@ div > a:hover {
 #application-container {
     color: white; /*  :/  */
 }
+
+.application-preview {
+   border: 1px solid white;
+   padding: .5em;
+   margin: .25em;
+}
+
+.submission-statement {
+    width: 600px;
+    max-width: 600px;
+    background-color: #111;
+    border: 1px solid gray;
+    padding: .5em;
+    margin: .5em;
+}
+
+.identifier {
+    color: #8fa3b1;
+}
