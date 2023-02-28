@@ -89,7 +89,7 @@ def list_applications(request):
     user = request.user
 
     if not (user.is_authenticated and user.is_staff):
-        return redirect('event_list')
+        return redirect('all_events')
     
     streamer_apps = StreamerApplication.objects.filter(status=STATUS_WAITING).all()
     broadcaster_apps = BroadcasterApplication.objects.filter(status=STATUS_WAITING).all()
@@ -109,7 +109,7 @@ def review_streamer_application(request, id):
     user = request.user
 
     if not (user.is_authenticated and user.is_staff):
-        return redirect('event_list')
+        return redirect('all_events')
     if application is None:
         return redirect('review_applications')
 
@@ -129,7 +129,7 @@ def review_broadcaster_application(request, id):
     user = request.user
 
     if not (user.is_authenticated and user.is_staff):
-        return redirect('event_list')
+        return redirect('all_events')
     if application is None:
         return redirect('review_applications')
 
@@ -149,7 +149,7 @@ def review_event_application(request, id):
     user = request.user
 
     if not (user.is_authenticated and user.is_staff):
-        return redirect('event_list')
+        return redirect('all_events')
     if application is None:
         return redirect('review_applications')
 
@@ -167,7 +167,7 @@ def landing_url(request):
     user = request.user
 
     if not user.is_authenticated:
-        return redirect('event_list')
+        return redirect('all_events')
 
     if user.is_staff:
         return redirect('review_applications')
