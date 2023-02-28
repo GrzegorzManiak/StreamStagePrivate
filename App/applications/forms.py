@@ -1,7 +1,8 @@
 from django import forms
 from django.db import models
 from .models import *
-#from StreamStage.utilities import CategoryMC
+from StreamStage.utilities import CategoryMC
+from events.models import Category
 
                                         # ***************
                                         # *** Events  ***                                        # ***************
@@ -33,7 +34,7 @@ class EventAppForm(forms.ModelForm):
         model = Event
 
         fields = [
-            #'broadcaster',
+            'broadcaster',
             'title', 
             'description', 
             'categories',
@@ -48,7 +49,8 @@ class EventAppForm(forms.ModelForm):
 
         # Ensure only this user's broadcasters can be selected.
         self.fields['broadcaster'] = forms.ModelChoiceField(queryset=Broadcaster.objects.filter(streamer=streamer))
-        # self.fields['categories'] = CategoryMC(
-        #     queryset=Category.objects.all(),
-        #     widget=forms.CheckboxSelectMultiple
-        # )
+        
+        self.fields['categories'] = CategoryMC(
+             queryset=Category.objects.all(),
+             widget=forms.CheckboxSelectMultiple
+         )

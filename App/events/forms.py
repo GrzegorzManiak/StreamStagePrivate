@@ -1,15 +1,12 @@
 from django import forms
 from .models import Event, EventReview, Category, EventShowing
+from StreamStage.utilities import CategoryMC
 
                                         # ***************
                                         # *** Events  ***                                        # ***************
                                         # *************** 
 # Applying for an Event
 
-class CategoryMC(forms.ModelMultipleChoiceField):
-    def label_from_instance(self, category):
-        return category.name
-    
 # class MediaMC(forms.ModelMultipleChoiceField):
 #     def label_from_instance(self, media):
 #         return media.picture

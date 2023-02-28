@@ -1,7 +1,7 @@
 from django.db import models
 from accounts.models import Member, Broadcaster
 from events.models import Event
-from .util import new_application_id
+from StreamStage.identifiers import new_application_id
 
 # Create your models here.
 
