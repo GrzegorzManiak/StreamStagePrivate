@@ -130,6 +130,7 @@ async function add_listner(
         'Add two factor authentication',
         'Scan the QR Code below with your authenticator app. If you are on mobile, click the link below the QR Code. Then enter the code below to complete the process.',
         true,
+        'success',
         `<img class="w-50 mx-auto d-block rounded" src="${tfa.url}" alt="QR Code"/>
         <a class="mt-3 text-center" href="${tfa.otp}" target="_blank">On mobile? Click here</a>
         <div class="form-group mt-3 mb-3 tfa-input d-flex gap-2 justify-content-center"></div>`

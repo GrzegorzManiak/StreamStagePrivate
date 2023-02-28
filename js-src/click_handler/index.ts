@@ -57,6 +57,7 @@ export function attach(
  * @param title: string - The title of the modal
  * @param message: string - The message of the modal
  * @param buttons: boolean - Whether or not to show the buttons (Continue, Cancel)
+ * @param button: color - The color of the buttons (Continue, Cancel)
  * @param custom: string - Custom HTML to add to the modal (optional)
  * @returns A string template for the modal
  * 
@@ -67,20 +68,22 @@ export function construct_modal(
     title: string,
     message: string,
     buttons: boolean,
+    color: 'danger' | 'success' | 'warning' | 'info' | 'secondary' | 'primary' | 'light' | 'dark',
     custom: string = '',
 ) {
     const buttons_template = `
         <!-- Continue -->
-        <button type="submit" class="btn yes btn-danger btn-lg w-100">
+        <button type="submit" class="btn yes btn-${color} btn-lg w-75">
             Continue
         </button>
 
-
-        <!-- Cancel button -->
-        <button class="btn btn-secondary no btn-lg mt-3 w-100">
-            Go back
+        <!-- Continue -->
+        <button type="submit" class="btn no btn-danger btn-lg w-25 error">
+            Cancel
         </button>
     `;
+
+
 
     // -- String template for the modal
     return `
@@ -95,7 +98,8 @@ export function construct_modal(
 
                 <!-- Modal content -->
                 <div 
-                    class="modal-content bg-dark text-light p-5 rounded"
+                    class="modal-content bg-dark text-light rounded
+                    p-xxl-5 p-xl-5 p-lg-5 p-md-3 p-sm-3 p-2"
                     style="width: 500px;"
                 >
 
@@ -114,7 +118,7 @@ export function construct_modal(
                     </div>
                     
                     <!-- Buttons -->
-                    <div class="d-flex justify-content-lg-start justify-content-center flex-column buttons">
+                    <div class="justify-content-lg-start justify-content-center d-flex buttons w-100 pop-up-buttons">
                         ${buttons ? buttons_template : ''}
                     </div>
                 </div>
@@ -145,7 +149,7 @@ export function confirmation_modal(
     title: string = 'Are you sure?',
 ) {
     // -- String template for the modal
-    const modal = construct_modal(title, message, true);
+    const modal = construct_modal(title, message, true, 'danger');
 
     // -- Create a div element
     const div = document.createElement('div');
