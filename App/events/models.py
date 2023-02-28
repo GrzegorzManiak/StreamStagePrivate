@@ -4,6 +4,8 @@ from django.urls import reverse
 from django_countries.fields import CountryField
 from django.core.validators import MaxValueValidator, MinValueValidator 
 
+from accounts.models import Broadcaster
+
 import uuid
 
 class Category(models.Model):
@@ -18,54 +20,78 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-class EventMedia(models.Model):
-    picture = models.ImageField("Photograph", upload_to="events", null=True, editable=True)
-    description = models.TextField("Photograph Description", max_length=300, blank=True, null=False)
-    
-    class Meta:
-        verbose_name = 'Event Media'
-        verbose_name_plural = 'Event Media'
-
-    def __str__(self):
-        return self.description[:30]
-
-class EventShowing(models.Model):
-    country = CountryField()
-    city = models.CharField(max_length=25, blank=True)
-    venue = models.CharField(max_length=50, blank=True)
-    time = models.DateTimeField()
-
-    class Meta:
-        verbose_name = 'Event Showing'
-        verbose_name_plural = 'Event Showings'
-
-
-    def __str__(self):
-        return self.venue
-
-# when the 'delete event' feature is implemented - all EventMedia objects will need to be deleted by code.
 class Event(models.Model):
     event_id = models.CharField(primary_key=True, unique=True, max_length=32) # randomly generated 8 character ID
     title = models.TextField("Title", default="New Event")
-    description = models.TextField("Description", blank=True, max_length=3096)
+    description = models.TextField("Description", max_length=3096)
     over_18s = models.BooleanField(default=False)
-    # References member, but only "streamers" will be allowed to create an event
-    streamer = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    broadcaster = models.ForeignKey(Broadcaster, on_delete=models.CASCADE)
     categories = models.ManyToManyField(to=Category)
-    showings = models.ManyToManyField(to=EventShowing)
     primary_media_idx = models.IntegerField(default=0) # Points to an item in the 'media' field - used as a cover photo 
-    media = models.ManyToManyField(to=EventMedia, blank=True)
-    contributors = models.ManyToManyField(get_user_model(), related_name="event_broadcasters", blank=True)
+    contributors = models.ManyToManyField(get_user_model(), related_name="event_contributors", blank=True)
     approved = models.BooleanField("Approved", default=False)
 
     def get_absolute_url(self):
-        return reverse('events.view_event', args=[self.event_id])
+        return reverse('event_view', args=[self.event_id])
     
     def __str__(self):
         return self.title
     
-class EventReview(models.Model):
+    def short_description(self):
+        return self.description[:200]
+    
+    def get_average_rating(self, reviews_in = None):
+        avg_rating = 0
 
+        reviews = reviews_in or self.get_reviews()
+        count = reviews.count()
+
+        if count > 0:
+            for review in reviews:
+                avg_rating += review.rating
+            
+            avg_rating /= count
+        
+        return round(avg_rating,1)
+
+    def get_cover_picture(self):
+        media = EventMedia.objects.filter(event=self).all()
+
+        if media.count() == 0:
+            return None
+        else:
+            return media[self.primary_media_idx]
+
+    def get_media(self):
+        return EventMedia.objects.filter(event=self).all()
+    
+    def get_media_count(self):
+        return EventMedia.objects.filter(event=self).all().count()
+
+    def get_reviews(self):
+        return EventReview.objects.filter(event=self).all()
+    
+    def get_review_count(self):
+        return EventReview.objects.filter(event=self).all().count()
+
+    def get_top_review(self, reviews_in = None):
+        reviews = reviews_in or self.get_reviews()
+
+        top_review = None
+        rating = 0
+        for review in reviews:
+            if review.rating > rating:
+                rating = review.rating
+                top_review = review
+        return top_review
+    
+    def get_showings(self):
+        return EventShowing.objects.filter(event=self).all().order_by('time')
+           
+    def get_next_showing(self):
+        return self.get_showings().first()
+    
+class EventReview(models.Model):
     review_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
@@ -82,3 +108,34 @@ class EventReview(models.Model):
 
     def __str__(self):
         return self.body[:100]
+    
+    def short_review(self):
+        return self.body[:25]
+
+class EventMedia(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    picture = models.ImageField("Photograph", upload_to="events", null=True, editable=True)
+    description = models.TextField("Photograph Description", max_length=300, blank=True, null=False)
+    
+    class Meta:
+        verbose_name = 'Event Media'
+        verbose_name_plural = 'Event Media'
+
+    def __str__(self):
+        return self.description[:30]
+
+class EventShowing(models.Model):
+    showing_id = (models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False))
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    country = CountryField()
+    city = models.CharField(max_length=25, blank=True)
+    venue = models.CharField(max_length=50, blank=True)
+    time = models.DateTimeField()
+
+    class Meta:
+        verbose_name = 'Event Showing'
+        verbose_name_plural = 'Event Showings'
+
+
+    def __str__(self):
+        return self.time.strftime("%H:%M %d-%m-%Y")

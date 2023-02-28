@@ -1,0 +1,1 @@
+(()=>{"use strict";var e=document.getElementById("config");console.log(e)})();

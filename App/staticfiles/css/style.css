@@ -4,8 +4,8 @@
     --theme-secondary-color: #161a1f;
     --theme-backdrop-color: #1e242b;
     --accent-color: #E5BA73;
-    --greyed-out-font-color: #b3b3b3;
     --font-color: #ffffff;
+    --greyed-out-font-color: #b3b3b3;
     --font-color-inverted: #111111;
     --muted-font-color: #b3b3b3;
 
@@ -29,6 +29,8 @@
 body {
     background-color: var(--theme-color)!important;
     color: var(--font-color);
+    color: #ffffff;
+
 }
 
 
@@ -79,7 +81,7 @@ header .accordion {
     font-size: 1.5rem!important;
 }
 
-/* -- unfcoused */
+/* -- unfocused */
 header .accordion:focus {
     outline: none;
     box-shadow: none;
@@ -101,10 +103,38 @@ header .accordion:focus {
 
 
 /***** Fonts *****/
+h1, h2, h3, h4, h5, h6 {
+    color: #ffb25a;
+    font-weight: bold;
+}
+
+.page-title {
+    margin: .5em auto;
+    text-align: center;
+}
+
+/***** Forms *****/
+form > input {
+    background-color: #ffb25a;
+    color: rgb(32, 38, 46);
+    font-weight: bold;
+}
 
 
 /***** Images *****/
 
+
+/***** Links *****/
+div > a {
+    text-decoration: none;
+    color: #ffb25a;
+
+}
+
+div > a:hover {
+    /* border: 1px solid #FFFFFF; */
+    color: #FFFFFF;
+}
 
 /***** Category Page *****/
 
@@ -126,6 +156,18 @@ header .accordion:focus {
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
+}
+
+/***** Reviews *****/
+
+.review-form {
+    display: flex;
+    flex-direction: column;
+    margin: .5em;
+}
+
+.review-form * {
+    max-width: 100%;
 }
 
 /***** Upcoming Events Page *****/
@@ -300,4 +342,10 @@ header .accordion:focus {
     font-size: 0.75rem;
     color: var(--greyed-out-font-color);
     margin-top: 0.25rem;
+}
+
+/***** La Aplicación *****/
+
+#application-container {
+    color: white; /*  :/  */
 }

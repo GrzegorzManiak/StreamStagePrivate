@@ -11,6 +11,7 @@ from .oauth import OAuthTypes
 
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
+from .validation import check_unique_broadcaster_handle
 
 # Create your models here.
 class Member(AbstractUser):
@@ -35,9 +36,8 @@ class Member(AbstractUser):
     access_level = models.SmallIntegerField("Access Level", default=0)
     # Maximum parallel devices for a Member to watch on
     max_keys = models.SmallIntegerField("Max Devices", default=1)
-    # 
+    # Is Member more than a basic member?
     is_streamer = models.BooleanField("Streamer Status", default=False)
-    is_broadcaster = models.BooleanField("Broadcaster Status", default=False)
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email', 'first_name', 'last_name']
@@ -95,23 +95,32 @@ class Member(AbstractUser):
 
 # Broadcaster - entity that controls events/streams
 class Broadcaster(models.Model):
+    handle = models.CharField("Broadcaster Handle", unique=True, primary_key=True, max_length=20, validators=[ check_unique_broadcaster_handle ])
     # Streamer who creates events/streams and invites contributors to broadcast event
-    streamer = models.OneToOneField(
+    streamer = models.ForeignKey(
         get_user_model(),
         on_delete=models.CASCADE,
-        primary_key=True
+        primary_key=False
     )
     # Members who can control a broadcast
     contributors = models.ManyToManyField(get_user_model(), related_name="stream_broadcasters", blank=True)
     # Categories of streaming content
-    category = models.CharField("Categories", max_length=100)
-    approved = models.BooleanField("Approved", default=False)
+    #category = models.ManyToManyField("events.Category", verbose_name="Categories")
+    
+    name = models.CharField("name", max_length=32)
+    biography = models.TextField("Biography", max_length=512)
 
+    # Should we hide this entire broadcaster from minor members?
+    over_18 = models.BooleanField()
+
+    # whether the application for this broadcaster has been approved
+    approved = models.BooleanField("Approved", default=False)
+    
     USERNAME_FIELD = 'streamer'
     REQUIRED_FIELDS = ['category']
 
     def __str__(self):
-        return str(self.user)
+        return str("@" + self.handle)
 
 
 class oAuth2(models.Model):

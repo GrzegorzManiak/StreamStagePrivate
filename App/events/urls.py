@@ -1,20 +1,27 @@
 from django.urls import path
-from .views import (EventCreateView,
-                    view_event,
+from .views import (event_create,
+                    event_view,
                     get_all_events,
-                    EventUpdateView,
-                    EventDeleteView,
-                    ReviewCreateView,
-                    ReviewDetailView,
-                    # get_all_reviews,
-                    ReviewUpdateView,
-                    ReviewDeleteView
+                    event_update,
+                    event_delete,
+                    review_create,
+                    review_update,
+                    review_delete,
+                    showing_create,
+                    showing_update,
+                    showing_delete,
 )
 
 urlpatterns = [
     # Events
-    path('new/', EventCreateView.as_view(), name='new_event'),
-    path('<slug:event_id>/', view_event, name='view_event'),
     path('', get_all_events, name='all_events'),
-    path('<slug:event_id>/new_review/', ReviewCreateView.as_view(), name='new_review')
+    path('new/', event_create, name='event_new'),
+    path('<slug:event_id>/', event_view, name='event_view'),
+    path('<slug:event_id>/update/', event_update, name='event_update'),
+    path('<slug:event_id>/delete/', event_delete, name='event_delete'),
+    path('<slug:event_id>/showing/new/', showing_create, name='showing_create'),
+    path('<slug:event_id>/showing/<slug:showing_id>/update/', showing_update, name='showing_update'),
+    path('<slug:event_id>/showing/<slug:showing_id>/delete/', showing_delete, name='showing_delete'),
+    path('<slug:event_id>/review/<slug:review_id>/update/', review_update, name='review_update'),
+    path('<slug:event_id>/review/<slug:review_id>/delete/', review_delete, name='review_delete'),
 ]

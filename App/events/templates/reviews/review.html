@@ -1,0 +1,19 @@
+<div class="card bg-dark p-2 mb-1">
+    <div>
+        <b class="card-title">{{ review.title }} </b>
+        <span class="float-end">by {{review.author.username}}</span>
+    </div>
+    <p class="card-text">{{ review.body }}</p>
+    <div>
+        <span class="mb-0 text-secondary">{{ review.rating }}/10</span>
+        <span class="float-end">{{ review.likes }}</span>
+    </div>
+
+    {% if review.author == user %}
+    <div>
+        <a href="{% url 'review_delete' event.event_id review.review_id %}" class="float-end btn btn-danger btn-sm m-1">Delete</a>
+        <a href="{% url 'review_update' event.event_id review.review_id %}" class="float-end btn btn-primary btn-sm m-1">Update</a>
+    </div>
+
+    {% endif %}
+</div>
