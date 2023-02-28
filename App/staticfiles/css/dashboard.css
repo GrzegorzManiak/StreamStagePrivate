@@ -26,12 +26,12 @@
 }
 
 .side-panel-pod:hover {
-    background-color: #15181d20;
+    background-color: var(--theme-backdrop-color);
     cursor: pointer;
 }
 
 .side-panel-pod:active {
-    background-color: #15181d30;
+    background-color: var(--theme-backdrop-color);
 }
 
 .side-panel-pod-icon {
@@ -71,7 +71,7 @@
     Active pod
 */
 [data-pod-status='active'] { 
-    background-color: #15181D30!important;
+    background-color: var(--theme-color)!important;
 }
 
 [data-pod-status='active'] .side-panel-pod-text { 
@@ -228,3 +228,7 @@
 /* Security */
 [data-has-tfa='true'] .email { display: none!important; }
 [data-has-tfa='false'] .mfa { display: none!important; }
+
+.tfa-input > input {
+    background-color: var(--theme-color)!important;
+}

@@ -1,9 +1,8 @@
 import { attach, confirmation_modal, construct_modal, handle_tfa_input } from '../../click_handler';
-import { SecurityInfo, DefaultResponseData } from '../index.d';
+import { SecurityInfo } from '../index.d';
 import { create_toast } from '../../toasts';
-import disable_tfa from '../api/disable_tfa';
-import verify_tfa from '../api/verify_tfa';
-import setup_tfa from '../api/setup_tfa';
+import { disable_mfa, verify_mfa, setup_mfa } from '../apis';
+
 
 
 
@@ -61,7 +60,7 @@ function remove_listner(
     // -- Try to remove tfa
     confirmation_modal(async () => {
         // -- Try to remove tfa
-        const res = await disable_tfa(access_key);
+        const res = await disable_mfa(access_key);
 
         // -- Check if we got an error
         if (res.code !== 200) {
@@ -108,7 +107,7 @@ async function add_listner(
 ) {
     // -- Attach the spinner and start the request
     const stop_spinner = attach(button),
-        res = await setup_tfa(access_key);
+        res = await setup_mfa(access_key);
 
     // -- Check if we got an error
     if (res.code !== 200) {
@@ -130,6 +129,7 @@ async function add_listner(
         'Add two factor authentication',
         'Scan the QR Code below with your authenticator app. If you are on mobile, click the link below the QR Code. Then enter the code below to complete the process.',
         true,
+        'success',
         `<img class="w-50 mx-auto d-block rounded" src="${tfa.url}" alt="QR Code"/>
         <a class="mt-3 text-center" href="${tfa.otp}" target="_blank">On mobile? Click here</a>
         <div class="form-group mt-3 mb-3 tfa-input d-flex gap-2 justify-content-center"></div>`
@@ -161,7 +161,7 @@ async function add_listner(
     //
     yes_btn.addEventListener('click', async () => {
         const yes_stop = attach(yes_btn);
-        const res = await verify_tfa(access_key, otp);
+        const res = await verify_mfa(access_key, otp);
 
         // -- Check if we got an error
         if (res.code === 401) {

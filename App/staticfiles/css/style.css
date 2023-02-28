@@ -1,15 +1,23 @@
 /* Variables */
 :root {
-    --theme-color: #15181d;
-    --theme-secondary-color: rgb(32, 38, 46);
-    --accent-color: #ffb25a;
+    --theme-color: #0d1116;
+    --theme-secondary-color: #161a1f;
+    --theme-backdrop-color: #1e242b;
+    --accent-color: #E5BA73;
     --greyed-out-font-color: #b3b3b3;
     --font-color: #ffffff;
+    --font-color-inverted: #111111;
     --muted-font-color: #b3b3b3;
 
     --header-height: 3.5rem;
     --header-fade-out: 0.5rem;
     --header-button-speed: 0.5s;
+
+    
+    --ss-warning: #E3C567;
+    --ss-error: #FF6666;
+    --ss-success: #6FD08C;
+    --ss-info: #39A9DB;
 }
 
 
@@ -21,30 +29,6 @@
 body {
     background-color: var(--theme-color)!important;
     color: var(--font-color);
-}
-
-#toasts {
-    position: fixed;
-    top: 0;
-    right: 0;
-    z-index: 9999;
-    margin: 20px;
-}
-
-.toast {
-    background-color: var(--theme-color)!important;
-    color: var(--font-color)!important;
-    border-radius: 1rem!important;
-}
-
-.toast-header {
-    background-color: var(--accent-color)!important;
-    color: var(--font-color)!important; 
-}
-
-.toast-body {
-    background-color: var(--theme-color)!important;
-    color: var(--font-color)!important;
 }
 
 
@@ -155,3 +139,165 @@ header .accordion:focus {
 
 /***** Media Queries *****/
 
+
+/***** Site wide *****/
+.inp {
+    border: 0px solid!important;
+    /* border-color: var(--accent-color)!important; */
+    background-color: var(--theme-backdrop-color)!important;
+    color: var(--font-color)!important;
+}
+
+.pop-up-buttons > * {
+    border-radius: 0rem!important;
+}
+
+.pop-up-buttons > :first-child {
+    border-top-left-radius: 0.35rem!important;
+    border-bottom-left-radius: 0.35rem!important;
+}
+
+.pop-up-buttons > :last-child {
+    border-top-right-radius: 0.35rem!important;
+    border-bottom-right-radius: 0.35rem!important;
+}
+
+@media only screen and (max-width: 500px) {
+    .pop-up-buttons > :first-child { width: 50%!important; }
+    .pop-up-buttons > :last-child { width: 50%!important; }
+}
+
+.info { 
+    background-color: var(--ss-info)!important; 
+    color: var(--font-color)!important; 
+    border: 0px solid!important;
+}
+.success { 
+    background-color: var(--ss-success)!important; 
+    color: var(--font-color)!important; 
+    border: 0px solid!important;
+}
+.warning { 
+    background-color: var(--ss-warning)!important; 
+    color: var(--font-color-inverted)!important; 
+    border: 0px solid!important;
+}
+.error { 
+    background-color: var(--ss-error)!important; 
+    color: var(--font-color)!important; 
+    border: 0px solid!important;
+}
+
+
+
+/***** TOASTS *****/
+
+/* 
+    God im so bad at animations, im trying to make
+    it slide in smoothly and fade in smoothl
+*/
+@keyframes toast-in {
+    0% { opacity: 0; transform: translateY(100%); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes toast-out {
+    0% { opacity: 1; transform: translateX(0); }
+    100% { opacity: 0; transform: translateX(100%); }
+}
+
+@keyframes toast_adjust {
+    from { transform: translateY(0px); }
+    to { transform: translateY(var(--toast-adjust-height)); }
+}
+
+#toasts {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 9999;
+    margin: 20px;
+}
+
+.toast {
+    background-color: var(--theme-color)!important;
+    color: var(--font-color)!important;
+    border-radius: 0.35rem!important;
+    padding: 1rem!important;
+    border-left: 0.175rem solid var(--accent-color)!important;
+    margin-bottom: 0.5rem!important;
+    animation: toast-in 1s ease-in-out 1 forwards;
+    transition: all 1s ease-in-out;
+}
+
+.toast-out {
+    animation: toast-out 1s ease-in-out 1 forwards;
+}
+
+.toast-icon {
+    margin-right: 1rem;
+    display: flex;
+    align-items: flex-start;
+}
+
+.toast-icon > i { 
+    text-align: center;
+    width: 100%;
+    display: none; 
+    font-size: 1.2rem; 
+}
+
+.toast-close {
+    padding: 0.5rem;
+}
+
+.toast-close > i { 
+    text-align: center;
+    width: 100%;
+    font-size: 1.2rem; 
+}
+
+[toast-type='success'] { 
+    border-left-color: var(--ss-success)!important; 
+    background: linear-gradient(90deg, var(--ss-success) -150%, var(--theme-color) 100%);
+}
+[toast-type='success'] [icon='success'] { color: var(--ss-success)!important; display: block; }
+
+
+[toast-type='error'] { 
+    border-left-color: var(--ss-error)!important; 
+    background: linear-gradient(90deg, var(--ss-error) -150%, var(--theme-color) 100%);
+}
+[toast-type='error'] [icon='error'] { color: var(--ss-error)!important; display: block; }
+
+
+[toast-type='warning'] { 
+    border-left-color: var(--ss-warning)!important; 
+    background: linear-gradient(90deg, var(--ss-warning) -150%, var(--theme-color) 100%);
+}
+[toast-type='warning'] [icon='warning'] { color: var(--ss-warning)!important; display: block; }
+
+
+[toast-type='info'] { 
+    border-left-color: var(--ss-info)!important; 
+    background: linear-gradient(90deg, var(--ss-info) -150%, var(--theme-color) 100%);
+}
+[toast-type='info'] [icon='info'] { color: var(--ss-info)!important; display: block; }
+
+
+.toast-content-header {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.toast-content-text {
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+}
+
+.toast-content-time {
+    font-size: 0.75rem;
+    color: var(--greyed-out-font-color);
+    margin-top: 0.25rem;
+}

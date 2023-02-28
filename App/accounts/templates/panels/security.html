@@ -80,6 +80,7 @@
                 mb-3
                 btn-lg
                 loader-btn
+                info
             "
             loader-state='default'
         >
@@ -101,6 +102,7 @@
                 mb-3
                 btn-lg
                 loader-btn
+                info
             "
             loader-state='default'
         >   
@@ -171,6 +173,7 @@
                 mb-3
                 btn-lg
                 loader-btn
+                info
             "
             loader-state='default'
         >
@@ -187,6 +190,187 @@
 
     <hr>
 
+
+    <!--
+        Security preferences
+        Hidden for now up untill i implement it
+    -->
+    <div
+    id='security-preferences-container'
+    style='display: none;' 
+    class="
+        justify-content-start
+        text-left
+    ">
+        <!-- Descriptiopn -->
+        <p class="">
+            <h5 class="fw-bold">
+                Security Preferences
+            </h5>
+
+            <p class="
+                text-muted
+            ">
+                Here you can adjust your security preferences, such as receiving emails when you login from a new device.
+            </p>
+        </p>
+
+        <!-- 
+            Toggles 
+            2x2 grid
+        --> 
+        <div class="
+        ">
+
+            <!-- 
+                New Device Login
+            -->
+            <div class="d-flex justify-content-start align-items-center flex-wrap mb-5 w-50">
+
+                <!-- Toggle -->
+                <div class="d-flex justify-content-center align-items-center flex-column col-2">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="new-device-login" 
+                            {% if user.new_device_login %}checked{% endif %}>
+                        <label class="form-check-label" for="new-device-login"></label>
+                    </div>
+                </div>
+
+                <div class='col-10'>
+                    <h5 class="fw-bold">New Device Login</h5>
+                    <p class="text-muted">Receive an email when you login from a new device.</p>
+                </div>
+            </div>
+
+
+            <!-- 
+                Password Change Email
+            -->
+            <div class="d-flex justify-content-start align-items-center flex-wrap mb-5 w-50">
+
+                <!-- Toggle -->
+                <div class="d-flex justify-content-center align-items-center flex-column col-2">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="new-device-login" 
+                            {% if user.new_device_login %}checked{% endif %}>
+                        <label class="form-check-label" for="new-device-login"></label>
+                    </div>
+                </div>
+
+                <div class='col-10'>
+                    <h5 class="fw-bold">Password Change Email</h5>
+                    <p class="text-muted">Receive an email when the password for your account is changed.</p>
+                </div>
+            </div>
+
+
+            <!-- 
+                Email Change Email
+            -->
+            <div class="d-flex justify-content-start align-items-center flex-wrap mb-5 w-50">
+
+                <!-- Toggle -->
+                <div class="d-flex justify-content-center align-items-center flex-column col-2">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="new-device-login" 
+                            {% if user.new_device_login %}checked{% endif %}>
+                        <label class="form-check-label" for="new-device-login"></label>
+                    </div>
+                </div>
+
+                <div class='col-10'>
+                    <h5 class="fw-bold">Email Change Email</h5>
+                    <p class="text-muted">Receive an email when the email for your account is changed.</p>
+                </div>
+            </div>
+
+
+            <!--
+                Security Panel Email
+            -->
+            <div class="d-flex justify-content-start align-items-center flex-wrap mb-5">
+
+                <!-- Toggle -->
+                <div class="d-flex justify-content-center align-items-center flex-column col-2">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="new-device-login" 
+                            {% if user.new_device_login %}checked{% endif %}>
+                        <label class="form-check-label" for="new-device-login"></label>
+                    </div>
+                </div>
+
+                <div class='col-10'>
+                    <h5 class="fw-bold">Security Panel Email</h5>
+                    <p class="text-muted">Receive an email when you login to the security panel.</p>
+                </div>
+            </div>
+
+
+            <!-- 
+                Linked Accounts Email
+            -->
+            <div class="d-flex justify-content-start align-items-center flex-wrap mb-5">
+
+                <!-- Toggle -->
+                <div class="d-flex justify-content-center align-items-center flex-column col-2">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="new-device-login" 
+                            {% if user.new_device_login %}checked{% endif %}>
+                        <label class="form-check-label" for="new-device-login"></label>
+                    </div>
+                </div>
+
+                <div class='col-10'>
+                    <h5 class="fw-bold">Linked Accounts Email</h5>
+                    <p class="text-muted">Receive an email when a linked account is added or removed.</p>
+                </div>
+            </div>
+
+
+            <!--
+                Require MFA on login
+            -->
+            <div class="d-flex justify-content-start align-items-center flex-wrap mb-5 w-50">
+
+                <!-- Toggle -->
+                <div class="d-flex justify-content-center align-items-center flex-column col-2">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="new-device-login" 
+                            {% if user.new_device_login %}checked{% endif %}>
+                        <label class="form-check-label" for="new-device-login"></label>
+                    </div>
+                </div>
+
+                <div class='col-10'>
+                    <h5 class="fw-bold">Require MFA on login</h5>
+                    <p class="text-muted">You may be required to enter a code from your authenticator app, or to click a code sent to your email upon login.</p>
+                </div>
+            </div>
+
+
+            <!--
+                Require MFA on password reset
+            -->
+            <div class="d-flex justify-content-start align-items-center flex-wrap mb-5 w-50">
+
+                <!-- Toggle -->
+                <div class="d-flex justify-content-center align-items-center flex-column col-2">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="new-device-login" 
+                            {% if user.new_device_login %}checked{% endif %}>
+                        <label class="form-check-label" for="new-device-login"></label>
+                    </div>
+                </div>
+
+                <div class='col-10'>
+                    <h5 class="fw-bold">Require MFA on password reset</h5>
+                    <p class="text-muted">If TOTP is setup, you will be required to enter a code from your authenticator app upon password reset.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
 
     <!-- 
         2FA
@@ -226,6 +410,7 @@
                 loader-btn
                 w-100
                 mfa
+                warning
             "
             loader-state='default'
         >
@@ -245,6 +430,7 @@
                 loader-btn
                 w-100
                 email
+                info
             "
             loader-state='default'
         >
@@ -299,6 +485,7 @@
                     btn-success
                     btn-lg
                     loader-btn
+                    success
                 " 
                 aria-label="OAuth Providers"
                 style='
@@ -325,6 +512,7 @@
                     btn-primary
                     btn-lg
                     loader-btn
+                    info
                 "
                 loader-state='default'
                 style='
@@ -445,6 +633,7 @@
                     btn-lg
                     loader-btn
                     w-100
+                    info
                 "
                 loader-state='default'
             >
@@ -513,6 +702,7 @@
                     btn-lg
                     loader-btn
                     w-100
+                    info
                 "
                 loader-state='default'
             >
@@ -594,6 +784,7 @@
                 btn-lg
                 loader-btn
                 w-100
+                error
             "
             loader-state='default'
         >

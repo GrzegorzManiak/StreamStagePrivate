@@ -1,14 +1,12 @@
-import { check_email_verification, remove, send_verification } from "../api/email_verification";
 import { Pod, SecurityInfo, SecurityInfoSuccess, VerifyAccessSuccess} from "../index.d";
 import create_linked_account, { attach_lister } from '../elements/oauth';
 import { attach, handle_tfa_input } from "../../click_handler";
-import { get_security_info } from "../api/security_info";
 import { get_active_pod, open_panel } from './panels';
 import { create_toast } from '../../toasts';
 
 import create_login_history from '../elements/history';
-import extend_session from '../api/extend_session';
 import mfa from "../elements/mfa";
+import { check_email_verification, extend_session, get_security_info, remove, send_verification } from "../apis";
 
 
 

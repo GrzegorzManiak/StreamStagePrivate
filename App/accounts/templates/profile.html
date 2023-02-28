@@ -15,6 +15,9 @@
 {% endblock %}
 
 {% block content %}
+    <span id='toasts'>
+    </span>
+
     <span 
         id='config'
         data-admin='{{ user.is_staff }}'
@@ -42,7 +45,6 @@
         data-mfa-verify='{{ api.verify_mfa }}'
         data-mfa-disable='{{ api.disable_mfa }}'
     ></span>
-
     <div 
     id = 'main-container'
     class='

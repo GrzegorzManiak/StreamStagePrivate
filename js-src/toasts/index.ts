@@ -1,6 +1,6 @@
 import { sleep } from "../click_handler";
 
-export type ToastType = 'error' | 'success' | 'warning';
+export type ToastType = 'error' | 'success' | 'warning' | 'info';
 
 
 
@@ -31,106 +31,71 @@ export const create_toast = (
     const toasts = document.getElementById('toasts');
     if (!toasts) throw new Error('No toasts element found');
 
-    // -- Create the toast element
-    const toast = document.createElement('div');
-    toast.classList.add('toast', 'show', 'mb-2');
-    toast.setAttribute('role', 'alert');
-    toast.setAttribute('aria-live', 'assertive');
-    toast.setAttribute('aria-atomic', 'true');
+    const toast = `
+        <div 
+            toast-type='${type}'
+            class='
+                toast
+                d-flex
+                align-items-center
+                justify-content-start
+            '
+        >
+            <!-- Icon, pinned to the top -->
+            <div class='toast-icon col-1'>
+                <i class="fa-regular fa-circle-check" icon='success'></i>
+                <i class="fa-solid fa-triangle-exclamation" icon='warning'></i>
+                <i class="fa-solid fa-exclamation" icon='error'></i>
+                <i class="fa-solid fa-circle-info" icon='info'></i>
+            </div>
 
-    // -- Create the toast header
-    const toast_header = document.createElement('div');
-    toast_header.classList.add('toast-header', 'rounded-2');
+            <!-- Content -->
+            <div class='toast-content col-9'>
+                <p class='toast-content-header m-0'>${title}</p>
+                <p class='toast-content-text m-0'>${message}</p>
+                <p class='toast-content-time m-0'>Now</p>
+            </div>
 
-    // -- Create the badge
-    const badge = document.createElement('span');
-    badge.classList.add('badge', `bg-${type === 'error' ? 'danger' : type}`);
-    badge.style.marginRight = '0.5rem';
-    switch (type) {
-        case 'error': badge.innerText = 'Error'; break;
-        case 'success': badge.innerText = 'Success'; break;
-        case 'warning': badge.innerText = 'Warning'; break;
-    }
+            <!-- Close button -->
+            <div class='toast-close col-2'>
+                <i class="fa-solid fa-times"></i>
+            </div>
+        </div>
+    `;
 
-    // -- Create the toast title
-    const toast_title = document.createElement('strong');
-    toast_title.classList.add('me-auto');
-    toast_title.innerText = title;
+    // -- Add the toast to the toasts element
+    const new_toast = document.createElement('div');
+    new_toast.innerHTML = toast;
 
-    // -- Create the close button
-    const close_button = document.createElement('button');
-    close_button.classList.add('btn-close');
-    close_button.setAttribute('data-bs-dismiss', 'toast');
-    close_button.setAttribute('aria-label', 'Close');
+    // -- Get the close button and time
+    const close_button = new_toast.querySelector('.toast-close'),
+            time = new_toast.querySelector('.toast-content-time') as HTMLParagraphElement;
 
+
+    const time_created = new Date();
+
+    // -- For the life of the toast, update the time
+    const time_interval = setInterval(() => {
+        time.innerText = moment(time_created);
+    }, 1000);
+
+
+    // -- Add the close button event listener
     close_button.addEventListener('click', () => {
-        // -- Animate the toast out
-        unanimate_toast(toast);
-
-        // -- Call the closed function
+        unanimate_toast(new_toast, toasts);
+        clearInterval(time_interval);
         closed();
     });
 
-    // -- Add the close button to the toast header
-    toast_header.appendChild(badge);
-    toast_header.appendChild(toast_title);
-    toast_header.appendChild(close_button);
-
-    // -- Create the toast body
-    const toast_body = document.createElement('div');
-    toast_body.classList.add('toast-body', 'rounded-2');
-    toast_body.innerText = message;
-
-    // -- Add the toast header and body to the toast
-    toast.appendChild(toast_header);
-    toast.appendChild(toast_body);
+    // -- Close the toast after x seconds
+    setTimeout(() => {
+        unanimate_toast(new_toast, toasts);
+        clearInterval(time_interval);
+        closed();
+    }, close_after);
 
     // -- Add the toast to the toasts element
-    toasts.appendChild(toast);
-
-    // -- Animate the toast
-    animate_toast(toast);
-
-    // -- After 5 seconds, remove the toast
-    setTimeout(() => {
-        unanimate_toast(toast);
-    }, close_after);
-}
-
-
-
-/**
- * @name animate_toast
- * 
- * @param toast: HTMLDivElement - The toast to animate
- * 
- * @returns void
- *  
- * @description This function animates the toast in
- */
-async function animate_toast(toast: HTMLDivElement) {
-    // -- We want to animate the height of the toast
-    //    and its opacity
-    const height = toast.offsetHeight;
-
-    // -- Set the height and opacity to 0
-    toast.style.height = '0px';
-    toast.style.opacity = '0';
-
-    // -- Show the toast
-    toast.style.display = 'block';
-    toast.classList.add('show');
-
-    // -- Animate the height and opacity
-    const animation_length = 500;
-    
-    // -- Animate the height
-    while (toast.offsetHeight < height) {
-        toast.style.height = `${toast.offsetHeight + 1}px`;
-        toast.style.opacity = `${toast.offsetHeight / height}`;
-
-        await sleep(animation_length / height);
-    }
+    toasts.appendChild(new_toast);
 }
 
 
@@ -145,20 +110,88 @@ async function animate_toast(toast: HTMLDivElement) {
  * @description This function animates the toast out
  *              and then removes it from the DOM
  */
-async function unanimate_toast(toast: HTMLDivElement) {
+async function unanimate_toast(
+    toast: HTMLDivElement,
+    toasts: HTMLElement,
+) {
     // -- We want to animate its opacity 
-    const animation_length = 500;
+    const animation_length = 1000;
 
-    // -- Animate the height
-    while (Number(toast.style.opacity) > 0.1) {
-        toast.style.opacity = `${Number(toast.style.opacity) - 0.01}`;
-        await sleep(animation_length / 100);
+    // -- Add the animation class
+    toast.classList.add('toast-out');
+    const child = toast.children[0] as HTMLDivElement,
+        computed_style = getComputedStyle(child),
+        margin = computed_style.getPropertyValue('margin-bottom');
+
+    const toast_height = toast.offsetHeight + parseInt(margin);
+
+    // -- Animate the rest of the toasts
+    const toasts_children = toasts.children;
+    const toast_index = Array.from(toasts_children).indexOf(toast);
+
+    // -- Check if the child is animating
+    if (toast.style.animation) 
+        toast.style.animation = '';
+
+    // -- Animate the rest of the toasts
+    for (let i = 0; i < toasts_children.length; i++) {
+        const child = toasts_children[i] as HTMLDivElement;
+        if (i <= toast_index) continue;
+        if (child.classList.contains('toast-out')) continue;
+
+        // --toast-adjust-height
+        child.style.setProperty('--toast-adjust-height', `-${toast_height}px`);
+        child.style.animation = `toast_adjust ${animation_length}ms ease-in-out`;
     }
 
-    // -- Hide the toast
-    toast.style.display = 'none';
-    toast.classList.remove('show');
+    // -- Sleep for the animation length
+    await sleep(animation_length);
+    toast.classList.remove('toast-out');
 
+
+    for (let i = 0; i < toasts_children.length; i++) {
+        const child = toasts_children[i] as HTMLDivElement;
+        if (i <= toast_index) continue;
+        child.style.animation = '';
+    }
+
+    
     // -- Remove the toast from the DOM
     toast.remove();
+}
+
+
+
+/**
+ * @name moment
+ * 
+ * @param date: Date - The date to format
+ *
+ * @returns string - The formatted date
+ * 
+ * @description This function formats a date to a
+ *              more human-readable format
+ *              
+ *              For example, if the date is 5 minutes ago,
+ *              it will return '5 minutes ago'    
+ */ 
+export function moment(date: Date): string {
+    // -- Get the time difference in milliseconds
+    const diff = (Date.now() - date.getTime()) / 1000;
+  
+    // -- Define the thresholds for different time intervals
+    const thresholds = [
+        { threshold: 0, label: 'Just now' }, // -- 1 second
+        { threshold: 60 * 1000, label: 'A few seconds ago' }, // -- 1 minute
+        { threshold: 60 * 60 * 1000, label: 'A few minutes ago' }, // -- 1 hour
+        // -- Im not using the below two thresholds, but i added them anyway
+        //    As i MIGHT use them for something else later
+        { threshold: 24 * 60 * 60 * 1000, label: 'A few hours ago' }, // -- 1 day
+        { threshold: 7 * 24 * 60 * 60 * 1000, label: 'A few days ago' }, // -- 1 week
+        { threshold: Infinity, label: 'A while ago' }, // -- 1 week
+    ];
+  
+    // -- Find the first threshold that the time difference is less than or equal to
+    const { label } = thresholds.find(({ threshold }) => diff <= threshold) || thresholds[thresholds.length - 1];
+    return label;
 }
