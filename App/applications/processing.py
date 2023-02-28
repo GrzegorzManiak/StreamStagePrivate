@@ -38,6 +38,7 @@ def submit_event_application(user, data):
     event = Event(
         broadcaster = data['broadcaster'],
         title = data['title'],
+        categories = data['categories'],
         description = data['description'],
         over_18s = data['over_18s'],
         event_id = identifiers.generate_event_id()
