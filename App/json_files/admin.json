@@ -1,1 +1,132 @@
-[{"model": "admin.logentry", "pk": 1, "fields": {"action_time": "2023-02-27T11:09:30.056Z", "user": "4ad192fd-b274-4ebf-bf8b-ea0449763a5a", "content_type": 12, "object_id": "1", "object_repr": "Comedy", "action_flag": 1, "change_message": "[{\"added\": {}}]"}}, {"model": "admin.logentry", "pk": 2, "fields": {"action_time": "2023-02-27T11:10:29.944Z", "user": "4ad192fd-b274-4ebf-bf8b-ea0449763a5a", "content_type": 6, "object_id": "4ad192fd-b274-4ebf-bf8b-ea0449763a5a", "object_repr": "Cian", "action_flag": 2, "change_message": "[{\"changed\": {\"fields\": [\"Country\", \"Streamer Status\"]}}]"}}, {"model": "admin.logentry", "pk": 3, "fields": {"action_time": "2023-02-27T11:48:45.533Z", "user": "4ad192fd-b274-4ebf-bf8b-ea0449763a5a", "content_type": 14, "object_id": "61d5ee8c-080f-4f5a-9e47-e8137814c726", "object_repr": "The Academy", "action_flag": 1, "change_message": "[{\"added\": {}}]"}}]
+[
+    {
+        "model": "admin.logentry",
+        "pk": 1,
+        "fields": {
+            "action_time": "2023-02-28T21:08:55.791Z",
+            "user": "cce3ac93-8d4e-4ccc-ac32-0b7ed4d173d8",
+            "content_type": 13,
+            "object_id": "1",
+            "object_repr": "Comedy",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 2,
+        "fields": {
+            "action_time": "2023-02-28T21:09:25.836Z",
+            "user": "cce3ac93-8d4e-4ccc-ac32-0b7ed4d173d8",
+            "content_type": 13,
+            "object_id": "2",
+            "object_repr": "Stand Up Comedy",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 3,
+        "fields": {
+            "action_time": "2023-02-28T21:09:46.136Z",
+            "user": "cce3ac93-8d4e-4ccc-ac32-0b7ed4d173d8",
+            "content_type": 13,
+            "object_id": "3",
+            "object_repr": "Theatre",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 4,
+        "fields": {
+            "action_time": "2023-02-28T21:10:01.800Z",
+            "user": "cce3ac93-8d4e-4ccc-ac32-0b7ed4d173d8",
+            "content_type": 13,
+            "object_id": "4",
+            "object_repr": "Music",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 5,
+        "fields": {
+            "action_time": "2023-02-28T21:10:31.514Z",
+            "user": "cce3ac93-8d4e-4ccc-ac32-0b7ed4d173d8",
+            "content_type": 13,
+            "object_id": "5",
+            "object_repr": "Invite Only",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 6,
+        "fields": {
+            "action_time": "2023-02-28T21:12:10.484Z",
+            "user": "cce3ac93-8d4e-4ccc-ac32-0b7ed4d173d8",
+            "content_type": 13,
+            "object_id": "6",
+            "object_repr": "Talks",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 7,
+        "fields": {
+            "action_time": "2023-02-28T21:12:31.993Z",
+            "user": "cce3ac93-8d4e-4ccc-ac32-0b7ed4d173d8",
+            "content_type": 6,
+            "object_id": "cce3ac93-8d4e-4ccc-ac32-0b7ed4d173d8",
+            "object_repr": "Cian",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Country\", \"Streamer Status\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 8,
+        "fields": {
+            "action_time": "2023-02-28T21:13:47.527Z",
+            "user": "cce3ac93-8d4e-4ccc-ac32-0b7ed4d173d8",
+            "content_type": 9,
+            "object_id": "CianTheBroadcaster",
+            "object_repr": "@CianTheBroadcaster",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 9,
+        "fields": {
+            "action_time": "2023-02-28T21:14:59.424Z",
+            "user": "cce3ac93-8d4e-4ccc-ac32-0b7ed4d173d8",
+            "content_type": 14,
+            "object_id": "TestEvnt",
+            "object_repr": "Test Event 1",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 10,
+        "fields": {
+            "action_time": "2023-02-28T21:16:13.693Z",
+            "user": "cce3ac93-8d4e-4ccc-ac32-0b7ed4d173d8",
+            "content_type": 14,
+            "object_id": "TestEvt2",
+            "object_repr": "Test Event 2 - More than one Category",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}]"
+        }
+    }
+]

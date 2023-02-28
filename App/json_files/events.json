@@ -1,1 +1,153 @@
-[{"model": "events.category", "pk": 1, "fields": {"name": "Comedy", "description": "Funny Stuff", "splash_photo": "events/Comedy_6148lxG.jfif"}}, {"model": "events.event", "pk": "GlqdyZtm", "fields": {"title": "Test Event", "description": "asdflhaflihefliawehf;iwe", "over_18s": true, "broadcaster": "BenIsShit", "primary_media_idx": 0, "approved": false, "categories": [], "contributors": []}}, {"model": "events.eventreview", "pk": "d9319ada-eed8-48ad-a125-898c5eccbc0d", "fields": {"author": "4ad192fd-b274-4ebf-bf8b-ea0449763a5a", "event": "GlqdyZtm", "title": "Amazing", "body": "adaskdalkflsdfmlm", "created": "2023-02-27T11:52:03.624Z", "updated": "2023-02-27T11:52:03.624Z", "likes": 0, "rating": 9}}, {"model": "events.eventshowing", "pk": "61d5ee8c-080f-4f5a-9e47-e8137814c726", "fields": {"event": "GlqdyZtm", "country": "AQ", "city": "Dublin", "venue": "The Academy", "time": "2024-02-16T11:48:41Z"}}]
+[
+    {
+        "model": "events.category",
+        "pk": 1,
+        "fields": {
+            "name": "Comedy",
+            "description": "Funny Stuff",
+            "splash_photo": "events/Comedy.jfif"
+        }
+    },
+    {
+        "model": "events.category",
+        "pk": 2,
+        "fields": {
+            "name": "Stand Up Comedy",
+            "description": "Funny Stuff with one person & a mic",
+            "splash_photo": "events/StandUp.jfif"
+        }
+    },
+    {
+        "model": "events.category",
+        "pk": 3,
+        "fields": {
+            "name": "Theatre",
+            "description": "Dramatic Stuff",
+            "splash_photo": "events/Theatre.jfif"
+        }
+    },
+    {
+        "model": "events.category",
+        "pk": 4,
+        "fields": {
+            "name": "Music",
+            "description": "Tuuuuuuuuuuuuuuuuuuuuunes",
+            "splash_photo": "events/Music.png"
+        }
+    },
+    {
+        "model": "events.category",
+        "pk": 5,
+        "fields": {
+            "name": "Invite Only",
+            "description": "Personal events with invitation only",
+            "splash_photo": "events/InviteOnly.jfif"
+        }
+    },
+    {
+        "model": "events.category",
+        "pk": 6,
+        "fields": {
+            "name": "Talks",
+            "description": "Tete a tete",
+            "splash_photo": "events/Talks.jpg"
+        }
+    },
+    {
+        "model": "events.event",
+        "pk": "TestEvnt",
+        "fields": {
+            "title": "Test Event 1",
+            "description": "The first test event - Comedy",
+            "over_18s": false,
+            "broadcaster": "CianTheBroadcaster",
+            "primary_media_idx": 0,
+            "approved": true,
+            "categories": [
+                1
+            ],
+            "contributors": [
+                "cce3ac93-8d4e-4ccc-ac32-0b7ed4d173d8"
+            ]
+        }
+    },
+    {
+        "model": "events.event",
+        "pk": "TestEvt2",
+        "fields": {
+            "title": "Test Event 2 - More than one Category",
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            "over_18s": false,
+            "broadcaster": "CianTheBroadcaster",
+            "primary_media_idx": 0,
+            "approved": true,
+            "categories": [
+                2,
+                3,
+                4
+            ],
+            "contributors": []
+        }
+    },
+    {
+        "model": "events.eventreview",
+        "pk": "30551a98-c106-47dc-9bcc-fd85b11dcf84",
+        "fields": {
+            "author": "cce3ac93-8d4e-4ccc-ac32-0b7ed4d173d8",
+            "event": "TestEvnt",
+            "title": "Amazing",
+            "body": "Loved this event",
+            "created": "2023-02-28T21:16:47.123Z",
+            "updated": "2023-02-28T21:16:47.123Z",
+            "likes": 0,
+            "rating": 10
+        }
+    },
+    {
+        "model": "events.eventreview",
+        "pk": "9787afe1-4b17-4932-9c82-312835907084",
+        "fields": {
+            "author": "cce3ac93-8d4e-4ccc-ac32-0b7ed4d173d8",
+            "event": "TestEvnt",
+            "title": "Terrible",
+            "body": "Hated this event",
+            "created": "2023-02-28T21:17:06.089Z",
+            "updated": "2023-02-28T21:17:06.089Z",
+            "likes": 0,
+            "rating": 2
+        }
+    },
+    {
+        "model": "events.eventshowing",
+        "pk": "05415cfa-9922-4227-bc84-fe50827f7aff",
+        "fields": {
+            "event": "TestEvnt",
+            "country": "BH",
+            "city": "Lala Land",
+            "venue": "The George",
+            "time": "2023-02-05T21:21:00Z"
+        }
+    },
+    {
+        "model": "events.eventshowing",
+        "pk": "872e395c-d28c-42fc-96b4-ab438466f0dc",
+        "fields": {
+            "event": "TestEvnt",
+            "country": "GB",
+            "city": "London",
+            "venue": "The Gate",
+            "time": "2023-02-17T21:19:00Z"
+        }
+    },
+    {
+        "model": "events.eventshowing",
+        "pk": "f8b6bd6d-1bf3-4415-82e7-29d12fbbaa11",
+        "fields": {
+            "event": "TestEvnt",
+            "country": "IE",
+            "city": "Dublin",
+            "venue": "The Academy",
+            "time": "2023-07-14T22:00:00Z"
+        }
+    }
+]
