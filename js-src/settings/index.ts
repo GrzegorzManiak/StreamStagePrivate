@@ -50,28 +50,3 @@ attach_event_listeners();
 // -- Attach to all panels
 let security_panel = get_pod('security');
 if (security_panel) manage_security_panel(security_panel);
-
-
-create_toast(
-    'success',
-    'Success',
-    'Two-factor authentication has been removed from your account',
-)
-
-create_toast(
-    'warning',
-    'Warning',
-    'Two-factor authentication has been removed from your account',
-)
-
-create_toast(
-    'error',
-    'Error',
-    'Two-factor authentication has been removed from your account',
-)
-
-create_toast(
-    'info', 
-    'Info',
-    'Two-factor authentication has been removed from your account',
-)

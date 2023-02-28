@@ -1,7 +1,7 @@
 import { ServiceProvider } from '../index.d';
 import { attach, confirmation_modal } from '../../click_handler';
 import { create_toast } from '../../toasts';
-import remove_oauth from '../api/remove_oauth';
+import { remove_oauth } from '../apis';
 
 export default (
     data: ServiceProvider,
