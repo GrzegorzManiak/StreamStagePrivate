@@ -1,6 +1,9 @@
 const path = require("path");
+const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
+    mode: "production",
+    optimization: { minimizer: [new TerserPlugin()] },
     entry: {
         settings: './settings/index.ts',
         authentication: './authentication/index.ts',
@@ -16,7 +19,18 @@ module.exports = {
               exclude: /node_modules/,
               loader: "babel-loader",
             },
-          ],
+
+            {
+                test: /\.ts$/,
+                exclude: /node_modules/,
+                loader: "string-replace-loader",
+                options: {
+                    // -- replace multiple non-indent spaces with a single space
+                    search: /[ ]{2,}/,
+                    replace: ' ',
+                }
+            }
+        ],
     },
     resolve: {
         extensions: [ '.ts', '.js' ]

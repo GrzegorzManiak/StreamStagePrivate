@@ -20,8 +20,12 @@ async function check_email_verification(
             else if (response.code === 200) {
                 // -- Login the user
                 create_toast('success', 'Congratulations!', 'Your email has been verified, you\'ll be redirected to the home page in a few seconds.');
-                clearInterval(int);
-                resolve(true);
+                
+                // -- Wait 3 seconds and redirect the user
+                await sleep(3000);
+
+                // -- Redirect the user
+                location.href = '/'
             }
             else {
                 // -- Show the error

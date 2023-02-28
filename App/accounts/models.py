@@ -1,4 +1,5 @@
 import uuid
+import requests
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
@@ -8,6 +9,8 @@ from timezone_field import TimeZoneField
 
 from .oauth import OAuthTypes
 
+from django.core.files import File
+from django.core.files.temp import NamedTemporaryFile
 from .validation import check_unique_broadcaster_handle
 
 # Create your models here.
@@ -60,10 +63,35 @@ class Member(AbstractUser):
         elif (datetime.date.today() - self.date_of_birth) > datetime.timedelta(days=18*365):
             self.over_18 = True
 
+    def add_profile_pic_from_url(self, url):
+        try:
+            img_tmp = NamedTemporaryFile(delete=True)
+            img_content = requests.get(
+                url,
+                headers={
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36'
+                }
+            ).content
+
+            img_tmp.write(img_content)
+            img_tmp.flush()
+            
+            img = File(img_tmp, name=f'profile_pictures/{self.id}.jpg')
+            self.profile_pic = img
+
+            self.save()
+
+        
+        except Exception as e:
+            print(e)
+            return False
+
     def save(self, *args, **kwargs):
         self.is_over_18()
         self.cased_username = self.username.lower()
         super(Member, self).save(*args, **kwargs)
+
+        
 
 # Broadcaster - entity that controls events/streams
 class Broadcaster(models.Model):
@@ -101,9 +129,33 @@ class oAuth2(models.Model):
     oauth_type = models.SmallIntegerField("Type", choices=OAuthTypes.choices)
     oauth_id = models.CharField("OAuth ID", max_length=100, unique=True)
 
+    last_used = models.DateTimeField(auto_now=True)
+    added = models.DateTimeField(auto_now_add=True)
+
     def serialize(self):
         return {
             "id": self.id,
             "oauth_type": self.oauth_type,
             "oauth_id": self.oauth_id,
+            "last_used": self.last_used,
+            "added": self.added,
         }
+
+
+class LoginHistory(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    member = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    ip = models.GenericIPAddressField("IP Address", protocol='IPv4')
+    time = models.TimeField(auto_now_add=True)
+    date = models.DateField(auto_now_add=True)
+    method = models.CharField("Method", max_length=64)
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "ip": self.ip,
+            "time": self.time,
+            "date": self.date,
+            "method": self.method,
+        }
+    

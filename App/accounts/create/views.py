@@ -75,8 +75,12 @@ def send_reg_verification(request):
         # -- Get the oauth data
         oauth_data = get_oauth_data(oauth_token)
 
+        user = Member.objects.filter(email=oauth_data['data']['email'].lower()).first()
+        email_verified = oauth_data['data']['email_verified']
+        if user != None: email_verified = False
+
         # -- Check if the email is verified
-        if oauth_data['data']['email_verified'] is False:
+        if email_verified is False:
             keys = start_email_verification(
                 email.lower(),
                 password,
@@ -91,7 +95,7 @@ def send_reg_verification(request):
                 'message': 'Email sent'
             }, status=status.HTTP_200_OK)
 
-        else:
+        elif email_verified is True:
             # -- Get the email from the oauth data
             email = oauth_data['data']['email'].lower()
 
@@ -105,9 +109,12 @@ def send_reg_verification(request):
                 password=make_password(password),
             )
 
-
+            # -- Link the oauth account
             link_oauth_account(new_member, oauth_token)
 
+            # -- Set the profile picture
+            new_member.add_profile_pic_from_url(oauth_data['data']['picture'])
+            
 
             # -- If the account was not created successfully
             if isinstance(new_member, JsonResponse):
@@ -121,6 +128,12 @@ def send_reg_verification(request):
                 'token': token,
                 'status': 'success'
             }, status=status.HTTP_201_CREATED)
+
+
+        return JsonResponse({
+            'message': 'Email is not verified',
+            'status': 'error'
+        }, status=status.HTTP_400_BAD_REQUEST)
     
 
     # -- If we dont have an oauth token

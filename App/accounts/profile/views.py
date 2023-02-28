@@ -1,32 +1,27 @@
 import secrets
-import time
+import pyotp
 
-from django.http.response import JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import render
 from django.urls import reverse_lazy
-from rest_framework import status
 from rest_framework.decorators import api_view
 
 from django_countries.fields import CountryField
 from timezone_field import TimeZoneField
+from accounts.com_lib import authenticated, error_response, invalid_response, required_data, success_response
 
 from accounts.oauth.oauth import get_all_oauth_for_member, format_providers
 from accounts.email.verification import add_key, send_email
-from accounts.models import Member
+from accounts.models import LoginHistory, oAuth2
 
-from .forms import compile_objects
-
+from .profile import generate_pat, update_profile, validate_pat, extend_pat, get_pat, PAT_EXPIRY_TIME
 
 @api_view(['GET'])
+@authenticated()
 def profile(request):
-
-    # -- Make sure that the user is logged in
-    if not request.user.is_authenticated:
-        return redirect('login')
-
     # -- Construct the context
     context = {
         'user': request.user,
+        'has_tfa': request.user.tfa_secret is not None,
         'countries': CountryField().countries,
         'timezones': TimeZoneField().get_choices(),
         'api': {
@@ -35,9 +30,14 @@ def profile(request):
             'remove_verification': reverse_lazy('remove_key'),
             'recent_verification': reverse_lazy('recent_key'),
             'security_info': reverse_lazy('security_info'),
+            'update_profile': reverse_lazy('update_profile'),
+            'remove_oauth': reverse_lazy('remove_oauth'),
+            'extend_session': reverse_lazy('extend_session'),
+            'setup_mfa': reverse_lazy('setup_mfa'),
+            'verify_mfa': reverse_lazy('verify_mfa'),
+            'disable_mfa': reverse_lazy('disable_mfa'),
         },
 
-        'pages': compile_objects(request.user),
         'oauth': format_providers()
     }
 
@@ -50,114 +50,140 @@ def profile(request):
 
 
 
-"""
-    This view is responsible for verifying the user
-    before they can access the security page
-"""
-validated_requests = []
-
-def validate(
-    key: str,
-):
-    def rf(user: Member):
-        validated_requests.append({
-            'user': user,
-            'key': key,
-            'time': time.time(),
-        })
-
-    return rf
-
-
 @api_view(['POST'])
+@authenticated()
 def send_verification(request):
+    def callback(data):
+        generate_pat(request.user, key)
 
-    # -- Check if the user is logged in
-    if not request.user.is_authenticated:
-        return JsonResponse({
-            'status': 'error',
-            'message': 'You are not logged in',
-        }, status=status.HTTP_401_UNAUTHORIZED)
-
-    
     if request.user.tfa_secret is None:
         key = secrets.token_urlsafe(32)
         new_key = add_key(
             request.user, 
             request.user.email, 
-            validate(key)
+            callback
         )
 
         res = send_email(new_key[0])
+        if res[0] is False: return invalid_response(res[1])
 
-        if res[0] is False:
-            return JsonResponse({
-                'status': 'error',
-                'message': res[1],
-            }, status=status.HTTP_400_BAD_REQUEST)
-
-        return JsonResponse({
-            'status': 'success',
-            'message': 'Email sent',
+        return success_response('Email sent', {
             'access_key': key,
             'resend_key': new_key[1],
             'verify_key': new_key[2],
-        }, status=status.HTTP_200_OK)
+        })
 
 
     else: 
-        return JsonResponse({
-            'status': 'error',
-            'message': '2FA not implemented',
-        }, status=status.HTTP_400_BAD_REQUEST)
-            
+        # -- Get the mfa code
+        mfa_code = request.data.get('mfa', None)
+
+        # -- Check if the mfa code is valid
+        if mfa_code is None: return error_response(
+            'Please provide a MFA code')
+
+        # -- Check if the mfa code is valid
+        totp = pyotp.TOTP(request.user.tfa_secret)
+        if totp.verify(mfa_code) == False: return invalid_response(
+            'Sorry, but it looks like you have provided an invalid MFA code. Please try again.')
+        
+        # -- Send it back to the user
+        return success_response('MFA code is valid', {
+            'access_key': generate_pat(request.user),
+            'resend_key': '',
+            'verify_key': '',
+        })
+
     
 
 @api_view(['POST'])
-def security_info(request):
-    # -- Make sure that the user is logged in
-    if not request.user.is_authenticated: return JsonResponse({
-            'status': 'error',
-            'message': 'You are not logged in',
-        }, status=status.HTTP_401_UNAUTHORIZED)
-
-
-    # -- Check if they provided a token
-    token = request.data.get('token', None)
-    if token is None: return JsonResponse({
-            'status': 'error',
-            'message': 'No token provided',
-        }, status=status.HTTP_400_BAD_REQUEST)
-    
+@authenticated()
+@required_data(['token'])
+def security_info(request, data):
 
     # -- Check if the token is valid
-    valid = False
-    for req in validated_requests:
-        if req['key'] == token:
-            validated_requests.remove(req)
-            valid = True
-
-    if not valid: return JsonResponse({
-        'status': 'error',
-        'message': 'Invalid token',
-    }, status=status.HTTP_400_BAD_REQUEST)
-
+    pat = validate_pat(data['token'], request.user)
+    if pat[0] == False: return invalid_response(pat[1])
+    pat_data = get_pat(data['token'])[0]  
 
     # -- Return security data
     user = request.user
-    return JsonResponse({
-        'status': 'success',
-        'message': 'Token is valid',
-        'data': {
-            'email': user.email,
-            'dob': user.date_of_birth,
-            'tfa': user.tfa_secret is not None,
-            'access_level': user.access_level,
-            'max_keys': user.max_keys,
-            'is_streamer': user.is_streamer,
-            'is_broadcaster': user.is_broadcaster,
-            'is_admin': user.is_staff,
-            'over_18': user.is_over_18(),
-            'service_providers': get_all_oauth_for_member(user),
+    return success_response('Security data', {
+        'email': user.email,
+        'dob': user.date_of_birth,
+        'tfa': user.tfa_secret is not None,
+        'access_level': user.access_level,
+        'max_keys': user.max_keys,
+        'is_streamer': user.is_streamer,
+        'is_broadcaster': user.is_broadcaster,
+        'is_admin': user.is_staff,
+        'over_18': user.is_over_18(),
+        'service_providers': get_all_oauth_for_member(user),
+        'login_history': [
+            entry.serialize() for entry in LoginHistory.objects.filter(member=user).order_by('-time')[:10]
+        ],
+        'meta': {
+            'started': pat_data['time'],
+            'expires': pat_data['time'] + PAT_EXPIRY_TIME,
         }
-    }, status=status.HTTP_200_OK)
+    })
+
+
+
+@api_view(['POST'])
+@authenticated()
+def update_profile(request):
+
+    # -- Get the data
+    data = request.data
+
+    # -- Check if they provided a token
+    token = request.data.get('token', None)
+    if token is not None:
+
+        # -- Check if the token is valid
+        pat = validate_pat(token, request.user)
+        if pat[0] == False: return invalid_response(pat[1])
+        
+        # -- Update the profile
+        return update_profile(data, True)
+    
+
+    # -- Update the profile
+    else: return update_profile(data, False)
+    
+
+
+@api_view(['POST'])
+@authenticated()
+@required_data(['token', 'oauth_id'])
+def remove_oauth(request, data):
+    
+    # -- Check if the token is valid
+    pat = validate_pat(data['token'], request.user)
+    if pat[0] == False: return invalid_response(pat[1])
+    
+    # -- Get the oauth
+    oauth = oAuth2.objects.filter(
+        id=data['oauth_id'],
+        user=request.user
+    ).first()
+
+    if oauth is None: return invalid_response(
+        'Sorry, but it looks like you have provided an invalid OAuth ID. Please try again.')
+    
+    # -- Delete the oauth
+    oauth.delete()
+    return success_response('OAuth removed successfully')
+
+
+
+@api_view(['POST'])
+@authenticated()
+@required_data(['token'])
+def extend_session(request, data):
+    
+    # -- Check if the token is valid
+    pat = extend_pat(data['token'], request.user)
+    if pat[0] == False: return invalid_response(pat[1])
+    return success_response('Session extended successfully')

@@ -8,10 +8,9 @@ from .models import Member, Broadcaster, oAuth2
 @admin.register(Member)
 class MemberAdmin(UserAdmin):
     model = Member
-    list_display = ['username', 'email', 'is_staff', 'over_18', 'country', 'time_zone', 'max_keys', 'is_streamer']
-    list_editable = ['email', 'is_staff', 'over_18', 'country', 'time_zone', 'max_keys', 'is_streamer']
-    list_display_links = []
-
+    list_display = ['username', 'email', 'is_staff', 'over_18', 'country', 'time_zone', 'max_keys', 'is_streamer', 'profile_pic']
+    list_editable = ['is_staff', 'over_18', 'country', 'time_zone', 'max_keys', 'is_streamer', 'profile_pic']
+    
 
 @admin.register(Broadcaster)
 class BroadcasterAdmin(admin. ModelAdmin):

@@ -105,7 +105,7 @@ class Oauth():
 
         except:
             return OAuthRespone.REQUEST_ERROR
-        print(response)
+
         # -- Parse the data
         github_id = response['id']
         email = response['email']

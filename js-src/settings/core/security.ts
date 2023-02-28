@@ -1,132 +1,418 @@
-import { attach } from "../../click_handler";
-import { recent, remove, send_verification } from "../api/email_verification";
+import { Pod, SecurityInfo, SecurityInfoSuccess, VerifyAccessSuccess} from "../index.d";
+import create_linked_account, { attach_lister } from '../elements/oauth';
+import { attach, handle_tfa_input } from "../../click_handler";
+import { get_active_pod, open_panel } from './panels';
 import { create_toast } from '../../toasts';
-import { open_panel } from './panels';
-import { Pod, SecurityInfoSuccess, VerifyAccessSuccess } from "../index.d";
-import { get_security_info } from "../api/security_info";
 
-// 
-// Main entry point for the security panel
-// 
+import create_login_history from '../elements/history';
+import mfa from "../elements/mfa";
+import { check_email_verification, extend_session, get_security_info, remove, send_verification } from "../apis";
+
+
+
+/**
+ * @param pod: Pod - The pod that this panel is attached to
+ * 
+ * @returns void
+ * 
+ * @description This function manages the security panel
+ */
 export function manage_security_panel(pod: Pod) {
-    console.log('Managing security panel');
 
     // -- Get the panel
-    const panel = pod.panel.element;
+    const panel = pod.panel.element,
+        mfa_input = panel.querySelector('#mfa-input') as HTMLInputElement;
 
-    // -- Get the verify access button
-    // #send-verification-email
-    const button = panel.querySelector('#send-verification-email') as HTMLButtonElement;
+    // -- Get the verify access buttons
+    const email_button = panel.querySelector('#send-verification-email') as HTMLButtonElement,
+        tfa_button = panel.querySelector('#verify-tfa') as HTMLButtonElement;
 
-    // -- Add the click event listener
-    button.addEventListener('click', async () => {
-        const stop_spinner = attach(button);
-        await click_handler(stop_spinner, button, 'email');
+
+    tfa_button.disabled = true;
+    let mfa_code = '';
+    handle_tfa_input(mfa_input, 
+        (code) => {
+            tfa_button.disabled = false;
+            mfa_code = code;
+        },
+        () => tfa_button.disabled = true
+    );
+
+
+    // -- Add the click event listeners
+    email_button.addEventListener('click', async () => email_click_handler(email_button));
+    tfa_button.addEventListener('click', async () => await mfa_click_handler(tfa_button, () => mfa_code));
+}
+
+
+
+/**
+ * @name resend_keys
+ * @description This array stores the resend keys for
+ *              when the user wants to resend the 
+ *              verification email when entering the
+ *              Security panel.
+ * 
+ *              They get looped ove and terminated every
+ *              time the user clicks the button to send
+ *              a new verification email.
+ */
+let resend_keys: string[] = [];
+
+
+
+/**
+ * @name terminate_resend_keys
+ * @description This function terminates all the resend
+ *              keys that are stored in the resend_keys
+ *              array.
+ * @returns Promise<void>
+ */
+export async function terminate_resend_keys() {
+    return new Promise(async (resolve) => {
+        for (const key of resend_keys) {
+            remove(key).then(res => { if (res.code === 200) create_toast(
+                'success',
+                'verification',
+                'The previous verification email has been terminated'
+            )});
+    
+            // -- Remove the key from the array
+            resend_keys = resend_keys.filter(k => k !== key);
+        }
+        
+        // -- We're done
+        return resolve(undefined);
     });
 }
 
 
 
-//
-// If a user wants to resend the verification email
-// we will just store the old ones and terminate them
-//
-let resend_keys: string[] = [];
-let panel_open = false;
-
-// 
-// This function will be called when the user clicks the button
-// to send a verification email to their email address 
-// 
-async function click_handler(
-    stop: () => void, 
+/**
+ * @name email_click_handler
+ * @param button: HTMLButtonElement - The button that was clicked
+ * @returns Promise<void>
+ * 
+ * @description This function is called when the user clicks the
+ *              button to send a verification email to their email   
+ *              address, and awaits a response from the server 
+ *              that specifies if the user has verified their email
+ *              address or not.
+ * 
+ *              If the user has verified their email address, then
+ *              the function will open the security panel.
+ */
+async function email_click_handler(
     button: HTMLButtonElement,
-    type: 'email' | 'tfa'
 ) {
-    // -- Loop through the resend keys and terminate them
-    for (const key of resend_keys) {
-        const remove_res = await remove(key);
-        if (remove_res.code !== 200) {
-            create_toast('error', 'verification', remove_res.message);
-        }
-
-        // -- Remove the key from the array
-        resend_keys = resend_keys.filter(k => k !== key);
-        create_toast('success', 'verification', 'The previous verification email has been terminated');
-    }
-
-    // -- Send the verification request
-    const res = await send_verification(type);
+    // -- Attach the spinner, terminate the resend keys, and send the verification request
+    const stop_spinner = attach(button);
+    await terminate_resend_keys();
+    const res = await send_verification('email');
 
     // -- If its a 200, then show a success toast
     if (res.code !== 200) {
-        create_toast('error', 'verification', 'There was an error sending the verification email: ' + res.message);
-        return stop();
+        create_toast(
+            'error', 
+            'verification', 
+            'There was an error sending the verification email: ' + res.message
+        );
+        return stop_spinner();
     }
     
     // -- The request was a success
-    create_toast('success', 'Please check your email', 'We have sent you a verification email, It will be valid for 15 Minutes');
+    create_toast(
+        'success', 
+        'Please check your email', 
+        'We have sent you a verification email, It will be valid for 15 Minutes'
+    );
 
 
     // -- Get the request details 
-    let { 
-        access_key, 
-        resend_key, 
-        verify_key 
+    let { access_key, resend_key, verify_key 
     } = (res as VerifyAccessSuccess).data;
 
     // -- Store the resend key
     resend_keys.push(resend_key);
     
     // -- Check if the email has been verified
-    const verified = check_email_verification(() => verify_key);
-    stop();
-
-    // -- If the email has been verified
-    verified.then(async() => {
-        // -- Get the data
-        const res = await get_security_info(access_key);
-
-        // -- If the request was a success
-        if (res.code !== 200 || !Object.keys(res).includes('data')) 
-            return create_toast('error', 'Oops, there appears to be an error', res.message);
-        
-        // -- Else, Get the data
-        const data = (res as SecurityInfoSuccess).data;
-        
-        // -- Open the panel
-        open_panel('security-verified');
-    });
+    check_email_verification(() => verify_key).then(
+        async() => open_security_panel(stop_spinner, access_key)
+    );
 }
 
-// -- This function will run every x seconds
-//    to check if the email has been verified
-async function check_email_verification(
-    verify_token: () => string,
-): Promise<boolean> {
-    return new Promise(async (resolve, reject) => {
-        const int = setInterval(async () => {
-            const response = await recent(verify_token());
+
+
+/**
+ * @name mfa_click_handler
+ * @param button: HTMLButtonElement - The button that was clicked
+ * @param get_code: () => string - A function that returns the mfa code
+ *                                 from whatever the user has entered
+ * @returns Promise<void>
+ * 
+ * @description This function is called when the user clicks the
+ *              button to verify their mfa code, and awaits a response   
+ *              from the server that specifies if the user has verified
+ *              their mfa code or not.
+ * 
+ *              If the user has verified their mfa code, then the function
+ *              will open the security panel.
+ */
+async function mfa_click_handler(
+    button: HTMLButtonElement,
+    get_code: () => string = () => ''
+) {
+    // -- Send the verification request, and attach the spinner
+    const stop_spinner = attach(button);
+    const res = await send_verification('tfa', get_code());
+
+    // -- If its a 200, then show a success toast, 401 is invalid code
+    if (res.code === 401) {
+        create_toast(
+            'error', 
+            'verification', 
+            'The code you entered is invalid'
+        ); 
+        return stop_spinner();
+    }
+    else if (res.code !== 200) {
+        create_toast(
+            'error', 
+            'verification', 
+            'There was an error verifying your code: ' + res.message
+        );
+        return stop_spinner();
+    }
     
-            // -- If the email has been verified
-            if (response.code === 404) {} // -- Do nothing
-            else if (response.code === 200) {
-                // -- Login the user
-                create_toast('success', 'Congratulations!', 'Your email has been verified, you\'ll be given access to your account in a few seconds.');
-                clearInterval(int);
-                resolve(true);
-            }
-            else {
-                // -- Show the error
-                create_toast('error', 'Error', response.message);
-                clearInterval(int);
-                reject(false);
-            }
-        }, 3000);
+    // -- The request was a success
+    create_toast(
+        'success', 
+        'verification', 
+        'Your code has been verified'
+    );
+
+    // -- Get the access key, and open the security panel
+    const { access_key } = (res as VerifyAccessSuccess).data;
+    open_security_panel(stop_spinner, access_key);
+}
+
+
+
+/**
+ * @name open_security_panel
+ * @param stop: () => void - A function that stops the spinner
+ *                           eg the mfa button spinner
+ * @param access_key: string - The access key of the user (this is the 
+ *                             key that the user verified their details for,
+ *                             it is used to get sensitive information)
+ * @returns Promise<void>
+ * 
+ * @description This function is called when the user has verified their
+ *              email address or mfa code, and it will get the sensitive
+ *              information from the server, and open the security panel.
+ * 
+ *              If the user has not verified their email address or mfa code,
+ *              then this function if ran, will fail.
+ */
+async function open_security_panel(stop: () => void, access_key: string) {
+    // -- Get the data
+    const res = await get_security_info(access_key);
+    stop();
     
-        // -- Stop the interval after 15 minutes
-        setTimeout(() => {
-            clearInterval(int);
-        }, 15 * 60 * 1000);
+    // -- If the request was a success
+    if (res.code !== 200 || !Object.keys(res).includes('data')) 
+        return create_toast('error', 'Oops, there appears to be an error', res.message);
+    
+    // -- Else, Get the data and open the security panel
+    const data = (res as SecurityInfoSuccess).data;
+    fill_data(data, access_key);
+    open_panel('security-verified');
+}
+
+
+
+/**
+ * @name fill_data
+ * @param data: SecurityInfo - The security information
+ * @param access_key: string - The access key of the user
+ * @returns void
+ * 
+ * @description This function is called when the user has verified their
+ *              email address or mfa code, and it will fill the security 
+ *              panel with the sensitive information. 
+ * 
+ *              It automatically updates data every x seconds.
+ */
+function fill_data(
+    data: SecurityInfo,
+    access_key: string
+) {
+    // -- Get the panel
+    const panel = document.querySelector('[data-panel-type="security-verified"]');
+
+    
+
+    //
+    // -- Extend session
+    //
+    const ES_ID = 'extend-verification-time-container',
+        es_elm = panel.querySelector(`#${ES_ID}`) as HTMLDivElement;
+
+    const btn = es_elm.querySelector('button') as HTMLButtonElement,
+        timer = es_elm.querySelector('#extend-verification-time-timer') as HTMLHeadingElement;
+
+    let time_left = 15 * 60 * 1000; // -- 15 minutes
+    btn.addEventListener('click', async () => {
+        const stop_spinner = attach(btn);
+        const res = await extend_session(access_key);
+        stop_spinner();
+
+        if (res.code !== 200) return create_toast('error', 'Oops, there appears to be an error', res.message);
+        create_toast('success', 'Success', 'Your session has been extended by 15 minutes');
+
+        // -- Reset the timer
+        time_left = 15 * 60 * 1000;
     });
+    
+
+
+    //
+    // -- 2FA
+    //
+    const TFA_ID = 'two-factor-authentication-container',
+        tfa_elm = panel.querySelector(`#${TFA_ID}`) as HTMLDivElement;
+
+    mfa(data, tfa_elm, access_key);
+
+    
+
+    //
+    // -- Linked Accounts
+    //
+    const LA_ID = 'linked-accounts-container',
+        la_elm = panel.querySelector(`#${LA_ID}`) as HTMLDivElement;
+
+    attach_lister(la_elm);
+
+    // #linked-accounts
+    const linked_accounts = la_elm.querySelector('#linked-accounts') as HTMLDivElement;
+    const update_providers = (data: SecurityInfo) => {
+        // -- Clear the linked accounts
+        linked_accounts.innerHTML = '';
+
+        // -- Add the new linked accounts
+        for (const account of data.service_providers) {
+            const new_elm = create_linked_account(account, access_key);
+            linked_accounts.appendChild(new_elm);
+        }
+    }
+    update_providers(data);
+
+
+
+    //
+    // -- Change Password
+    //
+    const CP_ID = 'change-password-container',
+        cp_elm = panel.querySelector(`#${CP_ID}`) as HTMLDivElement;
+
+
+
+    //
+    // -- Change Email
+    //  
+    const CE_ID = 'change-email-container',
+        ce_elm = panel.querySelector(`#${CE_ID}`) as HTMLDivElement;
+
+    console.log(ce_elm);
+
+
+
+    //
+    // -- Login History
+    //
+    const LH_ID = 'login-history-container',
+        lh_elm = panel.querySelector(`#${LH_ID}`) as HTMLDivElement;
+
+    // #login-history
+    const login_history = lh_elm.querySelector('#login-history') as HTMLDivElement;
+    const update_history = (data: SecurityInfo) => {
+        // -- Clear the login history
+        login_history.innerHTML = '';
+
+        for (const login of data.login_history) {
+            const new_elm = create_login_history(login);
+            login_history.appendChild(new_elm);
+        }
+    }
+    update_history(data);
+
+
+
+    //
+    // -- Delete Account
+    //
+    const DA_ID = 'delete-account-container',
+        da_elm = panel.querySelector(`#${DA_ID}`) as HTMLDivElement;
+
+    
+
+
+    // 
+    // -- Update interval (5 sec)
+    // 
+    const wipe = () => {
+        linked_accounts.innerHTML = '';
+        login_history.innerHTML = '';
+    };
+
+    // -- Start the timer
+    const int = setInterval(() => {
+        // -- Update the timer
+        time_left -= 1000;
+        
+        let min = Math.floor(time_left / 1000 / 60);
+        let sec = Math.floor(time_left / 1000) % 60;
+
+        timer.innerText = `${min}:${sec < 10 ? '0' + sec : sec}`;
+
+        // -- If the time is up
+        if (time_left <= 0) {
+            create_toast('error', 'Oops, there appears to be an error', 'Your session has expired, please refresh the page to continue');
+            open_panel('security');
+        }
+    }, 1000);
+
+    const data_interval = setInterval(async () => {
+        const res = await get_security_info(access_key);
+        if (res.code !== 200) {
+            create_toast('error', 'Oops, there appears to be an error', res.message);
+            wipe();
+            open_panel('security');
+            return clearInterval(data_interval);
+        }
+
+        // -- Get the data
+        const data = (res as SecurityInfoSuccess).data;
+
+        // -- Update data
+        update_providers(data);
+        update_history(data);
+    }, 5000);
+
+    const panel_interval = setInterval(() => {
+        const active_pod = get_active_pod();
+        if (active_pod.type === 'security-verified') return;
+
+        // -- Clear the intervals
+        clearInterval(data_interval);
+        clearInterval(panel_interval);
+        clearInterval(int);
+
+        // -- Clear the data
+        wipe();
+
+        // -- Inform the user
+        create_toast('success', 'Info', 'You have left the security panel, your data has been cleared');
+    }, 500);
 }
