@@ -29,8 +29,6 @@
 body {
     background-color: var(--theme-color)!important;
     color: var(--font-color);
-    color: #ffffff;
-
 }
 
 
@@ -107,7 +105,11 @@ header .accordion:focus {
 .page-title {
     margin: .5em auto;
     text-align: center;
+    color: #ffb25a;
+
 }
+
+
 
 /***** Forms *****/
 form > input {
@@ -123,12 +125,12 @@ form > input {
 /***** Links *****/
 div > a {
     text-decoration: none;
-    color: #ffb25a;
+    color: #FFFFFF;
 
 }
 
 div > a:hover {
-    /* border: 1px solid #FFFFFF; */
+    font-weight: bolder;
     color: #FFFFFF;
 }
 

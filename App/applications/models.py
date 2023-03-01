@@ -15,6 +15,7 @@ status_friendly_list = [
     (STATUS_REJECTED, "Rejected")
 ]
 
+# Application to become a Streamer
 class StreamerApplication(models.Model):
     application_id = models.CharField(primary_key=True, max_length=9, default=new_application_id)
     applicant = models.ForeignKey(Member, on_delete=models.CASCADE, null=False)
@@ -36,6 +37,7 @@ class StreamerApplication(models.Model):
         self.event.delete()
         self.status = STATUS_REJECTED
 
+# Application to stream an event
 class EventApplication(models.Model):
     application_id = models.CharField(primary_key=True,max_length=9,default=new_application_id)
     applicant = models.ForeignKey(Member, null=False, on_delete=models.CASCADE)
@@ -45,6 +47,7 @@ class EventApplication(models.Model):
 
     processed_by = models.ForeignKey(Member, related_name="event_processed_by", null=True, on_delete=models.DO_NOTHING)
 
+# Application to become a Broadcaster
 class BroadcasterApplication(models.Model):
     application_id = models.CharField(primary_key=True,max_length=9,default=new_application_id)
     applicant = models.ForeignKey(Member, null=False, on_delete=models.CASCADE)

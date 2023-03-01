@@ -8,6 +8,7 @@ from accounts.models import Broadcaster
 
 import uuid
 
+# Event/Broadcaster Category Model
 class Category(models.Model):
     name = models.CharField("Category Name", max_length=48)
     description = models.TextField("Brief Description", max_length=256)
@@ -20,6 +21,7 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+# Event Model
 class Event(models.Model):
     event_id = models.CharField(primary_key=True, unique=True, max_length=32) # randomly generated 8 character ID
     title = models.TextField("Title", default="New Event")
@@ -90,7 +92,8 @@ class Event(models.Model):
            
     def get_next_showing(self):
         return self.get_showings().first()
-    
+
+# Event Review Model
 class EventReview(models.Model):
     review_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
@@ -111,7 +114,19 @@ class EventReview(models.Model):
     
     def short_review(self):
         return self.body[:25]
+    
+    # def get_review_likes(self):
+    #     return EventReview.objects.filter(event=self).filter(review_id=self.review_id).count()
+    
+    # def like(self):
+    #     if EventReview.author == get_user_model():
+    #         EventReview.likes
+    #     else:
+    #         if 
+    #         EventReview.likes += 1
+    
 
+# Event Media Model
 class EventMedia(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     picture = models.ImageField("Photograph", upload_to="events", null=True, editable=True)
@@ -124,6 +139,7 @@ class EventMedia(models.Model):
     def __str__(self):
         return self.description[:30]
 
+# Event Showing Model
 class EventShowing(models.Model):
     showing_id = (models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False))
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
@@ -135,7 +151,6 @@ class EventShowing(models.Model):
     class Meta:
         verbose_name = 'Event Showing'
         verbose_name_plural = 'Event Showings'
-
 
     def __str__(self):
         return self.time.strftime("%H:%M %d-%m-%Y")

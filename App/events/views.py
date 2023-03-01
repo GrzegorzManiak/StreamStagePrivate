@@ -19,12 +19,6 @@ from StreamStage import identifiers
                                         # *** Events ***                                        # ***************
                                         # **************
 
-# Generating Event' s Random Event ID
-
-
-# could be done with a class view, running the queries in
-# get_context_objects, but currently I see no significant benefit
-# in doing so.
 # Viewing an individual Event
 def event_view(request, event_id):
     event = Event.objects.filter(event_id=event_id).first()
@@ -71,6 +65,7 @@ def event_create(request):
     context['form']= form
     return render(request, "event_new.html", context)
 
+# Update an event
 def event_update(request, event_id):
     context = {}
     event = Event.objects.get(event_id=event_id)
