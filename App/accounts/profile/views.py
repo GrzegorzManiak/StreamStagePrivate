@@ -115,7 +115,6 @@ def security_info(request, data):
         'access_level': user.access_level,
         'max_keys': user.max_keys,
         'is_streamer': user.is_streamer,
-        'is_broadcaster': user.is_broadcaster,
         'is_admin': user.is_staff,
         'over_18': user.is_over_18(),
         'service_providers': get_all_oauth_for_member(user),

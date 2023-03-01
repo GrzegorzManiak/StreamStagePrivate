@@ -8,7 +8,14 @@ export type PanelType =
     'purchases' |
     'events' |
     'event-request' |
-    'venues';
+    'venues' |
+    'security-preferences' |
+    'security-mfa' |
+    'security-linked-accounts' |
+    'security-password' |
+    'security-email' |
+    'security-history' |
+    'security-delete';
 
 export interface Panel {
     element: Element;

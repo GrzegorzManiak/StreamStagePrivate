@@ -63,6 +63,6 @@ urlpatterns = [
 
     path('api/email/remove/', remove_key_view, name='remove_key'),
     path('api/email/resend/', resend_key_view, name='resend_key'),
-    path('api/email/verify/', verify_key_view, name='verify_key'),
+    path('email/verify/', verify_key_view, name='verify_key'),
     path('api/email/recent/', check_if_verified_recently_view, name='recent_key'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
