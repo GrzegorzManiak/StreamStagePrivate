@@ -162,27 +162,52 @@
         </p>
 
         
-        <!-- Button -->
-        <button 
-            type="submit" 
-            id="extend-verification-time" 
-            class="
-                btn 
-                btn-primary
-                mb-3
-                btn-lg
-                loader-btn
-                info
-            "
-            loader-state='default'
+        <!-- Buttons -->
+        <div
+            class='d-flex w-100 justify-content-center pop-up-buttons'
         >
-            <span>
-                <div class='spinner-border' role='status'>
-                    <span class='visually-hidden'>Loading...</span>
-                </div>
-            </span>
-            <p>Extend Session</p>
-        </button>
+            <button 
+                type="submit" 
+                id="extend-verification-time" 
+                class="
+                    btn 
+                    btn-primary
+                    mb-3
+                    btn-lg
+                    loader-btn
+                    info
+                "
+                loader-state='default'
+            >
+                <span>
+                    <div class='spinner-border' role='status'>
+                        <span class='visually-hidden'>Loading...</span>
+                    </div>
+                </span>
+                <p>Extend Session</p>
+            </button>
+
+            <button 
+                type="submit" 
+                id="extend-verification-time" 
+                class="
+                    btn 
+                    btn-danger
+                    mb-3
+                    btn-lg
+                    loader-btn
+                    error
+                "
+                loader-state='default'
+            >
+                <span>
+                    <div class='spinner-border' role='status'>
+                        <span class='visually-hidden'>Loading...</span>
+                    </div>
+                </span>
+                <p>Close Session</p>
+            </button>
+        </div>
         
     </div>
 

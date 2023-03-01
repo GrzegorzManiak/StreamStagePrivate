@@ -1,7 +1,7 @@
 import { PanelType, Pod, SecurityInfo, SecurityInfoSuccess, VerifyAccessSuccess} from "../index.d";
 import create_linked_account, { attach_lister } from '../elements/oauth';
 import { attach, handle_tfa_input } from "../../click_handler";
-import { get_active_pod, hide_pod, open_panel, show_pod } from './panels';
+import { add_callback, get_active_pod, hide_pod, open_panel, show_pod } from './panels';
 import { create_toast } from '../../toasts';
 
 import create_login_history from '../elements/history';
@@ -17,6 +17,8 @@ const security_panels = [
     'security-history',
     'security-delete'
 ]
+
+let verified = false;
 
 /**
  * @param pod: Pod - The pod that this panel is attached to
@@ -35,6 +37,20 @@ export function manage_security_panel(pod: Pod) {
     const email_button = panel.querySelector('#send-verification-email') as HTMLButtonElement,
         tfa_button = panel.querySelector('#verify-tfa') as HTMLButtonElement;
 
+    add_callback(async () => {
+        if (!verified) return;
+
+        // -- Get the timer panel
+        const timer_panel = document.querySelector('#security-timer');
+
+        // -- Get the current panel
+        const pod = get_active_pod();
+
+        // -- If we left the security panel
+        if ( security_panels.indexOf(pod.type) === -1 && pod.type !== 'security'
+        ) timer_panel.setAttribute('data-panel-status', 'hidden');
+        else timer_panel.setAttribute('data-panel-status', '');
+    });
 
     tfa_button.disabled = true;
     let mfa_code = '';
@@ -269,7 +285,7 @@ function fill_data(
     security_panel.setAttribute('data-panel-status', 'hidden');
     
     const panel = document;
-    
+    verified = true;
 
     //
     // -- Extend session
@@ -412,23 +428,24 @@ function fill_data(
             open_panel('security');
             clearInterval(int);
 
+            verified = false;
+
             timer_panel.setAttribute('data-panel-status', 'hidden');
             security_panel.setAttribute('data-panel-status', '');
             
             // -- Hide all the panels
             for (let sec_panel in security_panels) {
                 hide_pod(security_panels[sec_panel] as PanelType, 'security');
-                console.log("Hiding panel: " + sec_panel);
-            }
-            return clearInterval(data_interval);
+            } return clearInterval(data_interval);
         }
 
         // -- Get the data
         const data = (res as SecurityInfoSuccess).data;
+        verified = true;
 
         // -- Update data
         update_providers(data);
         update_history(data);
     }, 5000);
-
+    
 }
