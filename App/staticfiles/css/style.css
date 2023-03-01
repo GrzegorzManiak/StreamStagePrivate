@@ -105,7 +105,11 @@ header .accordion:focus {
 .page-title {
     margin: .5em auto;
     text-align: center;
+    color: #ffb25a;
+
 }
+
+
 
 /***** Forms *****/
 form > input {
