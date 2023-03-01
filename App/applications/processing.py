@@ -101,11 +101,12 @@ def reject_event_application(application, admin):
     application.save()
 
 
-
 # Utility Functions
-
 def get_broadcaster_application(user):
     return BroadcasterApplication.objects.filter(applicant=user).first()
 
 def get_streamer_application(user):
     return StreamerApplication.objects.filter(applicant=user).first()
+
+def get_event_applications(user):
+    return EventApplication.objects.filter(applicant=user).all()
