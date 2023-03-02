@@ -47,24 +47,33 @@
 }
 
 /* General */
-[data-pod='profile'] .side-panel-pod-icon { background-color: #ffde4d; }
+[data-pod='profile'] .side-panel-pod-icon { background-color: #88d464; }
+[data-pod='payment'] .side-panel-pod-icon { background-color: #88d464; }
+[data-pod='notifications'] .side-panel-pod-icon { background-color: #88d464; }
+
+/* Security */
 [data-pod='security'] .side-panel-pod-icon { background-color: #ff6a6a; }
-[data-pod='payment'] .side-panel-pod-icon { background-color: #7ce04d; }
-[data-pod='notifications'] .side-panel-pod-icon { background-color: #4de096; }
+[data-pod='security-preferences'] .side-panel-pod-icon { background-color: #ff6a6a; }
+[data-pod='security-mfa'] .side-panel-pod-icon { background-color: #ff6a6a; }
+[data-pod='security-linked-accounts'] .side-panel-pod-icon { background-color: #ff6a6a; }
+[data-pod='security-password'] .side-panel-pod-icon { background-color: #ff6a6a; }
+[data-pod='security-email'] .side-panel-pod-icon { background-color: #ff6a6a; }
+[data-pod='security-history'] .side-panel-pod-icon { background-color: #ff6a6a; }
+[data-pod='security-delete'] .side-panel-pod-icon { background-color: #ff6a6a; }
 
 /* Other */
 [data-pod='help'] .side-panel-pod-icon { background-color: #4d74e0; }
-[data-pod='purchases'] .side-panel-pod-icon { background-color: #b362d3; }
-[data-pod='reviews'] .side-panel-pod-icon { background-color: #e09b4d; }
+[data-pod='purchases'] .side-panel-pod-icon { background-color: #4d74e0; }
+[data-pod='reviews'] .side-panel-pod-icon { background-color: #4d74e0; }
 
 /* Broadcaster */
-[data-pod='events'] .side-panel-pod-icon { background-color: #e04d4d; }
+[data-pod='events'] .side-panel-pod-icon { background-color: #4de0e0; }
 [data-pod='broadcaster'] .side-panel-pod-icon { background-color: #4de0e0; }
 
 /* Admin */
 [data-pod='event-request'] .side-panel-pod-icon { background-color: #4de09b; }
-[data-pod='broadcaster-request'] .side-panel-pod-icon { background-color: #b34de0; }
-[data-pod='venues'] .side-panel-pod-icon { background-color: #e04d8a; }
+[data-pod='broadcaster-request'] .side-panel-pod-icon { background-color: #4de09b; }
+[data-pod='venues'] .side-panel-pod-icon { background-color: #4de09b; }
 
 
 /*  

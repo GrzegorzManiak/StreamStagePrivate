@@ -140,6 +140,29 @@ export function attach_to_sidepanel() {
 
 
 /**
+ * @name change_callbacks
+ * @description This object contains all the callbacks
+ *              That will be called when a panel is changed
+ */
+export let callbacks: Array<(
+    panel_type: PanelType,
+    panel: Panel,
+    pod: Pod
+) => void> = [];
+
+
+
+/**
+ * @name add_callback
+ * @param callback: (panel_type: PanelType, panel: Panel, pod: Pod) => void - The callback
+ * @returns void
+ */
+export function add_callback(callback: (panel_type: PanelType, panel: Panel, pod: Pod) => void) {
+    callbacks.push(callback);
+}
+
+
+/**
  * @name attach_event_listeners
  * @returns void
  * 
@@ -219,6 +242,9 @@ export function open_panel(panel_type: PanelType) {
     //    active
     active_pod.element.setAttribute('data-pod-status', '');
     pod.element.setAttribute('data-pod-status', 'active');
+
+    // -- Call all the callbacks
+    callbacks.forEach(callback => callback(panel_type, pod.panel, pod));
 }
 
 
