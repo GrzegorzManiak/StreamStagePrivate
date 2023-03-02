@@ -114,6 +114,17 @@ class EventReview(models.Model):
     
     def short_review(self):
         return self.body[:25]
+    
+    # def get_review_likes(self):
+    #     return EventReview.objects.filter(event=self).filter(review_id=self.review_id).count()
+    
+    # def like(self):
+    #     if EventReview.author == get_user_model():
+    #         EventReview.likes
+    #     else:
+    #         if 
+    #         EventReview.likes += 1
+    
 
 # Event Media Model
 class EventMedia(models.Model):

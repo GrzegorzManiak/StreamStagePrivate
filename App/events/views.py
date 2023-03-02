@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-import string, random
 from .models import Event, EventReview, EventShowing
 from .forms import (EventApplyForm, 
                     EventUpdateForm, 
@@ -16,7 +15,7 @@ from . import inline_reviews
 from StreamStage import identifiers
 
                                         # **************
-                                        # *** Events ***                                        # ***************
+                                        # *** Events *** 
                                         # **************
 
 # Viewing an individual Event
