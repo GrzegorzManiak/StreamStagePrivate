@@ -1,0 +1,180 @@
+"""
+    Shortest Route Resolver
+
+    This module provides a wrapper for the shortest route resolver.
+    Written in rust, it is compiled to a shared library and imported
+    here, than wrapped in a python class to provide a more pythonic
+    interface.
+"""
+
+from .srr import ShortestRouteResolverWrapper
+
+class NodeType:
+    INGRESS = 0
+    RELAY = 1
+    EDGE = 2
+
+    def __init__(self):
+        pass
+
+    def unk(node_type: str | int):
+        if isinstance(node_type, NodeType):
+            return node_type
+
+        if not str(node_type).isnumeric():
+            match str(node_type).lower():
+                case "ingress": return NodeType.INGRESS
+                case "relay": return NodeType.RELAY
+                case "edge": return NodeType.EDGE
+        
+        match node_type:
+            case 0: return NodeType.INGRESS
+            case 1: return NodeType.RELAY
+            case 2: return NodeType.EDGE
+
+        return None
+    
+    def to_str(node_type: int):
+        match node_type:
+            case 0: return "Ingress"
+            case 1: return "Relay"
+            case 2: return "Edge"
+        
+        return None
+    
+
+
+class Node():
+    def __init__(
+        self,
+        set_node_usage,
+        name,
+        id,
+        node_type,
+        node_usage,
+    ):
+        # -- Public --
+        self.name = name
+        self.id = id
+        self.type = node_type
+        self.usage = node_usage
+
+        # -- Private --
+        self.__set_node_usage = set_node_usage
+
+    def __str__(self):
+        return f"{NodeType.to_str(self.type)}-{self.name}-{self.id}"
+
+    
+    def set_usage(self, node_usage):
+        """
+            Sets the usage of the node.
+        """
+        self.node_usage = node_usage
+        self.__set_node_usage(self.id, node_usage)
+    
+    
+
+        
+class ShortestRouteResolver:
+    def __init__(self):
+        self.resolver = ShortestRouteResolverWrapper()
+
+
+    """
+        Gets a node from the resolver.
+
+        Original:
+        get_node(&self, node_id: usize) -> Option<&Node> 
+    """
+    def get_node(self, node_id: int) -> Node:
+        node = self.resolver.get_node(node_id)
+        if node is None: return None
+            
+        return Node(
+            self.set_node_usage,
+            node[0],
+            node[1],
+            NodeType.unk(node[2]),
+            node[3],
+        )
+    
+
+
+    """
+        Gets an ID from a Node, or just returns the ID if it's already an ID.
+    """
+    def get_node_id(self, node_id: int | Node) -> int:
+        id = node_id if isinstance(node_id, int) else node_id.id
+        if id is None: raise Exception("Invalid node id.")
+        return id
+
+
+
+    """
+        Adds a node to the resolver.
+
+        Original:
+        add_node(&mut self, node_type: NodeType, node_usage: usize) -> usize
+    """
+    def add_node(self, name: str, node_type: NodeType, node_usage: int) -> Node:
+        node_id = self.resolver.add_node(name, node_type, node_usage)
+        return self.get_node(node_id)
+
+
+
+    """
+        Adds a link/connection between two nodes.
+
+        Original:
+        add_connection(&mut self, node_a_id: usize, node_b_id: usize) -> usize
+    """
+    def add_connection(
+            self, 
+            node_a_id: int | Node,
+            node_b_id: int | Node
+        ) -> int:
+        return self.resolver.add_connection(
+            self.get_node_id(node_a_id),
+            self.get_node_id(node_b_id),
+        )
+    
+
+
+    """
+        Set the usage of a node.
+
+        Original:
+        set_node_usage(&mut self, node_id: usize, node_usage: usize)
+    """
+    def set_node_usage(self, node, node_usage):
+        return self.resolver.set_node_usage(
+            self.get_node_id(node),
+            node_usage
+        )
+    
+
+
+    """
+        Shortest path between two nodes.
+
+        Original:
+        shortest_route(&self, node_a_id: usize, node_b_id: usize, max_hops: usize) -> Option<Vec<usize>>
+    """
+    def shortest_route(self, node_a, node_b, max_hops = 100):
+        return self.resolver.shortest_route(
+            self.get_node_id(node_a),
+            self.get_node_id(node_b),
+            max_hops
+        )
+    
+
+
+    """
+        Serializes the resolver to JSON.
+
+        Original:
+        to_json(&self) -> String
+    """
+    def to_json(self):
+        return self.resolver.to_json()
