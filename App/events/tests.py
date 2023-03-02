@@ -3,19 +3,7 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 from .models import Category, Event, EventReview, EventShowing, EventMedia
 from accounts.models import Member, Broadcaster
-from .views import (
-    event_view,
-    get_all_events,
-    event_create,
-    event_update,
-    event_delete,
-    showing_create,
-    showing_update,
-    showing_delete,
-    review_create,
-    review_update,
-    review_delete
-)
+
 
 class EventTests(TestCase):
     def setUp(self):
@@ -34,7 +22,7 @@ class EventTests(TestCase):
             splash_photo = 'events/Comedy.jfif',
         )
         # Making a variable for calling many-to-many set in later tests
-        test_category = Category.objects.all().filter(name='Test Category')
+        test_category = Category.objects.all().filter(name='Test Category').first()
 
         # Create Test Broadcaster
         self.broadcaster = Broadcaster.objects.create(
@@ -44,7 +32,6 @@ class EventTests(TestCase):
             biography = 'test biography',
             over_18 = True,
             approved = True
-
         )
 
         # Create Test Event
@@ -55,16 +42,7 @@ class EventTests(TestCase):
             broadcaster = self.broadcaster, 
             approved = True
         )
-        self.event.categories.set(test_category)
-
-        # Create Test Review
-        self.review = EventReview.objects.create(
-            author = self.member,
-            event = self.event,
-            title = 'Review Title', 
-            body = 'Review Body' 
-        )
-        self.event.categories.set(test_category)
+        self.event.categories.add(test_category)
 
         # Create Test Showing
         self.showing = EventShowing.objects.create(
@@ -74,6 +52,15 @@ class EventTests(TestCase):
             venue = 'Venue',
             time = '2023-02-28T21:17:06.089Z'
         )
+
+        # Create Test Review
+        self.review = EventReview.objects.create(
+            author = self.member,
+            event = self.event,
+            title = 'Review Title', 
+            body = 'Review Body',
+            rating = 10 
+        )
         # Create Test Media
         self.media = EventMedia.objects.create(
             event = self.event,
@@ -81,35 +68,171 @@ class EventTests(TestCase):
             description = 'Media Picture Description'
         )
 
+    # *******************
+    # *** Event Tests ***
+    # *******************
 
-    # Testing Creating an Event
+    # Testing Creation of Event
     def test_event_create(self):
         self.assertEqual(f'{self.event.event_id}', 'TstEvnt0') 
         self.assertEqual(f'{self.event.title}', 'Test Event') 
         self.assertEqual(f'{self.event.description}', 'description') 
         self.assertEqual(f'{self.event.broadcaster}', '@TestBroadcaster') 
-        # Need to find out why test_category name is showing as 'None' 
-        # self.assertEqual(f'{self.event.categories.name}', 'Test Category') 
-        self.assertEqual(f'{self.event.categories.name}', 'None')
-        # self.response = self.client.get(self.event.get_absolute_url())
-        # self.no_response = self.client.get('event_new') 
+        self.assertEqual(f'{self.event.categories.first().name}', 'Test Category') 
+        self.assertEqual(f'{self.event.approved}', 'True') 
 
+        # Defining HTTP response & testing if correct
+        self.response = self.client.get(self.event.get_absolute_url())
+        self.assertEqual(self.response.status_code, 200)
+        # Testing if correct template used
+        self.assertTemplateUsed(self.response, 'event.html') 
 
+    # Testing Viewing an Event Page
+    def test_event_view(self):
+        # Defining HTTP response & testing if correct
+        self.response = self.client.get(self.event.get_absolute_url())
+        self.assertEqual(self.response.status_code, 200)
+        # Testing if correct template used
+        self.assertTemplateUsed(self.response, 'event.html') 
+ 
 
+    # Testing Viewing All Events Page
+    def test_get_all_events(self):
+        # Defining HTTP response & testing if correct
+        self.response = self.client.get(reverse('all_events'))
+        self.assertEqual(self.response.status_code, 200) 
+        # Testing if correct template used
+        self.assertTemplateUsed(self.response, 'event_list.html') 
 
+        
     # Testing Updating an Event
-    # def test_event_update(self):
-    #     # Updating Event
-    #     self.event = Event.objects.filter(event_id = 'TstEvnt0').update(
-    #     title = 'Test Event 1', 
-    #     description = 'description 1', 
-    #     broadcaster = self.broadcaster, 
-    #     approved = True
-    #     )
+    def test_event_update(self):
+        # Updating Event
+        event = Event.objects.get(event_id='TstEvnt0')
+        event.title = 'Test Event 2'
+        event.description = 'description 2'
+        event.save()
 
-    #     # response = self.client.get(self.events.get_absolute_url())
-    #     self.assertEqual(f'{self.event.event_id}', 'TstEvnt0') 
-    #     self.assertEqual(f'{self.event.title}', 'Test Event 1') 
-    #     self.assertEqual(f'{self.event.description}', 'description 1') 
-    #     self.assertEqual(f'{self.event.broadcaster}', '@TestBroadcaster') 
-    #     self.assertEqual(f'{self.event.categories.name}', 'None')
+        # Testing Updated details of Event
+        self.assertEqual(f'{event.event_id}', 'TstEvnt0') 
+        self.assertEqual(f'{event.title}', 'Test Event 2') 
+        self.assertEqual(f'{event.description}', 'description 2') 
+
+        # Defining HTTP response & testing if correct
+        self.response = self.client.get(self.event.get_absolute_url())
+        self.assertEqual(self.response.status_code, 200)
+        # Testing if correct template used
+        self.assertTemplateUsed(self.response, 'event.html') 
+
+    # Testing Deleting an Event
+    def test_event_delete(self):
+        Event.objects.get(event_id='TstEvnt0').delete()
+
+        # Defining HTTP response & testing if correct
+        self.response = self.client.get(reverse('member_profile'))
+        # self.assertEqual(self.response.status_code, 200)
+        # # Testing if correct template used
+        # self.assertTemplateUsed(self.response, 'accounts/profile.html')
+
+    # **************************
+    # *** Showing CRUD Tests ***
+    # **************************
+    
+    # Testing Creation of Showing
+    def test_showing_create(self):
+        showing = EventShowing.objects.filter(event='TstEvnt0').first()
+        self.assertEqual(f'{showing.country}', 'IE') 
+        self.assertEqual(f'{showing.city}', 'City') 
+        self.assertEqual(f'{showing.venue}', 'Venue') 
+        self.assertEqual(f'{showing.time}', '2023-02-28 21:17:06.089000+00:00') 
+
+        # Defining HTTP response & testing if correct
+        self.response = self.client.get(self.event.get_absolute_url())
+        self.assertEqual(self.response.status_code, 200)
+        # Testing if correct template used
+        self.assertTemplateUsed(self.response, 'event.html') 
+
+    # Testing Updating a Showing
+    def test_showing_update(self):
+        # Updating Showing
+        showing = EventShowing.objects.filter(event='TstEvnt0').first()
+        showing.country = 'AT'
+        showing.city = 'City 2'
+        showing.venue = 'Venue 2'
+        showing.time = '2024-03-28T22:18:00.089Z'
+        showing.save()
+
+        # Testing Updated details of Showing
+        self.assertEqual(f'{showing.country}', 'AT') 
+        self.assertEqual(f'{showing.city}', 'City 2') 
+        self.assertEqual(f'{showing.venue}', 'Venue 2') 
+        self.assertEqual(f'{showing.time}', '2024-03-28T22:18:00.089Z') 
+
+        # Defining HTTP response & testing if correct
+        self.response = self.client.get(self.event.get_absolute_url())
+        self.assertEqual(self.response.status_code, 200)
+        # Testing if correct template used        
+        self.assertTemplateUsed(self.response, 'event.html')
+
+    # Testing Deleting a Showing
+    def test_showing_delete(self):
+        EventShowing.objects.get(event='TstEvnt0').delete()
+
+        # Defining HTTP response & testing if correct
+        self.response = self.client.get(self.event.get_absolute_url())
+        self.assertEqual(self.response.status_code, 200)
+        # Testing if correct template used
+        self.assertTemplateUsed(self.response, 'event.html')
+
+    # *************************
+    # *** Review CRUD Tests ***
+    # *************************
+
+    # Testing Creation of Review
+    def test_review_create(self):
+        review = EventReview.objects.filter(event='TstEvnt0').first()
+        self.assertEqual(f'{review.author}', 'TestMember') 
+        self.assertEqual(f'{review.title}', 'Review Title') 
+        self.assertEqual(f'{review.body}', 'Review Body') 
+        self.assertEqual(f'{review.rating}', '10') 
+
+        # Defining HTTP response & testing if correct
+        self.response = self.client.get(self.event.get_absolute_url())
+        self.assertEqual(self.response.status_code, 200)
+        # Testing if correct template used
+        self.assertTemplateUsed(self.response, 'event.html') 
+
+    # Testing Updating a Review
+    def test_review_update(self):
+        # Updating Review
+        review = EventReview.objects.filter(event='TstEvnt0').first()
+        review.title = 'Review Title 2'
+        review.body = 'Review Body 2'
+        review.rating = '5'
+        review.save()
+
+        # Testing Updated details of Review
+        self.assertEqual(f'{review.title}', 'Review Title 2') 
+        self.assertEqual(f'{review.body}', 'Review Body 2') 
+        self.assertEqual(f'{review.rating}', '5') 
+
+        # Defining HTTP response & testing if correct
+        self.response = self.client.get(self.event.get_absolute_url())
+        self.assertEqual(self.response.status_code, 200)
+        # Testing if correct template used
+        self.assertTemplateUsed(self.response, 'event.html')
+
+    # Testing Deleting a Review
+    def test_review_delete(self):
+        EventReview.objects.filter(event='TstEvnt0').first().delete()
+
+        # Defining HTTP response & testing if correct
+        self.response = self.client.get(self.event.get_absolute_url())
+        self.assertEqual(self.response.status_code, 200)
+        # Testing if correct template used
+        self.assertTemplateUsed(self.response, 'event.html')
+
+    # *******************
+    # *** Media Tests ***
+    # *******************
+
