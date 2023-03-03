@@ -54,13 +54,23 @@ class EventTests(TestCase):
         )
 
         # Create Test Review
-        self.review = EventReview.objects.create(
+        self.review_high = EventReview.objects.create(
             author = self.member,
             event = self.event,
             title = 'Review Title', 
             body = 'Review Body',
             rating = 10 
         )
+
+        # Create Test Review
+        self.review_low = EventReview.objects.create(
+            author = self.member,
+            event = self.event,
+            title = 'Unhappy Review Title', 
+            body = 'Review Body',
+            rating = 3
+        )
+
         # Create Test Media
         self.media = EventMedia.objects.create(
             event = self.event,
@@ -232,7 +242,17 @@ class EventTests(TestCase):
         # Testing if correct template used
         self.assertTemplateUsed(self.response, 'event.html')
 
+    def test_get_top_review(self):
+        review = self.event.get_top_review()
+
+        # Testing if correct "top" review is being returned
+        self.assertEqual(review.review_id, self.review_high.review_id)
+
+
     # *******************
     # *** Media Tests ***
     # *******************
+
+
+
 
