@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    SRR Visualizer
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/server_manager/srr_visualizer.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div id='app' class='w-100 h-100'></div>
+
+    <script src="{% static 'js/srr_visualizer_bin.js' %}"></script>
+{% endblock %}

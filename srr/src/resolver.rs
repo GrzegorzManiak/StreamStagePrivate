@@ -23,14 +23,17 @@ impl ShortestRouteResolver {
         }
     }
 
+
+
     // -- Gets a node by its ID
     pub fn get_node(&self, node_id: usize) -> Option<&Node> {
         self.nodes.iter().find(|n| n.node_id == node_id)
     }
 
 
+
     // -- Adds a new node to the graph
-    pub fn add_node(&mut self, name: String, node_type: NodeType, node_usage: usize) -> usize {
+    pub fn add_node(&mut self, name: String, node_type: NodeType, node_latency: usize, node_usage: usize) -> usize {
         // -- Generate a unique ID for the node
         let node_id = self.nodes.iter().map(|n| n.node_id).max().unwrap_or(0) + 1;
 
@@ -38,10 +41,11 @@ impl ShortestRouteResolver {
         assert!(!self.get_node(node_id).is_some(), "Node ID already exists");
 
         // Add the new node to the graph
-        let node = Node { name, node_id, node_type, node_usage };
+        let node = Node { name, node_id, node_type, node_latency, node_usage};
         self.nodes.push(node);
         node_id
     }
+
 
 
     // -- Adds a new connection to the graph
@@ -90,17 +94,45 @@ impl ShortestRouteResolver {
     }
 
 
-    // -- Sets a Nodes usage
-    pub fn set_node_usage(&mut self, node_id: usize, node_usage: usize) {
-        // -- Ensure that the usage is between 0.0 and 1.0
-        let node_usage = node_usage.max(0).min(100);
+
+
+    // -- Sets a Nodes weight
+    pub fn set_node_weight(
+        &mut self, 
+        node_id: usize, 
+        node_latency: usize, 
+        node_usage: usize
+    ) {
+        // -- Ensure that the weight is between 0.0 and 1.0
+        let node_latency = node_latency.max(0).min(100);
 
         // -- Find the node
         let node = self.nodes.iter_mut().find(|n| n.node_id == node_id).unwrap();
 
-        // -- Set the usage
+        // -- Set the weights
+        node.node_latency = node_latency;
         node.node_usage = node_usage;
     }
+
+    
+    
+    // -- Calculates the weight of a connection
+    pub fn calculate_weight(
+        &self, 
+        connection_id: usize
+    ) -> usize {
+        // -- Find the connection
+        let connection = self.connections.iter().find(|c| c.connection_id == connection_id).unwrap();
+
+        // -- Find the nodes
+        let node_a = self.nodes.iter().find(|n| n.node_id == connection.node_a_id).unwrap();
+        let node_b = self.nodes.iter().find(|n| n.node_id == connection.node_b_id).unwrap();
+
+        // -- Calculate the weight
+        let weight = (node_a.node_latency + node_b.node_latency) / 2;
+        weight
+    }
+
 
 
     // -- Returns the shortest route between two nodes
@@ -109,6 +141,7 @@ impl ShortestRouteResolver {
         let node_a = self.nodes.iter().find(|n| n.node_id == node_a_id)?;
         let node_b = self.nodes.iter().find(|n| n.node_id == node_b_id)?;
 
+
         // -- Check if the start and end nodes are valid according to the node types
         match (node_a.node_type.clone(), node_b.node_type.clone()) {
             (NodeType::Ingress, NodeType::Edge) |
@@ -116,8 +149,9 @@ impl ShortestRouteResolver {
             (NodeType::Ingress, NodeType::Relay) | 
             (NodeType::Relay, NodeType::Ingress) | 
             (NodeType::Relay, NodeType::Relay) => (),
-            _ => { panic!("Invalid connection between node types."); }
+            _ => panic!("Invalid connection between node types."),
         }
+
 
         // -- Create a map of nodes to their shortest distance from the start node
         let mut distances = HashMap::new();
@@ -131,7 +165,12 @@ impl ShortestRouteResolver {
         queue.push(Reverse((0, node_a_id)));
 
         while let Some(Reverse((distance, node_id))) = queue.pop() {
-            // If we've reached the end node, return the shortest path
+
+
+
+            //
+            // We've found the end node, so we can stop searching
+            //
             if node_id == node_b_id {
                 let mut path = vec![node_id];
                 let mut current_node_id = node_id;
@@ -146,31 +185,39 @@ impl ShortestRouteResolver {
             }
 
 
-            // -- Stop searching if we've exceeded the maximum number of hops
+
+            // 
+            // Max hops reached, so we can stop searching
+            // This is mainly to prevent infinite loops
+            //
             if let Some(path_distance) = distances.get(&node_id) {
                 if path_distance >= &max_hops { continue; }
             }
 
 
-            // -- Add unvisited neighbors to the priority queue
+            // 
+            // Find all connections that contain the current node
+            //
             let connections = self
                 .connections
                 .iter()
-                .filter(|c| c.node_a_id == node_id || c.node_b_id == node_id);
+                .filter(|c| 
+                    c.node_a_id == node_id || 
+                    c.node_b_id == node_id
+                );
+            
 
+            //
+            // Loop through all connections that contain the current node
+            //
             for connection in connections {
-                let neighbor_id = if connection.node_a_id == node_id {
-                    connection.node_b_id } 
-                
+
+                let neighbor_id = 
+                if connection.node_a_id == node_id { connection.node_b_id } 
                 else { connection.node_a_id };
 
-                let neighbor = self.nodes.iter().find(|n| n.node_id == neighbor_id).unwrap();
-
-                // -- Calculate the weight of the connection (usage of both nodes / 2)
-                let connection_weight = (node_a.node_usage + neighbor.node_usage) / 2;
-
                 // -- Calculate the distance to the neighbor node
-                let neighbor_distance = distance + connection_weight;
+                let neighbor_distance = distance + self.calculate_weight(connection.connection_id);
 
                 // -- Update the neighbor's distance and previous node if it's a new shortest path
                 let is_shorter = match distances.get(&neighbor_id) {
@@ -201,7 +248,8 @@ impl ShortestRouteResolver {
                     "node_a_id": c.node_a_id,
                     "node_b_id": c.node_b_id,
                     "usage_count": c.usage_count,
-                    "connection_id": c.connection_id
+                    "connection_id": c.connection_id,
+                    "weight": self.calculate_weight(c.connection_id)
                 })
             })
             .collect::<Vec<_>>();
@@ -213,6 +261,7 @@ impl ShortestRouteResolver {
                 json!({
                     "node_id": n.node_id,
                     "node_type": node_type_to_string(&n.node_type),
+                    "node_latency": n.node_latency,
                     "node_usage": n.node_usage
                 })
             })

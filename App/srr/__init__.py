@@ -8,6 +8,7 @@
 """
 
 from .srr import ShortestRouteResolverWrapper
+import json
 
 class NodeType:
     INGRESS = 0
@@ -41,6 +42,16 @@ class NodeType:
             case 2: return "Edge"
         
         return None
+    
+
+
+# class SerializedTree:
+#     __init__(self, raw_json: str):
+#         self.raw_json = raw_json
+#         self.tree = json.loads(raw_json)
+    
+#     def _process(self, node):
+        
     
 
 
@@ -117,8 +128,8 @@ class ShortestRouteResolver:
         Original:
         add_node(&mut self, node_type: NodeType, node_usage: usize) -> usize
     """
-    def add_node(self, name: str, node_type: NodeType, node_usage: int) -> Node:
-        node_id = self.resolver.add_node(name, node_type, node_usage)
+    def add_node(self, name: str, node_type: NodeType, node_latency: int, node_usage: int = 0) -> Node:
+        node_id = self.resolver.add_node(name, node_type, node_latency, node_usage)
         return self.get_node(node_id)
 
 

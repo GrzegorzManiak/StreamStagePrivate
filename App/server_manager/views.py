@@ -1,4 +1,5 @@
 from django.http.response import JsonResponse
+from django.shortcuts import render
 from rest_framework import status
 from rest_framework.decorators import api_view
 from StreamStage.secrets import NODE_ANNOUNCE_KEY
@@ -144,3 +145,16 @@ def streams(request):
 
         From here we can than route the stream to the appropriate node(s).
     """
+    
+
+
+###
+### Data visualization views
+###
+@api_view(['GET'])
+def visualize_srr_tree(request):
+    """
+        This view is used to visualize the SRR tree.
+    """
+    
+    return render(request, 'visualize_srr_tree.html')

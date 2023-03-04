@@ -31,17 +31,28 @@ pub struct Node {
     pub name: String,
     pub node_id: usize,
     pub node_type: NodeType,
+    pub node_latency: usize,
     pub node_usage: usize,
 }
 
 impl Node {
-    fn new(name: String, node_id: usize, node_type: NodeType, node_usage: usize) -> Self {
-        // -- Ensure that the usage is between 0.0 and 1.0
+    fn new(
+        name: String, 
+        node_id: usize, 
+        node_type: NodeType, 
+        node_usage: usize,
+        node_latency: usize,
+    ) -> Self {
+        // -- Ensure that the weight is between 0.0 and 1.0
         let node_usage = node_usage.max(0).min(100);
 
         // -- Create the node
         Self {
-            name, node_id, node_type, node_usage
+            name, 
+            node_id, 
+            node_type, 
+            node_usage,
+            node_latency, 
         }
     }
 
@@ -50,6 +61,7 @@ impl Node {
             name: self.name.clone(),
             node_id: self.node_id,
             node_type: self.node_type.clone(),
+            node_latency: self.node_latency,
             node_usage: self.node_usage,
         }
     }
