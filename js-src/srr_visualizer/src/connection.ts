@@ -10,8 +10,21 @@ export const get_connections = () => connections;
  * @param connection: ConectionDataLink - The connection to calculate the color of
  * @returns void
  */
-function calculate_color(connection: ConectionDataLink): void {
-    
+export function calculate_color(connection: ConectionDataLink, max = 100): void {
+    const steped_colors = [
+        '#6fd08c',
+        '#8bc76d',
+        '#a5bc53',
+        '#beae40',
+        '#d49f39',
+        '#e88d3f',
+        '#f67a4f',
+        '#ff6666',
+    ];
+
+    const step = max / steped_colors.length;
+    const index = Math.floor(connection.connection.weight / step);
+    connection.conva_line.stroke(steped_colors[index]);
 }
 
 
@@ -67,6 +80,7 @@ export function add_connection(
         conva_text: text,
     }
 
+    calculate_color(connection_data_link);
     connections.push(connection_data_link);
     return connection_data_link;
 }
