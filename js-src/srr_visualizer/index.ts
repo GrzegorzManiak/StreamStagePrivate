@@ -1,6 +1,7 @@
 import Konva from 'konva';
 import { deserialize } from './src/deserialize';
 import { add_stage_listners } from './src/listeners';
+import { add_pan_control, add_zoom_control } from './src/controls';
 
 // -- Create the stage
 const stage = new Konva.Stage({
@@ -35,6 +36,9 @@ connection_layer.zIndex(0);
 node_layer.zIndex(1);
 text_layer.zIndex(2);
 
+// -- Stage controls
+add_zoom_control(stage);
+add_pan_control(stage);
 
 // -- Disable callbacks for the connection layer
 //    as we don't want to be able to interact with it

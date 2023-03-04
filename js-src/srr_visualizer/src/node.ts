@@ -90,11 +90,11 @@ export function center_text(
     text: Konva.Text,
     circle: Konva.Circle
 ) {
-    const text_rect = text.getClientRect();
-    const circle_rect = circle.getClientRect();
+    const cx = circle.x();
+    const cy = circle.y();
 
-    const x = circle_rect.x + (circle_rect.width / 2) - (text_rect.width / 2);
-    const y = circle_rect.y + (circle_rect.height / 2) - (text_rect.height / 2);
+    const x = cx - (text.width() / 2);
+    const y = cy - (text.height() / 2);
 
     text.x(x);
     text.y(y);

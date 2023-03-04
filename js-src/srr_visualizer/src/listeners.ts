@@ -1,5 +1,5 @@
 import Konva from 'konva';
-import { NodeDataLink } from '../index.d';
+import { ConectionDataLink, NodeDataLink } from '../index.d';
 import { align_connection, focous_connection, get_connections, reset_connection, unfocous_connection } from './connection';
 import { center_text } from './node';
 
@@ -19,14 +19,18 @@ export function add_node_listner(
 
         // -- Get the connections
         const connections = get_connections();
+        let to_focus: Array<ConectionDataLink> = [];
         
         // -- Update the connections
         connections.forEach((connection) => {
             if (connection.connection.node_a.node.node_id === node.node.node_id ||
                 connection.connection.node_b.node.node_id === node.node.node_id
-            ) focous_connection(connection);
+            ) to_focus.push(connection);
             else unfocous_connection(connection);
         });
+
+        // -- Focus the connections
+        to_focus.forEach((connection) => focous_connection(connection));
     });
 
 
@@ -35,13 +39,17 @@ export function add_node_listner(
 
         // -- Get the connections
         const connections = get_connections();
+        let to_focus: Array<ConectionDataLink> = [];
 
         connections.forEach((connection) => {
             if (connection.connection.node_a.node.node_id === node.node.node_id ||
                 connection.connection.node_b.node.node_id === node.node.node_id
-            ) focous_connection(connection);
+            ) to_focus.push(connection);
             else unfocous_connection(connection);
         });
+
+        // -- Focus the connections
+        to_focus.forEach((connection) => focous_connection(connection));
     });
 }
 
