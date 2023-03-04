@@ -4,7 +4,7 @@ import { add_stage_listners } from './src/listeners';
 import { add_pan_control, add_zoom_control } from './src/controls';
 
 // -- Create the stage
-const stage = new Konva.Stage({
+export const stage = new Konva.Stage({
     container: 'app',
     width: window.innerWidth,
     height: window.innerHeight

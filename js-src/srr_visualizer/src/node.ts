@@ -1,11 +1,51 @@
 import Konva from 'konva';
 import { ProcessedNode, Node, NodeDataLink } from '../index.d';
 import { add_node_listner } from './listeners';
-import { colors } from '..';
+import { colors, stage } from '..';
 
 function degreesToRadians(degrees: number): number {
     return degrees * (Math.PI / 180);
 }
+
+// -- General
+const X_SPACING = 200;
+const Y_SPACING = 200;
+const X_STAG = 25;
+
+
+/**
+ * @name calculate_offset
+ * @description Calculates the offset for all nodes
+ * so that they are centered on the screen
+ * @param relay_count The number of relay nodes
+ * @param edge_count The number of edge nodes
+ * @param ingress_count The number of ingress nodes
+ * @returns {
+ *     x: number;  // The x offset  
+ *     y: number;  // The y offset   
+ * }
+ */
+export function calculate_offset(
+    relay_count: number,
+    edge_count: number,
+    ingress_count: number
+): {
+    x: number;
+    y: number;
+} {
+    // -- Get the largest number of nodes
+    const max = Math.max(relay_count, edge_count, ingress_count);
+
+    // -- Calculate the offset the center the at the center of the screen
+    const height = max * Y_SPACING;
+    const width = (X_SPACING * 3) + X_STAG;
+
+    const x = stage.width() / 2 - width / 2;
+    const y = stage.height() / 2 - height / 5;
+    return { x, y };
+}
+
+
 
 let formated_nodes: NodeDataLink[] = [];
 export const get_formated_nodes = () => formated_nodes;
@@ -27,19 +67,15 @@ export const get_formated_nodes = () => formated_nodes;
 export function format_node(
     node: ProcessedNode | Node,
     edge_count: number,
-    relay_count: number
+    relay_count: number,
+    x_offset: number,
+    y_offset: number
 ): {
     z: number;
     x: number;
     y: number;
     color: string;
 } {
-    // -- General
-    const X_OFFSET = 150;
-    const Y_OFFSET = 200;
-    const X_SPACING = 200;
-    const Y_SPACING = 200;
-    const X_STAG = 25;
 
     // -- Ark
     const ELIPSE_HEIGHT = 50 * edge_count;
@@ -50,16 +86,16 @@ export function format_node(
     switch (node.node_type) {
         case 'Ingress': return {
                 z: node.z,
-                x: 0 + X_OFFSET,
-                y: Y_OFFSET + node.z * Y_SPACING,
+                x: 0 + x_offset,
+                y: y_offset + node.z * Y_SPACING,
                 color: colors.ingress
             }
 
 
         case 'Relay': return {
                 z: node.z,
-                x: X_SPACING + X_OFFSET + (node.z % 2) * X_STAG,
-                y: Y_OFFSET + ((node.z / 2) * Y_SPACING * 1.5) - Y_SPACING / relay_count,
+                x: X_SPACING + x_offset + (node.z % 2) * X_STAG,
+                y: y_offset + ((node.z / 2) * Y_SPACING * 1.5) - Y_SPACING / relay_count,
                 color: colors.relay
             }
 
@@ -72,8 +108,8 @@ export function format_node(
 
             return {
                 z: node.z,
-                x: x + X_OFFSET + (X_SPACING * 2) + X_STAG,
-                y: y + Y_OFFSET + Y_SPACING / 2,
+                x: x + x_offset + (X_SPACING * 2) + X_STAG,
+                y: y + y_offset + Y_SPACING / 2,
                 color: colors.edge
             } 
     }
@@ -118,6 +154,8 @@ export function add_node(
     relay_count: number,
     text_layer: Konva.Layer,
     node_layer: Konva.Layer,
+    x_offset: number = 150,
+    y_offset: number = 200
 ): NodeDataLink {
     const circle = new Konva.Circle({
         radius: 20,
@@ -140,7 +178,13 @@ export function add_node(
     text_layer.add(text);
 
     // -- Format the node
-    const formatted_node = format_node(node, edge_count, relay_count);
+    const formatted_node = format_node(
+        node, 
+        edge_count,
+        relay_count,
+        x_offset,
+        y_offset
+    );
 
     circle.x(formatted_node.x);
     circle.y(formatted_node.y);
