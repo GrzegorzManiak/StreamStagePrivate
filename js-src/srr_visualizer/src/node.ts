@@ -120,10 +120,10 @@ export function add_node(
     node_layer: Konva.Layer,
 ): NodeDataLink {
     const circle = new Konva.Circle({
-        radius: 25,
-        fill: 'black',
+        radius: 20,
+        fill: 'transparent',
         stroke: 'black',
-        strokeWidth: 1,
+        strokeWidth: 3,
         draggable: true
     });
 
@@ -144,7 +144,7 @@ export function add_node(
 
     circle.x(formatted_node.x);
     circle.y(formatted_node.y);
-    circle.fill(formatted_node.color);
+    circle.stroke(formatted_node.color);
 
     center_text(text, circle);
 

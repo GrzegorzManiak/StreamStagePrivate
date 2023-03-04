@@ -1,6 +1,6 @@
 import Konva from 'konva';
 import { NodeDataLink } from '../index.d';
-import { calculate_color, get_connections } from './connection';
+import { align_connection, focous_connection, get_connections, reset_connection, unfocous_connection } from './connection';
 import { center_text } from './node';
 
 /**
@@ -22,41 +22,10 @@ export function add_node_listner(
         
         // -- Update the connections
         connections.forEach((connection) => {
-            // -- If the node is the first node in the connection
-            if (connection.connection.node_a.node_id === node.node.node_id) {
-                connection.conva_line.points([e.target.x(), e.target.y(), connection.connection.node_b.x, connection.connection.node_b.y]);
-                calculate_color(connection);
-                connection.conva_text.text(connection.connection.weight.toString());
-
-                // -- Update the text
-                connection.conva_text.x((e.target.x() + connection.connection.node_b.x) / 2);
-                connection.conva_text.y((e.target.y() + connection.connection.node_b.y) / 2);
-
-                // -- Prioritize the connection
-                connection.conva_line.moveToTop();
-                connection.conva_text.moveToTop();
-            } 
-
-            // -- If the node is the second node in the connection
-            else if (connection.connection.node_b.node_id === node.node.node_id) {
-                connection.conva_line.points([connection.connection.node_a.x, connection.connection.node_a.y, e.target.x(), e.target.y()]);
-                calculate_color(connection);
-                connection.conva_text.text(connection.connection.weight.toString());
-
-                // -- Update the text
-                connection.conva_text.x((connection.connection.node_a.x + e.target.x()) / 2);
-                connection.conva_text.y((connection.connection.node_a.y + e.target.y()) / 2);
-
-                // -- Prioritize the connection
-                connection.conva_line.moveToTop();
-                connection.conva_text.moveToTop();
-            }
-
-            // -- Else the node is not in the connection
-            else {
-                connection.conva_line.stroke('black');
-                connection.conva_text.text('');
-            }
+            if (connection.connection.node_a.node.node_id === node.node.node_id ||
+                connection.connection.node_b.node.node_id === node.node.node_id
+            ) focous_connection(connection);
+            else unfocous_connection(connection);
         });
     });
 
@@ -68,24 +37,10 @@ export function add_node_listner(
         const connections = get_connections();
 
         connections.forEach((connection) => {
-            // -- If the node is the first node in the connection
-            if (
-                connection.connection.node_a.node_id === node.node.node_id ||
-                connection.connection.node_b.node_id === node.node.node_id
-            ) {
-                calculate_color(connection);
-                connection.conva_text.text(connection.connection.weight.toString());
-
-                // -- Prioritize the connection
-                connection.conva_line.moveToTop();
-                connection.conva_text.moveToTop();
-            }
-            
-            // -- Else the node is not in the connection
-            else {
-                connection.conva_line.stroke('black');   
-                connection.conva_text.text('');
-            }
+            if (connection.connection.node_a.node.node_id === node.node.node_id ||
+                connection.connection.node_b.node.node_id === node.node.node_id
+            ) focous_connection(connection);
+            else unfocous_connection(connection);
         });
     });
 }
@@ -100,9 +55,7 @@ export function add_stage_listners(stage: Konva.Stage) {
         // -- Get the formated connections
         const connections = get_connections();
         
-        connections.forEach((connection) => {
-            connection.conva_line.points([connection.connection.node_a.x, connection.connection.node_a.y, connection.connection.node_b.x, connection.connection.node_b.y]);
-        });
+        connections.forEach((connection) => align_connection(connection));
     });
 
     stage.on('click', (e) => {
@@ -113,8 +66,7 @@ export function add_stage_listners(stage: Konva.Stage) {
 
         // -- Get the formated connections
         get_connections().forEach((connection) => {
-            calculate_color(connection);
-            connection.conva_text.text(connection.connection.weight.toString());
+            reset_connection(connection);
         });
     });
 }

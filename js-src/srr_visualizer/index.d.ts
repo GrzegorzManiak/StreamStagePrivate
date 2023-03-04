@@ -32,14 +32,18 @@ export interface Data {
     nodes: Array<Node>;
 }
 
-export type ConectionDataLink = {
-    connection: ProcessedConnection;
-    conva_line: Konva.Line;
-    conva_text: Konva.Text;
-}
-
 export type NodeDataLink = {
     node: ProcessedNode;
     conva_circle: Konva.Circle;
+    conva_text: Konva.Text;
+}
+
+export type ConectionDataLink = {
+    connection: {
+        node_a: NodeDataLink;
+        node_b: NodeDataLink;
+        weight: number;
+    };
+    conva_line: Konva.Line;
     conva_text: Konva.Text;
 }

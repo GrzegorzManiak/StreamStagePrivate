@@ -52,8 +52,8 @@ export function deserialize(
     // 
     data.connections.forEach(connection => add_connection(
         connection,
-        processed_nodes.find(node => node.node.node_id === connection.node_a_id).node,
-        processed_nodes.find(node => node.node.node_id === connection.node_b_id).node,
+        processed_nodes.find(node => node.node.node_id === connection.node_a_id),
+        processed_nodes.find(node => node.node.node_id === connection.node_b_id),
         connection_layer,
         text_layer
     ));
