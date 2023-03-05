@@ -51,6 +51,10 @@ impl ShortestRouteResolverWrapper {
         }
     }
 
+    fn suggest_node_type(&self) -> PyResult<String> {
+        Ok(node_type_to_string(&self.resolver.suggest_node_type()))
+    }
+
     fn to_json(&self) -> PyResult<String> {
         Ok(self.resolver.to_json())
     }

@@ -35,7 +35,7 @@ impl ShortestRouteResolver {
     // -- Adds a new node to the graph
     pub fn add_node(&mut self, name: String, node_type: NodeType, node_latency: usize, node_usage: usize) -> usize {
         // -- Generate a unique ID for the node
-        let node_id = self.nodes.iter().map(|n| n.node_id).max().unwrap_or(0) + 1;
+        let node_id = rand::random::<u32>() as usize;
 
         // -- Check for ID collision
         assert!(!self.get_node(node_id).is_some(), "Node ID already exists");
@@ -103,8 +103,8 @@ impl ShortestRouteResolver {
         node_latency: usize, 
         node_usage: usize
     ) {
-        // -- Ensure that the weight is between 0.0 and 1.0
-        let node_latency = node_latency.max(0).min(100);
+        // -- Ensure that the weight is between 0 and 100
+        let node_usage = node_usage.max(0).min(100);
 
         // -- Find the node
         let node = self.nodes.iter_mut().find(|n| n.node_id == node_id).unwrap();
@@ -129,7 +129,15 @@ impl ShortestRouteResolver {
         let node_b = self.nodes.iter().find(|n| n.node_id == connection.node_b_id).unwrap();
 
         // -- Calculate the weight
-        let weight = (node_a.node_latency + node_b.node_latency) / 2;
+        //    If usage is above x than set the weight 100 + (lat_a + lat_b) / 2
+        //    If usage is below x than set the weight ((lat_a + lat_b) / 2) * 0.3 - ((usage_a + usage_b) / 2) * 0.7
+        let weight = if node_a.node_usage > 50 || node_b.node_usage > 50 
+        {
+            100 + (node_a.node_latency + node_b.node_latency) / 2
+        } else {
+            (((node_a.node_latency + node_b.node_latency) / 2) as f64 * 0.3 -
+            ((node_a.node_usage + node_b.node_usage) / 2) as f64 * 0.7) as usize
+        };
         weight
     }
 
@@ -238,6 +246,38 @@ impl ShortestRouteResolver {
     }
 
 
+    // -- Returns the node type that should be added to the network
+    //    depending on the current node types and usage
+    pub fn suggest_node_type(&self) -> NodeType {
+        // -- Get all the nodes
+        let ingress_nodes = self.nodes.iter().filter(|n| n.node_type == NodeType::Ingress).collect::<Vec<&Node>>();
+        let relay_nodes = self.nodes.iter().filter(|n| n.node_type == NodeType::Relay).collect::<Vec<&Node>>();
+        let edge_nodes = self.nodes.iter().filter(|n| n.node_type == NodeType::Edge).collect::<Vec<&Node>>();
+
+
+        // -- Calculate average usage across all nodes
+        let ingress_usage = ingress_nodes.iter().map(|n| n.node_usage).sum::<usize>() / ingress_nodes.len();
+        let relay_usage = relay_nodes.iter().map(|n| n.node_usage).sum::<usize>() / relay_nodes.len();
+        let edge_usage = edge_nodes.iter().map(|n| n.node_usage).sum::<usize>() / edge_nodes.len();
+
+        // -- Calculate average latency across all nodes
+        let ingress_latency = ingress_nodes.iter().map(|n| n.node_latency).sum::<usize>() / ingress_nodes.len();
+        let relay_latency = relay_nodes.iter().map(|n| n.node_latency).sum::<usize>() / relay_nodes.len();
+        let edge_latency = edge_nodes.iter().map(|n| n.node_latency).sum::<usize>() / edge_nodes.len();
+
+
+        // -- Calculate average weight across all connections
+        let ingress_weight = ingress_latency as f64 * ingress_usage as f64;
+        let relay_weight = relay_latency as f64 * relay_usage as f64;
+        let edge_weight = edge_latency as f64 * edge_usage as f64;
+
+        // -- Return the node type with the lowest weight
+        if ingress_weight < relay_weight && ingress_weight < edge_weight { NodeType::Ingress } 
+        else if relay_weight < ingress_weight && relay_weight < edge_weight { NodeType::Relay } 
+        else { NodeType::Edge }
+    }
+
+
     // -- Serializes the network to a JSON string
     pub fn to_json(&self) -> String {
         let connections = self
@@ -262,7 +302,8 @@ impl ShortestRouteResolver {
                     "node_id": n.node_id,
                     "node_type": node_type_to_string(&n.node_type),
                     "node_latency": n.node_latency,
-                    "node_usage": n.node_usage
+                    "node_usage": n.node_usage,
+                    "node_name": n.name.clone()
                 })
             })
             .collect::<Vec<_>>();

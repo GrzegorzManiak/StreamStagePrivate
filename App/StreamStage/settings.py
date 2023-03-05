@@ -14,54 +14,6 @@ from pathlib import Path
 import CloudFlare
 from .secrets import DJANGO_SECRET_KEY, SENDGIRD_TOKEN, CLOUDFLARE_TOKEN
 
-
-from srr import ShortestRouteResolver, NodeType
-router = ShortestRouteResolver()
-
-# ing_1 = reolver.add_node('Ingress', 0)
-# ing_2 = reolver.add_node('Ingress', 0)
-
-# res_1 = reolver.add_node('Relay', 0)
-# res_2 = reolver.add_node('Relay', 0)
-# res_3 = reolver.add_node('Relay', 0)
-
-# edg_1 = reolver.add_node('Edge', 0)
-# edg_2 = reolver.add_node('Edge', 0)
-# edg_3 = reolver.add_node('Edge', 0)
-# edg_4 = reolver.add_node('Edge', 0)
-# edg_5 = reolver.add_node('Edge', 0)
-
-ingress = [
-    router.add_node('I1', 'Ingress', 0),
-    router.add_node('I2', 'Ingress', 0),
-]
-
-relay = [
-    router.add_node('R1', 'Relay', 50),
-    router.add_node('R2', 'Relay', 20),
-    router.add_node('R3', 'Relay', 10),
-]
-
-edge = [
-    router.add_node('E1', 'Edge', 30),
-    router.add_node('E2', 'Edge', 40),
-    router.add_node('E3', 'Edge', 90),
-    router.add_node('E4', 'Edge', 20),
-    router.add_node('E5', 'Edge', 10),
-]
-
-# Ingress to Relay
-for i in ingress:
-    for r in relay:
-        router.add_connection(i, r)
-
-# Relay to Edge
-for r in relay:
-    for e in edge:
-        router.add_connection(e, r)
-
-print(router.to_json())
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -115,7 +67,7 @@ SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_SAMESITE = None
 CSRF_COOKIE_SAMESITE = None
 
-
+SESSION_COOKIE_DOMAIN=".streamstage.co"
 
 #
 # CSRF / CORS

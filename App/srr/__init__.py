@@ -128,8 +128,8 @@ class ShortestRouteResolver:
         Original:
         add_node(&mut self, node_type: NodeType, node_usage: usize) -> usize
     """
-    def add_node(self, name: str, node_type: NodeType, node_latency: int, node_usage: int = 0) -> Node:
-        node_id = self.resolver.add_node(name, node_type, node_latency, node_usage)
+    def add_node(self, name: str, type: NodeType, latency: int = 0, usage: int = 0) -> Node:
+        node_id = self.resolver.add_node(name, type, latency, usage)
         return self.get_node(node_id)
 
 

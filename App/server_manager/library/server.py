@@ -3,6 +3,7 @@ from server_manager.models.publisher import Publisher
 from server_manager.models.server import Server
 
 import uuid
+from .router import router
 
 """
     :name: get_servers_by_mode
@@ -50,6 +51,20 @@ def get_publisher_by_server(server: Server) -> list[Publisher]:
 
 
 """
+    :name: get_all_servers
+    :param active: If the server should be active or not
+    :return: A list of servers
+"""
+def get_all_servers(active: bool = True) -> list[Server]:
+    servers = []
+    if active: servers = Server.objects.filter(live=True)
+    else: servers = Server.objects.all()
+
+    return [server.serialize() for server in servers]
+
+
+
+"""
     :name: add_server
     :description: This function is used to add a server to the database.
     :param rtmp_ip: The IP address of the RTMP server
@@ -85,7 +100,15 @@ def add_server(
             
             server.regenerate_secret()
             if server.update_cloudflare() == False:
-                return None
+                return None 
+            
+            # -- Update the router configuration
+            router.add_node(
+                name=str(server.id),
+                type='Relay',
+                latency=0,
+                usage=0,
+            )
 
             return server
     except Exception as e:
@@ -102,5 +125,13 @@ def add_server(
     server.save()
     if server.update_cloudflare() == False:
         return None
+    
+    # -- Update the router configuration
+    router.add_node(
+        name=str(server.id),
+        type='Relay',
+        latency=0,
+        usage=0,
+    )
     
     return server

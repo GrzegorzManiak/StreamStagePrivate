@@ -2,17 +2,47 @@ import Konva from 'konva';
 import { deserialize } from './src/deserialize';
 import { add_stage_listners } from './src/listeners';
 import { add_pan_control, add_zoom_control } from './src/controls';
+import { create_toast } from '../toasts';
+import { update_interval } from './api';
 
-// -- Create the stage
+
+
+//
+// CONFIGURATION
+//
+
+const config = document.getElementById('config');
+export function get_or_error<e>(element: HTMLElement, attribute: string): e {
+    const value = element.getAttribute(attribute);
+    if (!value) { 
+        create_toast('error', 'Configuration Error', `No '${attribute}' found, please reload the page`);
+        setTimeout(() => window.location.reload(), 3000);
+    } return value as unknown as e;
+}
+
+export const configuration = {
+    csrf_token: get_or_error<string>(config, 'data-csrf-token'),
+    srr_tree_url: get_or_error<string>(config, 'data-get-ssr-tree'),
+};
+
+
+
+// 
+// API
+//
+update_interval(5000);
+
+
+
+// 
+// VISUALIZER
+//
 export const stage = new Konva.Stage({
     container: 'app',
     width: window.innerWidth,
     height: window.innerHeight
 });
 
-//
-// Configuration
-// 
 export const colors = {
     ingress: '#6FD08C',
     relay: '#39A9DB',

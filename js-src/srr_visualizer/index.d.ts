@@ -1,4 +1,9 @@
+//
+// Visualizer typescript definitions
+//
+
 import Konva from "konva";
+import { DefaultResponseData, DefaultResponse } from "../api/index.d";
 
 export interface Node {
     z: number;
@@ -6,6 +11,7 @@ export interface Node {
     node_latency: number;
     node_type: string;
     node_usage: number;
+    name: string;
 }
 
 export type ProcessedNode = Node & {
@@ -47,3 +53,33 @@ export type ConectionDataLink = {
     conva_line: Konva.Line;
     conva_text: Konva.Text;
 }
+
+
+
+//
+// API typescript definitions
+//
+
+export interface Server {
+    http_ip: string;
+    http_port: number;
+    http_url: string;
+    id: string;
+    live: boolean;
+    mode: string;
+    name: string;
+    region: string;
+    rtmp_ip: string;
+    rtmp_port: number;
+    rtmp_url: string;
+    secret: string;
+    slug: string;
+}
+
+export interface UpdatedSRRTree {
+    tree: Data;
+    servers: Array<Server>;
+}
+
+export type UpdateSRRRequestData = DefaultResponseData & { data: UpdatedSRRTree } ;
+export type SRRUpdateResponse = UpdateSRRRequestData | DefaultResponse;

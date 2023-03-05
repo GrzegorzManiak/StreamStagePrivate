@@ -5,7 +5,8 @@ from .views import (
     authenticate,
     streams,
 
-    visualize_srr_tree
+    visualize_srr_tree,
+    get_srr_tree
 )
 
 urlpatterns = [
@@ -17,4 +18,5 @@ urlpatterns = [
 
     # Data visualization
     path('visualize/srr_tree', visualize_srr_tree, name='visualize_srr_tree'),
+    path('get/srr_tree', get_srr_tree, name='get_srr_tree')
 ]

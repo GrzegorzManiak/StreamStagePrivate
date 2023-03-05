@@ -3,6 +3,13 @@ import { ConectionDataLink, Connection, NodeDataLink } from '../index.d'
 
 let connections: ConectionDataLink[] = [];
 export const get_connections = () => connections;
+export const delete_connections = () => {
+    connections.forEach((connection) => {
+        connection.conva_line.destroy();
+        connection.conva_text.destroy();
+    });
+    connections = [];
+};
 
 /**
  * @name calculate_color
@@ -154,8 +161,7 @@ export function add_connection(
     from_node: NodeDataLink,
     connection_layer: Konva.Layer,
     text_layer: Konva.Layer,
-): ConectionDataLink {
-    
+): ConectionDataLink {    
     const line = new Konva.Line({
         stroke: 'black',
         strokeWidth: 2,

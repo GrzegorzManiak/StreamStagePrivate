@@ -49,6 +49,21 @@ export function calculate_offset(
 
 let formated_nodes: NodeDataLink[] = [];
 export const get_formated_nodes = () => formated_nodes;
+export const delete_node = (id: number) => {
+    // -- Find the nodes with the same name, might be more than one
+    const nodes = formated_nodes.filter(node => node.node.node_id === id);
+
+    // -- Remove the konva objects
+    nodes.forEach(node => {
+        node.conva_circle.destroy();
+        node.conva_text.destroy();
+    });
+
+    // -- Remove it from the list
+    formated_nodes = formated_nodes.filter(node => node.node.node_id !== id);
+};
+
+
 
 /**
  * @name format_node
@@ -157,6 +172,37 @@ export function add_node(
     x_offset: number = 150,
     y_offset: number = 200
 ): NodeDataLink {
+    // -- Loop through the nodes to see if the node already exists
+    //    and just update the node if it does
+    for (const element of formated_nodes) {
+        const n = element;
+        if (n.node.node_id !== node.node_id) continue;
+
+        // -- Update the node
+        n.node.node_type = node.node_type;
+        n.node.node_latency = node.node_latency;
+        n.node.node_usage = node.node_usage;
+        
+        // -- Update the node's circle
+        format_node(
+            n.node,
+            edge_count,
+            relay_count,
+            x_offset,
+            y_offset
+        );
+
+        // -- Update the node's text
+        center_text(
+            element.conva_text, 
+            element.conva_circle
+        );
+
+        console.log('Updated node', n.node.name);
+        return n;
+    }
+
+
     const circle = new Konva.Circle({
         radius: 20,
         fill: 'transparent',

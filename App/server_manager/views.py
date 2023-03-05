@@ -1,12 +1,15 @@
 from django.http.response import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, reverse
 from rest_framework import status
 from rest_framework.decorators import api_view
+from accounts.com_lib import is_admin, success_response
+from server_manager.library.router import get_latest_tree
 from StreamStage.secrets import NODE_ANNOUNCE_KEY
 from server_manager.models import Server
 import uuid
+import json
 
-from server_manager.library.server import add_server
+from server_manager.library.server import add_server, get_all_servers
 
 @api_view(['POST'])
 def announce(request):
@@ -74,6 +77,7 @@ def announce(request):
         return JsonResponse({
             'error': 'Invalid body'
         }, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 @api_view(['POST', 'GET'])
@@ -152,9 +156,33 @@ def streams(request):
 ### Data visualization views
 ###
 @api_view(['GET'])
+@is_admin()
 def visualize_srr_tree(request):
     """
         This view is used to visualize the SRR tree.
     """
     
-    return render(request, 'visualize_srr_tree.html')
+    return render(
+        request, 
+        'visualize_srr_tree.html',
+        context={
+            'get_srr_tree': reverse('get_srr_tree')
+        }
+    )
+
+
+
+@api_view(['GET'])
+@is_admin()
+def get_srr_tree(request):
+    """
+        This view is used to get the SRR tree.
+    """
+    
+    return success_response(
+        "Successfully retrieved SRR tree.",
+        {
+            'tree': json.loads(get_latest_tree()),
+            'servers': get_all_servers(False)
+        }
+    )

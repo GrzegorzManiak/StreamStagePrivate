@@ -10,6 +10,11 @@
 {% endblock %}
 
 {% block content %}
+    <span id='config'
+        data-csrf-token = '{{ csrf_token }}'
+        data-get-ssr-tree = '{{ get_srr_tree }}'
+    ></span>
+    
     <div id='app' class='w-100 h-100'></div>
 
     <script src="{% static 'js/srr_visualizer_bin.js' %}"></script>

@@ -12,7 +12,7 @@
 
 # -- Imports
 from django.http.response import JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from rest_framework.decorators import api_view
 from rest_framework import status
 
@@ -123,6 +123,33 @@ def not_authenticated():
             # -- Check if user is authenticated
             if request.user.is_authenticated:
                 return error_response('You are already logged in')
+            
+            # -- Call the original function with the request object
+            return view_func(request, *args, **kwargs)
+        return wrapper
+    return decorator
+
+
+
+"""
+    :name: is_admin
+    :description: This function is used to check if the user is
+                    an admin, if they are not, it will return   
+                    an error response
+"""
+def is_admin():
+    def decorator(view_func):
+        @wraps(view_func)
+        def wrapper(request, *args, **kwargs):
+            # If it is a GET request, Render a error page
+            if request.method == 'GET' and not request.user.is_superuser:
+                return render(request, 'error.html', {
+                    'message': 'You do not have permission to do that'
+                })
+            
+            # -- Check if user is an admin
+            if not request.user.is_superuser:
+                return error_response('You do not have permission to do that')
             
             # -- Call the original function with the request object
             return view_func(request, *args, **kwargs)
