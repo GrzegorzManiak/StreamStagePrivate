@@ -102,16 +102,19 @@ export function add_pan_control(
     stage: Konva.Stage,
 ) {
     let is_panning = false;
+    const UI_PANEL = document.getElementById('ui') as HTMLDivElement;
 
     stage.on('mousedown', (e) => {
         if (e.target._id !== 1) return;
         is_panning = true;
         document.body.style.cursor = 'grabbing';
+        UI_PANEL.classList.add('no-pointer-events');
     });
 
     stage.on('mouseup', (e) => {
         is_panning = false;
         document.body.style.cursor = 'default';
+        UI_PANEL.classList.remove('no-pointer-events');
     });
     
     stage.on('mousemove', (e) => {
