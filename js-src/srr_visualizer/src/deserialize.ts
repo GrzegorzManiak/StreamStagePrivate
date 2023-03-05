@@ -16,10 +16,7 @@ export function deserialize(
     // -- Purge the old nodes
     get_formated_nodes().forEach(node => {
         if (!data.nodes.find(data_node => data_node.node_id === node.node.node_id
-        )) {
-            delete_node(node.node.node_id)
-            console.log(`Deleted node ${node.node.node_id}`);
-        }
+        )) delete_node(node.node.node_id);  
     });
 
 
@@ -85,9 +82,7 @@ export function deserialize(
     //
     let processed_nodes = get_formated_nodes();
     delete_connections();
-    processed_nodes.forEach(node => {
-        console.log(`Node ${node.node.node_id} is at ${node.conva_circle.x()}, ${node.conva_circle.y()}`);
-    });
+
 
     //
     // Connections

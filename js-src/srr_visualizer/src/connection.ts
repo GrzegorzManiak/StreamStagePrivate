@@ -1,6 +1,5 @@
 import Konva from 'konva';
 import { ConectionDataLink, Connection, NodeDataLink } from '../index.d'
-import { focus_node, unfocus_node } from './node';
 
 let connections: ConectionDataLink[] = [];
 export const get_connections = () => connections;
