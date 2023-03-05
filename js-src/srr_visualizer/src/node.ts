@@ -2,6 +2,7 @@ import Konva from 'konva';
 import { ProcessedNode, Node, NodeDataLink } from '../index.d';
 import { add_node_listner } from './listeners';
 import { colors, stage } from '..';
+import { focous_connection, get_connections, reset_connection, unfocous_connection } from './connection';
 
 function degreesToRadians(degrees: number): number {
     return degrees * (Math.PI / 180);
@@ -11,6 +12,49 @@ function degreesToRadians(degrees: number): number {
 const X_SPACING = 200;
 const Y_SPACING = 200;
 const X_STAG = 25;
+
+
+/**
+ * @name focus_node
+ * @description Focuses a node
+ * @param node The node to focus
+ */
+export function focus_node(node: NodeDataLink) {
+    node.focused = true;
+    node.conva_circle.fill(node.conva_circle.stroke());
+
+    // -- Get the connections
+    const connections = get_connections();
+
+    // -- Update the connections    
+    connections.forEach((connection) => {
+        if (connection.connection.node_a.node.node_id === node.node.node_id ||
+            connection.connection.node_b.node.node_id === node.node.node_id
+        ) focous_connection(connection);
+        else unfocous_connection(connection);
+    });
+}
+
+
+
+/**
+ * @name unfocus_node
+ * @description Unfocuses a node
+ * @param node The node to unfocus
+ */
+export function unfocus_node(node: NodeDataLink) {
+    node.focused = false;
+    node.conva_circle.fill('transparent');
+
+    // -- Get the connections
+    const connections = get_connections();
+
+    // -- Update the connections
+    connections.forEach((connection) => {
+        reset_connection(connection);
+    });
+}
+
 
 
 /**
@@ -200,6 +244,9 @@ export function add_node(
             element.conva_circle
         );
 
+        // -- Check if the node is focused
+        if (n.focused) focus_node(n);
+
         return n;
     }
 
@@ -248,7 +295,8 @@ export function add_node(
     const node_data_link: NodeDataLink = {
         node: new_node,
         conva_circle: circle,
-        conva_text: text
+        conva_text: text,
+        focused: false
     }
 
     add_node_listner(node_data_link)

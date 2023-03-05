@@ -43,6 +43,7 @@ export type NodeDataLink = {
     node: ProcessedNode;
     conva_circle: Konva.Circle;
     conva_text: Konva.Text;
+    focused: boolean;
 }
 
 export type ConectionDataLink = {

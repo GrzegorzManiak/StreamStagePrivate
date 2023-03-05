@@ -1,7 +1,7 @@
 import Konva from 'konva';
-import { ConectionDataLink, NodeDataLink } from '../index.d';
-import { align_connection, focous_connection, get_connections, reset_connection, unfocous_connection } from './connection';
-import { center_text } from './node';
+import { NodeDataLink } from '../index.d';
+import { align_connection, get_connections, reset_connection } from './connection';
+import { center_text, focus_node, get_formated_nodes, unfocus_node } from './node';
 
 /**
  * 
@@ -17,39 +17,21 @@ export function add_node_listner(
         // -- Update the text
         center_text(node.conva_text, node.conva_circle);
 
-        // -- Get the connections
-        const connections = get_connections();
-        let to_focus: Array<ConectionDataLink> = [];
-        
-        // -- Update the connections
-        connections.forEach((connection) => {
-            if (connection.connection.node_a.node.node_id === node.node.node_id ||
-                connection.connection.node_b.node.node_id === node.node.node_id
-            ) to_focus.push(connection);
-            else unfocous_connection(connection);
-        });
+        // -- Focus the node
+        get_formated_nodes().forEach((n_node) => 
+            unfocus_node(n_node));
 
-        // -- Focus the connections
-        to_focus.forEach((connection) => focous_connection(connection));
+        focus_node(node);
     });
 
 
     // -- On click, color the connections red
     node.conva_circle.on('click', (e) => {
+        // -- Focus the node
+        get_formated_nodes().forEach((n_node) => 
+            unfocus_node(n_node));
 
-        // -- Get the connections
-        const connections = get_connections();
-        let to_focus: Array<ConectionDataLink> = [];
-
-        connections.forEach((connection) => {
-            if (connection.connection.node_a.node.node_id === node.node.node_id ||
-                connection.connection.node_b.node.node_id === node.node.node_id
-            ) to_focus.push(connection);
-            else unfocous_connection(connection);
-        });
-
-        // -- Focus the connections
-        to_focus.forEach((connection) => focous_connection(connection));
+        focus_node(node);
     });
 }
 
@@ -76,5 +58,11 @@ export function add_stage_listners(stage: Konva.Stage) {
         get_connections().forEach((connection) => {
             reset_connection(connection);
         });
+
+        // -- Get the nodes
+        get_formated_nodes().forEach((node) => {
+            unfocus_node(node);
+        });
+
     });
 }

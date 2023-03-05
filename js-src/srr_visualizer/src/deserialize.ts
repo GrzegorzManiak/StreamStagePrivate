@@ -1,7 +1,7 @@
 import { connection_layer, node_layer, text_layer } from '..';
 import { Data, Server } from '../index.d';
-import { add_connection, delete_connections } from './connection';
-import { add_node, calculate_offset, center_text, delete_node, get_formated_nodes } from './node';
+import { add_connection, delete_connections, focous_connection } from './connection';
+import { add_node, calculate_offset, center_text, delete_node, focus_node, get_formated_nodes } from './node';
 
 /**
  * @name deserialize
@@ -108,5 +108,12 @@ export function deserialize(
             connection_layer,
             text_layer
         )
+    });
+
+
+    // -- Focus any connections
+    processed_nodes.forEach(node => {
+        if (!node.focused) return;
+        focus_node(node);
     });
 }

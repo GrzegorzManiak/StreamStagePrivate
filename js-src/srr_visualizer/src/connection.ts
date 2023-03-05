@@ -1,5 +1,6 @@
 import Konva from 'konva';
 import { ConectionDataLink, Connection, NodeDataLink } from '../index.d'
+import { focus_node, unfocus_node } from './node';
 
 let connections: ConectionDataLink[] = [];
 export const get_connections = () => connections;
@@ -91,10 +92,6 @@ export function focous_connection(connection: ConectionDataLink): void {
 
     align_connection(connection);
     calculate_color(connection);
-
-    // -- Get the node and set its color to its border color
-    connection.connection.node_a.conva_circle.fill(connection.connection.node_a.conva_circle.stroke());
-    connection.connection.node_b.conva_circle.fill(connection.connection.node_b.conva_circle.stroke());
 }
 
 
@@ -114,10 +111,6 @@ export function unfocous_connection(connection: ConectionDataLink): void {
     connection.conva_text.text('');
 
     align_connection(connection);
-
-    // -- Get the node and set its color to transparent
-    connection.connection.node_a.conva_circle.fill('transparent');
-    connection.connection.node_b.conva_circle.fill('transparent');
 }
 
 
@@ -137,10 +130,6 @@ export function reset_connection(connection: ConectionDataLink): void {
 
     align_connection(connection);
     calculate_color(connection);
-
-    // -- Get the node and set its color to transparent
-    connection.connection.node_a.conva_circle.fill('transparent');
-    connection.connection.node_b.conva_circle.fill('transparent');
 }
 
 
