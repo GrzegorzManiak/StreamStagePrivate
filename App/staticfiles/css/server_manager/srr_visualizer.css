@@ -56,3 +56,10 @@
     cursor: pointer;
     width: auto;
 }
+
+
+#x-coord, #y-coord {
+    color: var(--font-color);
+    margin-top: 0.5rem;
+    height: 0.25rem;
+}

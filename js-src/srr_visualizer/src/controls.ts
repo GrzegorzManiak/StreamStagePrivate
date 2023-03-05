@@ -123,4 +123,48 @@ export function add_pan_control(
         });
         stage.batchDraw();
     });
+
+
+    // -- Stage on cooridnation change
+    const x_coord = document.getElementById('x-coord') as HTMLInputElement,
+        y_coord = document.getElementById('y-coord') as HTMLInputElement;
+
+
+    let x_focused = false, y_focused = false;
+
+    // -- Focus and unfocus 
+    x_coord.addEventListener('focus', () => { x_focused = true; });
+    x_coord.addEventListener('blur', () => { 
+        x_focused = false; 
+        x_coord.value = `${stage.x().toFixed(2)}x`;
+    });
+
+    y_coord.addEventListener('focus', () => { y_focused = true; });
+    y_coord.addEventListener('blur', () => { 
+        y_focused = false; 
+        y_coord.value = `${stage.y().toFixed(2)}y`;
+    });
+
+
+    // -- Input on stage change
+    x_coord.addEventListener('input', () => {
+        stage.x(parseInt(x_coord.value) || 0);
+        stage.batchDraw();
+    });
+
+    y_coord.addEventListener('input', () => {
+        stage.y(parseInt(y_coord.value) || 0);
+        stage.batchDraw();
+    });
+
+
+    // -- Update on stage change
+    stage.on('xChange', () => { 
+        if (x_focused) return;
+        x_coord.value = `${stage.x().toFixed(2)}x`; 
+    });
+    stage.on('yChange', () => { 
+        if (y_focused) return;
+        y_coord.value = `${stage.y().toFixed(2)}y`; 
+    });
 }

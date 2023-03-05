@@ -25,31 +25,69 @@
             justify-content-center
             w-100
         '>
-            <div class='
-                d-flex 
-                justify-content-between
-                align-items-center
-                gap-3
-            '>
-                <!--Zoom + -->
-                <button class='btn btn-sm col-2' id='zoom-in'>
-                    <i class='fas fa-search-plus'></i>
-                </button>
+            <div>
 
-                <!--Zoom Level-->
-                <input type='text' class='
-                    form-control
-                    form-control-sm
-                    text-center
-                    text-light
-                    bg-dark
-                    border-0
-                ' id='zoom-level' min='0' max='1000' value='100%'>
+                <div class='
+                    d-flex 
+                    justify-content-between
+                    align-items-center
+                    gap-3
+                '>
+                    <!--Zoom + -->
+                    <button class='btn btn-sm col-2' id='zoom-in'>
+                        <i class='fas fa-search-plus'></i>
+                    </button>
 
-                <!--Zoom - -->
-                <button class='btn btn-sm col-2' id='zoom-out'>
-                    <i class='fas fa-search-minus'></i>
-                </button>
+                    <!--Zoom Level-->
+                    <input type='text' class='
+                        form-control
+                        form-control-sm
+                        text-center
+                        text-light
+                        bg-dark
+                        border-0
+                    ' id='zoom-level' min='0' max='1000' value='100%'>
+
+                    <!--Zoom - -->
+                    <button class='btn btn-sm col-2' id='zoom-out'>
+                        <i class='fas fa-search-minus'></i>
+                    </button>
+                </div>
+
+                
+                <div class='
+                    d-flex 
+                    justify-content-between
+                    align-items-center
+                '>
+                    <!--Coordinates-->
+                    <div class='
+                        d-flex 
+                        justify-content-between
+                        align-items-center
+                        gap-1
+                    '>
+                        <input type='text' class='
+                            form-control
+                            form-control-sm
+                            text-center
+                            text-light
+                            bg-dark
+                            border-0
+                        ' id='x-coord' min='0' max='100000' value='0.00x'>
+
+                        <input type='text' class='
+                            form-control
+                            form-control-sm
+                            text-center
+                            text-light
+                            bg-dark
+                            border-0
+                        ' id='y-coord' min='0' max='100000' value='0.00y'>
+                    </div>
+                </div>
+
+
             </div>
         </article>
 
