@@ -3,6 +3,7 @@ import { ProcessedNode, Node, NodeDataLink } from '../index.d';
 import { add_node_listner } from './listeners';
 import { colors, stage } from '..';
 import { focous_connection, get_connections, reset_connection, unfocous_connection } from './connection';
+import { create_toast } from '../../toasts';
 
 function degreesToRadians(degrees: number): number {
     return degrees * (Math.PI / 180);
@@ -214,7 +215,8 @@ export function add_node(
     text_layer: Konva.Layer,
     node_layer: Konva.Layer,
     x_offset: number = 150,
-    y_offset: number = 200
+    y_offset: number = 200,
+    initial: boolean = false
 ): NodeDataLink {
     // -- Loop through the nodes to see if the node already exists
     //    and just update the node if it does
@@ -296,6 +298,10 @@ export function add_node(
         focused: false
     }
 
+    if (initial === false) create_toast(
+        'success', 'Node Added',
+        `Node ${node.node_id} has been added to the network.`
+    );
     add_node_listner(node_data_link)
     formated_nodes.push(node_data_link);
     return node_data_link;

@@ -1,3 +1,58 @@
 #app {
     margin-top: var(--header-height);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+}
+
+#ui {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2;
+
+    pointer-events: none;
+}
+
+
+
+/*  
+    ZOOM
+*/
+.zoom {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: 3;
+    width: 100%;
+    pointer-events: none;
+}
+
+.zoom > div {
+    background-color: var(--theme-secondary-color);
+
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    margin: 1rem;
+    width: 12rem;
+
+    pointer-events: all;
+}
+
+#zoom-level {
+    /* Disables the incramentor */
+    -moz-appearance: textfield;
+}
+
+#zoom-in, #zoom-out {
+    color: var(--font-color);
+    font-size: 1.05rem;
+    text-align: center;
+    cursor: pointer;
+    width: auto;
 }

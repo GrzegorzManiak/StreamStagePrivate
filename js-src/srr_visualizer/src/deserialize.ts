@@ -1,7 +1,10 @@
 import { connection_layer, node_layer, text_layer } from '..';
+import { create_toast } from '../../toasts';
 import { Data, Server } from '../index.d';
 import { add_connection, delete_connections, focous_connection } from './connection';
 import { add_node, calculate_offset, center_text, delete_node, focus_node, get_formated_nodes } from './node';
+
+let init = true;
 
 /**
  * @name deserialize
@@ -16,7 +19,13 @@ export function deserialize(
     // -- Purge the old nodes
     get_formated_nodes().forEach(node => {
         if (!data.nodes.find(data_node => data_node.node_id === node.node.node_id
-        )) delete_node(node.node.node_id);  
+        )) {
+            delete_node(node.node.node_id);  
+            if (init === false) create_toast(
+                'info', 'Node Removed', 
+                `Node ${node.node.node_id} has been removed from the network`
+            )
+        }
     });
 
 
@@ -62,7 +71,8 @@ export function deserialize(
             relay_count,
             text_layer,
             node_layer,
-            x, y
+            x, y,
+            init
         )
 
         // -- Check if a server exists for this node
@@ -111,4 +121,7 @@ export function deserialize(
         if (!node.focused) return;
         focus_node(node);
     });
+
+
+    init = false;
 }
