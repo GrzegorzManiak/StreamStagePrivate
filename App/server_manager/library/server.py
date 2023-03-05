@@ -1,3 +1,4 @@
+from srr import NodeType
 from . import ServerMode
 from server_manager.models.publisher import Publisher
 from server_manager.models.server import Server
@@ -87,6 +88,9 @@ def add_server(
     """
         This function is used to add a server to the database.
     """
+    # -- Figure out what the server's mode is
+    mode = ServerMode.from_string(router.suggest_node_type(True))
+    s_mode = NodeType.to_str(NodeType.translate_cc(mode.to_string()))
 
     # -- Check if the server already exists
     try:
@@ -96,6 +100,7 @@ def add_server(
             # -- Update the server
             server.rtmp_port = rtmp_port
             server.http_port = http_port
+            server.mode = mode.to_string()
             server.save()
             
             server.regenerate_secret()
@@ -105,7 +110,7 @@ def add_server(
             # -- Update the router configuration
             router.add_node(
                 name=str(server.id),
-                type='Relay',
+                type=s_mode,
                 latency=0,
                 usage=0,
             )
@@ -121,6 +126,7 @@ def add_server(
         rtmp_port=rtmp_port,
         http_ip=http_ip,
         http_port=http_port,
+        mode=mode.to_string(),
     )
     server.save()
     if server.update_cloudflare() == False:
@@ -129,7 +135,7 @@ def add_server(
     # -- Update the router configuration
     router.add_node(
         name=str(server.id),
-        type='Relay',
+        type=s_mode,
         latency=0,
         usage=0,
     )

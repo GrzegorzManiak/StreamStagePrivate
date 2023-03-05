@@ -43,7 +43,13 @@ class NodeType:
         
         return None
     
-
+    def translate_cc(node_type: str):
+        match node_type.upper():
+            case 'I': return NodeType.INGRESS
+            case 'RR': return NodeType.RELAY
+            case 'R': return NodeType.EDGE
+        
+        return None
 
 # class SerializedTree:
 #     __init__(self, raw_json: str):
@@ -128,8 +134,25 @@ class ShortestRouteResolver:
         Original:
         add_node(&mut self, node_type: NodeType, node_usage: usize) -> usize
     """
-    def add_node(self, name: str, type: NodeType, latency: int = 0, usage: int = 0) -> Node:
+    def add_node(self, name: str, type: NodeType, latency: int = 0, usage: int = 0, auto_connect = True) -> Node:
         node_id = self.resolver.add_node(name, type, latency, usage)
+
+        if auto_connect:
+            data = json.loads(self.to_json())
+            for node in data["nodes"]:
+                if node["node_id"] != node_id: 
+                    # -- We have to make sure that we dont connect a
+                    #    Node to itself, A edge node to an edge node,
+                    #    an ingress node to an ingress node, or a
+                    #    ingress node to an edge node.
+                    if (
+                        (node["node_type"] == 'Ingress' and type == 'Ingress') or
+                        (node["node_type"] == 'Edge' and type == 'Edge') or
+                        (node["node_type"] == 'Ingress' and type == 'Edge') or
+                        (node["node_type"] == 'Edge' and type == 'Ingress')
+                    ): continue
+                    self.add_connection(node_id, node["node_id"])
+
         return self.get_node(node_id)
 
 
@@ -189,3 +212,18 @@ class ShortestRouteResolver:
     """
     def to_json(self):
         return self.resolver.to_json()
+    
+
+
+    """
+        Suggests a node type for a node, given
+        the current state of the resolver.
+    """
+    def suggest_node_type(self, as_cc: bool = True):
+        mode = self.resolver.suggest_node_type()
+        if not as_cc: return mode
+
+        match mode.lower():
+            case "ingress": return "I"
+            case "relay": return "RR"
+            case "edge": return "R"

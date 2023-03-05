@@ -11,6 +11,7 @@ export interface Node {
     node_latency: number;
     node_type: string;
     node_usage: number;
+    node_name: string;
     name: string;
 }
 

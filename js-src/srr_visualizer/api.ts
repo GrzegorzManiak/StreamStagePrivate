@@ -40,7 +40,7 @@ export const update_interval = async (interval: number): Promise<void> => {
         const resp = response as UpdateSRRRequestData;
 
         // -- Update the tree
-        deserialize(resp.data.tree)
+        deserialize(resp.data.tree, resp.data.servers);
         console.log('Updated tree');
     }
 

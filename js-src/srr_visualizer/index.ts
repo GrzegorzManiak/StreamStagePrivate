@@ -76,12 +76,6 @@ connection_layer.listening(false);
 text_layer.listening(false);
 
 
-//
-// -- Deserialize the data
-//
-deserialize();
-
-
 // 
 // -- Add stage listeners
 //

@@ -255,15 +255,21 @@ impl ShortestRouteResolver {
         let edge_nodes = self.nodes.iter().filter(|n| n.node_type == NodeType::Edge).collect::<Vec<&Node>>();
 
 
+        // -- If there are no nodes, add an ingress node than relay nodes and finally edge nodes
+        if self.nodes.len() == 0 { return NodeType::Ingress; }
+        if ingress_nodes.len() == 0 { return NodeType::Ingress; }
+        if relay_nodes.len() == 0 { return NodeType::Relay; }
+        
+
         // -- Calculate average usage across all nodes
-        let ingress_usage = ingress_nodes.iter().map(|n| n.node_usage).sum::<usize>() / ingress_nodes.len();
-        let relay_usage = relay_nodes.iter().map(|n| n.node_usage).sum::<usize>() / relay_nodes.len();
-        let edge_usage = edge_nodes.iter().map(|n| n.node_usage).sum::<usize>() / edge_nodes.len();
+        let ingress_usage = (ingress_nodes.iter().map(|n| n.node_usage).sum::<usize>() + 1) / (ingress_nodes.len() + 1);
+        let relay_usage = (relay_nodes.iter().map(|n| n.node_usage).sum::<usize>() + 1) / (relay_nodes.len() + 1);
+        let edge_usage = (edge_nodes.iter().map(|n| n.node_usage).sum::<usize>() + 1) / (edge_nodes.len() + 1);
 
         // -- Calculate average latency across all nodes
-        let ingress_latency = ingress_nodes.iter().map(|n| n.node_latency).sum::<usize>() / ingress_nodes.len();
-        let relay_latency = relay_nodes.iter().map(|n| n.node_latency).sum::<usize>() / relay_nodes.len();
-        let edge_latency = edge_nodes.iter().map(|n| n.node_latency).sum::<usize>() / edge_nodes.len();
+        let ingress_latency = (ingress_nodes.iter().map(|n| n.node_latency).sum::<usize>() + 1) / (ingress_nodes.len() + 1);
+        let relay_latency = (relay_nodes.iter().map(|n| n.node_latency).sum::<usize>() + 1) / (relay_nodes.len() + 1);
+        let edge_latency = (edge_nodes.iter().map(|n| n.node_latency).sum::<usize>() + 1) / (edge_nodes.len() + 1);
 
 
         // -- Calculate average weight across all connections
@@ -271,9 +277,11 @@ impl ShortestRouteResolver {
         let relay_weight = relay_latency as f64 * relay_usage as f64;
         let edge_weight = edge_latency as f64 * edge_usage as f64;
 
-        // -- Return the node type with the lowest weight
-        if ingress_weight < relay_weight && ingress_weight < edge_weight { NodeType::Ingress } 
-        else if relay_weight < ingress_weight && relay_weight < edge_weight { NodeType::Relay } 
+        // -- Return the node type with the higest weight
+        //    (higher weight = higher latency and higher usage) 
+        //    meaning that we need to add more of that node type
+        if ingress_weight > relay_weight && ingress_weight > edge_weight { NodeType::Ingress }
+        else if relay_weight > ingress_weight && relay_weight > edge_weight { NodeType::Relay }
         else { NodeType::Edge }
     }
 

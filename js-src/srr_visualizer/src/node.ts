@@ -91,7 +91,9 @@ export function format_node(
     y: number;
     color: string;
 } {
-
+    console.log(
+        node
+    )
     // -- Ark
     const ELIPSE_HEIGHT = 50 * edge_count;
     const ELIPSE_WIDTH = 25 * edge_count;
@@ -198,7 +200,6 @@ export function add_node(
             element.conva_circle
         );
 
-        console.log('Updated node', n.node.name);
         return n;
     }
 
@@ -232,6 +233,7 @@ export function add_node(
         y_offset
     );
 
+    console.log(formatted_node.x, formatted_node.y, formatted_node.z);
     circle.x(formatted_node.x);
     circle.y(formatted_node.y);
     circle.stroke(formatted_node.color);
