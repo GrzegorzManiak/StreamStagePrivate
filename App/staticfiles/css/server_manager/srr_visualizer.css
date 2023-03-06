@@ -65,3 +65,71 @@
     margin-top: 0.5rem;
     height: 0.25rem;
 }
+
+
+
+/*
+    node-tooltip
+*/
+#node-tooltip {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 4;
+    pointer-events: none;
+    display: none;
+}
+
+#node-tooltip hr {
+    margin: 0.25rem 0;
+    border: 1px solid var(--muted-font-color);
+    width: 100%;
+}
+
+#node-tooltip > div {
+    position: absolute;
+    background-color: var(--theme-secondary-color);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    margin: 1rem;
+    width: 12rem;
+    pointer-events: all;
+}
+
+
+.node-info > #node-name {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.node-info > #node-id {
+    font-size: 0.9rem;
+    margin-bottom: 0;
+    color: var(--muted-font-color);
+}
+
+.node-info #node-type {
+    font-size: 0.9rem;
+    margin-bottom: 0;
+    color: var(--muted-font-color);
+}
+
+.node-info #node-usage {
+    font-size: 0.9rem;
+    margin-bottom: 0;
+    color: var(--muted-font-color);
+}
+
+
+.node-stats > div {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+.node-stats > div > p {
+    margin: 0;
+    font-size: 0.9rem;
+}

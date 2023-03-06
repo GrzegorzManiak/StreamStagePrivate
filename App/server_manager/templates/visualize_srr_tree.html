@@ -18,6 +18,118 @@
     <div id='app' class='w-100 h-100'></div>
     <div id='ui' class='w-100 h-100'>
 
+        <!-- Node right click quick menu -->
+        <div id='node-tooltip'>
+            <div class='
+                d-flex 
+                justify-content-between
+                align-items-center
+                gap-3
+                flex-column
+            '>
+                <!-- Node info -->
+                <div class='
+                    node-info
+                    w-100
+                '>  
+                    <!-- Node Name -->
+                    <p id='node-name' class='text-light'>Node Name</p>
+
+                    <!-- Node id -->
+                    <p id='node-id' class='grey-text'>345623462</p>
+
+                    <!-- Node type and usage -->
+                    <div class='
+                        d-flex 
+                        justify-content-between
+                        align-items-center
+                        gap-3
+                    '>
+                        <p id='node-type' class='grey-text'>Relay</p>
+                        <p id='node-usage' class='grey-text'>50%</p>
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <!-- 
+                    Node Statistics:
+                    uptime
+                    bytes in
+                    bytes out
+                    bytes total
+                    clients
+                    lifetime clients
+                -->
+                <div class='
+                    node-stats
+                    w-100
+                '>
+                    <div class='
+                        d-flex 
+                        justify-content-between
+                        align-items-center
+                        gap-3
+                    '>
+                        <p class='grey-text'>Uptime</p>
+                        <p id='node-uptime' class='text-muted'>0d 0h 0m</p>
+                    </div>
+
+                    <div class='
+                        d-flex 
+                        justify-content-between
+                        align-items-center
+                        gap-3
+                    '>
+                        <p class='grey-text'>Bytes In</p>
+                        <p id='node-bytes-in' class='text-muted'>0.00B</p>
+                    </div>
+
+                    <div class='
+                        d-flex 
+                        justify-content-between
+                        align-items-center
+                        gap-3
+                    '>
+                        <p class='grey-text'>Bytes Out</p>
+                        <p id='node-bytes-out' class='text-muted'>0.00B</p>
+                    </div>
+
+                    <div class='
+                        d-flex 
+                        justify-content-between
+                        align-items-center
+                        gap-3
+                    '>
+                        <p class='grey-text'>Bytes Total</p>
+                        <p id='node-bytes-total' class='text-muted'>0.00B</p>
+                    </div>
+
+                    <div class='
+                        d-flex 
+                        justify-content-between
+                        align-items-center
+                        gap-3
+                    '>
+                        <p class='grey-text'>Clients</p>
+                        <p id='node-clients' class='text-muted'>0</p>
+                    </div>
+
+                    <div class='
+                        d-flex 
+                        justify-content-between
+                        align-items-center
+                        gap-3
+                    '>
+                        <p class='grey-text'>Lifetime Clients</p>
+                        <p id='node-lifetime-clients' class='text-muted'>0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <!-- Bottom bar -->
         <article class='
             zoom

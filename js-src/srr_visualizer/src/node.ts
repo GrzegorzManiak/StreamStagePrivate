@@ -4,6 +4,8 @@ import { add_node_listner } from './listeners';
 import { colors, stage } from '..';
 import { focous_connection, get_connections, reset_connection, unfocous_connection } from './connection';
 import { create_toast } from '../../toasts';
+import { tooltip_mouseout, tooltip_mouseover, update_position } from './ui';
+import { sleep } from '../../click_handler';
 
 function degreesToRadians(degrees: number): number {
     return degrees * (Math.PI / 180);
@@ -298,6 +300,43 @@ export function add_node(
         focused: false
     }
 
+    let mouseover = false;
+    let skip = false;
+
+    // -- Add a tooltip listener
+    circle.on('mouseover', async() => {
+        // -- Wait for 1 second before showing the tooltip
+        mouseover = true;
+        if (!skip) await sleep(500);
+        if (!mouseover) return;
+        
+        skip = true;
+
+        tooltip_mouseover(node_data_link);
+        update_position(node_data_link);
+    });
+
+    circle.on('mousemove', () => update_position(node_data_link));
+    circle.on('dragmove', () => {
+        tooltip_mouseout()
+        circle.moveToTop();
+        text.moveToTop();
+    });
+
+    circle.on('mouseout', () => {
+        tooltip_mouseout()
+        mouseover = false;
+        skip = false;
+    });
+
+    circle.on('dragend', async() => {
+        if (!skip) await sleep(500);
+        if (!mouseover) return;
+        tooltip_mouseover(node_data_link);
+        update_position(node_data_link);
+    });
+    
+ 
     if (initial === false) create_toast(
         'success', 'Node Added',
         `Node ${node.node_id} has been added to the network.`
