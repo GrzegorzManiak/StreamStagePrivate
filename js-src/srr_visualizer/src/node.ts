@@ -1,5 +1,5 @@
 import Konva from 'konva';
-import { ProcessedNode, Node, NodeDataLink } from '../index.d';
+import { ProcessedNode, Node, NodeDataLink, Server } from '../index.d';
 import { add_node_listner } from './listeners';
 import { colors, stage } from '..';
 import { focous_connection, get_connections, reset_connection, unfocous_connection } from './connection';
@@ -7,6 +7,7 @@ import { create_toast } from '../../toasts';
 import { sleep } from '../../click_handler';
 import { tooltip_mouseout, tooltip_mouseover, update_tooltip_position } from '../ui/tooltip';
 import { hide_right_click, right_click } from '../ui/context';
+import { set_server } from '../ui/sidebar';
 
 function degreesToRadians(degrees: number): number {
     return degrees * (Math.PI / 180);
@@ -219,7 +220,8 @@ export function add_node(
     node_layer: Konva.Layer,
     x_offset: number = 150,
     y_offset: number = 200,
-    initial: boolean = false
+    initial: boolean = false,
+    server: Server = null
 ): NodeDataLink {
     // -- Loop through the nodes to see if the node already exists
     //    and just update the node if it does
@@ -362,6 +364,10 @@ export function add_node(
         node_data_link.focused = true;
         tooltip_mouseout();
         hide_right_click();
+
+        // -- Set the sidepanel to the node's information
+        if (server === null) return;
+        set_server(server, node_data_link);
     });
  
 

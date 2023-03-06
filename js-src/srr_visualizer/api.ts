@@ -1,7 +1,7 @@
 import { configuration } from '.';
 import request from '../api'
 import { create_toast } from '../toasts';
-import { SRRUpdateResponse, UpdateSRRRequestData, UpdatedSRRTree } from './index.d';
+import { SRRUpdateResponse, Server, StatisticsResponse, UpdateSRRRequestData } from './index.d';
 import { deserialize } from './src/deserialize';
 
 
@@ -11,7 +11,8 @@ import { deserialize } from './src/deserialize';
 export const get_updated_tree = async (): Promise<SRRUpdateResponse> => 
     request('GET', configuration.srr_tree_url, configuration.csrf_token, {});
 
-
+export const get_node_statistics = async (server: Server): Promise<StatisticsResponse> =>
+    request('GET', server.http_url + '/statistics/server', undefined, {}, { Authorization: server.secret });
 
 //
 // AUXILIARY FUNCTIONS

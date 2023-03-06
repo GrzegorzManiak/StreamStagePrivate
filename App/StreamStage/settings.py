@@ -78,8 +78,7 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 X_FRAME_OPTIONS = 'ALLOW-FROM *://*.streamstage.co/*'
 CORS_ALLOWED_ORIGIN_REGEXES = [r"^https://.+$"]
-
-
+CORS_ORIGIN_ALLOW_ALL = True
 
 #
 # Application definition
@@ -102,7 +101,7 @@ INSTALLED_APPS = [
     # 3rd Party
     'crispy_forms',
 
-    # 'corsheaders',
+    'corsheaders',
     'crispy_bootstrap5',
     'django_countries',
     'rest_framework',
@@ -116,7 +115,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    # 'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',

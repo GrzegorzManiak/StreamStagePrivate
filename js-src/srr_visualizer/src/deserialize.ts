@@ -65,6 +65,9 @@ export function deserialize(
             case 'Edge': node.z = --local_edge_count; break;
         }
 
+        // -- Check if a server exists for this node
+        const server = servers.find(server => server.id === node.node_name) || undefined;
+
         const new_node = add_node(
             node,
             edge_count,
@@ -72,17 +75,15 @@ export function deserialize(
             text_layer,
             node_layer,
             x, y,
-            init
+            init,
+            server
         )
 
-        // -- Check if a server exists for this node
-        for(const server of servers) {
-            if (node.node_name !== server.id) continue;
+        // -- Change the text if the server exists
+        if (!server) return;
 
-            // -- TODO: Click handlers etc
-            new_node.conva_text.text(`${server.slug}`);
-            center_text(new_node.conva_text, new_node.conva_circle);
-        }
+        new_node.conva_text.text(server.slug);
+        center_text(new_node.conva_text, new_node.conva_circle);
     });
 
 

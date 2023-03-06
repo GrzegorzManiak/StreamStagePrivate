@@ -85,3 +85,16 @@ export interface UpdatedSRRTree {
 
 export type UpdateSRRRequestData = DefaultResponseData & { data: UpdatedSRRTree } ;
 export type SRRUpdateResponse = UpdateSRRRequestData | DefaultResponse;
+
+
+export interface Statistics {
+    lables: Array<string>;
+    data: Array<{
+        name: string;
+        type: string;
+        data: Array<number | string>;
+    }>;
+}
+
+export type StatisticsRequestData = DefaultResponseData & { data: Statistics } ;
+export type StatisticsResponse = StatisticsRequestData | DefaultResponse;

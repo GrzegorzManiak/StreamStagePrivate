@@ -269,6 +269,6 @@ class Server(models.Model):
 
         # -- Set the node url
         self.rtmp_url = f'rtmp://{self.rtmp_ip}:{self.rtmp_port}/live'
-        self.http_url = f'http://{self.http_ip}:{self.http_port}/public'
+        self.http_url = f'https://{self.http_ip}:{self.http_port}/public'
 
         super(Server, self).save(*args, **kwargs)

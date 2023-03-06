@@ -1,3 +1,7 @@
+line {
+    stroke: var(--theme-color)!important;
+}
+
 #app {
     margin-top: var(--header-height);
     position: fixed;
