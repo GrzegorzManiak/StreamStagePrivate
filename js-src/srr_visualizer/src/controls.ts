@@ -1,5 +1,5 @@
 import Konva from 'konva';
-import { hide_right_click } from './ui';
+import { hide_right_click } from '../ui/context';
 
 export function add_zoom_control(
     stage: Konva.Stage,

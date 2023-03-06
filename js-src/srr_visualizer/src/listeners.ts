@@ -2,7 +2,7 @@ import Konva from 'konva';
 import { NodeDataLink } from '../index.d';
 import { align_connection, get_connections, reset_connection } from './connection';
 import { center_text, focus_node, get_formated_nodes, unfocus_node } from './node';
-import { hide_right_click } from './ui';
+import { hide_right_click } from '../ui/context';
 
 /**
  * 
@@ -17,12 +17,13 @@ export function add_node_listner(
 
         // -- Update the text
         center_text(node.conva_text, node.conva_circle);
+        let foucsed = node.focused;
 
         // -- Focus the node
         get_formated_nodes().forEach((n_node) => 
             unfocus_node(n_node));
 
-        focus_node(node);
+        if (foucsed) focus_node(node);
     });
 
 
@@ -30,12 +31,14 @@ export function add_node_listner(
     node.conva_circle.on('click', (e) => {
         // -- Make sure its not a right click
         if (e.evt.button === 2) return;
-        
+
         // -- Focus the node
         get_formated_nodes().forEach((n_node) => 
             unfocus_node(n_node));
 
-        focus_node(node);
+        // -- If its already focused, unfocus it
+        if (node.focused) unfocus_node(node);
+        else focus_node(node);
     });
 }
 

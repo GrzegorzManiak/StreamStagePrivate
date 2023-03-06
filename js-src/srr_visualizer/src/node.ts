@@ -4,8 +4,9 @@ import { add_node_listner } from './listeners';
 import { colors, stage } from '..';
 import { focous_connection, get_connections, reset_connection, unfocous_connection } from './connection';
 import { create_toast } from '../../toasts';
-import { right_click, tooltip_mouseout, tooltip_mouseover, update_tooltip_position } from './ui';
 import { sleep } from '../../click_handler';
+import { tooltip_mouseout, tooltip_mouseover, update_tooltip_position } from '../ui/tooltip';
+import { hide_right_click, right_click } from '../ui/context';
 
 function degreesToRadians(degrees: number): number {
     return degrees * (Math.PI / 180);
@@ -304,6 +305,7 @@ export function add_node(
     let skip = false;
     let context_menu = false;
 
+
     // 
     // MOUSE OVER
     //
@@ -322,9 +324,10 @@ export function add_node(
 
     circle.on('mousemove', () => update_tooltip_position(node_data_link));
     circle.on('dragmove', () => {
-        tooltip_mouseout()
         circle.moveToTop();
         text.moveToTop();
+        tooltip_mouseout()
+        hide_right_click();
     });
 
     circle.on('mouseout', () => {
@@ -343,15 +346,26 @@ export function add_node(
 
     
     //
-    // Right Click
+    // Right Click, Left Click
     //
     circle.on('contextmenu', () => {
+        tooltip_mouseout();
         right_click(node_data_link);
         context_menu = true;
     });
+
+    circle.on('click', (e) => {
+        // -- If the right click menu is open, return
+        if (e.evt.button === 2) return;
+
+        context_menu = false;
+        node_data_link.focused = true;
+        tooltip_mouseout();
+        hide_right_click();
+    });
  
 
-    
+
     if (initial === false) create_toast(
         'success', 'Node Added',
         `Node ${node.node_id} has been added to the network.`

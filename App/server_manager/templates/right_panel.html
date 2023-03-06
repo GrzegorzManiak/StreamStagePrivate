@@ -1,0 +1,265 @@
+<article 
+    id='node-panel'
+    class='
+        node-panel
+        d-flex
+        justify-content-end
+        align-items-end
+        w-100
+'>
+    <div class='
+        d-flex 
+        gap-3
+        flex-column
+    '>
+        <!-- Header -->
+        <div class='
+            d-flex 
+            justify-content-between
+            align-items-center
+            gap-3
+            w-100
+            node-header
+            flex-column
+        '>
+            <!-- Node name and min button -->
+            <div class='
+                d-flex 
+                justify-content-between
+                align-items-center
+                gap-3
+                w-100
+            '>
+                <h5 id='node-name' class='text-light'>Node Name</h5>
+
+                <button class='btn btn-sm text-light' id='minimize'>
+                    <i class='fas fa-window-minimize'></i>
+                </button>
+            </div>  
+
+            <!-- quick action row -->
+            <div class='
+                d-flex 
+                justify-content-between
+                align-items-center
+                gap-1
+                w-100
+                quick-actions
+            '>
+                <!-- Open -->
+                <button class='btn btn-sm text-light' id='open'>
+                    <i class='fas fa-external-link-alt'></i>
+                </button>
+
+                <!-- Shutdown -->
+                <button class='btn btn-sm text-light' id='shutdown'>
+                    <i class="fa-solid fa-plug-circle-exclamation"></i>
+                </button>
+
+                <!-- Graceful Shutdown -->
+                <button class='btn btn-sm text-light' id='graceful-shutdown'>
+                    <i class="fa-solid fa-plug"></i>
+                </button>
+
+                <!-- Reboot -->
+                <button class='btn btn-sm text-light' id='reboot'>
+                    <i class="fa-solid fa-rotate-exclamation"></i>
+                </button>
+
+                <!-- Graceful Reboot -->
+                <button class='btn btn-sm text-light' id='graceful-reboot'>
+                    <i class="fa-solid fa-rotate"></i>
+                </button>
+            </div>
+            
+
+            <!-- Detailed info button -->
+            <div class='
+                d-flex 
+                justify-content-between
+                align-items-center
+                gap-1
+                w-100
+                flex-column
+                detailed-info
+            '>
+                <!-- ID -->
+                <p id='node-id' class='text-muted d-flex justify-content-between'>
+                    <span>ID:</span>
+                    <span class='text-muted'>f2c21d75-0da0-40a9-a240-44274672dd07</span>
+                </p>
+
+                <!-- Node ID -->
+                <p id='node-node-id' class='text-muted d-flex justify-content-between'>
+                    <span>Router ID:</span>
+                    <span class='text-muted'>1456723456</span>
+                </p>
+
+                <!-- RTMP -->
+                <p id='node-rtmp' class='text-muted d-flex justify-content-between'>
+                    <span>RTMP:</span>
+                    <span class='text-muted'>rtmp://1ie-eu.rtmp.streamstage:1935/live</span>
+                </p>
+
+                <!-- HTTP -->
+                <p id='node-http' class='text-muted d-flex justify-content-between'>
+                    <span>HTTP:</span>
+                    <span class='text-muted'>https://152.212.44.15:7342</span>
+                </p>
+            <div>
+        </div>
+
+
+        <!--
+            Node stats
+        -->
+        <div class='
+            node-stats
+            w-100
+            mt-3
+            mb-3
+        '>
+            <div class='
+                d-flex 
+                justify-content-between
+                align-items-center
+                gap-3
+            '>
+                <div class='
+                    d-flex 
+                    justify-content-between
+                    align-items-start
+                    gap-1
+                    flex-column
+                    col-4
+                '>
+                    <p class='grey-text m-0'>Uptime</p>
+                    <p id='node-uptime' class='text-muted m-0'>0d 0h 0m</p>
+                </div>
+
+                <div class='
+                    d-flex 
+                    justify-content-between
+                    align-items-start
+                    gap-1
+                    flex-column
+                    col-4
+                '>
+                    <p class='grey-text m-0'>Bytes In</p>
+                    <p id='node-bytes-in' class='text-muted m-0'>0.00B</p>
+                </div>
+
+                <div class='
+                    d-flex 
+                    justify-content-between
+                    align-items-start
+                    gap-1
+                    flex-column
+                    col-4
+                '>
+                    <p class='grey-text m-0'>Bytes Out</p>
+                    <p id='node-bytes-out' class='text-muted m-0'>0.00B</p>
+                </div>
+            </div>
+
+            <div class='
+                d-flex 
+                justify-content-between
+                align-items-center
+                gap-3
+            '>
+                <div class='
+                    d-flex 
+                    justify-content-between
+                    align-items-start
+                    gap-1
+                    flex-column
+                    col-4
+                '>
+                    <p class='grey-text m-0'>Bytes Total</p>
+                    <p id='node-bytes-total' class='text-muted m-0'>0.00B</p>
+                </div>
+
+                <div class='
+                    d-flex 
+                    justify-content-between
+                    align-items-start
+                    gap-1
+                    flex-column
+                    col-4
+                '>
+                    <p class='grey-text m-0'>Clients</p>
+                    <p id='node-clients' class='text-muted m-0'>0</p>
+                </div>
+
+                <div class='
+                    d-flex 
+                    justify-content-between
+                    align-items-start
+                    gap-1
+                    flex-column
+                    col-4
+                '>
+                    <p class='grey-text m-0'>Lifetime</p>
+                    <p id='node-lifetime-clients' class='text-muted m-0'>0</p>
+                </div>
+            </div>
+        </div>
+
+
+        <!--
+            Graphs, charts and other stuff, since we are limited
+            in space, we will use bootstrap tabs to switch between
+            them.
+        -->
+        <div class='
+            node-graphs
+            w-100
+            mt-3
+            mb-3
+        '>
+            <ul class='nav nav-tabs' id='node-graphs-tabs' role='tablist'>
+
+                <!-- io -->
+                <li class='nav-item' role='presentation'>
+                    <button 
+                        class='nav-link active border-0' 
+                        id='node-io-tab' 
+                        data-bs-toggle='tab' 
+                        data-bs-target='#node-io' 
+                        type='button' 
+                        role='tab' 
+                        aria-controls='node-io' 
+                        aria-selected='true'>I/O
+                    </button>
+                </li>
+
+                <!-- Logs -->
+                <li class='nav-item' role='presentation'>
+                    <button 
+                        class='nav-link border-0' 
+                        id='node-logs-tab' 
+                        data-bs-toggle='tab' 
+                        data-bs-target='#node-logs' 
+                        type='button' 
+                        role='tab' 
+                        aria-controls='node-logs' 
+                        aria-selected='false'>Logs
+                    </button>
+                </li>
+            </ul>
+
+            <div class='tab-content' id='node-graphs-tabs-content'>
+                <!-- io -->
+                <div class='tab-pane fade show active' id='node-io' role='tabpanel' aria-labelledby='node-io-tab'>
+                    <p>io</p>
+                </div>
+
+                <!-- Logs -->
+                <div class='tab-pane fade' id='node-logs' role='tabpanel' aria-labelledby='node-logs-tab'>
+                    <p>logs</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</article>
