@@ -1,4 +1,5 @@
 import Konva from 'konva';
+import { hide_right_click } from './ui';
 
 export function add_zoom_control(
     stage: Konva.Stage,
@@ -23,6 +24,7 @@ export function add_zoom_control(
         const new_scale = old_scale + INCRAMENT;
         stage.scale({ x: new_scale, y: new_scale });
         zoom_level.value = `${Math.trunc(new_scale * 100)}%`;
+        hide_right_click();
     });
 
 
@@ -36,6 +38,7 @@ export function add_zoom_control(
         const new_scale = old_scale - INCRAMENT;
         stage.scale({ x: new_scale, y: new_scale });
         zoom_level.value = `${Math.trunc(new_scale * 100)}%`;
+        hide_right_click();
     });
 
 
@@ -55,6 +58,7 @@ export function add_zoom_control(
 
     zoom_level.addEventListener('blur', () => {
         zoom_level.value = `${zoom}%`;
+        hide_right_click();
     });
 
 
@@ -76,6 +80,7 @@ export function add_zoom_control(
             stage.scale({ x: MIN_SCALE, y: MIN_SCALE });
             stage.batchDraw();
             zoom_level.value = `${Math.trunc(MIN_SCALE * 100)}%`;
+            hide_right_click();
             return;
         }
 
@@ -84,6 +89,7 @@ export function add_zoom_control(
             stage.scale({ x: MAX_SCALE, y: MAX_SCALE });
             stage.batchDraw();
             zoom_level.value = `${Math.trunc(MAX_SCALE * 100)}%`;
+            hide_right_click();
             return;
         }
 
@@ -94,6 +100,7 @@ export function add_zoom_control(
         const new_y = -(mouse_point_to.y - stage.getPointerPosition().y / new_scale) * new_scale;
         stage.position({ x: new_x, y: new_y });
         stage.batchDraw();
+        hide_right_click();
     });
 }
 
@@ -165,9 +172,11 @@ export function add_pan_control(
     stage.on('xChange', () => { 
         if (x_focused) return;
         x_coord.value = `${stage.x().toFixed(2)}x`; 
+        hide_right_click();
     });
     stage.on('yChange', () => { 
         if (y_focused) return;
         y_coord.value = `${stage.y().toFixed(2)}y`; 
+        hide_right_click();
     });
 }

@@ -23,6 +23,16 @@
     pointer-events: none!important;
 }
 
+
+@keyframes fade-in {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+.fade-in {
+    animation: fade-in 0.5s ease-in-out 1 forwards;
+}
+
 /*  
     ZOOM
 */
@@ -132,4 +142,29 @@
 .node-stats > div > p {
     margin: 0;
     font-size: 0.9rem;
+}
+
+
+/* 
+    node-rightclick
+*/
+#node-rightclick {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 5;
+    pointer-events: none;
+    display: none;
+}
+
+#node-rightclick > div {
+    position: absolute;
+    background-color: var(--theme-secondary-color);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    margin: 1rem;
+    width: 15rem;
+    pointer-events: all;
 }

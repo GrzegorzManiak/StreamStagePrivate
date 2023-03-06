@@ -4,7 +4,7 @@ import { add_node_listner } from './listeners';
 import { colors, stage } from '..';
 import { focous_connection, get_connections, reset_connection, unfocous_connection } from './connection';
 import { create_toast } from '../../toasts';
-import { tooltip_mouseout, tooltip_mouseover, update_position } from './ui';
+import { right_click, tooltip_mouseout, tooltip_mouseover, update_tooltip_position } from './ui';
 import { sleep } from '../../click_handler';
 
 function degreesToRadians(degrees: number): number {
@@ -302,21 +302,25 @@ export function add_node(
 
     let mouseover = false;
     let skip = false;
+    let context_menu = false;
 
-    // -- Add a tooltip listener
+    // 
+    // MOUSE OVER
+    //
     circle.on('mouseover', async() => {
         // -- Wait for 1 second before showing the tooltip
         mouseover = true;
         if (!skip) await sleep(500);
         if (!mouseover) return;
+        if (context_menu) return;
         
         skip = true;
 
         tooltip_mouseover(node_data_link);
-        update_position(node_data_link);
+        update_tooltip_position(node_data_link);
     });
 
-    circle.on('mousemove', () => update_position(node_data_link));
+    circle.on('mousemove', () => update_tooltip_position(node_data_link));
     circle.on('dragmove', () => {
         tooltip_mouseout()
         circle.moveToTop();
@@ -333,10 +337,21 @@ export function add_node(
         if (!skip) await sleep(500);
         if (!mouseover) return;
         tooltip_mouseover(node_data_link);
-        update_position(node_data_link);
+        update_tooltip_position(node_data_link);
     });
+
+
     
+    //
+    // Right Click
+    //
+    circle.on('contextmenu', () => {
+        right_click(node_data_link);
+        context_menu = true;
+    });
  
+
+    
     if (initial === false) create_toast(
         'success', 'Node Added',
         `Node ${node.node_id} has been added to the network.`

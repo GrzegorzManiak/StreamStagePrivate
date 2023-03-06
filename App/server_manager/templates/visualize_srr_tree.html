@@ -15,10 +15,10 @@
         data-get-ssr-tree = '{{ get_srr_tree }}'
     ></span>
     
-    <div id='app' class='w-100 h-100'></div>
-    <div id='ui' class='w-100 h-100'>
+    <div id='app' class='w-100 h-100' oncontextmenu="return false;"></div>
+    <div id='ui' class='w-100 h-100' oncontextmenu="return false;">
 
-        <!-- Node right click quick menu -->
+        <!-- Node tooltip -->
         <div id='node-tooltip'>
             <div class='
                 d-flex 
@@ -129,6 +129,51 @@
             </div>
         </div>
 
+        <!-- Node right click quick menu -->
+        <div id='node-rightclick'>
+            <div class='
+                d-flex 
+                justify-content-between
+                align-items-center
+                gap-3
+                flex-column
+            '>
+                <!-- quick action row -->
+                <div class='
+                    d-flex 
+                    justify-content-between
+                    align-items-center
+                    gap-3
+                    w-100
+                    quick-actions
+                '>
+                    <!-- Open -->
+                    <button class='btn btn-sm text-light' id='open'>
+                        <i class='fas fa-external-link-alt'></i>
+                    </button>
+
+                    <!-- Shutdown -->
+                    <button class='btn btn-sm text-light' id='shutdown'>
+                        <i class="fa-solid fa-plug-circle-exclamation"></i>
+                    </button>
+
+                    <!-- Graceful Shutdown -->
+                    <button class='btn btn-sm text-light' id='graceful-shutdown'>
+                        <i class="fa-solid fa-plug"></i>
+                    </button>
+
+                    <!-- Reboot -->
+                    <button class='btn btn-sm text-light' id='reboot'>
+                        <i class="fa-solid fa-rotate-exclamation"></i>
+                    </button>
+
+                    <!-- Graceful Reboot -->
+                    <button class='btn btn-sm text-light' id='graceful-reboot'>
+                        <i class="fa-solid fa-rotate"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
 
         <!-- Bottom bar -->
         <article class='

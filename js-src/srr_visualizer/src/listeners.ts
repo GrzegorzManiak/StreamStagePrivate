@@ -2,6 +2,7 @@ import Konva from 'konva';
 import { NodeDataLink } from '../index.d';
 import { align_connection, get_connections, reset_connection } from './connection';
 import { center_text, focus_node, get_formated_nodes, unfocus_node } from './node';
+import { hide_right_click } from './ui';
 
 /**
  * 
@@ -27,6 +28,9 @@ export function add_node_listner(
 
     // -- On click, color the connections red
     node.conva_circle.on('click', (e) => {
+        // -- Make sure its not a right click
+        if (e.evt.button === 2) return;
+        
         // -- Focus the node
         get_formated_nodes().forEach((n_node) => 
             unfocus_node(n_node));
@@ -64,5 +68,7 @@ export function add_stage_listners(stage: Konva.Stage) {
             unfocus_node(node);
         });
 
+        // -- Hide the context menu
+        hide_right_click();
     });
 }
