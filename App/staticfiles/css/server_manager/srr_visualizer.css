@@ -221,7 +221,6 @@
 #node-graphs-tabs-content {
     background-color: var(--theme-color);
     height: 100%;
-    padding: 1rem;
 
     border-bottom-left-radius: 0.5rem;
     border-bottom-right-radius: 0.5rem;
@@ -250,4 +249,14 @@
     border: none!important;
     border-top-left-radius: 0.5rem!important;
     border-top-right-radius: 0.5rem!important;
+}
+
+
+/* 
+    node-graphs
+*/
+#node-io {
+    height: 15rem;
+    width: 100%;
+    border-radius: 1rem;
 }
