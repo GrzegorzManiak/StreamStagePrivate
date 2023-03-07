@@ -38,7 +38,7 @@ ALLOWED_HOSTS = [
     '.streamstage.co',
 ]
 
-
+CERT_DIR = str(BASE_DIR / 'certs')
 
 #
 # Cloudflare

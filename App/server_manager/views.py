@@ -1,13 +1,17 @@
-from django.http.response import JsonResponse
+from django.http.response import JsonResponse, HttpResponse
 from django.shortcuts import render, reverse
 from rest_framework import status
 from rest_framework.decorators import api_view
-from accounts.com_lib import is_admin, success_response
+from server_manager.library.common import is_node
+from accounts.com_lib import error_response, is_admin, required_data, success_response, invalid_response
 from server_manager.library.router import get_latest_tree
 from StreamStage.secrets import NODE_ANNOUNCE_KEY
 from server_manager.models import Server
 import uuid
 import json
+
+import warnings
+import requests
 
 from server_manager.library.server import add_server, get_all_servers
 
@@ -166,7 +170,8 @@ def visualize_srr_tree(request):
         request, 
         'visualize_srr_tree.html',
         context={
-            'get_srr_tree': reverse('get_srr_tree')
+            'get_srr_tree': reverse('get_srr_tree'),
+            'proxy_request': reverse('proxy_request'),
         }
     )
 
@@ -186,3 +191,49 @@ def get_srr_tree(request):
             'servers': get_all_servers(False)
         }
     )
+
+
+
+@api_view(['GET', 'POST', 'DELETE', 'PUT', 'PATCH'])
+@is_admin()
+def proxy_request(request):
+
+    # -- Get the Proxy URL from the headers
+    url = request.headers.get('p-url')
+
+    # -- Get the information from this request
+    method = request.method
+    headers = request.headers.get('p-headers')
+    body = request.data.get('p-body')
+
+    try:
+        warnings.filterwarnings('ignore', message='Unverified HTTPS request')
+
+        # -- Figure out the method
+        method = requests.get
+        match method: 
+            case 'GET': method = requests.get
+            case 'POST': method = requests.post
+            case 'DELETE': method = requests.delete
+            case 'PUT': method = requests.put
+            case 'PATCH': method = requests.patch
+            case _: method = requests.get
+
+        # -- Make the request
+        response = method(
+            url, 
+            verify=False,
+            headers=json.loads(headers),
+            data=body if body else None,
+        )
+
+        # -- Return the response
+        return HttpResponse(
+            # -- Raw response, no parsing
+            response.text,
+            status=response.status_code,
+        )
+    
+    except Exception as e:
+        print('ERROR', e)
+        return error_response("Error making proxy request.")

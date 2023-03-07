@@ -71,17 +71,18 @@ def error_response(message):
                   to the user, this is used when the user has done
                   a boo boo, like sending the wrong password
     :param message: The message to send back to the user
+    :param status: The code to send back to the user (optional)
     :return: A JsonResponse with the message
 """
-def invalid_response(message):
+def invalid_response(message, s = 400):
     # -- Create the response
     response = {
-        'message': message,
+        'message': str(message),
         'status': 'invalid'
     }
 
     # -- Return the response
-    return JsonResponse(response, status=status.HTTP_400_BAD_REQUEST)
+    return JsonResponse(response, status=s)
 
 
 

@@ -12,7 +12,10 @@ export const get_updated_tree = async (): Promise<SRRUpdateResponse> =>
     request('GET', configuration.srr_tree_url, configuration.csrf_token, {});
 
 export const get_node_statistics = async (server: Server): Promise<StatisticsResponse> =>
-    request('GET', server.http_url + '/statistics/server', undefined, {}, { Authorization: server.secret });
+    request('GET', configuration.proxy_request_url, undefined, {}, { 
+        'p-headers': '{ "NodeSecret": "' + server.secret + '" }',
+        'p-url': server.http_url + '/statistics/server'
+    });
 
 //
 // AUXILIARY FUNCTIONS

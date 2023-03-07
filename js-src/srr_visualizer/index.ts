@@ -22,6 +22,7 @@ export function get_or_error<e>(element: HTMLElement, attribute: string): e {
 export const configuration = {
     csrf_token: get_or_error<string>(config, 'data-csrf-token'),
     srr_tree_url: get_or_error<string>(config, 'data-get-ssr-tree'),
+    proxy_request_url: get_or_error<string>(config, 'data-proxy-request'),
 };
 
 
