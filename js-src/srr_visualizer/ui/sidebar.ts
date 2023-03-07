@@ -8,6 +8,15 @@ if (!side_panel) {
     create_toast('error', 'Fatal Error', 'Could not find the side panel');
     throw new Error('Could not find the side panel');
 }
+
+// 
+// CLOSE BUTTON
+// 
+const close = side_panel.querySelector('#close');
+close.addEventListener('click', () => {
+    clear_server();
+});
+
 // 
 // STATISTICS
 //
@@ -55,6 +64,9 @@ export function clear_server(): void {
     router_id.innerHTML = '';
     rtmp.innerHTML = '';
     http.innerHTML = '';
+
+    side_panel.classList.remove('visable');
+    side_panel.classList.add('hidden');
 }
 
 
@@ -79,7 +91,11 @@ export function set_server(
     router_id.innerHTML = node.node.node_id.toString();
     rtmp.innerHTML = server.rtmp_url;
     http.innerHTML = server.http_url;
-    
+
+    // -- Show the panel
+    side_panel.classList.remove('hidden');
+    side_panel.classList.add('visable');
+
     if (init) {
         init = false;
         chart = new Chart(io, {

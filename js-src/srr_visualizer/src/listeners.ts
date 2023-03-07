@@ -45,16 +45,6 @@ export function add_node_listner(
 
 
 export function add_stage_listners(stage: Konva.Stage) {
-
-    // -- Event listener for the stage so tat we can update the connections
-    //    when the stage is resized, or clicked
-    stage.on('resize', (e) => {
-        // -- Get the formated connections
-        const connections = get_connections();
-        
-        connections.forEach((connection) => align_connection(connection));
-    });
-
     stage.on('click', (e) => {
         // -- The stage is the first thing added, so its id is one
         //    therefore we can use this to check if the click was on the stage

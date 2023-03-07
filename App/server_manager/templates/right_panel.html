@@ -2,9 +2,10 @@
     id='node-panel'
     class='
         node-panel
+        hidden
         d-flex
-        justify-content-end
-        align-items-end
+        justify-content-center
+        align-items-center
         w-100
 '>
     <div class='
@@ -22,7 +23,12 @@
             node-header
             flex-column
         '>
-            <!-- Node name and min button -->
+
+
+
+            <!-- 
+                Node name and min button 
+            -->
             <div class='
                 d-flex 
                 justify-content-between
@@ -33,12 +39,16 @@
                 <h5 id='node-name' class='text-light'>Node Name</h5>
                 <h5 id='node-type' class='text-light'>Ingest</h5>
 
-                <button class='btn btn-sm text-light' id='minimize'>
-                    <i class='fas fa-window-minimize'></i>
+                <button class='btn btn-sm text-light' id='close'>
+                    <i class="fa-solid fa-square-xmark"></i>
                 </button>
             </div>  
 
-            <!-- quick action row -->
+
+
+            <!-- 
+                quick action row 
+            -->
             <div class='
                 d-flex 
                 justify-content-between
@@ -74,7 +84,10 @@
             </div>
             
 
-            <!-- Detailed info button -->
+
+            <!-- 
+                Detailed info button 
+            -->
             <div class='
                 d-flex 
                 justify-content-between
@@ -111,6 +124,7 @@
         </div>
 
 
+
         <!--
             Node stats
         -->
@@ -118,7 +132,6 @@
             node-stats
             w-100
             mt-3
-            mb-3
         '>
             <div class='
                 d-flex 
@@ -208,6 +221,7 @@
         </div>
 
 
+
         <!--
             Graphs, charts and other stuff, since we are limited
             in space, we will use bootstrap tabs to switch between
@@ -217,7 +231,6 @@
             node-graphs
             w-100
             mt-3
-            mb-3
         '>
             <ul class='nav nav-tabs' id='node-graphs-tabs' role='tablist'>
 

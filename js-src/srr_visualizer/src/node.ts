@@ -324,15 +324,15 @@ export function add_node(
         update_tooltip_position(node_data_link);
     });
 
-    circle.on('mousemove', () => update_tooltip_position(node_data_link));
-    circle.on('dragmove', () => {
+    circle.on('mousemove', async() => update_tooltip_position(node_data_link));
+    circle.on('dragmove', async() => {
         circle.moveToTop();
         text.moveToTop();
         tooltip_mouseout()
         hide_right_click();
     });
 
-    circle.on('mouseout', () => {
+    circle.on('mouseout', async() => {
         tooltip_mouseout()
         mouseover = false;
         skip = false;
@@ -350,13 +350,13 @@ export function add_node(
     //
     // Right Click, Left Click
     //
-    circle.on('contextmenu', () => {
+    circle.on('contextmenu', async() => {
         tooltip_mouseout();
         right_click(node_data_link);
         context_menu = true;
     });
 
-    circle.on('click', (e) => {
+    circle.on('click', async(e) => {
         // -- If the right click menu is open, return
         if (e.evt.button === 2) return;
 
@@ -364,12 +364,28 @@ export function add_node(
         node_data_link.focused = true;
         tooltip_mouseout();
         hide_right_click();
+    });
 
-        // -- Set the sidepanel to the node's information
+    // -- Double click
+    circle.on('dblclick', async() => {
         if (server === null) return;
         set_server(server, node_data_link);
     });
  
+    // -- Long press
+    let long_press_touch = false;
+    circle.on('touchstart', async() => {
+        long_press_touch = true;
+        await sleep(1500);
+        if (server === null) return;
+        set_server(server, node_data_link);
+    });
+
+    circle.on('touchend', async() => {
+        if (long_press_touch) focus_node(node_data_link);
+        long_press_touch = false;
+    });
+
 
 
     if (initial === false) create_toast(

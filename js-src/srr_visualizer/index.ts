@@ -1,6 +1,6 @@
 import Konva from 'konva';
 import { add_stage_listners } from './src/listeners';
-import { add_pan_control, add_zoom_control } from './src/controls';
+import { add_pan_control, add_zoom_control, resize_canvas } from './src/controls';
 import { create_toast } from '../toasts';
 import { update_interval } from './api';
 
@@ -68,6 +68,7 @@ text_layer.zIndex(2);
 // -- Stage controls
 add_zoom_control(stage);
 add_pan_control(stage);
+resize_canvas(stage, 'app');
 
 // -- Disable callbacks for the connection layer
 //    as we don't want to be able to interact with it

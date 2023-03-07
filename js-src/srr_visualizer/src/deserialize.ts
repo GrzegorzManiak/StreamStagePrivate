@@ -67,7 +67,7 @@ export function deserialize(
 
         // -- Check if a server exists for this node
         const server = servers.find(server => server.id === node.node_name) || undefined;
-
+        
         const new_node = add_node(
             node,
             edge_count,
