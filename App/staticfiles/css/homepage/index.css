@@ -16,7 +16,6 @@
 }
 
 .thumbnail {
-    margin-top: 10rem;
     position: relative;
     width: var(--tb-width);
     height: var(--tb-height);
@@ -41,13 +40,9 @@
     transition: transform 0.2s ease-in-out;
 }
 
-.thumbnail-image > img:hover {
-    transform: scale(1.05);
-}
+.thumbnail-image > img:hover { transform: scale(1.05); }
+.thumbnail-image > img:active { transform: scale(0.95); }
 
-.thumbnail-image > img:active {
-    transform: scale(0.95);
-}
 [data-elm='title'] {
     text-align: left;
     font-weight: 600;
@@ -72,6 +67,20 @@
     overflow: hidden;
     margin-right: 0.5rem;
 }
+
+/* 
+    When the pfp gets hovered, we want to
+    move the description up the profile info
+*/
+@keyframes up {
+    0% { transform: translateY(0%);  opacity: 1; }
+    100% { transform: translateY(-50%); opacity: 0; }
+}
+
+.image-column:hover + .description-column {
+    animation: up 0.5s ease-in-out 1 forwards;  
+}
+
 
 [pfp-pos='top'] {
     position: absolute;
@@ -226,4 +235,44 @@
     .thumbnail-pfp {
         --pfp-size: var(--pfp-size-lg);
     }
+}
+
+
+[data-is-hidden='true'], [data-is-hidden='true'] * {
+    display: none !important;
+}
+
+
+
+/* 
+    carousel
+*/
+.carousel {
+    height: auto;
+    margin-top: 10rem;
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.carousel-group {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-start;
+    height: auto;
+    margin: 0 1rem;
+
+    width: 100%;
+}
+
+.carousel-group > article {
+    flex: 0 0 auto;
+    margin-right: 1rem;
+    height: auto;
 }
