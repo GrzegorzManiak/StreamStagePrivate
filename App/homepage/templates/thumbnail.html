@@ -1,0 +1,155 @@
+<!--
+    This is the template is for the thumbnail of the
+    content.
+-->
+<article
+    data-event-id=''
+    data-is-live='false'
+    data-is-skeleton='false'
+    class='
+        thumbnail
+        container
+        d-flex
+        flex-column
+        justify-content-between
+        align-items-center
+    '
+>
+    <!-- Image -->
+    <div class='thumbnail-image'>
+
+        <!-- Live badge -->
+        <p class='live-badge'>
+            Live
+        </p>
+
+        <!-- temp image -->
+        <img 
+            class='skeleton' 
+            data-skeleton='image'
+            src='https://picsum.photos/300/200' 
+            alt=''
+        >
+    </div>
+
+    <!-- 
+        Details 
+
+        PFP | Title             |
+        PFP | Short Description | Options
+        View count | Date       |
+    -->
+    <div class='
+        thumbnail-details
+        d-flex
+        justify-content-between
+        align-items-center
+        w-100
+        gap-2
+    '>
+        <!-- Image column -->
+        <div class='
+            d-flex
+            flex-column
+            justify-content-between
+            align-items-center
+        '>
+            <!-- PFP -->
+            <div 
+                class='thumbnail-pfp'
+                pfp-pos=''
+            >
+                <img 
+                    data-elm='pfp'
+                    data-skeleton='image'
+                    src='https://picsum.photos/50/50' 
+                    alt=''
+                >
+            </div>
+        </div>
+        
+
+        <!-- Title and description column -->
+        <div class='
+            d-flex
+            flex-column
+            justify-content-between
+            align-items-start
+            w-100
+        '>
+            <!-- Title -->
+            <div class='thumbnail-title'>
+                <p 
+                    class='skeleton m-0 w-100'
+                    data-elm='title'
+                    data-skeleton='text'
+                >Super duper content</p>
+            </div>
+
+            {% comment %} <!-- Short description -->
+            <div class='thumbnail-description'>
+                <p 
+                    class='skeleton m-0 w-100'
+                    data-elm='description'
+                    data-skeleton='text'
+                >Short description</p>
+            </div> {% endcomment %}
+
+
+
+            <!-- 
+                Footer 
+
+                View count | Date
+            -->
+            <div 
+            class='
+                thumbnail-footer
+                d-flex
+                justify-content-between
+                align-items-center
+                w-100
+            '>
+                <!-- View count -->
+                <div class='thumbnail-view-count'>
+                    <p 
+                        class='skeleton m-0'
+                        data-elm='view-count'
+                        data-skeleton='text'
+                    >1.3K views</p>
+                </div>
+
+                <!-- Date -->
+                <div class='thumbnail-date d-flex gap-2'>
+                    <p 
+                        class='skeleton m-0'
+                        data-elm='date-vod'
+                        data-skeleton='text'
+                    >12/02/2023</p>
+
+                    <p 
+                        class='skeleton m-0'
+                        data-elm='date-live'
+                        data-skeleton='text'
+                    >NOW</p>
+
+                    <!-- DOT -->
+                    <div class='thumbnail-dot'>
+                        <i class="fa-solid fa-circle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Spacer -->
+        <div class='
+            d-flex
+            flex-column
+            justify-content-between
+            align-items-center
+        '>
+            <div></div>
+        </div>
+    </div>
+
+</article>

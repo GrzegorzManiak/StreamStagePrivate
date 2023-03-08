@@ -1,0 +1,229 @@
+/* 
+    Thumbnail
+*/
+:root {
+    --tb-width-sm: 14rem;
+    --tb-width-md: 17rem;
+    --tb-width-lg: 19rem;
+
+    --tb-height-sm: 5rem;   
+    --tb-height-md: 7rem;
+    --tb-height-lg: 9rem;
+
+    --pfp-size-sm: 2rem;
+    --pfp-size-md: 2.5rem;
+    --pfp-size-lg: 3rem;
+}
+
+.thumbnail {
+    margin-top: 10rem;
+    position: relative;
+    width: var(--tb-width);
+    height: var(--tb-height);
+    /* overflow: hidden; */
+    border-radius: 0.5rem;
+    padding: 0;
+    background-color: var(--theme-color);
+}
+
+.thumbnail-image, .thumbnail-image > img {
+    /* 
+        Make sure the image takes up exactly 
+        the width and height set in the root
+        All extra space will be cropped
+    */
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    padding: 0;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    transition: transform 0.2s ease-in-out;
+}
+
+.thumbnail-image > img:hover {
+    transform: scale(1.05);
+}
+
+.thumbnail-image > img:active {
+    transform: scale(0.95);
+}
+[data-elm='title'] {
+    text-align: left;
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: var(--font-color);
+}
+
+[data-elm='description'] {
+    text-align: left;
+    font-weight: 400;
+    font-size: 0.875rem;
+    color: var(--greyed-out-font-color);
+}
+
+[class='thumbnail-pfp'] {
+    width: var(--pfp-size);
+    height: var(--pfp-size);
+    border-radius: 50%;
+    background-color: var(--theme-color);
+    /* Border on the outside */
+    outline: 0.2rem solid var(--theme-color);
+    overflow: hidden;
+    margin-right: 0.5rem;
+}
+
+[pfp-pos='top'] {
+    position: absolute;
+    top: calc((var(--pfp-size) / 4) * -1);
+    left: calc((var(--pfp-size) / 4) * -1);
+}
+
+/* IS LIVE BADGE */
+[data-is-live='true'] .live-badge {
+    /* 
+        When the stream is live, we want to
+        add a 'live' badge to the thumbnail
+    */
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.1rem;
+    margin: 0.5rem;
+    border-radius: 0.25rem;
+    background-color: var(--ss-error);
+    overflow: hidden;
+
+    /* Text */
+    color: var(--font-color);
+    text-transform: uppercase;
+    font-weight: 400;
+    user-select: none;
+}
+
+
+.thumbnail-date {
+    color: var(--muted-font-color);
+    text-transform: uppercase;
+    font-weight: 400;
+    user-select: none;
+    font-size: 0.875rem;
+}
+
+/* IS LIVE DATE */
+[data-is-live='true'] .thumbnail-date {
+    /* 
+        Replace what ever date with just
+        'NOW' when the stream is live
+    */
+
+    /* Text */
+    color: var(--font-color);
+    text-transform: uppercase;
+    font-weight: 400;
+    user-select: none;
+    content: 'NOW';
+}
+
+[data-elm='date-live'] { display: none; }
+[data-is-live='false'] .live-badge { display: none; }
+[data-is-live='false'] [data-elm='date-vod'] { display: block; }
+[data-is-live='true'] [data-elm='date-vod'] { display: none; }
+[data-is-live='true'] [data-elm='date-live'] { display: block; }
+
+
+.thumbnail-footer {
+    margin-top: 0.35rem;
+}
+
+[data-elm='view-count'] {
+    color: var(--muted-font-color);
+    font-weight: 400;
+    user-select: none;
+    font-size: 0.875rem;
+}
+
+.thumbnail-dot {
+    display: inline-block;
+    height: 100%;
+    font-size: 0.5rem;
+    color: var(--info);
+}
+
+[data-is-live='true'] .thumbnail-dot { color: var(--ss-error); }
+
+/* 
+    Skeleton
+*/
+@keyframes grey-shine {
+    0% { background-position: 0 0; }
+    100% { background-position: 200% 0; }
+}
+
+
+[data-is-skeleton='true'] [data-skeleton='text'] {
+    background: linear-gradient(90deg,
+        #2b2b2b 0px,
+        rgb(56, 56, 56) 50px,
+        #2b2b2b 100px
+    );
+        
+    background-size: 400px 400px;
+    animation: grey-shine 1.5s ease-in-out infinite alternate;
+    border-radius: 0.25rem;
+    color: transparent;
+}
+
+[data-is-skeleton='true'] [data-skeleton='image'] {
+    background: linear-gradient(90deg,
+        #2b2b2b 0px,
+        rgb(56, 56, 56) 50px,
+        #2b2b2b 100px
+    );
+        
+    background-size: 100% 100%; 
+    animation: grey-shine 1.5s ease-in-out infinite alternate;
+    border-radius: 0.5rem;
+    color: transparent;
+}
+
+
+/* 
+    Scale
+*/
+
+/* SM */
+@media (min-width: 576px) {
+    .thumbnail {
+        --tb-width: var(--tb-width-md);
+        --tb-height: var(--tb-height-md);
+    }
+
+    .thumbnail-pfp {
+        --pfp-size: var(--pfp-size-md);
+    }
+}
+
+/* MD */
+@media (min-width: 768px) {
+    .thumbnail {
+        --tb-width: var(--tb-width-lg);
+        --tb-height: var(--tb-height-lg);
+    }
+
+    .thumbnail-pfp {
+        --pfp-size: var(--pfp-size-lg);
+    }
+}
+
+/* LG */
+@media (min-width: 992px) {
+    .thumbnail {
+        --tb-width: var(--tb-width-lg);
+        --tb-height: var(--tb-height-lg);
+    }
+
+    .thumbnail-pfp {
+        --pfp-size: var(--pfp-size-lg);
+    }
+}

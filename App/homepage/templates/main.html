@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block metadescription %}
+    
+{% endblock %}
+
+{% block title %}
+    StreamStage - Main Page
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+    <link rel="stylesheet" href="{% static 'css/homepage/index.css' %}">
+{% endblock %}
+
+{% block content %}
+    <span 
+        id='config'
+    ></span>
+
+    <!-- Thumbnail -->
+    {% include 'thumbnail.html' %}
+
+    <!-- Js
+    <script src="{% static 'js/settings_bin.js' %}"></script> -->
+{% endblock %}
