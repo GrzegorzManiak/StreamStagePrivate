@@ -99,7 +99,7 @@ INSTALLED_APPS = [
     'events',
     'stream',
     'applications',
-    'purchases',
+    'store',
 
     # 3rd Party
     'crispy_forms',
