@@ -61,7 +61,7 @@ if USE_CLOUDFLARE:
 #
 DEFAULT_HOST = 'www'
 ROOT_HOSTCONF = 'StreamStage.hosts'
-ROOT_URLCONF = 'StreamStage.urls'
+ROOT_URLCONF = 'homepage.urls'
 
 SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_SAMESITE = None
@@ -97,6 +97,7 @@ INSTALLED_APPS = [
     'events',
     'stream',
     'applications',
+    'homepage',
 
     # 3rd Party
     'crispy_forms',
