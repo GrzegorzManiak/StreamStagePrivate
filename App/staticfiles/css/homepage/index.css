@@ -68,20 +68,6 @@
     margin-right: 0.5rem;
 }
 
-/* 
-    When the pfp gets hovered, we want to
-    move the description up the profile info
-*/
-@keyframes up {
-    0% { transform: translateY(0%);  opacity: 1; }
-    100% { transform: translateY(-50%); opacity: 0; }
-}
-
-.image-column:hover + .description-column {
-    animation: up 0.5s ease-in-out 1 forwards;  
-}
-
-
 [pfp-pos='top'] {
     position: absolute;
     top: calc((var(--pfp-size) / 4) * -1);
@@ -263,7 +249,7 @@
     /* This hides the scroll bar */
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
-    
+
     z-index: 1;
     width: 100%;
 
@@ -319,4 +305,50 @@
 
 .carousel-button-right > div {
     background: linear-gradient(90deg, var(--grad-y) 0%, var(--grad-x) 100%);
+}
+
+/* Carousel indicator */
+.carousel-indicator {
+    position: absolute;
+    top: -2.35rem;
+    right: 0;
+    width: 100%;
+    height: 2rem;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-right: 1rem;
+}
+
+.carousel-indicator > div {
+    width: 5rem;
+    height: 0.5rem;
+    border-radius: 0.5rem;
+    background-color: #2b2b2b;
+    transition: opacity 0.2s ease-in-out;
+    opacity: 0;
+}
+
+.carousel-indicator > div > div {
+    height: 100%;
+    background-color: #aaaaaaa1;
+    transition: opacity 0.2s ease-in-out;
+    border-radius: inherit;
+    opacity: inherit;
+}
+
+.carousel:hover .carousel-indicator > div { opacity: 1; }
+
+
+/* HEader */
+.carousel-header {
+    margin: 1rem;
+}
+
+.carousel-header i, .carousel-header h1 {
+    margin: 0;
+    padding: 0;
+    font-size: 2.5rem;
+    font-weight: 700;
 }

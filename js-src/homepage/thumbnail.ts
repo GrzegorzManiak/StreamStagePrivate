@@ -89,61 +89,55 @@ export function fill_carousel(
 
   
 export function carousel_scroll(
-    carousel: HTMLElement,
+    parent: HTMLElement,
     events: Array<Event>,
 ) {
     // -- Fill the carousel with thumbnails
     const {
         parent: carousel_content,
         children: carousel_thumbnails,
-    } = fill_carousel(carousel, events);
+    } = fill_carousel(parent, events);
 
     // -- Get the buttons
-    const btn_left = carousel.querySelector('.carousel-button-left') as HTMLElement;
-    const btn_right = carousel.querySelector('.carousel-button-right') as HTMLElement;
+    const btn_left = parent.querySelector('.carousel-button-left') as HTMLElement;
+    const btn_right = parent.querySelector('.carousel-button-right') as HTMLElement;
 
     // -- Group count
     let hit_left = false;
     let hit_right = false;
 
-    // -- Center the carousel
-    const carousel_width = carousel.offsetWidth;
-    const tn_width = carousel_thumbnails[0].clientWidth;
-    
-    // -- Depending on the amount of thumbnails, we we want to
-    //    center the carousel differently
-    if (carousel_thumbnails.length % 2 === 0) {
-        // -- Even amount of thumbnails
-        carousel_content.scrollLeft = (carousel_width / 2) - (tn_width / 2) - (tn_width / 2);
-    }
 
-    if (carousel_thumbnails.length % 2 === 1) {
-        // -- Odd amount of thumbnails
-        carousel_content.scrollLeft = (carousel_width / 2) - (tn_width / 2);
-    }
+    // -- This keeps track of % of total scroll
+    const scroll_indicator = parent.querySelector('.scroll-indicator') as HTMLElement;
+    const scroll_listener = () => {
+        // -- Calculate how much we have scrolled
+        const scroll = carousel_content.scrollLeft,
+            carousel_width = carousel_content.offsetWidth;
 
+        // -- Calculate the percentage of the scroll
+        const percentage = scroll / (carousel_content.scrollWidth - carousel_width);
+        scroll_indicator.style.width = (percentage * 100) + '%';
+    };
 
     // -- Add a scroll listener to the carousel
     const scroll_back = () => {
-        // -- Get the scroll position
-        const scroll = carousel_content.scrollLeft;
+        // -- Get the scroll position and the width of the carousel
+        const scroll = carousel_content.scrollLeft,
+            carousel_width = carousel_content.offsetWidth,
+            tn_width = carousel_thumbnails[0].clientWidth;
 
-        // -- Get the size of the thumbnails
-        const tn_width = carousel_content.children[0].clientWidth;
-
-        // -- Get the size of the carousel
-        const carousel_width = carousel.offsetWidth;
-
-        // -- Check if we are at the end of the carousel
-        if (scroll + carousel_width >= carousel_content.scrollWidth) {
-            // -- We are at the end of the carousel, move the scroll to the start
+        // -- We are at the end of the carousel, move the scroll to the start
+        if (scroll + carousel_width >= carousel_content.scrollWidth - tn_width) {
             carousel_content.scrollLeft = 0;
+            hit_right = false;
+            hit_left = true;
         }
 
-        // -- Check if we are at the start of the carousel
-        if (scroll <= 0) {
-            // -- We are at the start of the carousel, move the scroll to the end
-            carousel_content.scrollLeft = carousel_content.scrollWidth;
+        // -- We are at the start of the carousel, move the scroll to the end
+        else if (scroll <= 0) {
+            carousel_content.scrollLeft = carousel_content.scrollWidth - carousel_width;
+            hit_left = false;
+            hit_right = true;
         }
     };
 
@@ -157,18 +151,26 @@ export function carousel_scroll(
         // -- Check if we are at the start of the carousel
         if (hit_left === false && carousel_content.scrollLeft <= tn_width) hit_left = true;
         else if (hit_left) { hit_left = false; scroll_back();}
-        hit_right = false;
+        else hit_right = false;
     });
 
     btn_right.addEventListener('click', () => {
         // -- Scroll by 1 thumbnail
-        const tn_width = carousel_content.children[0].clientWidth;
+        const tn_width = carousel_content.children[0].clientWidth,
+            carousel_width = carousel_content.offsetWidth;
         carousel_content.scrollLeft += tn_width;
 
         // -- Check if we are at the end of the carousel
         if (hit_right === false && carousel_content.scrollLeft + carousel_width >= carousel_content.scrollWidth - tn_width) hit_right = true;
         else if (hit_right) { hit_right = false; scroll_back();}
-        hit_left = false;
+        else hit_left = false;
     });
+
+
+    // -- Center the carousel
+    carousel_content.scrollLeft = 0;
+    hit_left = true;
+    hit_right = false;
+    carousel_content.addEventListener('scroll', scroll_listener);
 }
   
