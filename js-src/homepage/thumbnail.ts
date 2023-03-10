@@ -5,8 +5,12 @@ import { Event } from './index.d';
     copy it and add it multiple times to the page.
 */
 
-const tn = document.getElementById('thumbnail');
+const tn = document.getElementById('thumbnail'),
+    cr = document.getElementById('carousel');
+
 tn.id = '';
+cr.id = '';
+
 
 
 /*
@@ -17,6 +21,7 @@ tn.id = '';
 export function add_thumbnail(event: Event) {
     // -- Clone TN
     const tn_clone = tn.cloneNode(true) as HTMLElement;
+
     tn_clone.id = 'thumbnail-' + event.id;
 
     // -- Is the event live [data-is-live='']
@@ -41,7 +46,7 @@ export function add_thumbnail(event: Event) {
     const tn_date_vod = tn_clone.querySelector('[data-elm="date-vod"]') as HTMLSpanElement;
 
     tn_title.innerText = event.title;
-    tn_view_count.innerText = event.views_formatted;
+    tn_view_count.innerText = event.views_formatted + ' views';
     tn_date_vod.innerText = event.start_time;
     
 
@@ -54,84 +59,116 @@ export function fill_carousel(
     carousel: HTMLElement,
     events: Array<Event>,
 ): {
-    content: Array<Array<Event>>,
-    groups: Array<HTMLElement>
-} {
-// -- Max ammount of thumbnails 
-    //    to show on one carousel row
-    const MAX_ELMS = 6;
-    // -- How many thumbnails to show
-    //    per carousel group
-    const GROUPS = 3;
+    parent: HTMLElement,
+    children: Array<HTMLElement>,
+}
+{
+    const cr_clone = cr.cloneNode(true) as HTMLElement;
+    cr_clone.id = 'carousel-' + events[0].id;
+    carousel.appendChild(cr_clone);
+    cr_clone.removeAttribute('data-is-hidden');
 
-    let content: Array<Array<Event>> = [];
+    // -- The carousel-content element
+    const carousel_content = carousel.querySelector('.carousel-content') as HTMLElement;
 
-    // -- Fill out the group with thumbnails
-    //    and repeat some thumbnails if we
-    //    don't have enough thumbnails to
-    //    by just randomly picking a thumbnail
-    //    from the events array
-    // -- Fill the group
-    for (let i = 0; i < GROUPS; i++) {
-        let group: Array<Event> = [];
-
-        for (let i = 0; i < MAX_ELMS; i++) {
-            let event = events[Math.floor(Math.random() * events.length)];
-            group.push(event);
-        }
-        
-        content.push(group);
+    // -- The content to show
+    for (const element of events) {
+        const event = element;
+        const tn = add_thumbnail(event);
+        carousel_content.appendChild(tn);
     }
-
-    // -- Check for half filled groups
-    //    and fill them up with random thumbnails
-    for (const element of content) {
-        if (element.length < GROUPS) {
-            let diff = GROUPS - element.length;
-
-            for (let i = 0; i < diff; i++) {
-                let event = events[Math.floor(Math.random() * events.length)];
-                content[i].push(event);
-            }
-        }
-    }
-
-
-    // -- Add the thumbnails to the carousel
-    let groups: Array<HTMLElement> = [];
-
-    for (const element of content) {
-        let group = document.createElement('div');
-        group.classList.add('carousel-group');
-
-        for (const event of element) {
-            let tn = add_thumbnail(event);
-            group.appendChild(tn);
-        }
-
-        groups.push(group);
-    }
-
-
-    // -- Add the groups to the carousel
-    for (const element of groups) {
-        carousel.appendChild(element);
-    }
-
+    
     return {
-        content,
-        groups
+        parent: carousel_content,
+        children: Array.from(carousel_content.children) as Array<HTMLElement>,
     };
 }
 
 
+
+
+  
 export function carousel_scroll(
     carousel: HTMLElement,
     events: Array<Event>,
 ) {
     // -- Fill the carousel with thumbnails
-    let { content, groups } = fill_carousel(carousel, events);
+    const {
+        parent: carousel_content,
+        children: carousel_thumbnails,
+    } = fill_carousel(carousel, events);
 
+    // -- Get the buttons
+    const btn_left = carousel.querySelector('.carousel-button-left') as HTMLElement;
+    const btn_right = carousel.querySelector('.carousel-button-right') as HTMLElement;
+
+    // -- Group count
+    let hit_left = false;
+    let hit_right = false;
+
+    // -- Center the carousel
+    const carousel_width = carousel.offsetWidth;
+    const tn_width = carousel_thumbnails[0].clientWidth;
     
+    // -- Depending on the amount of thumbnails, we we want to
+    //    center the carousel differently
+    if (carousel_thumbnails.length % 2 === 0) {
+        // -- Even amount of thumbnails
+        carousel_content.scrollLeft = (carousel_width / 2) - (tn_width / 2) - (tn_width / 2);
+    }
+
+    if (carousel_thumbnails.length % 2 === 1) {
+        // -- Odd amount of thumbnails
+        carousel_content.scrollLeft = (carousel_width / 2) - (tn_width / 2);
+    }
+
+
+    // -- Add a scroll listener to the carousel
+    const scroll_back = () => {
+        // -- Get the scroll position
+        const scroll = carousel_content.scrollLeft;
+
+        // -- Get the size of the thumbnails
+        const tn_width = carousel_content.children[0].clientWidth;
+
+        // -- Get the size of the carousel
+        const carousel_width = carousel.offsetWidth;
+
+        // -- Check if we are at the end of the carousel
+        if (scroll + carousel_width >= carousel_content.scrollWidth) {
+            // -- We are at the end of the carousel, move the scroll to the start
+            carousel_content.scrollLeft = 0;
+        }
+
+        // -- Check if we are at the start of the carousel
+        if (scroll <= 0) {
+            // -- We are at the start of the carousel, move the scroll to the end
+            carousel_content.scrollLeft = carousel_content.scrollWidth;
+        }
+    };
+
+
+    // -- Add event listeners to the buttons
+    btn_left.addEventListener('click', () => {
+        // -- Scroll by 1 thumbnail
+        const tn_width = carousel_content.children[0].clientWidth;
+        carousel_content.scrollLeft -= tn_width; 
+
+        // -- Check if we are at the start of the carousel
+        if (hit_left === false && carousel_content.scrollLeft <= tn_width) hit_left = true;
+        else if (hit_left) { hit_left = false; scroll_back();}
+        hit_right = false;
+    });
+
+    btn_right.addEventListener('click', () => {
+        // -- Scroll by 1 thumbnail
+        const tn_width = carousel_content.children[0].clientWidth;
+        carousel_content.scrollLeft += tn_width;
+
+        // -- Check if we are at the end of the carousel
+        if (hit_right === false && carousel_content.scrollLeft + carousel_width >= carousel_content.scrollWidth - tn_width) hit_right = true;
+        else if (hit_right) { hit_right = false; scroll_back();}
+        hit_left = false;
+    });
 }
   

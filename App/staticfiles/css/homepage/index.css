@@ -25,23 +25,23 @@
     background-color: var(--theme-color);
 }
 
-.thumbnail-image, .thumbnail-image > img {
+.thumbnail-image {
     /* 
         Make sure the image takes up exactly 
         the width and height set in the root
         All extra space will be cropped
     */
-    width: 100%;
-    height: 100%;
+    width: var(--tb-width);
+    height: var(--tb-height);
+
     object-fit: cover;
     padding: 0;
     border-radius: 0.5rem;
     margin-bottom: 0.5rem;
-    transition: transform 0.2s ease-in-out;
-}
 
-.thumbnail-image > img:hover { transform: scale(1.05); }
-.thumbnail-image > img:active { transform: scale(0.95); }
+    background-image: url('https://picsum.photos/50/50');
+
+}
 
 [data-elm='title'] {
     text-align: left;
@@ -243,36 +243,80 @@
 }
 
 
-
 /* 
     carousel
 */
+.car {
+    margin-top: 3rem;
+}
 .carousel {
     height: auto;
-    margin-top: 10rem;
     display: flex;
     flex-direction: row;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
-
-.carousel-group {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: center;
-    justify-content: flex-start;
-    height: auto;
-    margin: 0 1rem;
-
     width: 100%;
 }
 
-.carousel-group > article {
+.carousel-content {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    /* This hides the scroll bar */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+    
+    z-index: 1;
+    width: 100%;
+
+    padding-left: 1rem;
+    padding-right: 1rem;
+
+    display: flex;
+    gap: 1rem;
+}
+
+.carousel-content > article {
     flex: 0 0 auto;
-    margin-right: 1rem;
     height: auto;
+    margin: auto;
+    display: inline-block;
+}
+
+.carousel-button {
+    position: absolute;
+    width: 100%;
+    z-index: 5;
+    height: 100%;
+    opacity: 0;
+
+    transition: opacity 0.2s ease-in-out;
+    pointer-events: none;
+}
+
+.carousel-button-left { left: 0; }
+.carousel-button-right { right: 0; }
+.carousel:hover .carousel-button { opacity: 1; }
+
+.carousel-button > div {
+    width: 5rem;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: all;
+
+    --grad-x: #0000007a;
+    --grad-y: #00000000;
+}
+
+.carousel-button > div i { transition: transform 0.2s ease-in-out; }
+.carousel-button > div:hover i { transform: scale(1.25); }
+.carousel-button > div:active i { transform: scale(1.1); }
+
+.carousel-button-left > div {
+    background: linear-gradient(90deg, var(--grad-x) 0%, var(--grad-y) 100%);
+}
+
+.carousel-button-right > div {
+    background: linear-gradient(90deg, var(--grad-y) 0%, var(--grad-x) 100%);
 }
