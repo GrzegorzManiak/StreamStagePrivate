@@ -44,25 +44,16 @@ class EventTests(TestCase):
         )
         self.event.categories.add(test_category)
 
-        # Create Test Showing
-        self.showing = EventShowing.objects.create(
+        # Create Test Showing 1 - Earlier
+        self.showing_next = EventShowing.objects.create(
             event = self.event,
-            country = 'IE',
-            city = 'City',
-            venue = 'Venue',
+            country = 'AU',
+            city = 'Sydney',
+            venue = 'Opera House',
             time = '2023-02-28T21:17:06.089Z'
         )
 
-        # Create Test Review
-        self.review_high = EventReview.objects.create(
-            author = self.member,
-            event = self.event,
-            title = 'Review Title', 
-            body = 'Review Body',
-            rating = 10 
-        )
-
-        # Create Test Review
+        # Create Test Review 1 - Low Rating
         self.review_low = EventReview.objects.create(
             author = self.member,
             event = self.event,
@@ -71,12 +62,12 @@ class EventTests(TestCase):
             rating = 3
         )
 
-        # Create Test Media
-        self.media = EventMedia.objects.create(
-            event = self.event,
-            picture = 'events/Comedy.jfif',
-            description = 'Media Picture Description'
-        )
+        # # Create Test Media
+        # self.media = EventMedia.objects.create(
+        #     event = self.event,
+        #     picture = 'events/Comedy.jfif',
+        #     description = 'Media Picture Description'
+        # )
 
     # *******************
     # *** Event Tests ***
@@ -138,11 +129,15 @@ class EventTests(TestCase):
     def test_event_delete(self):
         Event.objects.get(event_id='TstEvnt0').delete()
 
+        # Logging user in as authentication required for deleting event
+        self.client.force_login(self.member)
+
         # Defining HTTP response & testing if correct
         self.response = self.client.get(reverse('member_profile'))
+
         # self.assertEqual(self.response.status_code, 200)
         # # Testing if correct template used
-        # self.assertTemplateUsed(self.response, 'accounts/profile.html')
+        self.assertTemplateUsed(self.response, 'profile.html')
 
     # **************************
     # *** Showing CRUD Tests ***
@@ -151,9 +146,9 @@ class EventTests(TestCase):
     # Testing Creation of Showing
     def test_showing_create(self):
         showing = EventShowing.objects.filter(event='TstEvnt0').first()
-        self.assertEqual(f'{showing.country}', 'IE') 
-        self.assertEqual(f'{showing.city}', 'City') 
-        self.assertEqual(f'{showing.venue}', 'Venue') 
+        self.assertEqual(f'{showing.country}', 'AU') 
+        self.assertEqual(f'{showing.city}', 'Sydney') 
+        self.assertEqual(f'{showing.venue}', 'Opera House') 
         self.assertEqual(f'{showing.time}', '2023-02-28 21:17:06.089000+00:00') 
 
         # Defining HTTP response & testing if correct
@@ -194,6 +189,21 @@ class EventTests(TestCase):
         # Testing if correct template used
         self.assertTemplateUsed(self.response, 'event.html')
 
+    # Testing Getting the next Showing
+    def test_get_next_showing(self):
+        # Create Test Showing 2 - Later
+        self.showing_last = EventShowing.objects.create(
+            event = self.event,
+            country = 'IE',
+            city = 'City',
+            venue = 'Venue',
+            time = '2024-02-28T21:17:06.089Z'
+        )
+        showing = self.event.get_next_showing()
+
+        # Testing if correct "top" review is being returned
+        self.assertEqual(showing.showing_id, self.showing_next.showing_id)
+
     # *************************
     # *** Review CRUD Tests ***
     # *************************
@@ -202,9 +212,9 @@ class EventTests(TestCase):
     def test_review_create(self):
         review = EventReview.objects.filter(event='TstEvnt0').first()
         self.assertEqual(f'{review.author}', 'TestMember') 
-        self.assertEqual(f'{review.title}', 'Review Title') 
+        self.assertEqual(f'{review.title}', 'Unhappy Review Title') 
         self.assertEqual(f'{review.body}', 'Review Body') 
-        self.assertEqual(f'{review.rating}', '10') 
+        self.assertEqual(f'{review.rating}', '3') 
 
         # Defining HTTP response & testing if correct
         self.response = self.client.get(self.event.get_absolute_url())
@@ -242,7 +252,16 @@ class EventTests(TestCase):
         # Testing if correct template used
         self.assertTemplateUsed(self.response, 'event.html')
 
+    # Testing getting highest rated Review
     def test_get_top_review(self):
+        # Create Test Review 2 - High Rating
+        self.review_high = EventReview.objects.create(
+            author = self.member,
+            event = self.event,
+            title = 'Review Title', 
+            body = 'Review Body',
+            rating = 10 
+        )
         review = self.event.get_top_review()
 
         # Testing if correct "top" review is being returned

@@ -26,5 +26,6 @@ urlpatterns = [
     path('master/', include('server_manager.urls'), name='master'),
     path('stream/', include('stream.urls')),
     path('events/', include('events.urls')),
-    path('applications/', include('applications.urls'))
+    path('applications/', include('applications.urls')),
+    path('search/', include('search.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,0 +1,129 @@
+<div id="refine-search-container">
+    <form action="{% url 'search:searchResult' %}" method="get" class="row">
+        <h4 class="text-center m-0 border border-3 rounded border-light">Refine Search</h4>
+
+    <!-- New Search -->
+        <div class="mt-1"> 
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="q"
+                value="{% if query %}{{ query }}{% endif %}">
+        </div>
+
+    <!-- Sort By Price Asc, Price Desc -->
+        <div class="col-12 my-1">
+            <b>Sort by</b>
+            <label class="d-block">
+                {% if sort_by == 'price-asc' %}
+                <input type="radio" name="s" value="price-asc" checked>
+                {% else %}
+                <input type="radio" name="s" value="price-asc">
+                {% endif %}
+
+                Price, low to high
+            </label>
+            <label class="d-block">
+                {% if sort_by == 'price-desc' %}
+                <input type="radio" name="s" value="price-desc" checked>
+                {% else %}
+                <input type="radio" name="s" value="price-desc">
+                {% endif %}
+
+                Price, high to low
+            </label>
+            <label class="d-block">
+                {% if sort_by == 'none' or not sort_by %}
+                <input type="radio" name="s" value="none" checked>
+                {% else %}
+                <input type="radio" name="s" value="none">
+                {% endif %}
+
+                None
+            </label>
+
+            <!-- {% if query %}
+            <input type="hidden" name="q" value="{{ query }}">
+            {% endif %} -->
+        </div>
+    
+    <!-- Filter By Category -->
+        <div class="col-12 my-1">
+            <b>Filter by Category</b>
+
+            <select class="form-select" name="cat">
+                <option value="">None</option>
+
+                {% for cat in links %}
+                {% if cat.name == category_name %}
+                <option value="{{ cat.id }}" selected="selected">{{ cat.name }}</option>
+                {% else %}
+                <option value="{{ cat.id }}">{{ cat.name }}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+
+    <!-- Filter By Broadcaster -->
+        <div class="col-12 my-1">
+            <b>Filter by Broadcaster</b>
+
+            <select class="form-select" name="b">
+                <option value="">None</option>
+
+                {% for broadcaster in broadasters %}
+                {% if broadcaster == q_broadcaster %}
+                <option value="{{ brand }}" selected="selected">{{ broadcaster }}</option>
+                {% else %}
+                <option value="{{ brand }}">{{ broadcaster }}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- ????????? -->
+
+
+    <!-- Filter By Date / Time? -->
+
+
+    <!-- Filter By City / Country -->
+    
+        <!-- ????????? -->
+
+
+
+    <!-- Filter By Price Range -->
+        <div class="m-auto p-1 border border-2 border-light rounded" style="width:90%">
+            <p class="m-0" data-bs-toggle="collapse" href="#pricefilter" role="button">
+                <b>Filter by Price Range</b>
+            </p>
+            <div class="collapse {% if min_price or max_price %}show{% endif %}" id="pricefilter">
+                <div id="price-filters">
+                    <div>
+                        € <input class="border-light rounded" type="number" name="mip" {% if min_price %}value="{{min_price}}" {% endif %}>
+                    </div>
+                    <p class="h5">to</p>
+                    <div>
+                        € <input class="border-light rounded mb-1" type="number me-auto" name="map" {% if max_price %}value="{{max_price}}" {% endif %}>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <!-- Filter By Previous Purchases --> 
+        {% if user.is_authenticated %}
+        <div class="col-12 my-1">
+            <label class="d-block mt-3 mb-1">
+                {% if purchased %}
+                <input type="checkbox" name="p" value="y" checked>
+                {% else %}
+                <input type="checkbox" name="p" value="y">
+                {% endif %}
+    
+                Already Purchased
+            </label>
+            {% endif %}
+        </div>
+        
+
+        <button class="btn btn-primary my-3" style="max-width: 50%">Apply</button>
+    </form>
+</div>
