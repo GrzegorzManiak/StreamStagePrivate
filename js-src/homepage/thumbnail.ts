@@ -87,8 +87,15 @@ export function fill_carousel(
 
 
 
-  
-export function carousel_scroll(
+/*
+    @name create_carousel
+    @description This function creates a carousel and adds it to the parent element
+                 it also manages buttons, scroll etc.
+    @param {HTMLElement} parent - This is the element that the carousel will be appended to
+    @param {Array<Event>} events - The events to show in the carousel
+    @returns {void}
+*/
+export function create_carousel(
     parent: HTMLElement,
     events: Array<Event>,
 ) {
@@ -118,6 +125,7 @@ export function carousel_scroll(
         const percentage = scroll / (carousel_content.scrollWidth - carousel_width);
         scroll_indicator.style.width = (percentage * 100) + '%';
     };
+
 
     // -- Add a scroll listener to the carousel
     const scroll_back = () => {

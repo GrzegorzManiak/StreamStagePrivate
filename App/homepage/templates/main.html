@@ -13,17 +13,28 @@
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
     <link rel="stylesheet" href="{% static 'css/auth.css' %}">
     <link rel="stylesheet" href="{% static 'css/homepage/index.css' %}">
+
+    <!-- StreamStage font -->
+    <link rel="stylesheet" href="{% static 'fonts/lust/lust.css' %}">
 {% endblock %}
 
 {% block content %}
     <span 
         id='config'
     ></span>
+    
+    <!-- Logo -->
+    <div 
+        id='logo-loader'
+        state='loading'
+    >
+        {% include 'logo.svg' %}
+    </div>
 
     <!-- Thumbnail -->
     {% include 'thumbnail.html' %}
     {% include 'carousel.html' %}
-
+    
     <!-- Main -->
     <main>
 

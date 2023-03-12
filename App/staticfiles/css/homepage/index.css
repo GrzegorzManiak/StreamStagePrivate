@@ -34,12 +34,12 @@
     width: var(--tb-width);
     height: var(--tb-height);
 
-    object-fit: cover;
     padding: 0;
     border-radius: 0.5rem;
     margin-bottom: 0.5rem;
 
-    background-image: url('https://picsum.photos/50/50');
+    background-image: url('https://picsum.photos/300/300');
+    background-size: cover;
 
 }
 
@@ -235,6 +235,7 @@
 .car {
     margin-top: 3rem;
 }
+
 .carousel {
     height: auto;
     display: flex;
@@ -351,4 +352,102 @@
     padding: 0;
     font-size: 2.5rem;
     font-weight: 700;
+}
+
+
+/* 
+    Logo loader
+*/
+
+@keyframes loading {
+	100% {stroke-dashoffset: -35%;}
+}
+
+@keyframes final {
+    0% {
+        fill: #00000000;
+        stroke-width: 2px;
+        stroke-dasharray: 6% 29%;
+        stroke: var(--accent-color);
+    }
+
+    100% {
+        stroke: #00000000;
+        stroke-width: 0px;
+        fill: var(--accent-color);
+        stroke-dasharray: 100% 0%;
+    }
+}
+
+@keyframes hide-splash {
+    0% { 
+        background-color: var(--theme-color); 
+        opacity: 1;
+    }
+    100% { 
+        background-color: #00000000; 
+        opacity: 0;
+        display: none;
+    }
+}
+
+@keyframes hide-logo {
+    0% { 
+        opacity: 1;
+    }
+    100% { 
+        opacity: 0;
+        display: none;
+    }
+}
+
+.logo {
+    fill: #00000000;
+    stroke: var(--accent-color);
+    stroke-dasharray: 6% 29%;
+    stroke-width: 2px;
+    stroke-dashoffset: 0%;
+}
+
+#logo-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--theme-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+#logo-loader svg {
+    width: 50%;
+    height: 50%;
+}
+
+#logo-loader p {
+    /* Font */
+    font-family: 'Lust Script';
+    color: var(--accent-color);
+    font-size: 5rem;
+    background: linear-gradient(90deg, var(--theme-color), var(--accent-color), var(--theme-color));
+    background-repeat: no-repeat;
+    background-size: 80%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: rgba(255, 255, 255, 0);
+}
+
+[state='loading'] .logo { animation: loading 3s infinite linear; }
+[state='finising'] .logo { animation: final 3.5s forwards, loading 3s infinite linear;}
+[state='finished'] { animation: hide-splash 2s forwards; pointer-events: none; }
+[state='finished'] .logo { animation: hide-logo 2s forwards; fill: var(--accent-color); stroke: #00000000; }
+[state='solid'] .logo { fill: var(--accent-color); stroke: #00000000; }
+
+
+[state='zoomed-out'] { transform: scale(0.95);}
+[state='zoomed-in'] { 
+    transform: scale(1);
+    transition: all 1s ease-in;
 }

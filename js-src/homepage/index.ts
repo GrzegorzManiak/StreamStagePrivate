@@ -1,6 +1,7 @@
 import { Event, Streamer } from './index.d';
-import { carousel_scroll } from './thumbnail';
+import { create_carousel } from './thumbnail';
 
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 const streamer: Streamer = {
     id: '1',
@@ -193,6 +194,35 @@ const events: Array<Event> = [
 
 
 // -- #carousel
-carousel_scroll(document.querySelector('#c1') as HTMLElement, events);
+create_carousel(document.querySelector('#c1') as HTMLElement, events);
 // carousel_scroll(document.querySelector('#c2') as HTMLElement, events);
 // carousel_scroll(document.querySelector('#c3') as HTMLElement, events);
+
+
+//
+// -- Grab the logo SVG 
+//
+const logo = document.querySelector('#logo-loader') as SVGGeometryElement;
+
+function set_splash_state(
+    state: 'loading' | 'finising' | 'finished'
+) {
+    switch (state) {
+        case 'loading': 
+            logo.setAttribute('state', 'loading'); 
+            document.body.setAttribute('state', 'zoomed-out');
+            break;
+        case 'finising': logo.setAttribute('state', 'finising'); break;
+        case 'finished': 
+            logo.setAttribute('state', 'finished'); 
+            document.body.setAttribute('state', 'zoomed-in');
+            break;
+    }
+}
+
+// -- Start the splash animation
+set_splash_state('loading');
+sleep(1000).then(() => {
+    set_splash_state('finising');
+    sleep(1500).then(() => set_splash_state('finished'));
+});
