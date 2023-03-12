@@ -1,29 +1,16 @@
-<div class='car'>
-    <!-- Carousel header -->
-    <div class='
+<div 
+    class='
+        car
         d-flex
+        justify-content-center
         align-items-center
-        carousel-header
-        w-100
-        gap-3
-    '>
-        <!-- Title -->
-        <div class='
-            d-flex
-            justify-content-center
-            align-items-center
-            carousel-header-title
-        '>
-            <div>
-                <h1>Carousel</h1>
-            </div>
-        </div>
-    </div>
-    
+        flex-column-reverse
+    ' 
+    id='carousel'
+    data-is-hidden='true'
+>
     <!-- Carousel -->
     <div 
-        id='carousel'
-        data-is-hidden='true'
         class='
             w-100
             d-flex
@@ -59,6 +46,39 @@
 
         <!-- Carousel content -->
         <div class='carousel-content'>
+        </div>
+    </div>
+
+
+    <!-- Carousel header -->
+    <div class='
+        d-flex
+        align-items-center
+        justify-content-between
+        carousel-header
+        w-100
+    '>
+        <!-- Title -->
+        <div class='
+            d-flex
+            justify-content-center
+            align-items-center
+            carousel-header-title
+        '>
+            <div>
+                <h1>Carousel</h1>
+            </div>
+
+            <!-- 'Show more' Slideout -->
+            <div class='
+                d-flex
+                justify-content-center
+                align-items-center
+                show-more
+            '>
+                <p class='m-0'>show more</p>
+                <i class="fas fa-chevron-right"></i>
+            </div>
         </div>
 
         <!-- Carousel indicator -->
