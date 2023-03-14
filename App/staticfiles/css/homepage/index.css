@@ -2,12 +2,12 @@
     Thumbnail
 */
 :root {
-    --tb-width-sm: 14rem;
+    --tb-width-sm: 90vw;
     --tb-width-md: 17rem;
-    --tb-width-lg: 19rem;
+    --tb-width-lg: 21rem;
     --tb-width-xl: 20vw;
 
-    --tb-height-sm: 7rem;   
+    --tb-height-sm: 40vw;   
     --tb-height-md: 10em;
     --tb-height-lg: 12rem;
     --tb-height-xl: 11vw;
@@ -126,7 +126,7 @@
 [data-is-live='false'] .live-badge { display: none; }
 [data-is-live='false'] [data-elm='date-vod'] { display: block; }
 [data-is-live='true'] [data-elm='date-vod'] { display: none; }
-[data-is-live='true'] [data-elm='date-live'] { display: block; }
+[data-is-live='true'] [data-elm='date-live'] { display: block; font-weight: 500; }
 
 
 .thumbnail-footer {
@@ -190,32 +190,41 @@
 */
 
 /* SM */
-@media (max-width: 576px) {
-    .thumbnail {
-        --tb-width: var(--tb-width-md);
-        --tb-height: var(--tb-height-md);
+@media (max-width: 460px) {
+    .thumbnail, .showcase-small-img {
+        --tb-width: var(--tb-width-sm);
+        --tb-height: var(--tb-height-sm);
     }
 
     .thumbnail-pfp {
         --pfp-size: var(--pfp-size-md);
     }
+
+    [data-sci-elm='desc'] { display: none; }
+    [data-sci-elm='title'] { font-size: 1.5rem!important; }
 }
 
 /* MD */
-@media (min-width: 576px) {
-    .thumbnail {
-        --tb-width: var(--tb-width-lg);
-        --tb-height: var(--tb-height-lg);
+@media (min-width: 460px) {
+    .thumbnail, .showcase-small-img {
+        --tb-width: var(--tb-width-md);
+        --tb-height: var(--tb-height-md);
     }
 
     .thumbnail-pfp {
         --pfp-size: var(--pfp-size-lg);
+    }
+
+    [data-sci-elm='title'] { font-size: 3rem!important; }
+    [data-sci-elm='desc'] { 
+        display: block; 
+        max-width: 75%;
     }
 }
 
 /* LG */
 @media (min-width: 992px) {
-    .thumbnail {
+    .thumbnail, .showcase-small-img {
         --tb-width: var(--tb-width-lg);
         --tb-height: var(--tb-height-lg);
     }
@@ -223,17 +232,28 @@
     .thumbnail-pfp {
         --pfp-size: var(--pfp-size-lg);
     }
+
+    [data-sci-elm='desc'] { 
+        display: block; 
+        max-width: 50%;
+    }
 }
 
 /* XL */
 @media (min-width: 2000px) {
-    .thumbnail {
+    .thumbnail, .showcase-small-img {
         --tb-width: var(--tb-width-xl);
         --tb-height: var(--tb-height-xl);
     }
 
     .thumbnail-pfp {
         --pfp-size: var(--pfp-size-lg);
+    }
+
+    [data-sci-elm='title'] { font-size: 4rem!important; }
+    [data-sci-elm='desc'] { 
+        display: block; 
+        max-width: 30rem;
     }
 }
 
@@ -486,4 +506,128 @@
 [state='finished'] .logo { animation: hide-logo 2s forwards; fill: var(--accent-color); stroke: #00000000; }
 [state='solid'] .logo { fill: var(--accent-color); stroke: #00000000; }
 [state='zoomed-out'] { transform: scale(0.95);}
-[state='zoomed-in'] { transform: scale(1); transition: all 1s ease-in; }
+[state='zoomed-in'] { transform: scale(1); transition: all 1s ease-in-out; }
+
+
+
+/* 
+    Showcase
+*/
+
+.inner-showcase {
+    padding: 1rem;
+    max-height: 50rem;
+}
+
+
+
+.showcase-small-img > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    transition: all 1s ease-in-out;
+    position: absolute;
+    user-select: none;
+    z-index: 1;
+}
+
+.showcase-small-img .darken {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #0000006c;
+    border-radius: 0.5rem;
+    transition: all 1s ease-in-out;
+    z-index: 2;
+}
+
+.active > .darken {
+    background-color: #00000000;
+}
+
+.showcase-small-img {
+    position: relative;
+    width: 18vw;
+    height: 11vw;
+}
+
+
+
+.showcase-big {
+    width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    position: relative;
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: all 1s ease-in-out;
+    border-radius: 0.5rem;
+}
+
+.showcase-inner {
+    position: absolute;
+    border-radius: 0.5rem;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    
+    /* 
+        Gradient, Swooping in from the
+        bottom left corner
+    */
+    background: linear-gradient(
+        200deg, 
+        rgba(0,0,0,0) 0%, 
+        rgba(0, 0, 0, 0.568) 100%
+    );
+}
+
+.showcase-inner > div {
+    position: absolute;
+}
+
+[data-sci-elm='title'] {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+[data-sci-elm='desc'] {
+    font-size: 1rem;
+    font-weight: 400;
+    margin-bottom: 1rem;
+}
+
+.tag {
+    font-size: 0.8rem;
+    font-weight: 400;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.5rem;
+    display: inline-block;
+    /* 
+        Very slight shadow, it cant be strong
+        cus it makes it look weird
+    */
+    box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.2);
+}
+
+[data-tag='info'] { background-color: var(--ss-info); }
+[data-tag='warning'] { 
+    background-color: var(--ss-warning); 
+    color: var(--font-color-inverted);
+}
+[data-tag='error'] { background-color: var(--ss-error); }
+[data-tag='success'] { background-color: var(--ss-success); }
+
+.showcase-pfp > img {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 100%;
+}

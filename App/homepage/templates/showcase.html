@@ -1,0 +1,168 @@
+<div 
+    class='showcase w-100'
+    data-is-live='true'
+>
+    <!--
+        This is going to be split up like so.
+        ------- |  SMALL
+        --BIG-- | [SMALL]
+        ------- |  SMALL
+
+        Where [SMALL] is a smaller version of the current BIG.
+        The smaller section is going to work like a carousel,
+        Where everytime you click on the top one, it will
+        migrate down to the middle, pulling down the next
+        one in the carousel, same with the bottom one (inreverse ofc)
+    -->
+
+    <!-- BIG Col -->
+    <div class='
+        col-12 
+        col-md-6 
+        col-lg-4
+        d-flex
+        w-100
+        gap-2
+        inner-showcase
+    '>
+        <div 
+        style='
+            background-image: url(https://thumbor.forbes.com/thumbor/fit-in/900x510/https://www.forbes.com/advisor/wp-content/uploads/2022/10/best_places_to_live_in_california.jpeg.jpg);
+        '
+        class='
+            showcase-big 
+            w-100
+            d-flex
+            justify-content-center
+            align-items-center
+        '>
+            <div class='showcase-inner'>
+                <!-- 
+                    This is going to be the inner showcase
+                    Where the text, buttons etc will be
+                    placed in the bottom left corner.
+                -->
+                <div class='
+                    w-100
+                    h-100
+                    d-flex
+                    justify-content-start
+                    align-items-end
+                    p-2
+                '>
+                    <div>
+                        <h1 data-sci-elm='title'>The best show</h1>
+                        
+                        <div data-sci-elm='desc'>
+
+                            <!-- Streamer details -->
+                            <div class='
+                                d-flex
+                                gap-2
+                                flex-wrap
+                                align-items-center
+                            '>
+                                <!-- PFP -->
+                                <div 
+                                    class='showcase-pfp'
+                                >
+                                    <img 
+                                        data-skeleton='image'
+                                        src='https://picsum.photos/50/50' 
+                                        alt=''
+                                    >
+                                </div>
+
+                                <!-- View count -->
+                                <div class='thumbnail-view-count'>
+                                    <p 
+                                        class='skeleton m-0'
+                                        data-elm='view-count'
+                                        data-skeleton='text'
+                                    > 1.3K views</p>
+                                </div>
+
+                                <!-- Date -->
+                                <div class='thumbnail-date d-flex gap-2'>
+                                    <p 
+                                        class='skeleton m-0'
+                                        data-elm='date-vod'
+                                        data-skeleton='text'
+                                    > 12/02/2023</p>
+
+                                    <p 
+                                        class='skeleton m-0'
+                                        data-elm='date-live'
+                                        data-skeleton='text'
+                                    >NOW</p>
+
+                                    <!-- DOT -->
+                                    <div class='thumbnail-dot'>
+                                        <i class="fa-solid fa-circle"></i>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...
+                        </div>
+                    </div>
+                </div>
+
+
+                <!--
+                    This is the tags at the top
+                -->
+                <div class='
+                    w-100
+                    h-100
+                    d-flex
+                    justify-content-end
+                    align-items-end
+                    pb-2
+                    px-2
+                '>
+                    <div class='
+                        d-flex
+                        gap-2
+                        flex-wrap
+                    '>
+                        <div data-tag='info' class='tag'>Swag</div>
+                        <div data-tag='warning' class='tag'>18+</div>
+                        <div data-tag='error' class='tag'>Live</div>
+                        <div data-tag='success' class='tag'>Shit</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SMALL Col -->
+        <div class='
+            showcase-small
+            d-flex
+            flex-column
+            gap-2
+        '>
+            <div 
+                class='showcase-small-img'>
+                <div class='darken'></div>
+                <img src='https://picsum.photos/300/150' alt=''>
+            </div>
+
+            <div 
+                class='showcase-small-img active'>
+                <div class='darken'></div>
+                <img src='https://thumbor.forbes.com/thumbor/fit-in/900x510/https://www.forbes.com/advisor/wp-content/uploads/2022/10/best_places_to_live_in_california.jpeg.jpg' alt=''>
+            </div>
+
+            <div 
+                class='showcase-small-img'>
+                <div class='darken'></div>
+                <img src='https://picsum.photos/300/150' alt=''>
+            </div>
+
+        </div>
+
+    </div>
+            
+</div>
