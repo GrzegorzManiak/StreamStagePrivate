@@ -72,10 +72,14 @@ export function fill_carousel(
     const carousel_content = carousel.querySelector('.carousel-content') as HTMLElement;
 
     // -- The content to show
+    let i = 0;
     for (const element of events) {
         const event = element;
         const tn = add_thumbnail(event);
         carousel_content.appendChild(tn);
+
+        // -- Set the tab index
+        tn.setAttribute('tabindex', i.toString());
     }
     
     return {

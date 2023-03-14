@@ -5,10 +5,12 @@
     --tb-width-sm: 14rem;
     --tb-width-md: 17rem;
     --tb-width-lg: 19rem;
+    --tb-width-xl: 20vw;
 
-    --tb-height-sm: 5rem;   
-    --tb-height-md: 7rem;
-    --tb-height-lg: 9rem;
+    --tb-height-sm: 7rem;   
+    --tb-height-md: 10em;
+    --tb-height-lg: 12rem;
+    --tb-height-xl: 11vw;
 
     --pfp-size-sm: 2rem;
     --pfp-size-md: 2.5rem;
@@ -188,7 +190,7 @@
 */
 
 /* SM */
-@media (min-width: 576px) {
+@media (max-width: 576px) {
     .thumbnail {
         --tb-width: var(--tb-width-md);
         --tb-height: var(--tb-height-md);
@@ -200,7 +202,7 @@
 }
 
 /* MD */
-@media (min-width: 768px) {
+@media (min-width: 576px) {
     .thumbnail {
         --tb-width: var(--tb-width-lg);
         --tb-height: var(--tb-height-lg);
@@ -216,6 +218,18 @@
     .thumbnail {
         --tb-width: var(--tb-width-lg);
         --tb-height: var(--tb-height-lg);
+    }
+
+    .thumbnail-pfp {
+        --pfp-size: var(--pfp-size-lg);
+    }
+}
+
+/* XL */
+@media (min-width: 2000px) {
+    .thumbnail {
+        --tb-width: var(--tb-width-xl);
+        --tb-height: var(--tb-height-xl);
     }
 
     .thumbnail-pfp {
