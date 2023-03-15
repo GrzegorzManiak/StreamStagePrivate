@@ -1,6 +1,6 @@
 import { create_toast } from "../toasts";
 import { configuration } from "./";
-import { DefaultResponse, DefaultResponseData, SecurityInfoResponse, VerifyAccessResponse } from "./index.d";
+import { AddCardResponse, Card, DefaultResponse, DefaultResponseData, GetCardsResponse, SecurityInfoResponse, VerifyAccessResponse } from "./index.d";
 
 export async function base_request (
     mehod: string,
@@ -15,7 +15,7 @@ export async function base_request (
                 "Content-Type": "application/json",
                 "X-CSRFToken": configuration.csrf_token,
             },
-            body: JSON.stringify(data),
+            body: mehod === 'GET' ? undefined : JSON.stringify(data),
         },
     );
 
@@ -110,7 +110,7 @@ export const send_verification = async (
     'POST',
     configuration.send_verification,
     { mode, mfa: mfa_code }
-) as Promise<VerifyAccessResponse>;
+);
 
 
 
@@ -174,13 +174,11 @@ export const extend_session = async (
 export const remove_oauth = async (
     token: string, 
     oauth_id: string
-): Promise<DefaultResponse> => {
-    return base_request(
-        'POST',
-        configuration.remove_oauth,
-        { token, oauth_id }
-    );
-}
+): Promise<DefaultResponse> => base_request(
+    'POST',
+    configuration.remove_oauth,
+    { token, oauth_id }
+);
 
 
 
@@ -193,14 +191,53 @@ export const remove_oauth = async (
  */
 export const get_security_info = async (
     token: string,
-): Promise<SecurityInfoResponse> => {
-    return base_request(
-        'POST',
-        configuration.security_info,
-        { token }
-    ) as Promise<SecurityInfoResponse>;
-}
+): Promise<SecurityInfoResponse> => base_request(
+    'POST',
+    configuration.security_info,
+    { token }
+);
 
+
+
+/**
+ * @name add_card
+ * @param card - Card: Token, number, exp_month, exp_year, cvc
+ * @returns Promise<DefaultResponse>
+ */
+export const add_card = async (
+    card: Card
+): Promise<AddCardResponse> => base_request(
+    'POST',
+    configuration.add_payment,
+    card
+);
+
+
+/**
+ * @name get_cards
+ * @returns Promise<DefaultResponse>
+ * @description Get the cards of the user
+ */
+export const get_cards = async (): Promise<GetCardsResponse> => base_request(
+    'GET',
+    configuration.get_payments,
+    {}
+);
+
+
+/**
+ * @name remove_card
+ * @param id - Card id
+ * @returns Promise<DefaultResponse>
+ * @description Remove a card from the user
+ */
+export const remove_card = async (
+    id: string
+): Promise<DefaultResponse> => base_request(
+    'POST',
+    configuration.remove_payment,
+    { id }
+);
 
 
 //

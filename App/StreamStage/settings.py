@@ -75,6 +75,7 @@ SESSION_COOKIE_DOMAIN=".streamstage.co"
 CSRF_TRUSTED_ORIGINS = [
     'https://me.streamstage.co',
     'https://streamstage.co',
+    'https://applications.streamstage.co'
 ]
 X_FRAME_OPTIONS = 'ALLOW-FROM *://*.streamstage.co/*'
 CORS_ALLOWED_ORIGIN_REGEXES = [r"^https://.+$"]

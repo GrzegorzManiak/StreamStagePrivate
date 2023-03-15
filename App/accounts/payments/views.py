@@ -1,0 +1,63 @@
+"""
+    This contains the views for the payments functions
+"""
+
+# -- Imports
+from rest_framework.decorators import api_view
+from accounts.com_lib import authenticated, invalid_response, required_data, success_response
+from .payments import (
+    add_stripe_payment_method,
+    get_cards_formatted,
+    remove_stripe_payment_method
+)
+
+
+@api_view(['POST'])
+@authenticated()
+@required_data(['card', 'exp_month', 'exp_year', 'cvc', 'name'])
+def add_payment_method(request, data):
+    # -- Add the payment method
+    payment_method = add_stripe_payment_method(
+        request.user,
+        data['card'],
+        data['exp_month'],
+        data['exp_year'],
+        data['cvc'],
+        data['name'],
+    )
+
+    # -- Check if the payment method is valid
+    if payment_method[0] is None:
+        return invalid_response(payment_method[1])
+
+    # -- Return the payment method
+    return success_response(payment_method[1], payment_method[0])
+
+
+
+@api_view(['GET'])
+@authenticated()
+def get_payment_methods(request):
+    # -- Get the payment methods
+    payment_methods = get_cards_formatted(request.user)
+
+    if payment_methods is None:
+        return invalid_response('Could not retrieve payment methods')
+    
+    # -- Return the payment methods
+    return success_response('Payment methods retrieved successfully', payment_methods)
+
+
+
+@api_view(['POST'])
+@authenticated()
+@required_data(['id'])
+def remove_payment_method(request, data):
+    # -- Remove the payment method
+    payment_method = remove_stripe_payment_method(request.user, data['id'])
+
+    if payment_method is False:
+        return invalid_response('Could not remove payment method')
+
+    # -- Return the payment method
+    return success_response('Payment method removed successfully', payment_method)

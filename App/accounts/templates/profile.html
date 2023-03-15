@@ -41,9 +41,16 @@
         data-remove-oauth='{{ api.remove_oauth }}'
         data-extend-session='{{ api.extend_session }}'
 
+        data-add-payment='{{ api.add_payment }}'
+        data-get-payments='{{ api.get_payments }}'
+        data-remove-payment='{{ api.remove_payment }}'
+
         data-mfa-setup='{{ api.setup_mfa }}'
         data-mfa-verify='{{ api.verify_mfa }}'
         data-mfa-disable='{{ api.disable_mfa }}'
+
+        data-stripe-pub='{{ stripe_key }}'
+        data-stripe-customer='{{ stripe }}'
     ></span>
     <div 
     id = 'main-container'
@@ -136,7 +143,7 @@
                             <!-- Text -->
                             <div class='side-panel-pod-text'>
                                 <p class='side-panel-pod-text-text m-0 mb-0'>
-                                    Payment
+                                    Payments
                                 </p>
                             </div>
                         </div>
@@ -778,6 +785,9 @@
 
                                 <!-- Security panel -->
                                 {% include 'panels/security.html' %}
+
+                                <!-- Payments panel -->
+                                {% include 'panels/payments.html' %}
 
                                 <!--
                                     Events Panel

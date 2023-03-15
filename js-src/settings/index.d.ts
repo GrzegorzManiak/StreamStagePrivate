@@ -71,8 +71,23 @@ export interface SecurityInfo {
     login_history: Array<LoginHistory>
 }
 
+export interface Card {
+    card: string,
+    exp_month: number,
+    exp_year: number,
+    cvc: string,
+    name: string
+}
 
-
+export interface PaymentMethod {
+    brand: string;
+    exp_month: number;
+    exp_year: number;
+    id: string;
+    last4: string;
+    created: number;
+}
+  
 // 
 // Default Server response structure
 // 
@@ -104,3 +119,9 @@ export type VerifyAccessResponse = VerifyAccessSuccess | DefaultResponse;
 
 export type SecurityInfoSuccess = DefaultResponseData & { data: SecurityInfo }
 export type SecurityInfoResponse =SecurityInfoSuccess | DefaultResponse;
+
+export type AddCardSuccess = DefaultResponseData & { data: PaymentMethod }
+export type AddCardResponse = AddCardSuccess | DefaultResponse;
+
+export type GetCardsSuccess = DefaultResponseData & { data: Array<PaymentMethod> }
+export type GetCardsResponse = GetCardsSuccess | DefaultResponse;

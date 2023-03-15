@@ -8,10 +8,13 @@ from django_countries.fields import CountryField
 from timezone_field import TimeZoneField
 
 from .oauth import OAuthTypes
+import stripe
 
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from .validation import check_unique_broadcaster_handle
+
+from StreamStage.secrets import STRIPE_SECRET_KEY
 
 # Create your models here.
 class Member(AbstractUser):
@@ -23,6 +26,7 @@ class Member(AbstractUser):
     over_18 = models.BooleanField(default=False)
     profile_pic = models.ImageField("Profile Photo", upload_to='member', blank=True)
     description = models.TextField("Description", blank=True)
+    stripe_customer = models.CharField("Stripe Customer ID", max_length=100, blank=True)
     country = CountryField()
     time_zone = TimeZoneField(default="UTC")
     tfa_secret = models.CharField(
@@ -85,10 +89,31 @@ class Member(AbstractUser):
         except Exception as e:
             print(e)
             return False
+        
+    def get_stripe_customer(self):
+        stripe.api_key = STRIPE_SECRET_KEY
+
+        # -- Check if the user has a stripe customer id
+        if self.stripe_customer == "":
+            customer = stripe.Customer.create(
+                email=self.email,
+                name=self.username,
+                description=self.id
+            )
+            self.stripe_customer = customer['id']
+            self.save()
+            return customer
+        
+        # -- If the user has a stripe customer id, return the customer
+        customer = stripe.Customer.retrieve(self.stripe_customer)
+        if customer: return customer
+        return None
+    
 
     def save(self, *args, **kwargs):
         self.is_over_18()
         self.cased_username = self.username.lower()
+
         super(Member, self).save(*args, **kwargs)
 
         
@@ -159,3 +184,4 @@ class LoginHistory(models.Model):
             "method": self.method,
         }
     
+

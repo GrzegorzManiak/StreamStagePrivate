@@ -21,6 +21,12 @@ from .mfa import (
     verify_mfa,
     disable_mfa
 )
+from .payments.views import (
+    add_payment_method,
+    get_payment_methods,
+    remove_payment_method
+)
+
 from .views import get_token, login, logout, register, validate_token
 
 from django.conf import settings
@@ -57,6 +63,10 @@ urlpatterns = [
     path('sso/github/', determine_app(OAuthTypes.GITHUB), name='github'),
     path('api/sso/remove/', remove_oauth, name='remove_oauth'),
 
+    # -- Payments
+    path('api/payment/methods/', get_payment_methods, name='get_payments'),
+    path('api/payment/add/', add_payment_method, name='add_payment'),
+    path('api/payment/remove/', remove_payment_method, name='remove_payment'),
 
     # -- EMail Verification
     path('register/email', send_reg_verification, name='send_reg_verification'),

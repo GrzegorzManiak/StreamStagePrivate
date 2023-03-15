@@ -9,11 +9,6 @@
     height: auto!important;
 }
 
-.main-container {
-    min-width: 100vw;
-    min-height: 100vh;
-}
-
 .side-panel-pod {
     margin: 0.25rem;
     padding: 0.6rem;
@@ -239,5 +234,84 @@
 [data-has-tfa='false'] .mfa { display: none!important; }
 
 .tfa-input > input {
+    background-color: var(--theme-color)!important;
+}
+
+
+
+/*
+    Payments
+*/
+.cards {
+    padding: 1rem;
+}
+
+.cards-body {
+    background-color: var(--theme-color);
+    border-radius: 1rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.card-number {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0;
+}
+
+.card-icon {
+    width: 2rem;
+    height: 2rem;
+    margin-right: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.exp-date {
+    margin: 0;
+}
+
+.card-icon > i {
+    font-size: 1.5rem;
+    display: none;
+}
+
+.card-added {
+    margin: 0;
+    width: 100%;
+    text-align: center;
+}
+
+[card-type='cartes_bancaires'] [data-card='cartes_bancaires'] { display: block!important; }
+[card-type='unionpay'] [data-card='unionpay'] { display: block!important; }
+[card-type='amex'] [data-card='amex'] { display: block!important; }
+[card-type='diners'] [data-card='diners'] { display: block!important; }
+[card-type='discover'] [data-card='discover'] { display: block!important; }
+[card-type='jcb'] [data-card='jcb'] { display: block!important; }
+[card-type='mastercard'] [data-card='mastercard'] { display: block!important; }
+[card-type='visa'] [data-card='visa'] { display: block!important; }
+
+/* Max width 680 */
+@media only screen and (max-width: 680px) {
+    .cards-body { 
+        padding: 0.5rem; 
+        border-radius: 0.5rem; 
+        flex-direction: column;
+    }
+    .cards-body > div { 
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    .cards-body button {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+    .card-number { font-size: 1rem; }
+    .card-icon { width: 1.5rem; height: 1.5rem; }
+    .card-icon > i { font-size: 1.25rem; }
+}
+
+.add-card-details input {
     background-color: var(--theme-color)!important;
 }

@@ -1,6 +1,7 @@
 import { attach_event_listeners, get_pod } from './core/panels';
 import { manage_security_panel } from './core/security';
 import { create_toast } from '../toasts';
+import { manage_payments_panel } from './core/payments';
 
 export function get_or_error<e>(element: HTMLElement, attribute: string): e {
     const value = element.getAttribute(attribute);
@@ -40,6 +41,10 @@ export const configuration = {
     setup_mfa: get_or_error<string>(config, 'data-mfa-setup'),
     verify_mfa: get_or_error<string>(config, 'data-mfa-verify'),
     disable_mfa: get_or_error<string>(config, 'data-mfa-disable'),
+
+    add_payment: get_or_error<string>(config, 'data-add-payment'),
+    get_payments: get_or_error<string>(config, 'data-get-payments'),
+    remove_payment: get_or_error<string>(config, 'data-remove-payment'),
 }
 
 
@@ -48,5 +53,8 @@ attach_event_listeners();
 
 
 // -- Attach to all panels
-let security_panel = get_pod('security');
+const security_panel = get_pod('security');
 if (security_panel) manage_security_panel(security_panel);
+
+const payments_panel = get_pod('payment');
+if (payments_panel) manage_payments_panel(payments_panel);

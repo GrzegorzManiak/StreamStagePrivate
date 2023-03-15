@@ -75,4 +75,8 @@ export function attach_to_showcase(showcase: HTMLElement) {
             tags_elm.appendChild(tag_elm);
         });
     }));
+
+
+    // -- Click the second item
+    (showcase_items[1] as HTMLElement).click();
 }

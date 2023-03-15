@@ -14,6 +14,7 @@ from accounts.email.verification import add_key, send_email
 from accounts.models import LoginHistory, oAuth2
 
 from .profile import generate_pat, update_profile, validate_pat, extend_pat, get_pat, PAT_EXPIRY_TIME
+from StreamStage.secrets import STRIPE_PUB_KEY
 
 @api_view(['GET'])
 @authenticated()
@@ -36,8 +37,12 @@ def profile(request):
             'setup_mfa': reverse_lazy('setup_mfa'),
             'verify_mfa': reverse_lazy('verify_mfa'),
             'disable_mfa': reverse_lazy('disable_mfa'),
+            'add_payment': reverse_lazy('add_payment'),
+            'get_payments': reverse_lazy('get_payments'),
+            'remove_payment': reverse_lazy('remove_payment'),
         },
-
+        'stripe': request.user.get_stripe_customer(),
+        'stripe_key': STRIPE_PUB_KEY,
         'oauth': format_providers()
     }
 

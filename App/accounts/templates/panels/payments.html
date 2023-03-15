@@ -1,0 +1,68 @@
+<!--
+    Payments
+-->
+<article 
+    class='panel' 
+    data-panel-type='payment'
+    data-panel-status=''
+>
+
+    <!-- Header -->
+    <div class="
+        mb-5
+        justify-content-start
+    ">
+        <!-- Header -->
+        <h1 class="
+            fw-bold 
+        ">Payments</h1>
+
+        <!-- Descriptiopn -->
+        <p class="
+            text-muted
+        ">
+            Here you can manage your saved payment methods and manage your subscriptions.
+        </p>
+    </div>
+
+
+    <!-- Subscription -->
+    <div class="
+        mb-5
+    ">
+    </div>
+
+    <!-- Payment Methods -->
+    <div> 
+        <!-- Add -->
+        <button 
+            type="submit" 
+            id="add-card" 
+            class="
+                mfa
+                btn 
+                btn-primary
+                mb-3
+                btn-lg
+                loader-btn
+                info
+                w-100
+            "
+            loader-state='default'
+        >
+            <span>
+                <div class='spinner-border' role='status'>
+                    <span class='visually-hidden'>Loading...</span>
+                </div>
+            </span>
+            <p>Add Card</p>
+        </button>
+
+
+        <!-- Cards -->
+        <div class="
+            cards
+        "></div>
+    </div>
+
+</article>
