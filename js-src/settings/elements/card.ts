@@ -1,3 +1,4 @@
+import { construct_modal } from '../../click_handler';
 import { PaymentMethod } from '../index.d';
 
 export function card_type(card: string): string {
@@ -97,3 +98,43 @@ export function create_new_card(
     }
 }
   
+
+
+export const card_modal = construct_modal(
+    'Add Card',
+    'Add a new card to your account',
+    true,
+    'primary',
+    `
+    <div class="add-card-details">
+        <div class="mb-5">
+     
+     
+            <label class="form-label d-flex" for="card-number">
+                <span class="card-type col-1 d-flex"><i class="fas fa-credit-card align-self-center"></i></span>
+                Card Number
+            </label>
+
+            <input name="card_number" autocomplete='on' id="cardnumber" placeholder="1234 5678 9101 1123" class="form-control form-control-lg inp">
+
+
+            <div class="row mt-3">
+                <div class="col">
+                    <label class="form-label" for="card-expiry">Expiry</label>
+                    <input name="exp" autocomplete='on' id="card-expiry" placeholder="MM/YY" class="form-control form-control-lg inp">
+                </div>
+
+                <div class="col">
+                    <label class="form-label" for="card-cvc">CVC</label>
+                    <input type="password" maxlength="4" name="cvc" autocomplete='on' id="card-cvc" placeholder="***" class="form-control form-control-lg inp">
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <label class="form-label" for="card-name">Name</label>
+                <input name="name" autocomplete='on' id="card-name" placeholder="John Doe" class="form-control form-control-lg inp">
+            </div>
+        </div>
+    </div>
+    `
+);
