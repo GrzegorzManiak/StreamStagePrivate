@@ -20,6 +20,10 @@ class Category(models.Model):
     
     def __str__(self):
         return self.name
+    
+    def get_all_categories(self):
+        return Category.objects.all().order_by('name')
+
 
 # Event Model
 class Event(models.Model):

@@ -33,8 +33,8 @@ class SearchResultsListView(ListView):
             results = results.filter(Q(category=category))
         
         # Filter by Broadcaster
-        if broadcaster and broadcaster != "":
-            results = results.filter(Q(broadcaster=broadcaster))
+        if broadcaster:
+            results = results.filter(Q(broadcaster__icontains=broadcaster))
 
         # # Filter by Price
         # # Ascending
@@ -93,7 +93,7 @@ class SearchResultsListView(ListView):
         # context['purchased'] = self.request.GET.get('p')
 
         if context['q_category']:
-            context['category_name'] = Category.objects.filter(Q(id=context['q_category']))[0].name
+            context['category_name'] = Category.get_all_categories(Q(id=context['q_category']))[0].name
             # context['category_name'] = Event.objects.filter(Q(categories=context['q_category']))[0].name
 
         return context
