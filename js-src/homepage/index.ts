@@ -1,3 +1,4 @@
+import { attach_to_showcases } from './featured';
 import { Event, Streamer } from './index.d';
 import { create_carousel } from './thumbnail';
 
@@ -226,3 +227,4 @@ function set_splash_state(
 //     set_splash_state('finising');
 //     sleep(1500).then(() => set_splash_state('finished'));
 // });
+attach_to_showcases();

@@ -267,7 +267,7 @@
     carousel
 */
 .car {
-    margin-top: 3rem;
+    /* margin-top: 3rem; */
 }
 
 .carousel {
@@ -615,7 +615,7 @@
         Very slight shadow, it cant be strong
         cus it makes it look weird
     */
-    box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.4);
 }
 
 [data-tag='info'] { background-color: var(--ss-info); }
