@@ -51,11 +51,11 @@
             <select class="form-select" name="cat">
                 <option value="">None</option>
 
-                {% for cat in links %}
+                {% for cat in categories %}
                 {% if cat.name == category_name %}
-                <option value="{{ cat.id }}" selected="selected">{{ cat.name }}</option>
+                <option value="{{ cat.name }}" selected="selected">{{ cat.name }}</option>
                 {% else %}
-                <option value="{{ cat.id }}">{{ cat.name }}</option>
+                <option value="{{ cat.name }}">{{ cat.name }}</option>
                 {% endif %}
                 {% endfor %}
             </select>
@@ -68,6 +68,38 @@
                 <input class="form-control me-2" type="search" placeholder="Broadcaster" aria-label="Broadcaster" name="b"
                     value="{% if broadcaster %}{{ broadcaster }}{% endif %}">
             </div>
+        </div>
+
+
+    <!-- Filter By Venue -->
+    <div class="col-12 my-1">
+        <div class="mt-1"> 
+            <b>Filter by Venue</b>
+            <input class="form-control me-2" type="search" placeholder="Venue" aria-label="Venue" name="v"
+                value="{% if venue %}{{ venue }}{% endif %}">
+        </div>
+    </div>
+
+
+    <!-- Filter By City -->
+    <div class="col-12 my-1">
+        <div class="mt-1"> 
+            <b>Filter by City</b>
+            <input class="form-control me-2" type="search" placeholder="City" aria-label="City" name="c"
+                value="{% if city %}{{ city }}{% endif %}">
+        </div>
+    </div>
+
+
+    <!-- Filter By Country -->
+    <div class="col-12 my-1">
+        <div class="mt-1"> 
+            <b>Filter by Country</b>
+            <input class="form-control me-2" type="search" placeholder="Country" aria-label="Country" name="co"
+                value="{% if country %}{{ country }}{% endif %}">
+        </div>
+    </div>
+
 <!-- 
             <select class="form-select" name="b">
                 <option value="">None</option>
@@ -79,7 +111,6 @@
                 {% endif %}
                 {% endfor %}
             </select> -->
-        </div>
 
 
 

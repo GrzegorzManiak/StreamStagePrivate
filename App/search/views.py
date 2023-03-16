@@ -1,4 +1,5 @@
 from events.models import Category, Event, EventShowing
+from accounts.models import Broadcaster
 from django.views.generic import ListView
 from django.db.models import Q
 from datetime import datetime
@@ -20,6 +21,9 @@ class SearchResultsListView(ListView):
         broadcaster = self.request.GET.get('b')
         start_date = self.request.GET.get('sd')
         end_date = self.request.GET.get('ed')
+        venue = self.request.GET.get('v')        
+        city = self.request.GET.get('c')
+        country = self.request.GET.get('co')
         # min_price = self.request.GET.get('mip')
         # max_price = self.request.GET.get('map')
         # purchased = self.request.GET.get('p')
@@ -33,12 +37,63 @@ class SearchResultsListView(ListView):
         
         # Filter by Category
         if category:
-            results = results.filter(Q(categories__in=category))
+            results = results.filter(Q(categories__name=category))
         
         # Filter by Broadcaster
         if broadcaster:
-            results = results.filter(Q(broadcaster__in=broadcaster))
-        
+            print(broadcaster)
+            results = results.filter(Q(broadcaster__handle__icontains=broadcaster))
+            print(results)
+
+        # Filter by Venue
+        if venue:
+            # Getting City from showings
+            showings = EventShowing.objects.filter(venue=venue)
+            # Matching Events to Showings
+            events = []
+            for showing in showings:
+                events.append(showing.event)
+
+            # Isolating event ID
+            event_ids = []
+            for event in events:
+                event_ids.append(event.event_id)
+
+            results = results.filter(event_id__in=event_ids)
+
+        # Filter by City
+        if city:
+            # Getting City from showings
+            showings = EventShowing.objects.filter(city=city)
+            # Matching Events to Showings
+            events = []
+            for showing in showings:
+                events.append(showing.event)
+
+            # Isolating event ID
+            event_ids = []
+            for event in events:
+                event_ids.append(event.event_id)
+
+            results = results.filter(event_id__in=event_ids)
+
+        # Filter by Country
+        if country:
+            # Getting Country from showings
+            showings = EventShowing.objects.filter(country__name=country)
+            # Matching Events to Showings
+            events = []
+            for showing in showings:
+                events.append(showing.event)
+
+            # Isolating event ID
+            event_ids = []
+            for event in events:
+                event_ids.append(event.event_id)
+
+            results = results.filter(event_id__in=event_ids)
+
+
         # Filter by Date
         if start_date and end_date:
             start_date = datetime.strptime(start_date, '%d/%m/%Y').date()
@@ -92,8 +147,6 @@ class SearchResultsListView(ListView):
 
         #     results = results.filter(name__in=valid_products)
 
-        # Filter by City/Country
-
 
         return results
     
@@ -108,18 +161,17 @@ class SearchResultsListView(ListView):
 
         context['query'] = self.request.GET.get('q')
         context['sort_by'] = self.request.GET.get('s')
-        context['q_category'] = self.request.GET.get('cat')
-        context['q_broadcaster'] = self.request.GET.get('b')
+        context['category'] = self.request.GET.get('cat')
+        context['categories'] = Category.objects.all()
+        context['broadcaster'] = self.request.GET.get('b')
         context['start_date'] = self.request.GET.get('sd')
         context['end_date'] = self.request.GET.get('ed')
-
+        context['venue'] = self.request.GET.get('v')
+        context['city'] = self.request.GET.get('c')
+        context['country'] = self.request.GET.get('co')
         # context['min_price'] = self.request.GET.get('mip')
         # context['max_price'] = self.request.GET.get('map')
         # context['purchased'] = self.request.GET.get('p')
-
-        if context['q_category']:
-            context['category_name'] = Category.get_all_categories(Q(id=context['q_category']))[0].name
-            # context['category_name'] = Event.objects.filter(Q(categories=context['q_category']))[0].name
 
         return context
 
