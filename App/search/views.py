@@ -1,6 +1,7 @@
-from events.models import Category, Event
+from events.models import Category, Event, EventShowing
 from django.views.generic import ListView
 from django.db.models import Q
+from datetime import datetime
 # from django.core.paginator import Paginator, EmptyPage, InvalidPage
 
 
@@ -17,6 +18,8 @@ class SearchResultsListView(ListView):
         sort = self.request.GET.get('s')
         category = self.request.GET.get('cat')
         broadcaster = self.request.GET.get('b')
+        start_date = self.request.GET.get('sd')
+        end_date = self.request.GET.get('ed')
         # min_price = self.request.GET.get('mip')
         # max_price = self.request.GET.get('map')
         # purchased = self.request.GET.get('p')
@@ -30,11 +33,33 @@ class SearchResultsListView(ListView):
         
         # Filter by Category
         if category:
-            results = results.filter(Q(category=category))
+            results = results.filter(Q(categories__in=category))
         
         # Filter by Broadcaster
         if broadcaster:
-            results = results.filter(Q(broadcaster__icontains=broadcaster))
+            results = results.filter(Q(broadcaster__in=broadcaster))
+        
+        # Filter by Date
+        if start_date and end_date:
+            start_date = datetime.strptime(start_date, '%d/%m/%Y').date()
+            end_date = datetime.strptime(end_date, '%d/%m/%Y').date()
+
+            if not start_date:
+                end_date = datetime.strptime(end_date, '%d/%m/%Y').date()
+            
+            # Getting Showings between dates
+            showings = EventShowing.objects.filter(time__range=(start_date, end_date))
+            # Matching Events to Showings
+            events = []
+            for showing in showings:
+                events.append(showing.event)
+
+            # Isolating event ID
+            event_ids = []
+            for event in events:
+                event_ids.append(event.event_id)
+
+            results = results.filter(event_id__in=event_ids)
 
         # # Filter by Price
         # # Ascending
@@ -67,9 +92,6 @@ class SearchResultsListView(ListView):
 
         #     results = results.filter(name__in=valid_products)
 
-
-        # Filter by Time/Date
-
         # Filter by City/Country
 
 
@@ -88,6 +110,9 @@ class SearchResultsListView(ListView):
         context['sort_by'] = self.request.GET.get('s')
         context['q_category'] = self.request.GET.get('cat')
         context['q_broadcaster'] = self.request.GET.get('b')
+        context['start_date'] = self.request.GET.get('sd')
+        context['end_date'] = self.request.GET.get('ed')
+
         # context['min_price'] = self.request.GET.get('mip')
         # context['max_price'] = self.request.GET.get('map')
         # context['purchased'] = self.request.GET.get('p')

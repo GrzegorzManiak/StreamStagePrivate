@@ -53,9 +53,9 @@
 
                 {% for cat in links %}
                 {% if cat.name == category_name %}
-                <option value="{{ cat.id }}" selected="selected">{{ cat.name }}</option>
+                <option value="{{ cat.name }}" selected="selected">{{ cat.name }}</option>
                 {% else %}
-                <option value="{{ cat.id }}">{{ cat.name }}</option>
+                <option value="{{ cat.name }}">{{ cat.name }}</option>
                 {% endif %}
                 {% endfor %}
             </select>
@@ -63,11 +63,14 @@
 
     <!-- Filter By Broadcaster -->
         <div class="col-12 my-1">
-            <b>Filter by Broadcaster</b>
-
+            <div class="mt-1"> 
+                <b>Filter by Broadcaster</b>
+                <input class="form-control me-2" type="search" placeholder="Broadcaster" aria-label="Broadcaster" name="b"
+                    value="{% if broadcaster %}{{ broadcaster }}{% endif %}">
+            </div>
+<!-- 
             <select class="form-select" name="b">
                 <option value="">None</option>
-
                 {% for broadcaster in broadasters %}
                 {% if broadcaster == q_broadcaster %}
                 <option value="{{ brand }}" selected="selected">{{ broadcaster }}</option>
@@ -75,14 +78,26 @@
                 <option value="{{ brand }}">{{ broadcaster }}</option>
                 {% endif %}
                 {% endfor %}
-            </select>
+            </select> -->
         </div>
 
-        <!-- ????????? -->
-
-
     <!-- Filter By Date / Time? -->
-
+    <div class="m-auto p-1 border border-2 border-light rounded" style="width:90%">
+        <p class="m-0" data-bs-toggle="collapse" href="#datefilter" role="button">
+            <b>Filter by Date</b>
+        </p>
+        <div class="collapse {% if start_date or end_date %}show{% endif %}" id="datefilter">
+            <div id="date-filters">
+                <div>
+                    Start Date (dd/mm/yyyy) <input class="border-light rounded" type="datetime" name="sd" {% if start_date %}value="{{start_date}}" {% endif %}>
+                </div>
+                <p class="h5">to</p>
+                <div>
+                    End Date (dd/mm/yyyy) <input class="border-light rounded mb-1" type="datetime" name="ed" {% if end_date %}value="{{end_date}}" {% endif %}>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Filter By City / Country -->
     
