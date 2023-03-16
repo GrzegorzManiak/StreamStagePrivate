@@ -25,8 +25,4 @@ class AccessPass(models.Model):
     purchased_date = models.DateTimeField(auto_now_add=True)
     valid_until_date = models.DateTimeField(null=False)
 
-    category = models.ForeignKey(Category, null=False)
-    
-    
-
     pass_price = models.FloatField("Price")
