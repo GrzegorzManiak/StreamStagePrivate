@@ -6,7 +6,6 @@ import { sleep } from '../../click_handler';
 let panels: Array<Panel> = [];
 export let pods: Array<Pod> = [];
 
-
 /**
  * @name locate_panels
  * @returns void

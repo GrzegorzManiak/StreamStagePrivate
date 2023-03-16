@@ -10,7 +10,8 @@ class Ticket(models.Model):
 
     purchased_date = models.DateTimeField(auto_now_add=True)
 
-    showing = models.ForeignKey(EventShowing, null=True, on_delete=models.DO_NOTHING) # nullable - can buy ticket without specific showing?
+    # this field is null until member chooses a showing to watch
+    showing = models.ForeignKey(EventShowing, null=True, on_delete=models.DO_NOTHING)
 
     ticket_price = models.FloatField("Price")
     ticket_type = models.CharField("Ticket Type", max_length=20) # 'Online' / 'Special' - yadda yadda

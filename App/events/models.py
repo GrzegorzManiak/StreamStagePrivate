@@ -6,8 +6,6 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 from accounts.models import Broadcaster
 
-from .ticketing.models import EventTicketListing
-
 import uuid
 
 # Event/Broadcaster Category Model
@@ -34,9 +32,6 @@ class Event(models.Model):
     primary_media_idx = models.IntegerField(default=0) # Points to an item in the 'media' field - used as a cover photo 
     contributors = models.ManyToManyField(get_user_model(), related_name="event_contributors", blank=True)
     approved = models.BooleanField("Approved", default=False)
-
-    participate_access_pass = models.BooleanField(default=True)
-    tickets = models.ManyToManyField(EventTicketListing)
 
     def get_absolute_url(self):
         return reverse('event_view', args=[self.event_id])
