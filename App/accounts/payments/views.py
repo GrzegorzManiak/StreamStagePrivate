@@ -8,7 +8,8 @@ from accounts.com_lib import authenticated, invalid_response, required_data, suc
 from .payments import (
     add_stripe_payment_method,
     get_cards_formatted,
-    remove_stripe_payment_method
+    remove_stripe_payment_method,
+    create_payment_intent,
 )
 
 
@@ -61,3 +62,17 @@ def remove_payment_method(request, data):
 
     # -- Return the payment method
     return success_response('Payment method removed successfully', payment_method)
+
+
+
+@api_view(['GET'])
+@authenticated()
+def create_payment_intent(request):
+    # -- Create the payment intent
+    payment_intent = create_payment_intent(request.user, 1000, 'pm_1MmVbfKeLSBX93CvGWW77Vgh')
+
+    if payment_intent is None:
+        return invalid_response('Could not create payment intent')
+
+    # -- Return the payment intent
+    return payment_intent

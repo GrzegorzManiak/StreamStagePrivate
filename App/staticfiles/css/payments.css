@@ -1,0 +1,132 @@
+/* 
+    This class changes a simple div list of saved payments
+    into a dropdown menu.
+*/
+.saved-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.saved-dropdown > div {
+    margin: auto;
+    width: 100%;
+    display: none;
+    position: absolute;
+    z-index: 1;
+    overflow: hidden;
+
+    align-items: center;
+    justify-content: center;
+}
+
+.saved-dropdown > div > div {
+    background-color: var(--theme-secondary-color);
+    box-shadow: 0px 0px 16px 0px rgba(0,0,0,0.52);
+    border-radius: 1rem;
+    min-width: 160px;
+}
+
+
+[dropdown='true'] > div { display: flex; }
+[dropdown='false'] > div > div > div { display: none; }
+
+
+@keyframes cards-in {
+    0% { transform: translateY(-100%); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+[dropdown='true'] > div > div > div {
+    animation: cards-in 0.5s ease-in-out;
+}
+
+.saved-dropdown .cards-body {
+    outline: 2px solid transparent;
+    transition: outline 0.5s ease-in-out;
+}
+.saved-dropdown .cards-body:hover {
+    outline: 2px solid var(--accent-color);
+}
+
+[selected='true'] {
+    outline: 1px solid var(--accent-color)!important;
+}
+
+/*
+    Cards
+*/
+.cards {
+    padding: 1rem;
+    gap: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.cards-body {
+    background-color: var(--theme-color);
+    border-radius: 1rem;
+    padding: 1rem;
+}
+
+.card-number {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0;
+}
+
+.card-icon {
+    width: 2rem;
+    height: 2rem;
+    margin-right: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.exp-date {
+    margin: 0;
+}
+
+.card-icon > i {
+    font-size: 1.5rem;
+    display: none;
+}
+
+.card-added {
+    margin: 0;
+    width: 100%;
+    text-align: center;
+}
+
+[card-type='cartes_bancaires'] [data-card='cartes_bancaires'] { display: block!important; }
+[card-type='unionpay'] [data-card='unionpay'] { display: block!important; }
+[card-type='amex'] [data-card='amex'] { display: block!important; }
+[card-type='diners'] [data-card='diners'] { display: block!important; }
+[card-type='discover'] [data-card='discover'] { display: block!important; }
+[card-type='jcb'] [data-card='jcb'] { display: block!important; }
+[card-type='mastercard'] [data-card='mastercard'] { display: block!important; }
+[card-type='visa'] [data-card='visa'] { display: block!important; }
+
+/* Max width 680 */
+@media only screen and (max-width: 680px) {
+    .cards-body { 
+        padding: 0.5rem; 
+        border-radius: 0.5rem; 
+        flex-direction: column;
+    }
+    .cards-body > div { 
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    .cards-body button {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+    .card-number { font-size: 1rem; }
+    .card-icon { width: 1.5rem; height: 1.5rem; }
+    .card-icon > i { font-size: 1.25rem; }
+}
+
+.add-card-details input {
+    background-color: var(--theme-color)!important;
+}

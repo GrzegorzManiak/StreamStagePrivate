@@ -2,6 +2,7 @@ import { attach_event_listeners, get_pod } from './core/panels';
 import { manage_security_panel } from './core/security';
 import { create_toast } from '../toasts';
 import { manage_payments_panel } from './core/payments';
+import { manage_subscription_panel } from './core/subscription';
 
 export function get_or_error<e>(element: HTMLElement, attribute: string): e {
     const value = element.getAttribute(attribute);
@@ -58,3 +59,6 @@ if (security_panel) manage_security_panel(security_panel);
 
 const payments_panel = get_pod('payment');
 if (payments_panel) manage_payments_panel(payments_panel);
+
+const subscription_panel = get_pod('streamstageplus');
+if (subscription_panel) manage_subscription_panel(subscription_panel);

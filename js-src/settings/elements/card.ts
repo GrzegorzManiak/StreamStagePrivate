@@ -44,14 +44,15 @@ export function card_type_to_fontawesome(card: string): string {
 
 
 export function create_new_card(
-    card: PaymentMethod
+    card: PaymentMethod,
+    remove_button: boolean = true,
 ): {
     card: HTMLDivElement,
     button: HTMLButtonElement,
 } {
     const cardBody = document.createElement('div');
     cardBody.className = `cards-body d-flex justify-content-between align-items-center`;
-  
+    cardBody.setAttribute('payment-id', card.id);
     cardBody.innerHTML = `
     <div class="d-flex align-items-center main-card-detail">
         <div class="me-3 card-icon" card-type="${card.brand}">
@@ -79,6 +80,7 @@ export function create_new_card(
         </p>
     </div>
 
+    ${remove_button ? `
     <div class="d-flex h-100 align-items-center">
         <button type="submit" id="remove-card" 
             class="mfa btn btn-danger btn-lg loader-btn error" loader-state='default'>
@@ -90,6 +92,7 @@ export function create_new_card(
             <p>Remove</p>
         </button>
     </div>
+    ` : ''}
     `;
     
     return {

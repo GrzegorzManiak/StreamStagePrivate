@@ -167,3 +167,39 @@ def remove_stripe_payment_method(user: Member, card_id: str):
     except Exception as e:
         print(e)
         return False
+    
+
+
+"""
+    :name: create_payment_intent
+    :description: This function creates a payment intent for the user
+    :param user: The user object
+    :param amount: The amount to charge
+    :param payment_method: The payment method id (optional)
+    :return: The payment intent
+"""
+def create_payment_intent(user: Member, ammount: int, payment_method: str = None): 
+    # -- Check if the user is valid
+    if user is None: return None
+    customer = user.get_stripe_customer()
+
+    # -- Create the payment intent
+    payment_intent = stripe.PaymentIntent.create(
+        amount=ammount,
+        currency='usd',
+        customer=customer.id,
+        payment_method=payment_method,
+    )
+
+    # -- Return the payment intent
+    return payment_intent
+
+
+
+"""
+    :name: start_subscription
+    :description: This function starts a subscription for the user
+    :param user: The user object
+    :param payment_method: The payment method id
+    :param plan: The plan id
+"""

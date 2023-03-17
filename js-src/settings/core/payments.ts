@@ -1,4 +1,4 @@
-import { attach, confirmation_modal, construct_modal } from '../../click_handler';
+import { attach, confirmation_modal } from '../../click_handler';
 import { create_toast } from '../../toasts';
 import { add_card, get_cards, remove_card } from '../apis';
 import { card_modal, card_type, card_type_to_fontawesome, create_new_card } from '../elements/card';
@@ -16,12 +16,13 @@ export function manage_payments_panel(pod: Pod) {
     const panel = pod.panel.element;
 
     manage_add_card(pod);
-    load_cards(pod);
+    load_cards(panel);
 }
 
-async function load_cards(pod: Pod) {
-    // -- Get the panel
-    const panel = pod.panel.element;
+export async function load_cards(
+    element: HTMLElement | Element, 
+    remove: boolean = true
+) {
 
     // -- Get the cards
     const cards = await get_cards();
@@ -38,17 +39,18 @@ async function load_cards(pod: Pod) {
 
     // -- Get the cards object and the cards container
     const cards_object = (cards as GetCardsSuccess).data,
-        cards_container = panel.querySelector('.cards') as HTMLDivElement;
+        cards_container = element.querySelector('.cards') as HTMLDivElement;
 
     // -- Clear the cards container
     cards_container.innerHTML = '';
 
     // -- Create the cards
     cards_object.forEach(card => {
-        const elm = create_new_card(card);
+        const elm = create_new_card(card, remove);
         cards_container.appendChild(elm.card);
 
         // -- Add the event listener to the remove button
+        if (remove)
         elm.button.addEventListener('click', async () => {
             // -- Attach the spinner
             const stop = attach(elm.button);
@@ -86,7 +88,7 @@ async function load_cards(pod: Pod) {
     });
 }
 
-function manage_add_card(pod: Pod) {
+export function manage_add_card(pod: Pod) {
     // -- Get the panel and the add card button
     const panel = pod.panel.element,
         add_card_button = panel.querySelector('#add-card') as HTMLButtonElement;
@@ -184,7 +186,7 @@ function manage_add_card(pod: Pod) {
             // -- Show the success toast
             create_toast('success', 'Payments', 'Success! We have added your card!');
             modal_div.remove();
-            load_cards(pod);
+            load_cards(panel);
             stop();
         });
 
