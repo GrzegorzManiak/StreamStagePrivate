@@ -36,9 +36,9 @@
     100% { transform: translateY(0); opacity: 1; }
 }
 
-[dropdown='true'] > div > div > div {
+/* [dropdown='true'] > div > div > div {
     animation: cards-in 0.5s ease-in-out;
-}
+} */
 
 .saved-dropdown .cards-body {
     outline: 2px solid transparent;
