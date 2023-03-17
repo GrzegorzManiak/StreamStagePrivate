@@ -19,6 +19,18 @@ export function manage_subscription_panel(pod: Pod) {
 }
 
 
+
+/**
+ * @name saved_payments_dropdown
+ * @description This function manages the saved payments dropdown
+ *              Look for '<!-- Saved Cards -->' for the HTML, this
+ *              is a reusable component, so you can use it for other
+ *              payments related stuff.
+ * @param parent: HTMLElement | Element - The parent element
+ * @param callback: (id: PaymentMethod) => void - The callback function
+ *                  that will be called when a card is selected, it returns
+ *                  the full card object
+ */
 export async function saved_payments_dropdown(
     parent: HTMLElement | Element,
     callback: (id: PaymentMethod) => void,
@@ -31,7 +43,7 @@ export async function saved_payments_dropdown(
     const dropdown = parent.querySelector('.saved-dropdown') as HTMLDivElement,
         button = dropdown.querySelector('button') as HTMLButtonElement;
         
-    function manage_cards() {
+    const manage_cards = () => {
         // -- Get the cards
         const cards = Array.from(dropdown.querySelectorAll('.cards-body'));
 
