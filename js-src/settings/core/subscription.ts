@@ -1,4 +1,4 @@
-import { Pod } from '../index.d';
+import { PaymentMethod, Pod } from '../index.d';
 import { load_cards } from './payments';
 
 /**
@@ -13,15 +13,15 @@ export function manage_subscription_panel(pod: Pod) {
     const panel = pod.panel.element;
 
     // -- Manage the saved payment methods dropdown
-    saved_payments_dropdown(panel, (id: string) => {
-        console.log(id);
+    saved_payments_dropdown(panel, (card: PaymentMethod) => {
+        console.log(card);
     });
 }
 
 
 export async function saved_payments_dropdown(
     parent: HTMLElement | Element,
-    callback: (id: string) => void,
+    callback: (id: PaymentMethod) => void,
 ) {
     // -- Load the cards
     await load_cards(parent, false);
@@ -38,11 +38,21 @@ export async function saved_payments_dropdown(
         // -- Add the event listener to the cards
         for (const card of cards) { 
             card.addEventListener('click', () => {
+                // -- Set this card as active
                 open = false;
                 dropdown.setAttribute('dropdown', open.toString());
                 card.setAttribute('selected', 'true');
-                active = card.getAttribute('payment-id');
-                callback(active);
+                active = card.getAttribute('card-id');
+
+                // -- Call the callback
+                callback({ 
+                    id: card.getAttribute('card-id'),
+                    exp_month: Number(card.getAttribute('card-exp-month')),
+                    exp_year: Number(card.getAttribute('card-exp-year')),
+                    last4: card.getAttribute('card-last4'),
+                    brand: card.getAttribute('card-brand'),
+                    created: Number(card.getAttribute('card-created')),
+                });
 
                 // -- Remove the selected attribute from the other cards
                 for (const c of cards) {
@@ -51,18 +61,18 @@ export async function saved_payments_dropdown(
                 }
             });
 
-            // -- Check if the card is active
-            if (card.getAttribute('payment-id') === active)
+            // -- Check if the card is active (this is for 
+            //    when the cards get reloaded)
+            if (card.getAttribute('card-id') === active)
                 card.setAttribute('selected', 'true');
         }
 
 
         // -- Add the event listener to the rest of the document
+        //    to close the dropdown whenever the user clicks outside
+        //    of the dropdown
         document.addEventListener('click', (e) => {
-            if (
-                e.target === button ||
-                button.contains(e.target as Node)
-            ) return;
+            if (e.target === button || button.contains(e.target as Node)) return;
             open = false;
             dropdown.setAttribute('dropdown', open.toString());
         });
@@ -72,12 +82,14 @@ export async function saved_payments_dropdown(
     // -- Add the event listener to the button
     let open = false;
     button.addEventListener('click', () => {
+        // -- Toggle the dropdown
         open = !open;
         dropdown.setAttribute('dropdown', open.toString());
 
         // -- Reload the cards 
         load_cards(parent, false).then(() => manage_cards());
     });
+
 
     // -- Manage the cards
     manage_cards();

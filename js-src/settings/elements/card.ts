@@ -52,7 +52,14 @@ export function create_new_card(
 } {
     const cardBody = document.createElement('div');
     cardBody.className = `cards-body d-flex justify-content-between align-items-center`;
-    cardBody.setAttribute('payment-id', card.id);
+
+    cardBody.setAttribute('card-id', card.id);
+    cardBody.setAttribute('card-brand', card.brand);
+    cardBody.setAttribute('card-exp-month', card.exp_month.toString());
+    cardBody.setAttribute('card-exp-year', card.exp_year.toString());
+    cardBody.setAttribute('card-last4', card.last4);
+    cardBody.setAttribute('card-created', card.created.toString());
+    
     cardBody.innerHTML = `
     <div class="d-flex align-items-center main-card-detail">
         <div class="me-3 card-icon" card-type="${card.brand}">
