@@ -1,6 +1,7 @@
 export type PanelType = 
     'profile' |
     'security' |
+    'streamstageplus' |
     'payment' |
     'notifications' |
     'security-verified' |

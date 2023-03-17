@@ -45,6 +45,7 @@
 [data-pod='profile'] .side-panel-pod-icon { background-color: #88d464; }
 [data-pod='payment'] .side-panel-pod-icon { background-color: #88d464; }
 [data-pod='notifications'] .side-panel-pod-icon { background-color: #88d464; }
+[data-pod='streamstageplus'] .side-panel-pod-icon { background-color: #88d464; }
 
 /* Security */
 [data-pod='security'] .side-panel-pod-icon { background-color: #ff6a6a; }

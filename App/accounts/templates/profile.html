@@ -152,6 +152,46 @@
                         -->
 
 
+
+                        <!-- 
+                            Pod - StreamStage+
+                        -->
+                        <div 
+                            data-pod-status=''
+                            data-pod='streamstageplus'
+                        class='
+                            side-panel-pod
+                            text-light d-flex
+                            align-items-center
+                            justify-content-start
+                        '>
+                            <!-- Icon -->
+                            <div 
+                                class='
+                                    side-panel-pod-icon
+                                    d-flex
+                                    align-items-center
+                                    justify-content-center
+                                '
+                            >
+                                <i class="fa-solid text-justify accordion
+                                    fa-video-plus
+                                "></i>
+                            </div>
+
+                            <!-- Text -->
+                            <div class='side-panel-pod-text'>
+                                <p class='side-panel-pod-text-text m-0 mb-0'>
+                                    StreamStage+
+                                </p>
+                            </div>
+                        </div>
+                        <!-- 
+                            End of Pod - StreamStage+
+                        -->
+                            
+
+
                         <!-- 
                             Pod - Notifications
                         -->
@@ -788,6 +828,9 @@
 
                                 <!-- Payments panel -->
                                 {% include 'panels/payments.html' %}
+
+                                <!-- StreamStage+ -->
+                                {% include 'panels/streamstageplus.html' %}
 
                                 <!--
                                     Events Panel
