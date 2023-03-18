@@ -27,73 +27,64 @@
 
 
     <!-- Features -->
-    <div class="
-        mb-5
-        justify-content-start
-        d-flex
-        row
-    ">
-
-        <!-- Free -->
+    <div class='plan-center'>
         <div class="
             mb-5
-            col-6
             justify-content-start
+            d-flex
+            payment-plan
         ">
-            <!-- Header -->
-            <h2 class="
-                fw-bold
+
+            <!-- Annualy -->
+            <div class="
+                justify-content-start
+                selected
                 w-100
-                text-center
-            ">Free</h2>
+                annualy
+            ">
+                <!-- Header -->
+                <h2 class="
+                    fw-bold
+                    w-100
+                    text-center
+                ">Annually</h2>
+                </ul>
+            </div>
 
 
-            </ul>
-        </div>
-
-
-        <!-- Plus -->
-        <div class="
-            mb-5
-            col-6
-            justify-content-start
-        ">
-            <!-- Header -->
-            <h2 class="
-                fw-bold
+            <!-- Monthly -->
+            <div class="
+                justify-content-start
                 w-100
-                text-center
-            ">Plus</h2>
-
+                monthly
+            ">
+                <!-- Header -->
+                <h2 class="
+                    fw-bold
+                    w-100
+                    text-center
+                ">Monthly</h2>
+            </div>
         </div>
-
     </div>
-    
+
     <!-- Saved Cards -->
     <div class="
-        mb-5
         justify-content-start
         d-flex
         row
+        w-100
     ">
-        <!-- Please pick a card -->
-        <div class="
-            mb-5
-            col-6
-            justify-content-start
-        ">
-            <!-- Header -->
-            <h2 class="
-                fw-bold
-                w-100
-                text-center
-            ">Please pick a card</h2>
 
-        </div>
-
-        <!-- Saved Cards -->
+        <!-- Cards -->
         <div 
-            class='saved-dropdown'
+            class='
+                saved-dropdown
+                d-flex
+                justify-content-center
+                align-items-center
+                gap-3
+            '
             dropdown='false'
         >   
             <!-- Dropdown button -->
@@ -103,11 +94,11 @@
                     mfa
                     btn 
                     btn-primary
-                    mb-3
                     btn-lg
                     loader-btn
                     info
-                    w-100
+                    saved-card
+                    w-50
                 "
                 loader-state='default'
             >
@@ -119,11 +110,93 @@
                 <p>Saved Cards</p>
             </button>
 
+            <!-- New card button -->
+            <button 
+                type="submit" 
+                class="
+                    mfa
+                    btn 
+                    btn-primary
+                    btn-lg
+                    loader-btn
+                    info
+                    new-card
+                    w-50
+                "
+                loader-state='default'
+            >
+                <span>
+                    <div class='spinner-border' role='status'>
+                        <span class='visually-hidden'>Loading...</span>
+                    </div>
+                </span>
+                <p>New Card</p>
+            </button>
+
             <!-- Dropdown -->
             <div>
                 <div class="cards"></div>
             </div>
         </div>
+
+        <div class="
+            col-6
+            justify-content-start
+            w-100
+        ">
+            <!-- Header -->
+            <h2 class="
+                fw-bold
+                w-100
+                text-center
+            "></h2>
+
+        </div>
+
+        <!-- Google / Apple pay -->
+        <div class="
+            col-6
+            justify-content-start
+            w-100
+        ">  
+            <!-- Dropdown button -->
+            <button 
+                type="submit" 
+                class="
+                    mfa
+                    btn 
+                    btn-lg
+                    btn-black
+                    loader-btn
+                    w-100
+                "
+                loader-state='default'
+            >
+                <span>
+                    <div class='spinner-border' role='status'>
+                        <span class='visually-hidden'>Loading...</span>
+                    </div>
+                </span>
+                <p>
+                    <i class="fa-brands fa-google-pay"></i>
+                </p>
+            </button>
+
+        </div>
     </div>
+
+    <hr>
+    
+    <!-- Terms -->
+    <p class="
+        text-muted
+        text-center
+        m-0
+        mt-3
+    ">
+        By proceeding with this purchase, you agree to StreamStage's <a href='/terms'>terms and conditions</a>,
+        which includes refund policies, and the <a href='/privacy'>privacy policy</a>.
+        Additionally, you also agree to Stripe's <a href='https://stripe.com/'>terms and conditions</a>.
+    </p>
 
 </article>

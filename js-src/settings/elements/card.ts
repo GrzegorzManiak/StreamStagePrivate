@@ -110,9 +110,13 @@ export function create_new_card(
   
 
 
-export const card_modal = construct_modal(
-    'Add Card',
-    'Add a new card to your account',
+export const card_modal = (
+    save_card: boolean = false,
+    title: string = 'Add Card',
+    body: string = 'Add a new card to your account',
+) => construct_modal(
+    title,
+    body,
     true,
     'primary',
     `
@@ -144,6 +148,16 @@ export const card_modal = construct_modal(
                 <label class="form-label" for="card-name">Name</label>
                 <input name="name" autocomplete='on' id="card-name" placeholder="John Doe" class="form-control form-control-lg inp">
             </div>
+
+            <div class="mt-3">
+                ${save_card ? `
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="save-card">
+                        <label class="form-check-label" for="save-card">
+                            <span class="text-muted">Save this card for future purchases</span>
+                        </label>
+                    </div>
+                ` : ''}
         </div>
     </div>
     `

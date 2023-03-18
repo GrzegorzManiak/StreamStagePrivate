@@ -1,5 +1,6 @@
+import { card_modal } from '../elements/card';
 import { PaymentMethod, Pod } from '../index.d';
-import { load_cards } from './payments';
+import { load_cards, read_card_modal } from './payments';
 
 /**
  * @param pod: Pod - The pod that this panel is attached to
@@ -15,6 +16,45 @@ export function manage_subscription_panel(pod: Pod) {
     // -- Manage the saved payment methods dropdown
     saved_payments_dropdown(panel, (card: PaymentMethod) => {
         console.log(card);
+    });
+
+
+
+    // -- Get the 'subscription' element
+    const subscription = panel.querySelector('.payment-plan') as HTMLDivElement,
+        annualy = subscription.querySelector('.annualy') as HTMLDivElement,
+        monthly = subscription.querySelector('.monthly') as HTMLDivElement;
+
+    // -- Add the event listener to the annualy button
+    annualy.addEventListener('click', () => {
+        monthly.classList.remove('selected');
+        annualy.classList.add('selected');
+    });
+
+    // -- Add the event listener to the monthly button
+    monthly.addEventListener('click', () => {
+        annualy.classList.remove('selected');
+        monthly.classList.add('selected');
+    });
+
+
+
+    const new_card_button = panel.querySelector('.new-card') as HTMLButtonElement;
+    new_card_button.addEventListener('click', () => {
+        // -- Add the modal to the body
+        const modal_div = document.createElement('div');
+        modal_div.innerHTML = card_modal(true, 'New Card', 
+            'Pay with a new card, you can add it to your saved cards for later purcahses.');
+        document.body.appendChild(modal_div);
+
+        const submit_button = modal_div.querySelector('.yes') as HTMLButtonElement,
+            save_card = modal_div.querySelector('#save-card') as HTMLInputElement;
+            
+        const card_manager = read_card_modal(modal_div);
+        submit_button.addEventListener('click', async () => {
+
+            console.log(card_manager(), save_card.checked)
+        });
     });
 }
 
@@ -101,7 +141,7 @@ export async function saved_payments_dropdown(
         open = false;
         dropdown.setAttribute('dropdown', open.toString());
     });
-    
+
 
     // -- Manage the cards
     manage_cards();
