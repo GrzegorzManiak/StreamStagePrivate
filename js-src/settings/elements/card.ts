@@ -51,7 +51,7 @@ export function create_new_card(
     button: HTMLButtonElement,
 } {
     const cardBody = document.createElement('div');
-    cardBody.className = `cards-body d-flex justify-content-between align-items-center`;
+    cardBody.className = `cards-body d-flex justify-content-between align-items-center gap-3`;
 
     cardBody.setAttribute('card-id', card.id);
     cardBody.setAttribute('card-brand', card.brand);
@@ -80,7 +80,7 @@ export function create_new_card(
     </div>
   
 
-    <div class="ms-3">
+    <div>
         <p class="text-muted card-added">Added - 
             ${new Date(card.created * 1000).toLocaleDateString()} at
             ${new Date(card.created * 1000).toLocaleTimeString()}

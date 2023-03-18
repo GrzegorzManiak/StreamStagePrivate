@@ -36,12 +36,13 @@ export async function saved_payments_dropdown(
     callback: (id: PaymentMethod) => void,
 ) {
     // -- Load the cards
-    await load_cards(parent, false);
+    await load_cards(parent, true);
     let active = '';
 
     // -- Get the 'saved-dropdown' element
     const dropdown = parent.querySelector('.saved-dropdown') as HTMLDivElement,
-        button = dropdown.querySelector('button') as HTMLButtonElement;
+        button = dropdown.querySelector('button') as HTMLButtonElement,
+        cards = dropdown.querySelector('.cards') as HTMLDivElement;
         
     const manage_cards = () => {
         // -- Get the cards
@@ -78,16 +79,6 @@ export async function saved_payments_dropdown(
             if (card.getAttribute('card-id') === active)
                 card.setAttribute('selected', 'true');
         }
-
-
-        // -- Add the event listener to the rest of the document
-        //    to close the dropdown whenever the user clicks outside
-        //    of the dropdown
-        document.addEventListener('click', (e) => {
-            if (e.target === button || button.contains(e.target as Node)) return;
-            open = false;
-            dropdown.setAttribute('dropdown', open.toString());
-        });
     }
 
 
@@ -99,9 +90,18 @@ export async function saved_payments_dropdown(
         dropdown.setAttribute('dropdown', open.toString());
 
         // -- Reload the cards 
-        load_cards(parent, false).then(() => manage_cards());
+        load_cards(parent, true).then(() => manage_cards());
     });
 
+
+    // -- Add an event listener to the window to close the dropdown
+    //    whenever the user clicks outside of the dropdown
+    cards.parentElement.addEventListener('click', (e) => {
+        if (e.target === button || cards.contains(e.target as Node)) return;
+        open = false;
+        dropdown.setAttribute('dropdown', open.toString());
+    });
+    
 
     // -- Manage the cards
     manage_cards();

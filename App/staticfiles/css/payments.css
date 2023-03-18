@@ -4,30 +4,32 @@
 */
 .saved-dropdown {
     position: relative;
-    display: inline-block;
 }
 
 .saved-dropdown > div {
-    margin: auto;
     width: 100%;
-    display: none;
-    position: absolute;
-    z-index: 1;
+    height: 100%;
+
+    top: 0;
+    left: 0;
+
+    display: flex;
+    position: fixed;
+    z-index: 10;
     overflow: hidden;
 
     align-items: center;
     justify-content: center;
+    background-color: rgba(0,0,0,0.5);
 }
 
 .saved-dropdown > div > div {
     background-color: var(--theme-secondary-color);
     box-shadow: 0px 0px 16px 0px rgba(0,0,0,0.52);
     border-radius: 1rem;
-    min-width: 160px;
 }
 
 
-[dropdown='true'] > div { display: flex; }
 [dropdown='false'] > div > div > div { display: none; }
 
 
@@ -51,6 +53,15 @@
 [selected='true'] {
     outline: 1px solid var(--accent-color)!important;
 }
+
+[dropdown='false'] > div {
+    background-color: transparent!important;
+    width: 0!important;
+    height: 0!important;
+    display: none!important;
+}
+
+
 
 /*
     Cards
@@ -108,7 +119,7 @@
 [card-type='visa'] [data-card='visa'] { display: block!important; }
 
 /* Max width 680 */
-@media only screen and (max-width: 680px) {
+@media only screen and (max-width: 800px) {
     .cards-body { 
         padding: 0.5rem; 
         border-radius: 0.5rem; 
@@ -125,7 +136,17 @@
     .card-number { font-size: 1rem; }
     .card-icon { width: 1.5rem; height: 1.5rem; }
     .card-icon > i { font-size: 1.25rem; }
+    .saved-dropdown > div > div {
+        min-width: 90%;
+    }
 }
+
+@media only screen and (min-width: 800px) {
+    .saved-dropdown > div > div {
+        min-width: 50rem;
+    }
+}
+
 
 .add-card-details input {
     background-color: var(--theme-color)!important;
