@@ -43,6 +43,7 @@ export function manage_profile_panel(pod: Pod) {
 
         // -- Check if the request was successful
         if (res.code !== 200) create_toast('error', 'Oops!', res.message);
+        else create_toast('success', 'Success!', res.message);
         return stop_spinner();
     });
 }

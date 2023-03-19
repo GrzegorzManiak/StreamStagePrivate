@@ -8,6 +8,7 @@ import create_login_history from '../elements/history';
 import mfa from "../elements/mfa";
 import { check_email_verification, close_session, extend_session, get_security_info, remove, send_verification, update_profile } from "../apis";
 import { create_preference_toggles } from "../elements/security";
+import { password_monitor, rp_password_monitor } from "../../authentication/core/validation";
 
 const security_panels = [
     'security-preferences',
@@ -352,8 +353,49 @@ function fill_data(
     // -- Change Password
     //
     const CP_ID = 'change-password-container',
-        cp_elm = panel.querySelector(`#${CP_ID}`) as HTMLDivElement;
+        cp_elm = panel.querySelector(`#${CP_ID}`) as HTMLDivElement,
+        requirements = cp_elm.querySelector('.requirements') as HTMLDivElement,
+        password_errors = cp_elm.querySelector('.password-errors') as HTMLDivElement,
+        change_password_btn = cp_elm.querySelector('#change-password') as HTMLButtonElement;
 
+    // -- Inputs #cpass, #npass, #vpass
+    const cpass = cp_elm.querySelector('#cpass') as HTMLInputElement,
+        npass = cp_elm.querySelector('#npass') as HTMLInputElement,
+        cfpass = cp_elm.querySelector('#cfpass') as HTMLInputElement;
+    
+    password_monitor(npass, password_errors);
+    rp_password_monitor(npass, cfpass);
+    npass.addEventListener('focus', () => requirements.style.display = 'block');
+    npass.addEventListener('blur', () => requirements.style.display = 'none');
+
+    // -- Set the button
+    change_password_btn.onclick = async () => {
+        // -- Attach the spinner
+        const stop_spinner = attach(change_password_btn);
+
+        // -- Get the values
+        const current_password = cpass.value,
+            new_password = npass.value,
+            confirm_password = cfpass.value;
+
+        // -- Check if the passwords match
+        if (new_password !== confirm_password) {
+            stop_spinner();
+            return create_toast('error', 'Oops, there appears to be an error', 'The passwords do not match');
+        }
+            
+        // -- Send the request
+        const res = await update_profile({
+            token: access_key,
+            old_password: current_password.trim(),
+            password: new_password.trim()
+        });
+
+        // -- Check if the request was successful
+        if (res.code !== 200) create_toast('error', 'Oops, there appears to be an error', res.message);
+        else create_toast('success', 'Success', 'Your password has been updated');
+        return stop_spinner();
+    };
 
 
     //

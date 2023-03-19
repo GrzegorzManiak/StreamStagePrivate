@@ -40,18 +40,23 @@ export const validate_name = (name: string): Array<String> => {
 // This function is used to monitor the strength of a password
 // and display the strength to the user in real time.
 //
-export const password_monitor = (input: HTMLInputElement) => {
+export const password_monitor = (
+    input: HTMLInputElement,
+    proxy: Element | null = null
+) => {
+    if (proxy === null) proxy = input;
+
     const validity = () => {
         let password = validate_password(input.value);
         let errors = ['length', 'number', 'uppercase', 'lowercase', 'spaces'];
 
         password.forEach((error) => {
-            input.setAttribute(`data-error-${error}`, '');
+            proxy.setAttribute(`data-error-${error}`, '');
         });
 
         // -- Remove any errors that are not present
         errors.forEach((error) => {
-            if (!password.includes(error)) input.removeAttribute(`data-error-${error}`);
+            if (!password.includes(error)) proxy.removeAttribute(`data-error-${error}`);
         });
 
         if (password.length === 0) return '3';
@@ -68,12 +73,12 @@ export const password_monitor = (input: HTMLInputElement) => {
 
     // -- if the input is unfocused, remove the data-strength attribute
     input.addEventListener('blur', () => {
-        input.removeAttribute('data-strength');
+        proxy.removeAttribute('data-strength');
     });
 
     // -- If the input is focused, set the data-strength attribute
     input.addEventListener('focus', () => {
-        input.setAttribute('data-strength', validity());
+        proxy.setAttribute('data-strength', validity());
     });
 
     // -- Detect browser autofill

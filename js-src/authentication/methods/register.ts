@@ -49,7 +49,6 @@ export const register_handler = async () => {
     //
     submit_button.addEventListener('click', async () => {
         await handle_click(
-            panel, 
             submit_button,
             name_input,
             email_input,
@@ -61,7 +60,6 @@ export const register_handler = async () => {
 
 
 async function handle_click(
-    panel: Panel,
     button: HTMLButtonElement,
     name_input: HTMLInputElement,
     email_input: HTMLInputElement,

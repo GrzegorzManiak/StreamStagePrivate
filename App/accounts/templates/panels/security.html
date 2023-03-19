@@ -208,10 +208,7 @@
                 <p>Close Session</p>
             </button>
         </div>
-        
     </div>
-
-    <hr>
 </article>
 
 
@@ -472,7 +469,7 @@
         </p>
 
         <!-- Form -->
-        <form 
+        <div 
             id="change-password-form"
             class="
                 w-100
@@ -488,6 +485,7 @@
                     name="cpass" 
                     id="cpass" 
                     placeholder="J0sFun66us123" 
+                    type="password"
                 class="
                     form-control 
                     form-control-lg
@@ -505,15 +503,17 @@
                     mb-4 
                 "
             >
-                <div class="w-100">
+                <div class="w-100 password">
                     <label class="form-label" for="npass">New Password</label>
                     <input 
                         name="npass" 
                         id="npass" 
                         placeholder="J0sFun66us123!" 
+                        type="password"
                     class="
                         form-control 
                         form-control-lg
+                        password
                         inp
                     ">
                 </div>
@@ -524,6 +524,7 @@
                         name="cfpass" 
                         id="cfpass" 
                         placeholder="1F0rget2!"
+                        type="password"
                     class="
                         form-control 
                         form-control-lg
@@ -532,6 +533,26 @@
                 </div>
             </div>
 
+            <!-- Password requirements -->
+            <span class='password password-errors'></span>
+            <div class="
+                text-muted
+                small
+                p-2
+                requirements
+                w-100
+            ">
+                <ul class="text-muted d-flex flex-wrap">
+                    <li class='length w-50'>Must be between 8 and 64 characters</li>
+                    <li class='spaces w-50'>Must not contain spaces</li>
+                    <li class='number w-50'>Must contain at least one number</li>
+                    <li class='uppercase w-50'>Must contain at least one uppercase letter</li>
+                    <li class='lowercase w-50'>Must contain at least one lowercase letter</li>
+                </ul>
+            </div>
+
+
+            
             <!-- Button -->
             <button 
                 type="submit" 
@@ -548,7 +569,7 @@
             >
                 Change Password
             </button>
-        </form>
+        </div>
 
     </div>
 
