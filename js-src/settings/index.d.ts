@@ -89,7 +89,7 @@ export interface PaymentMethod {
     created: number;
 }
 
-export type SubscriptionMethod = Card | string;
+export type SubscriptionMethod = Card | PaymentMethod;
 
 interface SubscriptionIntent {
     id: string,

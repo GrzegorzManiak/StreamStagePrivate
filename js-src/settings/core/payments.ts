@@ -140,7 +140,7 @@ export function read_card_modal(
         card_cvc = parent.querySelector('#card-cvc') as HTMLInputElement,
         card_name = parent.querySelector('#card-name') as HTMLInputElement;
     cancel_button.addEventListener('click', () => parent.remove());
-
+    
     //
     // -- Add the event listeners to the inputs
     //    checks if the values are valid
@@ -191,6 +191,9 @@ export function read_card_modal(
 
     // -- Return the function
     return () => {
+        // -- Check if the values are valid
+        check();
+        
         // -- Get the expiry date
         const expiry = card_expiry.value.split('/');
 

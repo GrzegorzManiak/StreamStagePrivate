@@ -104,7 +104,7 @@ export function construct_modal(
                 >
 
                     <!-- Header -->
-                    <div class="mb-5 justify-content-start header">
+                    <div class="mb-2 justify-content-start header">
                         <!-- Header -->
                         <h1 class="fw-bold ">${title}</h1>
 

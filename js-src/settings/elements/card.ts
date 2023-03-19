@@ -1,5 +1,5 @@
 import { construct_modal } from '../../click_handler';
-import { PaymentMethod } from '../index.d';
+import { Card, PaymentMethod, SubscriptionMethod } from '../index.d';
 
 export function card_type(card: string): string {
     // Visa: 4 (starts with 4)
@@ -110,58 +110,58 @@ export function create_new_card(
   
 
 
+const card_input = (
+    save_card: boolean = false,
+) => `
+<div class="add-card-details">
+    <div class="mb-5">
+ 
+ 
+        <label class="form-label d-flex" for="card-number">
+            <span class="card-type col-1 d-flex"><i class="fas fa-credit-card align-self-center"></i></span>
+            Card Number
+        </label>
+
+        <input name="card_number" autocomplete='on' id="cardnumber" placeholder="1234 5678 9101 1123" class="form-control form-control-lg inp">
+
+
+        <div class="row mt-3">
+            <div class="col">
+                <label class="form-label" for="card-expiry">Expiry</label>
+                <input name="exp" autocomplete='on' id="card-expiry" placeholder="MM/YY" class="form-control form-control-lg inp">
+            </div>
+
+            <div class="col">
+                <label class="form-label" for="card-cvc">CVC</label>
+                <input type="password" maxlength="4" name="cvc" autocomplete='on' id="card-cvc" placeholder="***" class="form-control form-control-lg inp">
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <label class="form-label" for="card-name">Name</label>
+            <input name="name" autocomplete='on' id="card-name" placeholder="John Doe" class="form-control form-control-lg inp">
+        </div>
+
+        <div class="mt-3">
+            ${save_card ? `
+                <div class="form-check">
+                    <input class="form-check-input save-card" type="checkbox" value="" id="save-card">
+                    <label class="form-check-label" for="save-card">
+                        <span class="text-muted">Save this card for future purchases</span>
+                    </label>
+                </div>
+            ` : ''}
+        </div>
+    </div>
+</div>
+`
+
+
 export const card_modal = (
     save_card: boolean = false,
     title: string = 'Add Card',
     body: string = 'Add a new card to your account',
-) => construct_modal(
-    title,
-    body,
-    true,
-    'primary',
-    `
-    <div class="add-card-details">
-        <div class="mb-5">
-     
-     
-            <label class="form-label d-flex" for="card-number">
-                <span class="card-type col-1 d-flex"><i class="fas fa-credit-card align-self-center"></i></span>
-                Card Number
-            </label>
-
-            <input name="card_number" autocomplete='on' id="cardnumber" placeholder="1234 5678 9101 1123" class="form-control form-control-lg inp">
-
-
-            <div class="row mt-3">
-                <div class="col">
-                    <label class="form-label" for="card-expiry">Expiry</label>
-                    <input name="exp" autocomplete='on' id="card-expiry" placeholder="MM/YY" class="form-control form-control-lg inp">
-                </div>
-
-                <div class="col">
-                    <label class="form-label" for="card-cvc">CVC</label>
-                    <input type="password" maxlength="4" name="cvc" autocomplete='on' id="card-cvc" placeholder="***" class="form-control form-control-lg inp">
-                </div>
-            </div>
-
-            <div class="mt-3">
-                <label class="form-label" for="card-name">Name</label>
-                <input name="name" autocomplete='on' id="card-name" placeholder="John Doe" class="form-control form-control-lg inp">
-            </div>
-
-            <div class="mt-3">
-                ${save_card ? `
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="save-card">
-                        <label class="form-check-label" for="save-card">
-                            <span class="text-muted">Save this card for future purchases</span>
-                        </label>
-                    </div>
-                ` : ''}
-        </div>
-    </div>
-    `
-);
+) => construct_modal(title, body, true, 'primary', card_input(save_card));
 
 
 export const tds_modal = (
@@ -193,3 +193,74 @@ export const tds_modal = (
     </div>
     `
 );
+
+
+export const pay_now = (
+    title: string = 'Pay now',
+    body: string = 'Please enter your card details, or select a saved payment method.',
+    item: string = 'StreamStage+',
+    cost: string = '$9.99 Per Month',
+) => construct_modal(
+    title, body, true, 'primary',
+    `   
+        <span data-mode='select' class='pay-now-modal'>
+
+            <span class='payment-select' data-mode='saved'>
+                <div class="d-flex align-items-center justify-content-between pay-now-slider">
+                    <h5 class="mb-0 saved-card">Saved Cards</h5>
+                    <h5 class="mb-0 new-card">New Card</h5>
+                </div>
+
+                <hr>
+
+                <div class="pay-now-body">
+                    <div class='new-card'> ${card_input(true)} </div>
+                    <div class='saved-card'> <div class='cards cards-slim'></div> </div>
+                </div>
+            </span>
+
+            <span class='pay-confirm d-flex justify-content-between flex-column'>
+                <div class='cards cards-slim'><div class='final-card card-body p-2'></div></div>
+
+                <div class='pay-confirm-body'>
+                    <p class='pay-confirm-item'>${item}</p>
+                    <p class='pay-confirm-amount'>${cost}</p>
+                </div>
+                
+                <div class="d-flex align-items-center">
+                    <hr>
+                    <!-- Terms -->
+                    <p class="
+                        text-muted
+                        text-center
+                        m-0
+                    ">
+                        By proceeding with this purchase, you agree to StreamStage's <a href='/terms'>terms and conditions</a>,
+                        which includes refund policies, and the <a href='/privacy'>privacy policy</a>.
+                        Additionally, you also agree to Stripe's <a href='https://stripe.com/'>terms and conditions</a>.
+                    </p>
+                </div>
+            </span>
+
+        </span>
+
+        <p class='w-100 text-muted text-center go-back'> Go back </p>
+    `
+);
+
+
+export function fit_card(card: SubscriptionMethod): PaymentMethod {
+    if ('id' in card) return card;
+
+    let last4 = card.card.slice(-4),
+        brand = card_type(card.card);
+
+    return {
+        id: 'NEW',
+        brand: brand,
+        last4: last4,
+        exp_month: card.exp_month,
+        exp_year: card.exp_year,
+        created: Date.now(),
+    }
+}
