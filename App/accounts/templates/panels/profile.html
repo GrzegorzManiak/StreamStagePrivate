@@ -46,7 +46,7 @@
             name="username" 
             id="username" 
             placeholder="Sick name 13" 
-            value="{{ user.username }}"
+            value="{{ user.cased_username }}"
         class="
             form-control 
             form-control-lg
@@ -103,12 +103,12 @@
             id="bio" 
             cols="40" rows="5"
             placeholder="I like to eat cheese"
-            value="{{ user.description }}"
             class="
                 form-control 
                 form-control-lg
                 inp
             "> 
+            {{ user.description }}
         </textarea>
     </div>
 

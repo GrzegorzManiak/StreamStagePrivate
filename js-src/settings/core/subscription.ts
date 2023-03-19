@@ -88,13 +88,17 @@ export function saved_payments_dropdown(
 
 
 export function manage_paynow(
-    button: HTMLButtonElement
+    button: HTMLButtonElement,
+    title: string = 'Pay Now',
+    description: string = 'You will be charged $9.99 USD / month',
+    item_name: string = 'Monthly Subscription',
+    item_price: string = '$9.99 USD / month'
 ) {
     const on_click = (stop: () => {}) => {
         const modal = document.createElement('div');
         let selected_card: SubscriptionMethod,
             saved_payment: SubscriptionMethod;
-        modal.innerHTML = pay_now();
+        modal.innerHTML = pay_now(title, description, item_name, item_price);
         document.body.appendChild(modal);
 
         // -- yes / no buttons

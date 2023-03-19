@@ -254,7 +254,6 @@ async function open_security_panel(stop: () => void, access_key: string) {
     // -- Show all the panels 
     for (let sec_panel in security_panels) {
         show_pod(security_panels[sec_panel] as PanelType);
-        console.log("Showing panel: " + sec_panel);
     }
     open_panel('security-verified');
 }
@@ -297,7 +296,7 @@ function fill_data(
         timer = es_elm.querySelector('#extend-verification-time-timer') as HTMLHeadingElement;
 
     let time_left = 15 * 60 * 1000; // -- 15 minutes
-    btn.addEventListener('click', async () => {
+    btn.onclick = async () => {
         const stop_spinner = attach(btn);
         const res = await extend_session(access_key);
         stop_spinner();
@@ -307,7 +306,7 @@ function fill_data(
 
         // -- Reset the timer
         time_left = 15 * 60 * 1000;
-    });
+    };
     
 
     // -- Close session
@@ -407,7 +406,7 @@ function fill_data(
     const update_toogles = (data: SecurityInfo) => {
         toggles_elm.innerHTML = '';
         const toggles = create_preference_toggles(data.security_preferences, async(pref: string, val: boolean) => {
-            const res = await update_profile(access_key, { [pref]: val });
+            const res = await update_profile({ [pref]: val, token: access_key });
             if (res.code !== 200) return create_toast('error', 'Oops, there appears to be an error', res.message);
         });
         toggles.forEach((elm) => toggles_elm.appendChild(elm));
@@ -453,6 +452,7 @@ function fill_data(
         show_pod('security');
         open_panel('security');
         clearInterval(timer_interval);
+        clearInterval(data_interval);
 
         verified = false;
         timer_panel.setAttribute('data-panel-status', 'hidden');
@@ -461,7 +461,8 @@ function fill_data(
         // -- Hide all the panels
         for (let sec_panel in security_panels) {
             hide_pod(security_panels[sec_panel] as PanelType, 'security');
-        } return clearInterval(data_interval);
+        } 
+    
     }
 
 
@@ -495,7 +496,7 @@ function fill_data(
      * so its completely useless, unlike refresing the page
      * where the access key is still valid.
      */
-    close_session_btn.addEventListener('click', async () => {
+    close_session_btn.onclick = async () => {
         const stop_spinner = attach(close_session_btn),
             res = await close_session(access_key);
 
@@ -506,6 +507,7 @@ function fill_data(
 
         // -- Clear the data
         create_toast('success', 'Success', 'Your session has been closed');
+        stop_spinner();
         close();
-    });
+    };
 }

@@ -67,11 +67,14 @@ def validate_username(username) -> tuple[bool, str]:
 def change_username(user, new_username) -> tuple[bool, str]:
     # -- Check if the username is already taken
     if username_taken(new_username):
-        return (False, 'Username is already taken')
+        # -- Find the user with the username
+        user_with_username = Member.objects.get(username=new_username.lower())
+        if user_with_username != user:
+            return (False, 'Username is already taken')
 
     # -- Check that the username is different
     if user.username == new_username:
-        return (False, 'Username is the same')
+        return (True, 'Username is the same')
 
     # -- Check if the user is valid
     if not isinstance(user, Member):
@@ -84,6 +87,7 @@ def change_username(user, new_username) -> tuple[bool, str]:
 
     # -- Change the username
     user.username = new_username.lower()
+    user.cased_username = new_username
     user.save()
 
     return (True, 'Username changed successfully')
@@ -112,7 +116,7 @@ def change_description(user, new_description) -> tuple[bool, str]:
 
     # -- Make sure the description is not the same
     if user.description == new_description:
-        return (False, 'Description is the same')
+        return (True, 'Description is the same')
 
     # -- Clean the description
     clean_description = escape(new_description)
@@ -178,11 +182,13 @@ def update_profile(user, data, sensitive=False) -> tuple[bool, str]:
 
     # -- Update the username
     if 'username' in data:
-        change_username(user, data['username'])
+        res = change_username(user, data['username'])
+        if res[0] == False: return res
 
     # -- Update the description
     if 'description' in data:
-        change_description(user, data['description'])
+        res = change_description(user, data['description'])
+        if res[0] == False: return res
 
     # -- Update the first name
     if 'first_name' in data:
@@ -193,15 +199,25 @@ def update_profile(user, data, sensitive=False) -> tuple[bool, str]:
         user.last_name = data['last_name']
 
     # -- Update the time zone
+    # NOTE: I have absolutely no idea why the time zone field
+    # wont let me use the validate function, so i have to do this
+    # abomination of a for loop
     if 'time_zone' in data:
-        if TimeZoneField.validate(data['time_zone']) == False:
-            return (False, 'Time zone is not valid')
-        user.time_zone = data['time_zone']
+        values = TimeZoneField().choices
+        found = False
+
+        for value in values:
+            if value[1] == data['time_zone']:
+                user.time_zone = data['time_zone']
+                found = True
+                break
+
+        if found == False: return (False, 'Time zone is not valid')
 
     # -- Update the country
     if 'country' in data:
-        if CountryField.validate(data['country']) == False:
-            return (False, 'Country is not valid')
+        try: CountryField().validate(model_instance=None, value=data['country'])
+        except ValidationError: return (False, 'Country is not valid')
         user.country = data['country']
 
     # -- Update the 2FA token

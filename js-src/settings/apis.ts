@@ -265,14 +265,12 @@ export const remove_card = async (
  *             (name, email, etc)
 */
 export const update_profile = async (
-    token: string,
-    data: { [key: string]: any }
+    data: { [key: string]: any },
 ): Promise<DefaultResponse> => base_request(
     'POST',
     configuration.update_profile,
-    { token, ...data }
+    data
 );
-
 
 /**
  * @name start_subscription

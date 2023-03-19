@@ -61,7 +61,7 @@ if USE_CLOUDFLARE:
 #
 DEFAULT_HOST = 'www'
 ROOT_HOSTCONF = 'StreamStage.hosts'
-ROOT_URLCONF = 'homepage.urls'
+ROOT_URLCONF = 'StreamStage.urls'
 
 SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_SAMESITE = None

@@ -77,8 +77,8 @@ class Member(AbstractUser):
     description = models.TextField("Description", blank=True)
     stripe_customer = models.CharField("Stripe Customer ID", max_length=100, blank=True)
     security_preferences = models.OneToOneField("SecurityPreferences", on_delete=models.CASCADE, default=SecurityPreferences.objects.create())
-    country = CountryField()
-    time_zone = TimeZoneField(default="UTC")
+    country = CountryField(default='Ireland')
+    time_zone = TimeZoneField(default="Europe/Dublin")
     tfa_secret = models.CharField(
         "tfa_secret", 
         max_length=100,
@@ -162,7 +162,10 @@ class Member(AbstractUser):
 
     def save(self, *args, **kwargs):
         self.is_over_18()
-        self.cased_username = self.username.lower()
+
+        # -- Make sure we have a cased username
+        if self.username != self.cased_username.lower():
+            self.cased_username = self.username.lower()
 
         # -- Save the user
         super().save(*args, **kwargs)
