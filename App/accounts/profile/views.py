@@ -13,7 +13,15 @@ from accounts.oauth.oauth import get_all_oauth_for_member, format_providers
 from accounts.email.verification import add_key, send_email
 from accounts.models import LoginHistory, oAuth2
 
-from .profile import generate_pat, update_profile, validate_pat, extend_pat, get_pat, PAT_EXPIRY_TIME
+from .profile import (
+    generate_pat, 
+    update_profile, 
+    validate_pat, 
+    extend_pat, 
+    get_pat, 
+    revoke_pat, 
+    PAT_EXPIRY_TIME
+)
 from StreamStage.secrets import STRIPE_PUB_KEY
 
 @api_view(['GET'])
@@ -35,6 +43,7 @@ def profile(request):
             'update_profile': reverse_lazy('update_profile'),
             'remove_oauth': reverse_lazy('remove_oauth'),
             'extend_session': reverse_lazy('extend_session'),
+            'close_session': reverse_lazy('close_session'),
             'setup_mfa': reverse_lazy('setup_mfa'),
             'verify_mfa': reverse_lazy('verify_mfa'),
             'disable_mfa': reverse_lazy('disable_mfa'),
@@ -197,3 +206,15 @@ def extend_session(request, data):
     pat = extend_pat(data['token'], request.user)
     if pat[0] == False: return invalid_response(pat[1])
     return success_response('Session extended successfully')
+
+
+
+@api_view(['POST'])
+@authenticated()
+@required_data(['token'])
+def close_session(request, data):
+
+    # -- Check if the token is valid
+    pat = revoke_pat(data['token'], request.user)
+    if pat[0] == False: return invalid_response(pat[1])
+    return success_response('Session closed successfully')

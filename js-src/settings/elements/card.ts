@@ -1,5 +1,5 @@
 import { construct_modal } from '../../click_handler';
-import { Card, PaymentMethod, SubscriptionMethod } from '../index.d';
+import { PaymentMethod, SubscriptionMethod } from '../index.d';
 
 export function card_type(card: string): string {
     // Visa: 4 (starts with 4)

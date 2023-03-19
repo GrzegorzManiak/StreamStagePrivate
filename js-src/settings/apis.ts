@@ -165,6 +165,22 @@ export const extend_session = async (
 
 
 /**
+ * @name close_session
+ * @param token - PAK token
+ * @returns Promise<DefaultResponse>
+ * @description Closes the session of the user (PAK Secure area access)
+ */
+export const close_session = async (
+    token: string
+): Promise<DefaultResponse> => base_request(
+    'POST',
+    configuration.close_session,
+    { token }
+);
+
+
+
+/**
  * @name remove_oauth
  * @param token - PAK token
  * @param oauth_id - Oauth id

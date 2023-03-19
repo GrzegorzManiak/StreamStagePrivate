@@ -44,6 +44,11 @@ export async function load_cards(
     // -- Clear the cards container
     cards_container.innerHTML = '';
 
+    // -- Check if there are no cards
+    console.log(cards_object.length);
+    if (cards_object.length === 0) 
+        cards_container.innerHTML = '<div class="no-cards w-100 h-100 d-flex justify-content-center align-items-center"><h3 class="text-center">You have no cards saved</h3></div>';
+
     // -- Create the cards
     cards_object.forEach(card => {
         const elm = create_new_card(card, remove);

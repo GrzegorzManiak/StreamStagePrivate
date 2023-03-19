@@ -1,8 +1,6 @@
-import { attach, confirmation_modal } from '../../click_handler';
-import { create_toast } from '../../toasts';
-import { add_card, start_subscription } from '../apis';
-import { card_modal, card_type, create_new_card, fit_card, pay_now, tds_modal } from '../elements/card';
-import { Card, PaymentMethod, Pod, StartSubscriptionSuccess, SubscriptionMethod } from '../index.d';
+import { attach } from '../../click_handler';
+import { create_new_card, fit_card, pay_now } from '../elements/card';
+import { PaymentMethod, Pod, SubscriptionMethod } from '../index.d';
 import { load_cards, read_card_modal } from './payments';
 
 /**
@@ -73,6 +71,11 @@ export function saved_payments_dropdown(
             if (card.getAttribute('card-id') === active)
                 card.setAttribute('data-selected', 'true');
         }
+
+        // -- Check if there are no cards
+        if (cards.length === 0)
+            parent.setAttribute('no-cards', 'true');
+        
     }
 
     return async() => {

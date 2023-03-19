@@ -6,7 +6,7 @@ import { create_toast } from '../../toasts';
 
 import create_login_history from '../elements/history';
 import mfa from "../elements/mfa";
-import { check_email_verification, extend_session, get_security_info, remove, send_verification, update_profile } from "../apis";
+import { check_email_verification, close_session, extend_session, get_security_info, remove, send_verification, update_profile } from "../apis";
 import { create_preference_toggles } from "../elements/security";
 
 const security_panels = [
@@ -289,12 +289,11 @@ function fill_data(
     verified = true;
 
     //
-    // -- Extend session
+    // -- Session Management
     //
     const ES_ID = 'extend-verification-time-container',
-        es_elm = panel.querySelector(`#${ES_ID}`) as HTMLDivElement;
-
-    const btn = es_elm.querySelector('button') as HTMLButtonElement,
+        es_elm = panel.querySelector(`#${ES_ID}`) as HTMLDivElement,
+        btn = es_elm.querySelector('button') as HTMLButtonElement,
         timer = es_elm.querySelector('#extend-verification-time-timer') as HTMLHeadingElement;
 
     let time_left = 15 * 60 * 1000; // -- 15 minutes
@@ -310,6 +309,10 @@ function fill_data(
         time_left = 15 * 60 * 1000;
     });
     
+
+    // -- Close session
+    const close_session_btn = es_elm.querySelector('#close-secure-session') as HTMLButtonElement;
+
 
 
     //
@@ -413,21 +416,19 @@ function fill_data(
 
 
 
-    // 
-    // -- Update interval (5 sec)
-    // 
-    const wipe = () => {
-        linked_accounts.innerHTML = '';
-        login_history.innerHTML = '';
-    };
-
-    // -- Start the timer
-    const int = setInterval(() => {
+    /**
+     * @name timer_interval
+     * @description This interval will update the timer
+     * every second, this is the big timer on top of the 
+     * page indicating how much time the user has left
+     * to make changes to their account.
+     */
+    const timer_interval = setInterval(() => {
         // -- Update the timer
         time_left -= 1000;
         
-        let min = Math.floor(time_left / 1000 / 60);
-        let sec = Math.floor(time_left / 1000) % 60;
+        let min = Math.floor(time_left / 1000 / 60),
+            sec = Math.floor(time_left / 1000) % 60;
 
         timer.innerText = `${min}:${sec < 10 ? '0' + sec : sec}`;
 
@@ -438,25 +439,42 @@ function fill_data(
         }
     }, 1000);
 
+
+    /**
+     * @name close
+     * @description Closes the security panel AND 
+     * revokes the users PAK (access key) and clears
+     * any remianing intervals and data
+     */
+    const close = () => {
+        linked_accounts.innerHTML = '';
+        login_history.innerHTML = '';
+
+        show_pod('security');
+        open_panel('security');
+        clearInterval(timer_interval);
+
+        verified = false;
+        timer_panel.setAttribute('data-panel-status', 'hidden');
+        security_panel.setAttribute('data-panel-status', '');
+        
+        // -- Hide all the panels
+        for (let sec_panel in security_panels) {
+            hide_pod(security_panels[sec_panel] as PanelType, 'security');
+        } return clearInterval(data_interval);
+    }
+
+
+    /**
+     * @name data_interval
+     * @description Updates the data every 5 seconds
+     * And checks if the users PAK is still valid
+     */
     const data_interval = setInterval(async () => {
         const res = await get_security_info(access_key);
         if (res.code !== 200) {
             create_toast('error', 'Oops, there appears to be an error', res.message);
-            wipe();
-
-            show_pod('security');
-            open_panel('security');
-            clearInterval(int);
-
-            verified = false;
-
-            timer_panel.setAttribute('data-panel-status', 'hidden');
-            security_panel.setAttribute('data-panel-status', '');
-            
-            // -- Hide all the panels
-            for (let sec_panel in security_panels) {
-                hide_pod(security_panels[sec_panel] as PanelType, 'security');
-            } return clearInterval(data_interval);
+            return close();
         }
 
         // -- Get the data
@@ -469,4 +487,25 @@ function fill_data(
         update_toogles(data);
     }, 5000);
     
+    
+    /**
+     * @name close_session_btn
+     * @description Closes the current session for the user 
+     * It actually removes the access key from the database
+     * so its completely useless, unlike refresing the page
+     * where the access key is still valid.
+     */
+    close_session_btn.addEventListener('click', async () => {
+        const stop_spinner = attach(close_session_btn),
+            res = await close_session(access_key);
+
+        if (res.code !== 200) {
+            stop_spinner();
+            return create_toast('error', 'Oops, there appears to be an error', res.message);
+        }
+
+        // -- Clear the data
+        create_toast('success', 'Success', 'Your session has been closed');
+        close();
+    });
 }

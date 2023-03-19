@@ -18,5 +18,6 @@ from .views import (
     update_profile,
     remove_oauth,
     extend_session,
-    update_profile_view
+    update_profile_view,
+    close_session
 )

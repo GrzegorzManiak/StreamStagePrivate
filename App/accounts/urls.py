@@ -15,6 +15,7 @@ from .profile import (
     update_profile_view, 
     remove_oauth, 
     extend_session,
+    close_session
 )
 from .mfa import (
     setup_mfa,
@@ -51,6 +52,7 @@ urlpatterns = [
     path('api/update_profile/', update_profile_view, name='update_profile'),
     path('api/security/', security_info, name='security_info'),
     path('api/extend_session/', extend_session, name='extend_session'),
+    path('api/close_session/', close_session, name='close_session'),
 
     # -- Authentication
     path('api/token/', validate_token, name='token'),

@@ -358,3 +358,37 @@ def extend_pat(token, member) -> list[bool, str]:
     pat_data[0]['time'] = time.time()
 
     return [True, 'Token extended successfully']
+
+
+
+"""
+    :name: revoke_pat
+    :description: This function revokes a personal access token
+    :param token: str - The token to revoke
+    :param member: Member - The member to revoke the token for
+    :return: list[bool, str] - A list containing a bool
+        which is True if the token is revoked, False if it is not
+        and a string which is the reason why it is not revoked
+"""
+def revoke_pat(token, member) -> list[bool, str]:
+    # -- Check if the token is valid
+    if not isinstance(token, str):
+        return [False, 'Sorry, but it appears that the token is not valid']
+
+    # -- Check if the member is valid
+    if not isinstance(member, Member):
+        return [False, 'Sorry, but it appears that the member is not valid']
+
+    # -- Check if the token is in the temporary list
+    pat_data = get_pat(token)
+    if pat_data[0] == None:
+        return [False, pat_data[1]]
+    
+    # -- Check if the token belongs to the member
+    if pat_data[0]['user'] != member:
+        return [False, 'Sorry, but it appears that the token does not belong to you']
+
+    # -- Revoke the token
+    temporary_pats.remove(pat_data[0])
+
+    return [True, 'Token revoked successfully']
