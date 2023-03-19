@@ -1,6 +1,6 @@
 import { create_toast } from "../toasts";
 import { configuration } from "./";
-import { AddCardResponse, Card, DefaultResponse, DefaultResponseData, GetCardsResponse, SecurityInfoResponse, VerifyAccessResponse } from "./index.d";
+import { AddCardResponse, Card, DefaultResponse, DefaultResponseData, GetCardsResponse, SecurityInfoResponse, StartSubscriptionResponse, SubscriptionMethod, VerifyAccessResponse } from "./index.d";
 
 export async function base_request (
     mehod: string,
@@ -239,6 +239,25 @@ export const remove_card = async (
     { id }
 );
 
+
+/**
+ * @name start_subscription
+ * @param method - SubscriptionMethod
+ * @returns Promise<StartSubscriptionResponse>
+ * @description Start a subscription for the user
+ */
+export const start_subscription = async (
+    method: SubscriptionMethod
+): Promise<StartSubscriptionResponse> => {
+    // -- If the method is a string
+    if (typeof method === 'string') return base_request(
+        'POST',
+        configuration.start_subscription,
+        { payment_method: method }
+    );
+
+}
+    
 
 //
 // AUXILIARY FUNCTIONS

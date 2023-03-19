@@ -5,11 +5,41 @@
 
 # -- Imports
 from accounts.models import Member
-from StreamStage.secrets import STRIPE_PUB_KEY, STRIPE_SECRET_KEY
+from StreamStage.secrets import STRIPE
 import stripe
 
-stripe.api_key = STRIPE_SECRET_KEY
+stripe.api_key = STRIPE['pri']
 
+
+
+"""
+    :name: clear_stripe_customer
+    :description: This function clears any incomplete payments for the user
+    :param user: The user object
+    :return: None
+"""
+def clear_stripe_customer(user: Member):
+    # -- Check if the user is valid
+    if user is None: return None
+
+    # -- Get the stripe customer
+    customer = user.get_stripe_customer()
+
+    # -- Check if the customer is valid
+    if customer is None: return None
+
+    # -- Get the payment intents
+    payment_intents = stripe.PaymentIntent.list(
+        customer=customer.id,
+        limit=100,
+    )
+
+    # -- Loop through the payment intents
+    # for payment_intent in payment_intents.data:
+    #     # -- Cancel the payment intent
+    #     stripe.Invoice.void_invoice(payment_intent.id)
+
+    
 
 
 """
@@ -157,6 +187,9 @@ def remove_stripe_payment_method(user: Member, card_id: str):
     if customer is None: return False
 
     try:
+        # -- Clear the stripe customer
+        clear_stripe_customer(user)
+
         # -- Detach the payment method from the customer
         stripe.PaymentMethod.detach(
             payment_method=card_id,
@@ -197,9 +230,96 @@ def create_payment_intent(user: Member, ammount: int, payment_method: str = None
 
 
 """
-    :name: start_subscription
+    :name: start_subscription_saved_payment
     :description: This function starts a subscription for the user
     :param user: The user object
     :param payment_method: The payment method id
-    :param plan: The plan id
+    :return: A list, the first being the subscription object, the second being
+        the error if there is one
 """
+def start_subscription_saved_payment(user: Member, payment_method: str):
+    # -- Check if the user is valid
+    if user is None: return False
+
+    # -- Get the stripe customer
+    customer = user.get_stripe_customer()
+
+    # -- Check if the customer is valid
+    if customer is None: return False
+
+    try:
+        # -- Clear the stripe customer
+        clear_stripe_customer(user)
+
+        # -- Attach the payment method to the customer
+        stripe.PaymentMethod.attach(
+            payment_method,
+            customer=customer.id,
+        )
+
+        # -- Set the default payment method
+        stripe.Customer.modify(
+            customer.id,
+            invoice_settings={
+                'default_payment_method': payment_method,
+            },
+        )
+
+        # -- Create the subscription
+        sub = stripe.Subscription.create(
+            customer=customer.id,
+            items=[
+                {
+                    'price': STRIPE['prices']['SSP'],
+                },
+            ],
+            expand=['latest_invoice.payment_intent'],
+        )
+
+        return [
+            format_subscription(sub),
+            'Subscription started successfully'
+        ]
+    
+    except Exception as e:
+        print('Error: ' + str(e))
+        return [
+            None,
+            # Split on the first colon and return the second half
+            str(e)
+        ]
+
+
+"""
+    :name: format_subscription
+    :description: This function formats the subscription into a dictionary
+    :param subscription: The subscription object
+    :return: The formatted subscription
+"""
+def format_subscription(subscription):
+    # -- Check if the subscription is valid
+    if subscription is None: return None
+
+    # -- Get the status
+    status = subscription['status']
+
+    # -- Format the subscription
+    subscription_obj = {
+        'id': subscription['id'],
+        'start': subscription['current_period_start'],
+        'end': subscription['current_period_end'],
+        'created': subscription['created'],
+
+        'invoice_id': subscription['latest_invoice']['id'],
+        
+        'payment_intent_id': subscription['latest_invoice']['payment_intent']['id'],
+        'payment_intent_secret': subscription['latest_invoice']['payment_intent']['client_secret'],
+    }
+
+    if status != 'active':
+        subscription_obj['requires_action'] = True
+        subscription_obj['next_action'] = subscription['latest_invoice']['payment_intent']['next_action']
+
+    else: subscription_obj['requires_action'] = False
+
+    return subscription_obj

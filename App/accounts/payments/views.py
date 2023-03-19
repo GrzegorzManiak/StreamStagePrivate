@@ -10,6 +10,7 @@ from .payments import (
     get_cards_formatted,
     remove_stripe_payment_method,
     create_payment_intent,
+    start_subscription_saved_payment
 )
 
 
@@ -65,7 +66,7 @@ def remove_payment_method(request, data):
 
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 @authenticated()
 def create_payment_intent(request):
     # -- Create the payment intent
@@ -76,3 +77,18 @@ def create_payment_intent(request):
 
     # -- Return the payment intent
     return payment_intent
+
+
+
+@api_view(['POST'])
+@authenticated()
+@required_data(['payment_method'])
+def start_subscription(request, data):
+    # -- Start the subscription
+    subscription = start_subscription_saved_payment(request.user, data['payment_method'])
+
+    if subscription[0] is None:
+        return invalid_response(subscription[1])
+    
+    # -- Return the subscription
+    return success_response('Subscription started successfully', subscription[0])

@@ -185,9 +185,6 @@ export function read_card_modal(
         // -- Every 2nd character, add a slash
         const cleaned = card_expiry.value.replace(/\D/g, '');
         card_expiry.value = cleaned.replace(/(^\d{2})/g, '$1/').slice(0, 6);
-
-        // -- Check if the value is valid
-        if (card_expiry.value.length < 6) return;
     });
 
     

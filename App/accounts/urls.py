@@ -25,7 +25,8 @@ from .payments.views import (
     add_payment_method,
     get_payment_methods,
     remove_payment_method,
-    create_payment_intent
+    create_payment_intent,
+    start_subscription
 )
 
 from .views import get_token, login, logout, register, validate_token
@@ -69,6 +70,9 @@ urlpatterns = [
     path('api/payment/add/', add_payment_method, name='add_payment'),
     path('api/payment/remove/', remove_payment_method, name='remove_payment'),
     path('api/payment/create/', create_payment_intent, name='create_payment'),
+    
+    # -- Subscriptions
+    path('api/subscription/start/', start_subscription, name='start_subscription'),
     
     # -- EMail Verification
     path('register/email', send_reg_verification, name='send_reg_verification'),

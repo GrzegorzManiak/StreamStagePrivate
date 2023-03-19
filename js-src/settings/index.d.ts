@@ -88,6 +88,24 @@ export interface PaymentMethod {
     last4: string;
     created: number;
 }
+
+export type SubscriptionMethod = Card | string;
+
+interface SubscriptionIntent {
+    id: string,
+    start: number,
+    end: number,
+    created: number,
+    invoice_id: string,
+    payment_intent_id: string,
+    payment_intent_secret: string,
+    requires_action: boolean,
+    next_action?: {
+        type: string,
+        [key: string]: string
+    }
+}
+
   
 // 
 // Default Server response structure
@@ -126,3 +144,6 @@ export type AddCardResponse = AddCardSuccess | DefaultResponse;
 
 export type GetCardsSuccess = DefaultResponseData & { data: Array<PaymentMethod> }
 export type GetCardsResponse = GetCardsSuccess | DefaultResponse;
+
+export type StartSubscriptionSuccess = DefaultResponseData & { data: SubscriptionIntent }
+export type StartSubscriptionResponse = StartSubscriptionSuccess | DefaultResponse;

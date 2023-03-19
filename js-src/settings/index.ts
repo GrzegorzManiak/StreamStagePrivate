@@ -46,6 +46,8 @@ export const configuration = {
     add_payment: get_or_error<string>(config, 'data-add-payment'),
     get_payments: get_or_error<string>(config, 'data-get-payments'),
     remove_payment: get_or_error<string>(config, 'data-remove-payment'),
+
+    start_subscription: get_or_error<string>(config, 'data-start-subscription'),
 }
 
 

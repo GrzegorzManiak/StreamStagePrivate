@@ -162,3 +162,34 @@ export const card_modal = (
     </div>
     `
 );
+
+
+export const tds_modal = (
+    url: string,
+) => construct_modal(
+    '3D Secure',
+    'Please complete the 3D Secure process to continue',
+    false,
+    'primary',
+    `   
+    <iframe 
+        class='tds-iframe'
+        id="tds-iframe" 
+        src="${url}" 
+        style="width: 100%; height: 500px;"
+    ></iframe>
+
+    <!-- Cancel Button -->
+    <div class="d-flex h-100 align-items-center">
+        <button type="submit" id="3ds-cancel" 
+            class="mfa btn btn-danger btn-lg loader-btn error w-100" loader-state='default'>
+            <span>
+                <div class='spinner-border' role='status'>
+                    <span class='visually-hidden'>Loading...</span>
+                </div>
+            </span>
+            <p>Cancel</p>
+        </button>
+    </div>
+    `
+);

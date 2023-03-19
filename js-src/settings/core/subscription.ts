@@ -1,5 +1,8 @@
-import { card_modal } from '../elements/card';
-import { PaymentMethod, Pod } from '../index.d';
+import { attach, confirmation_modal } from '../../click_handler';
+import { create_toast } from '../../toasts';
+import { add_card, start_subscription } from '../apis';
+import { card_modal, card_type, tds_modal } from '../elements/card';
+import { Card, PaymentMethod, Pod, StartSubscriptionSuccess, SubscriptionMethod } from '../index.d';
 import { load_cards, read_card_modal } from './payments';
 
 /**
@@ -14,8 +17,8 @@ export function manage_subscription_panel(pod: Pod) {
     const panel = pod.panel.element;
 
     // -- Manage the saved payment methods dropdown
-    saved_payments_dropdown(panel, (card: PaymentMethod) => {
-        console.log(card);
+    saved_payments_dropdown(panel, async(card: PaymentMethod) => {
+        confirmation_prompt(card, attach_spinners);
     });
 
 
@@ -38,6 +41,22 @@ export function manage_subscription_panel(pod: Pod) {
     });
 
 
+    // -- Google Pay
+    const google_pay = panel.querySelector('.google-pay') as HTMLDivElement;
+
+
+    // -- buttons 
+    const buttons = [
+        panel.querySelector('.new-card') as HTMLButtonElement,
+        panel.querySelector('.saved-card') as HTMLButtonElement,
+    ]
+
+    function attach_spinners() {
+        let stoppers: (() => void)[] = [];
+        buttons.forEach(button => stoppers.push(attach(button)));
+        return () => stoppers.forEach(stop => stop());
+    }
+
 
     const new_card_button = panel.querySelector('.new-card') as HTMLButtonElement;
     new_card_button.addEventListener('click', () => {
@@ -53,7 +72,21 @@ export function manage_subscription_panel(pod: Pod) {
         const card_manager = read_card_modal(modal_div);
         submit_button.addEventListener('click', async () => {
 
-            console.log(card_manager(), save_card.checked)
+            // -- Ask the user to confirm the payment
+            const valid = await confirmation_prompt(card_manager(), attach_spinners);
+
+            // -- Check if the user confirmed the payment
+            if (!valid) return;
+
+            // -- If the user wants to save the card, save it
+            if (save_card.checked) {
+                const card = await add_card(card_manager());
+                if (card.code !== 200) return create_toast(
+                    'error', 
+                    'verification', 
+                    'There was an error while trying to add your card, please try again later.'
+                );
+            }
         });
     });
 }
@@ -145,4 +178,76 @@ export async function saved_payments_dropdown(
 
     // -- Manage the cards
     manage_cards();
+}
+
+
+
+async function confirmation_prompt(
+    card: Card | PaymentMethod,
+    attach_spinners: () => (() => void),
+): Promise<boolean> {
+    let last4 = '';
+    if ('last4' in card) last4 = card.last4;
+    else last4 = card.card.slice(-4);
+
+    let brand = '';
+    if ('brand' in card) brand = card.brand;
+    else brand = card_type(card.card);
+
+    let payment: SubscriptionMethod;
+    if ('last4' in card) payment = card.id;
+    else payment = card.card;
+
+    // -- Start the spinner
+    const stop_spinner = attach_spinners();
+
+    return new Promise((resolve) => {
+        // -- Create the modal
+        confirmation_modal(
+            async() => {
+                // -- Attempt to pay
+                const data = await start_subscription(payment);
+
+                // -- Check if the payment was successful
+                if (data.code !== 200) {
+                    resolve(false);
+                    stop_spinner();
+                    return create_toast(
+                        'error',
+                        'Subscription',
+                        'There was an error while trying to pay, please try again later.'
+                    );
+                }
+
+                // -- Check if we need to verify the payment
+                const intent = (data as StartSubscriptionSuccess).data;
+                if (intent.requires_action) {
+                    // -- Create the modal
+                    const modal_div = document.createElement('div');
+                    modal_div.innerHTML = tds_modal(intent['next_action']['use_stripe_sdk']['stripe_js']);
+                    document.body.appendChild(modal_div);
+
+
+                }
+
+                // -- The payment was successful
+                else {
+                    resolve(true);
+                    stop_spinner();
+                    return create_toast(
+                        'success',
+                        'Subscription',
+                        'Your payment was successful, you are now subscribed to StreamStage+'
+                    );
+                }
+            },
+            () => {
+                stop_spinner();
+                resolve(false);
+            },
+            `Are you sure you want to pay with ${brand} ending in ${last4}?`,
+            'Confirm Payment',
+        );
+
+    });
 }
