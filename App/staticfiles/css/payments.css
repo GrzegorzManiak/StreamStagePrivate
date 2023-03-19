@@ -160,13 +160,13 @@
     payment process.
     --------------------------------------
 */
-@keyframes fade-in {
+@keyframes fade-in-pay {
     0% { opacity: 0; }
     50% { opacity: 0; }
     100% { opacity: 1; }
 }
 .pay-now-modal {
-    animation: fade-in 1.5s ease-in-out forwards;
+    animation: fade-in-pay 1.5s ease-in-out forwards;
 }
 
 .payment-select, .pay-now-modal, .pay-confirm {
@@ -205,12 +205,12 @@
 }
 
 
-@keyframes slide-out {
+@keyframes slide-out-pay {
     0% { transform: translateX(0); opacity: 1; }
     100% { transform: translateX(-100%); opacity: 0; }
 }
 
-@keyframes slide-in {
+@keyframes slide-in-pay {
     0% { transform: translateX(100%); opacity: 0; }
     100% { transform: translateX(0); opacity: 1; }
 }
@@ -242,20 +242,20 @@
 
 [data-mode='saved'] .pay-now-slider .saved-card { background-color: var(--accent-color); }
 [data-mode='saved'] .pay-now-slider .new-card:hover { outline: 2px solid var(--accent-color); }
-[data-mode='saved'] .pay-now-body .new-card { animation: slide-out 1s ease-in-out forwards; }
-[data-mode='saved'] .pay-now-body .saved-card { animation: slide-in 1s ease-in-out forwards; }
+[data-mode='saved'] .pay-now-body .new-card { animation: slide-out-pay 1s ease-in-out forwards; }
+[data-mode='saved'] .pay-now-body .saved-card { animation: slide-in-pay 1s ease-in-out forwards; }
 
 [data-mode='new'] .pay-now-slider .new-card { background-color: var(--accent-color); }
 [data-mode='new'] .pay-now-slider .saved-card:hover { outline: 2px solid var(--accent-color); }
-[data-mode='new'] .pay-now-body .saved-card { animation: slide-out 1s ease-in-out forwards; }
-[data-mode='new'] .pay-now-body .new-card { animation: slide-in 1s ease-in-out forwards; }
+[data-mode='new'] .pay-now-body .saved-card { animation: slide-out-pay 1s ease-in-out forwards; }
+[data-mode='new'] .pay-now-body .new-card { animation: slide-in-pay 1s ease-in-out forwards; }
 
 
-[data-mode='select'] .payment-select { animation: slide-in 1s ease-in-out forwards; }
-[data-mode='select'] .pay-confirm { animation: slide-out 1s ease-in-out forwards; }
+[data-mode='select'] .payment-select { animation: slide-in-pay 1s ease-in-out forwards; }
+[data-mode='select'] .pay-confirm { animation: slide-out-pay 1s ease-in-out forwards; }
 
-[data-mode='confirm'] .payment-select { animation: slide-out 1s ease-in-out forwards; }
-[data-mode='confirm'] .pay-confirm { animation: slide-in 1s ease-in-out forwards; }
+[data-mode='confirm'] .payment-select { animation: slide-out-pay 1s ease-in-out forwards; }
+[data-mode='confirm'] .pay-confirm { animation: slide-in-pay 1s ease-in-out forwards; }
 
 
 .pay-confirm-body {

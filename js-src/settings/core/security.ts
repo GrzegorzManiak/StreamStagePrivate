@@ -6,7 +6,8 @@ import { create_toast } from '../../toasts';
 
 import create_login_history from '../elements/history';
 import mfa from "../elements/mfa";
-import { check_email_verification, extend_session, get_security_info, remove, send_verification } from "../apis";
+import { check_email_verification, extend_session, get_security_info, remove, send_verification, update_profile } from "../apis";
+import { create_preference_toggles } from "../elements/security";
 
 const security_panels = [
     'security-preferences',
@@ -392,6 +393,25 @@ function fill_data(
 
     
 
+    //
+    // -- Security preferences
+    //
+    const SP_ID = 'security-preferences-container',
+        sp_elm = panel.querySelector(`#${SP_ID}`) as HTMLDivElement;
+
+    // -- Toggles
+    const toggles_elm = sp_elm.querySelector('.toggles') as HTMLDivElement;
+    const update_toogles = (data: SecurityInfo) => {
+        toggles_elm.innerHTML = '';
+        const toggles = create_preference_toggles(data.security_preferences, async(pref: string, val: boolean) => {
+            const res = await update_profile(access_key, { [pref]: val });
+            if (res.code !== 200) return create_toast('error', 'Oops, there appears to be an error', res.message);
+        });
+        toggles.forEach((elm) => toggles_elm.appendChild(elm));
+    }
+    update_toogles(data);
+
+
 
     // 
     // -- Update interval (5 sec)
@@ -446,6 +466,7 @@ function fill_data(
         // -- Update data
         update_providers(data);
         update_history(data);
+        update_toogles(data);
     }, 5000);
     
 }

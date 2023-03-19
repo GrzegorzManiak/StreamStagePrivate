@@ -12,7 +12,7 @@ from .profile import (
     profile, 
     send_verification, 
     security_info, 
-    update_profile, 
+    update_profile_view, 
     remove_oauth, 
     extend_session,
 )
@@ -48,7 +48,7 @@ urlpatterns = [
 
     # -- Profile
     path('api/send_verification/', send_verification, name='send_verification'),
-    path('api/update_profile/', update_profile, name='update_profile'),
+    path('api/update_profile/', update_profile_view, name='update_profile'),
     path('api/security/', security_info, name='security_info'),
     path('api/extend_session/', extend_session, name='extend_session'),
 

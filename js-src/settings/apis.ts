@@ -241,6 +241,24 @@ export const remove_card = async (
 
 
 /**
+ * @name update_profile
+ * @param token - PAK token
+ * @param data - Profile data
+ * @returns Promise<DefaultResponse>
+ * @description Update the profile of the user
+ *             (name, email, etc)
+*/
+export const update_profile = async (
+    token: string,
+    data: { [key: string]: any }
+): Promise<DefaultResponse> => base_request(
+    'POST',
+    configuration.update_profile,
+    { token, ...data }
+);
+
+
+/**
  * @name start_subscription
  * @param method - SubscriptionMethod
  * @returns Promise<StartSubscriptionResponse>

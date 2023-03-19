@@ -58,6 +58,14 @@ export interface LoginHistory {
     method: string,
 }
 
+export interface SecurityPreferences {
+    [key: string]: {
+        value: boolean,
+        help_text: string,
+        name: string
+    }
+}
+
 export interface SecurityInfo {
     email: string,
     dob: string,
@@ -69,7 +77,8 @@ export interface SecurityInfo {
     is_admin: boolean,
     over_18: boolean,
     service_providers: Array<ServiceProvider>,
-    login_history: Array<LoginHistory>
+    login_history: Array<LoginHistory>,
+    security_preferences: SecurityPreferences
 }
 
 export interface Card {

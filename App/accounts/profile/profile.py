@@ -228,7 +228,13 @@ def update_profile(user, data, sensitive=False) -> tuple[bool, str]:
         except ValidationError:
             return (False, 'Email is not valid')
 
+    # -- Get security preferences
+    keys = user.security_preferences.get_keys()
+    for key in keys:
+        if key in data:
+            user.security_preferences.set(key, data[key])
 
+            
     # -- Save the user
     try: 
         user.save()

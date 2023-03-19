@@ -249,12 +249,23 @@ export const pay_now = (
 );
 
 
+
+/*
+    @name fit_card
+    @param card: SubscriptionMethod 
+    @returns PaymentMethod
+
+    @description This is a really simple funciton that takes in both 
+    a Card object and a PaymentMethod object, and returns a PaymentMethod
+    object. This is used to convert a Card object into a PaymentMethod object
+    so that it can be used in the payment modal.
+*/
 export function fit_card(card: SubscriptionMethod): PaymentMethod {
     if ('id' in card) return card;
 
-    let last4 = card.card.slice(-4),
-        brand = card_type(card.card);
-
+    let brand = card_type(card.card),
+        last4 = card.card.slice(-4);
+        
     return {
         id: 'NEW',
         brand: brand,

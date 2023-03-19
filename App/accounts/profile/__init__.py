@@ -17,5 +17,6 @@ from .views import (
     security_info,
     update_profile,
     remove_oauth,
-    extend_session
+    extend_session,
+    update_profile_view
 )

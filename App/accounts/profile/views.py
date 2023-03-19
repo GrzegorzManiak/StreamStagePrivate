@@ -25,6 +25,7 @@ def profile(request):
         'has_tfa': request.user.tfa_secret is not None,
         'countries': CountryField().countries,
         'timezones': TimeZoneField().get_choices(),
+        'security_preferences': request.user.security_preferences.serialize(),
         'api': {
             'send_verification': reverse_lazy('send_verification'),
             'resend_verification': reverse_lazy('resend_key'),
@@ -130,17 +131,19 @@ def security_info(request, data):
         'meta': {
             'started': pat_data['time'],
             'expires': pat_data['time'] + PAT_EXPIRY_TIME,
-        }
+        },
+        'security_preferences': user.security_preferences.serialize(),
     })
 
 
 
 @api_view(['POST'])
 @authenticated()
-def update_profile(request):
+def update_profile_view(request):
 
     # -- Get the data
     data = request.data
+    res = None
 
     # -- Check if they provided a token
     token = request.data.get('token', None)
@@ -149,13 +152,15 @@ def update_profile(request):
         # -- Check if the token is valid
         pat = validate_pat(token, request.user)
         if pat[0] == False: return invalid_response(pat[1])
-        
-        # -- Update the profile
-        return update_profile(data, True)
+        res = update_profile(request.user, data, True)
     
-
     # -- Update the profile
-    else: return update_profile(data, False)
+    else: res = update_profile(request.user, data, False)
+
+
+    # -- Check if the update was successful
+    if res[0] == False: return invalid_response(res[1])
+    return success_response('Profile updated successfully')
     
 
 

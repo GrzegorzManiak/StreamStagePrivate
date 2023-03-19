@@ -16,6 +16,55 @@ from .validation import check_unique_broadcaster_handle
 
 from StreamStage.secrets import STRIPE_SECRET_KEY
 
+
+
+class SecurityPreferences(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    email_on_login           = models.BooleanField('Email on Login',           default=True, 
+        help_text="Send an email when you log in from a new device")
+    email_on_password_change = models.BooleanField('Email on Password Change', default=True,
+        help_text="Send an email when you change your password")    
+    email_on_email_change    = models.BooleanField('Email on Email Change',    default=True,
+        help_text="Send an email when you change your email address")
+    email_on_password_reset  = models.BooleanField('Email on Password Reset',  default=True,
+        help_text="Send an email when you reset your password")
+    email_on_oauth_change    = models.BooleanField('Email on OAuth Change',    default=True,
+        help_text="Send an email when you add or remove an OAuth provider")
+    require_mfa_on_login     = models.BooleanField('Require MFA on Login',     default=False,
+        help_text="Require MFA when you log in")
+    require_mfa_on_payment   = models.BooleanField('Require MFA on Payment',   default=False,
+        help_text="Require MFA when you make a payment")
+
+    
+    def get_keys(self):
+        return [f.name for f in self._meta.get_fields()]
+    
+    def set(self, key, value):
+        if (key == 'id'): return
+        if (key not in self.get_keys()): return
+
+        setattr(self, key, value)
+        self.save()
+    
+    def serialize(self):
+        # Gets all the fields of the model and returns them as a dictionary
+        # { key: value, name: value, help_text: value }
+        formated = {}
+
+        for key in self.get_keys():
+            if (key == 'id' or key == 'member'): continue
+            field = self._meta.get_field(key)
+
+            formated[key] = {
+                'value': getattr(self, key),
+                'name': field.__dict__.get('verbose_name'),
+                'help_text': field.__dict__.get('help_text')
+            }
+    
+        return formated
+
+
 # Create your models here.
 class Member(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -27,6 +76,7 @@ class Member(AbstractUser):
     profile_pic = models.ImageField("Profile Photo", upload_to='member', blank=True)
     description = models.TextField("Description", blank=True)
     stripe_customer = models.CharField("Stripe Customer ID", max_length=100, blank=True)
+    security_preferences = models.OneToOneField("SecurityPreferences", on_delete=models.CASCADE, default=SecurityPreferences.objects.create())
     country = CountryField()
     time_zone = TimeZoneField(default="UTC")
     tfa_secret = models.CharField(
@@ -114,7 +164,8 @@ class Member(AbstractUser):
         self.is_over_18()
         self.cased_username = self.username.lower()
 
-        super(Member, self).save(*args, **kwargs)
+        # -- Save the user
+        super().save(*args, **kwargs)
 
         
 
@@ -183,5 +234,3 @@ class LoginHistory(models.Model):
             "date": self.date,
             "method": self.method,
         }
-    
-
