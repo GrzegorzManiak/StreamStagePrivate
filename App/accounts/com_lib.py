@@ -189,3 +189,35 @@ def required_data(required):
             return view_func(request, data_object, *args, **kwargs)
         return wrapper
     return decorator
+
+
+
+"""
+    :name: required_headers
+    :description: This function is used to check if the user has
+                    provided all of the required headers accounting 
+                    for the method that they are using
+    :param required: A list of the required headers
+"""
+def required_headers(required):
+    def decorator(view_func):
+        @wraps(view_func)
+        def wrapper(request, *args, **kwargs):
+            # -- Check if the user has provided all of the required data
+            not_provided = []
+            data_object = {}
+
+            for data in required:
+                if data not in request.headers:
+                    not_provided.append(data)
+
+                else: data_object[data] = request.headers[data]
+
+            # -- Check if we have any data that was not provided
+            if len(not_provided) > 0:
+                return invalid_response('You did not provide the following required headers: {}'.format(', '.join(not_provided)))
+            
+            # -- Call the original function with the request object
+            return view_func(request, data_object, *args, **kwargs)
+        return wrapper
+    return decorator

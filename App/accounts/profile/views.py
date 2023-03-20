@@ -151,7 +151,7 @@ def security_info(request, data):
 
 @api_view(['POST'])
 @authenticated()
-def update_profile_view(request):
+def update_profile_view(request):    
 
     # -- Get the data
     data = request.data

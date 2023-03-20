@@ -43,10 +43,13 @@ def send_template_email(
     # -- Get the template
     match template_id:
         case 'password_change':
-            subject = "Password change"
-            body = """
-                <h1>Password change</h1>
-            """
+            subject = "Password changed"
+            base_context['title'] = "Password changed"
+            base_context['description'] = "You have successfully changed your password"
+            body = render_to_string(
+                'email/password_change.html',
+                base_context
+            )
 
         case 'oauth_account_linked':
             subject = "Oauth account linked"
@@ -66,10 +69,16 @@ def send_template_email(
                 base_context
             )
 
-        case 'login':
+        case 'login_success':
             subject = "Login"
             body = """
                 <h1>Login</h1>
+            """
+
+        case 'login_failed':
+            subject = "Login failed"
+            body = """
+                <h1>Login failed</h1>
             """
 
         case 'mfa_enabled':
