@@ -13,10 +13,9 @@ from django.conf import settings
 import time
 import secrets
 
+from accounts.email.verification import send_email, add_key
 from accounts.oauth.oauth import link_oauth_account, get_oauth_data
-from accounts.email.verification import send_email
 from accounts.models import Member
-from accounts.email.verification import add_key
 
 temp_users = {}
 

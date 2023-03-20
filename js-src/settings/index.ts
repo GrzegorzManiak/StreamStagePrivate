@@ -40,6 +40,7 @@ export const configuration = {
     remove_oauth: get_or_error<string>(config, 'data-remove-oauth'),
     extend_session: get_or_error<string>(config, 'data-extend-session'),
     close_session: get_or_error<string>(config, 'data-close-session'),
+    change_email: get_or_error<string>(config, 'data-change-email'),
 
     setup_mfa: get_or_error<string>(config, 'data-mfa-setup'),
     verify_mfa: get_or_error<string>(config, 'data-mfa-verify'),

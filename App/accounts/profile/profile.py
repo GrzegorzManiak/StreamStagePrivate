@@ -19,7 +19,8 @@ from django.core.validators import validate_email
 from django_countries.fields import CountryField
 from timezone_field import TimeZoneField
 
-from accounts.create.create import username_taken
+from accounts.email.verification import add_key, send_email
+from accounts.create.create import email_taken, username_taken
 from accounts.models import Member
 from StreamStage.mail import send_template_email
 
@@ -33,8 +34,7 @@ import time
     :description: This is a username validator
         -- Must be between 3 and 20 characters
         -- Must Start with a letter
-        -- Must only contain letters, numbers, and underscores
-        -- Must not contain two underscores in a row
+        def callback(data)
         -- Must not end with an underscore
         -- Must not contain spaces
     :param username: str - The username to validate
@@ -412,3 +412,64 @@ def revoke_pat(token, member) -> list[bool, str]:
     temporary_pats.remove(pat_data[0])
 
     return [True, 'Token revoked successfully']
+
+
+
+"""
+    :name: change_email
+    :description: This function is responsible for changing the email
+    :param member: Member - The member to change the email for
+    :param new_email: str - The new email to change to
+    :return: (string, string, string) - A tuple containing the new key
+        or none if it failed, and a string which is the reason why it was not changed
+"""
+def change_email(
+    member: Member,
+    new_email: str,
+) -> tuple[bool, str] or tuple[str, str, str]:
+    new_email = new_email.lower()
+
+    # -- Check if the email is already in use
+    if email_taken(new_email): return (False, 'Email already in use')
+    cur_email = member.email
+
+    # -- Begin the transaction
+    try:
+        def callback(data):
+            
+            # -- Check if the email was taken
+            if email_taken(new_email):
+                raise Exception('Email already in use, Unlucky')
+            
+            # -- Check if the email was changed
+            if member.email != cur_email:
+                raise Exception('Email changed mid another email change')
+            
+            # -- Inform the user that the email was changed
+            if member.security_preferences.email_on_email_change:
+                send_template_email(member, 'email_change')
+
+            
+            # -- Change the email
+            member.email = new_email.lower()
+            member.save()
+
+            
+        keys = add_key(
+            member,
+            new_email,
+            callback,
+        )
+
+        # -- Send the email
+        res = send_email(keys[0])
+
+        # -- Check if the email was sent
+        if res[0] == False:
+            return (False, res[1])
+
+        # -- Return the keys
+        return (keys[0], keys[1], keys[2])
+
+    except Exception as e:
+        return (False, 'An error occurred while trying to change the email')

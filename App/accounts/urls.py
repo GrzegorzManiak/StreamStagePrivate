@@ -15,7 +15,8 @@ from .profile import (
     update_profile_view, 
     remove_oauth, 
     extend_session,
-    close_session
+    close_session,
+    change_email_view
 )
 from .mfa import (
     setup_mfa,
@@ -83,4 +84,5 @@ urlpatterns = [
     path('api/email/resend/', resend_key_view, name='resend_key'),
     path('email/verify/', verify_key_view, name='verify_key'),
     path('api/email/recent/', check_if_verified_recently_view, name='recent_key'),
+    path('api/email/change/', change_email_view, name='change_email'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

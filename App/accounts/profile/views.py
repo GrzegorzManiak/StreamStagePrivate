@@ -21,6 +21,7 @@ from .profile import (
     extend_pat, 
     get_pat, 
     revoke_pat, 
+    change_email,
     PAT_EXPIRY_TIME
 )
 from StreamStage.secrets import STRIPE_PUB_KEY
@@ -46,6 +47,7 @@ def profile(request):
             'extend_session': reverse_lazy('extend_session'),
             'close_session': reverse_lazy('close_session'),
             'setup_mfa': reverse_lazy('setup_mfa'),
+            'change_email': reverse_lazy('change_email'),
             'verify_mfa': reverse_lazy('verify_mfa'),
             'disable_mfa': reverse_lazy('disable_mfa'),
             'add_payment': reverse_lazy('add_payment'),
@@ -223,3 +225,23 @@ def close_session(request, data):
     pat = revoke_pat(data['token'], request.user)
     if pat[0] == False: return invalid_response(pat[1])
     return success_response('Session closed successfully')
+
+
+
+@api_view(['POST'])
+@authenticated()
+@required_data(['token', 'email'])
+def change_email_view(request, data):
+    
+    # -- Check if the token is valid
+    pat = validate_pat(data['token'], request.user)
+    if pat[0] == False: return invalid_response(pat[1])
+
+    res = change_email(request.user, data['email'])
+    if res[0] == False: return invalid_response(res[1])
+
+    # -- Return success
+    return success_response('Email changed successfully', {
+        'resend_key': res[1],
+        'verify_key': res[2],
+    })

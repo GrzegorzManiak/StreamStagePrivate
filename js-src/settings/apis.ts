@@ -290,6 +290,23 @@ export const start_subscription = async (
     );
 
 }
+
+
+/**
+ * @name change_email
+ * @param token - PAK token
+ * @param email - New email
+ * @returns Promise<VerifyAccessResponse>
+ * @description Change the email of the user (Sends verification code)
+ */
+export const change_email = async (
+    token: string,
+    email: string
+): Promise<VerifyAccessResponse> => base_request(
+    'POST',
+    configuration.change_email,
+    { token, email }
+);
     
 
 //

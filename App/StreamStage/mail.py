@@ -78,6 +78,12 @@ def send_template_email(
             body = """
                 <h1>Payment method removed</h1>
             """
+
+        case 'email_change':
+            subject = "Email change"
+            body = """
+                <h1>Email change</h1>
+            """
             
 
     send_email(email, subject, body)

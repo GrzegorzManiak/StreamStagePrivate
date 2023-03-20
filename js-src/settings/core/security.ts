@@ -6,7 +6,7 @@ import { create_toast } from '../../toasts';
 
 import create_login_history from '../elements/history';
 import mfa from "../elements/mfa";
-import { check_email_verification, close_session, extend_session, get_security_info, remove, send_verification, update_profile } from "../apis";
+import { change_email, check_email_verification, close_session, extend_session, get_security_info, remove, send_verification, update_profile } from "../apis";
 import { create_preference_toggles } from "../elements/security";
 import { password_monitor, rp_password_monitor } from "../../authentication/core/validation";
 
@@ -411,7 +411,36 @@ function fill_data(
     const CE_ID = 'change-email-container',
         ce_elm = panel.querySelector(`#${CE_ID}`) as HTMLDivElement;
 
-    console.log(ce_elm);
+    // #email, #change-email
+    const email = ce_elm.querySelector('#email') as HTMLInputElement,
+        change_email_btn = ce_elm.querySelector('#change-email') as HTMLButtonElement,
+        current_email = ce_elm.querySelector('.current-email') as HTMLParagraphElement;
+    current_email.innerText = 'Your current email is ' + data.email;
+
+    // -- Set the button
+    change_email_btn.onclick = async () => {
+        // -- Attach the spinner
+        const stop_spinner = attach(change_email_btn),
+            new_email = email.value;
+
+
+        // -- Send the request, make sure the email is valid
+        const res = await change_email(access_key, new_email);
+        if (res.code !== 200) {
+            stop_spinner();
+            return create_toast('error', 'Oops, there appears to be an error', res.message);
+        }
+        create_toast('success', 'Success', 'A verification email has been sent to your new email address');
+
+
+        const data = (res as VerifyAccessSuccess).data;
+        check_email_verification(() => data.verify_key, 3000, 15 * 60 * 1000,
+        'Your email has been changed successfully!').then((success) => {
+            stop_spinner();
+            if (!success) create_toast('error', 'Oops, there appears to be an error', 'Your email has not been changed');
+            else current_email.innerText = 'Your current email is ' + new_email;
+        });
+    }
 
 
 
