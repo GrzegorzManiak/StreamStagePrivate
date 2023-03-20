@@ -279,9 +279,23 @@ function fill_data(
     access_key: string
 ) {
     // -- Get the timer panel
-    const timer_panel = document.querySelector('#security-timer');
+    const timer_panel = document.querySelector('#security-timer'),
+        security_items = document.querySelector('.security-items');
+
     timer_panel.setAttribute('data-panel-status', '');
-    
+    security_items.setAttribute('data-panel-status', '');
+
+    add_callback((panel_type: PanelType) => {
+        if (panel_type !== 'security') security_items.setAttribute('data-panel-status', 'hidden');
+        else security_items.setAttribute('data-panel-status', '');
+    });
+    const pods = security_items.querySelectorAll('[data-sec-pod]') as NodeListOf<HTMLElement>;
+    pods.forEach((pod) => {
+        const pod_type = pod.getAttribute('data-sec-pod');
+        pod.addEventListener('click', () => open_panel(pod_type as PanelType));
+    });
+
+
     // -- Get the security panel
     const security_panel = document.querySelector('#security-panel');
     security_panel.setAttribute('data-panel-status', 'hidden');

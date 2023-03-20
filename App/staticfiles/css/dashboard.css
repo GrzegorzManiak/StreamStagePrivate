@@ -71,6 +71,8 @@
 [data-pod='broadcaster-request'] .side-panel-pod-icon { background-color: #4de09b; }
 [data-pod='venues'] .side-panel-pod-icon { background-color: #4de09b; }
 
+.sec-pod .side-panel-pod-icon  { background-color: #ff6a6a; }
+.sec-pod { width: 45%; }
 
 /*  
     Active pod
