@@ -34,7 +34,7 @@ class Event(models.Model):
     contributors = models.ManyToManyField(get_user_model(), related_name="event_contributors", blank=True)
     approved = models.BooleanField("Approved", default=False)
 
-    ticket_price = models.DecimalField("Ticket Price", validators=[MinValueValidator(0), MaxValueValidator(999)], decimal_places=2, max_digits=10)
+    ticket_price = models.DecimalField("Ticket Price", validators=[MinValueValidator(0), MaxValueValidator(999)], decimal_places=2, max_digits=10, blank=True)
 
     def get_absolute_url(self):
         return reverse('event_view', args=[self.event_id])
