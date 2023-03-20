@@ -130,7 +130,7 @@ def get_token(user) -> list[str, str]:
         and an explanation
 """
 def verify_temp_otp(user, otp) -> list[bool, str]:
-   
+
     token_data = get_token(user)
     if token_data[0] == None: return [False, token_data[1]]
     if not pyotp.TOTP(token_data[0]).verify(otp):

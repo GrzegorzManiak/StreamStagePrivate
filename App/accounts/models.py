@@ -1,5 +1,10 @@
 import uuid
+import json
 import requests
+import datetime
+import random
+import string
+import pyotp
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
@@ -15,7 +20,7 @@ from django.core.files.temp import NamedTemporaryFile
 from .validation import check_unique_broadcaster_handle
 
 from StreamStage.secrets import STRIPE_SECRET_KEY
-
+stripe.api_key = STRIPE_SECRET_KEY
 
 class SecurityPreferences(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -86,18 +91,10 @@ class Member(AbstractUser):
     security_preferences = models.OneToOneField("SecurityPreferences", on_delete=models.CASCADE, default=None, null=True)
     country = CountryField(default='Ireland')
     time_zone = TimeZoneField(default="Europe/Dublin")
-    tfa_secret = models.CharField(
-        "tfa_secret", 
-        max_length=100,
-        blank=True,
-        null=True,
-    )
-
-    # Access Level for member. 0 for basic. See list of access level codes for other levels.
+    tfa_secret = models.CharField("tfa_secret", max_length=100, blank=True, null=True)
+    tfa_recovery_codes = models.TextField("tfa_recovery_codes", blank=True, null=True)
     access_level = models.SmallIntegerField("Access Level", default=0)
-    # Maximum parallel devices for a Member to watch on
     max_keys = models.SmallIntegerField("Max Devices", default=1)
-    # Is Member more than a basic member?
     is_streamer = models.BooleanField("Streamer Status", default=False)
 
     USERNAME_FIELD = 'username'
@@ -106,49 +103,61 @@ class Member(AbstractUser):
     def __str__(self):
       return str(self.username)
 
-    def mask_email(self):
-        keep = 2
-        email = self.email.split('@')
 
-        # If the first part of the email is less than 3 characters, return the email
+    def mask_email(self, keep: int = 2):
+        """
+            Masks an email address, keeping
+            the first x characters and the last
+            x characters
+        """
+        email = self.email.split('@')
         if len(email[0]) < keep:
             return "****@" + email[1]
-
-        # keep x from the start and the end
         return email[0][:keep] + "****" + email[0][-keep:] + "@" + email[1]
 
+
+
     def is_over_18(self):
-        import datetime
-        if (self.date_of_birth == None):
-            self.over_18 = False
+        """
+            Checks if a user is over 18, sets a flag
+            if so
+        """
+        if (self.date_of_birth == None): self.over_18 = False
         elif (datetime.date.today() - self.date_of_birth) > datetime.timedelta(days=18*365):
             self.over_18 = True
 
-    def add_profile_pic_from_url(self, url):
+
+
+    def add_profile_pic_from_url(self, url: str):
+        """
+            Adds a profile picture to a user
+            from a url, and saves it to the
+            media folder
+        """
         try:
             img_tmp = NamedTemporaryFile(delete=True)
             img_content = requests.get(
-                url,
-                headers={
+                url, headers={
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36'
                 }
             ).content
 
             img_tmp.write(img_content)
-            img_tmp.flush()
-            
+            img_tmp.flush()   
             img = File(img_tmp, name=f'profile_pictures/{self.id}.jpg')
             self.profile_pic = img
-
             self.save()
+        
+        except Exception as e: return False
+        
 
-        
-        except Exception as e:
-            print(e)
-            return False
-        
+
     def get_stripe_customer(self):
-        stripe.api_key = STRIPE_SECRET_KEY
+        """
+            Gets the stripe customer id for a
+            given user, and creates it if 
+            the user doesn't have one
+        """
 
         # -- Check if the user has a stripe customer id
         if self.stripe_customer == "":
@@ -165,7 +174,66 @@ class Member(AbstractUser):
         customer = stripe.Customer.retrieve(self.stripe_customer)
         if customer: return customer
         return None
+
+
+
+    def set_recovery_codes(self):
+        """
+            Generates 6 Alpha-Numeric recovery
+            codes and saves them to the user
+        """
+        codes = []
+        for _i in range(6):
+            codes.append(''.join(random.choices(string.ascii_letters + string.digits, k=6)))
+        self.tfa_recovery_codes = json.dumps(codes)
+        self.save()
+
+
+
+    def get_recovery_codes(self):
+        """
+            Returns the recovery codes as a list
+        """
+        if self.tfa_recovery_codes == None: return None
+        return json.loads(self.tfa_recovery_codes)
     
+
+
+    def remove_recovery_code(self, code: str):
+        """
+            Removes a recovery code from the user
+            when the user uses it.
+        """
+        codes = self.get_recovery_codes()
+        codes.remove(code)
+        self.tfa_recovery_codes = json.dumps(codes)
+        self.save()
+    
+
+
+    def verify_mfa(self, code: str):
+        """
+            Verify the code given by the user,
+            it also checks if the code is a
+            recovery code, if it is, it removes
+            the recovery code from the user.
+        """
+        # -- Check if the user has a tfa secret
+        if self.tfa_secret == None: return False
+
+        # -- Get the recovery codes
+        recovery_codes = self.get_recovery_codes()
+        for recovery_code in recovery_codes:
+            if recovery_code != code: break
+
+            # -- Remove the recovery code
+            self.remove_recovery_code(recovery_code)
+            return True
+        
+        # -- Verify the code
+        return pyotp.TOTP(self.tfa_secret).verify(code)
+
+
 
     def save(self, *args, **kwargs):
         self.is_over_18()

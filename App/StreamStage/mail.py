@@ -2,6 +2,7 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from django.template.loader import render_to_string
 from django.conf import settings
+from django.apps import apps
 import uuid
 
 def send_email(to: str, subject: str, body: str):    
@@ -25,6 +26,9 @@ def send_template_email(
     template_id,
     data = None
 ): 
+    # -- Should we log the email?
+    log = True
+
     # -- Generate a new uuid
     email_id = str(uuid.uuid4())
     if template_id == 'verification':
@@ -48,6 +52,7 @@ def send_template_email(
     # -- Get the template
     match template_id:
         case 'welcome':
+            log = False
             subject = "Welcome to StreamStage"
             base_context['title'] = "Welcome"
             base_context['description'] = "You have successfully registered an account"
@@ -102,6 +107,7 @@ def send_template_email(
             )
 
         case 'verification':
+            log = False
             subject = "Email verification"
             base_context['title'] = "Email verification"
             base_context['description'] = "Please verify access to your email address"
@@ -113,16 +119,19 @@ def send_template_email(
                 
 
         case 'mfa_enabled':
+            log = False
             subject = "MFA enabled"
             body = """
                 <h1>MFA enabled</h1>
             """
+            print(data)
 
         case 'mfa_disabled':
             subject = "MFA disabled"
             body = """
                 <h1>MFA disabled</h1>
             """
+            print(data)
 
         case 'payment_method_added':
             subject = "Payment method added"
@@ -141,6 +150,15 @@ def send_template_email(
             body = """
                 <h1>Email change</h1>
             """
-            
+
+    # -- Add the email to the database
+    sent_email = apps.get_model('StreamStage', 'SentEmail')
+    if log: sent_email.objects.create(
+        email=email,
+        subject=subject,
+        body=body,
+        email_id=email_id
+    )
+
     # -- Send out the email
     send_email(email, subject, body)

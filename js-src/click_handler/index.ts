@@ -201,10 +201,7 @@ export function handle_tfa_input(
     const check = () => {
         // -- Check if the code is valid
         const code = Array.from(parent_elm.querySelectorAll('input')).map((i) => i.value)
-        if (code.length === inputs) {
-            if (code.every((i) => !isNaN(parseInt(i)))) complete(code.join(''));
-            else invalid();
-        }
+        if (code.length === inputs) complete(code.join(''));
         else invalid();
     };
 
@@ -219,8 +216,7 @@ export function handle_tfa_input(
         input.setAttribute('autocorrect', 'off');
         input.setAttribute('autocapitalize', 'off');
         input.setAttribute('spellcheck', 'false');
-        input.setAttribute('pattern', '[0-9]*');
-        input.setAttribute('inputmode', 'numeric');
+        input.setAttribute('pattern', '[0-9a-zA-Z]*');
 
         input.style.caretColor = 'transparent';
         input.style.width = '3rem';
@@ -253,10 +249,6 @@ export function handle_tfa_input(
                     if (next2) next2.focus();
                     return;
             }
-
-            // -- Check if the value is a number
-            if (isNaN(parseInt(e.key)))
-                return elm.value = '';
             
             // -- Set the value to the first character
             elm.value = e.key;

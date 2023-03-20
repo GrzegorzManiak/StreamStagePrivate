@@ -102,8 +102,7 @@ def send_verification(request):
             'Please provide a MFA code')
 
         # -- Check if the mfa code is valid
-        totp = pyotp.TOTP(request.user.tfa_secret)
-        if totp.verify(mfa_code) == False: return invalid_response(
+        if request.user.verify_mfa(mfa_code) == False: return invalid_response(
             'Sorry, but it looks like you have provided an invalid MFA code. Please try again.')
         
         # -- Send it back to the user
