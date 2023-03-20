@@ -228,7 +228,7 @@ async function mfa_click_handler(
  * @name open_security_panel
  * @param stop: () => void - A function that stops the spinner
  *                           eg the mfa button spinner
- * @param access_key: string - The access key of the user (this is the 
+ * @param access_key: string - The access key of the user s(this is the 
  *                             key that the user verified their details for,
  *                             it is used to get sensitive information)
  * @returns Promise<void>
@@ -256,6 +256,7 @@ async function open_security_panel(stop: () => void, access_key: string) {
     for (let sec_panel in security_panels) {
         show_pod(security_panels[sec_panel] as PanelType);
     }
+
     open_panel('security-verified');
 }
 
@@ -527,8 +528,6 @@ function fill_data(
         linked_accounts.innerHTML = '';
         login_history.innerHTML = '';
 
-        show_pod('security');
-        open_panel('security');
         clearInterval(timer_interval);
         clearInterval(data_interval);
 
@@ -540,7 +539,9 @@ function fill_data(
         for (let sec_panel in security_panels) {
             hide_pod(security_panels[sec_panel] as PanelType, 'security');
         } 
-    
+
+        show_pod('security');
+        open_panel('security');
     }
 
 
