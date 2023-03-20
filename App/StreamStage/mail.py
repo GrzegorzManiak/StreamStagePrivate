@@ -116,22 +116,33 @@ def send_template_email(
                 base_context
             )
         
-                
-
         case 'mfa_enabled':
             log = False
             subject = "MFA enabled"
-            body = """
-                <h1>MFA enabled</h1>
-            """
-            print(data)
+            base_context['title'] = "MFA enabled"
+            base_context['description'] = "You have successfully enabled MFA on your account"
+            body = render_to_string(
+                'email/mfa_enabled.html',
+                base_context
+            )
 
         case 'mfa_disabled':
             subject = "MFA disabled"
-            body = """
-                <h1>MFA disabled</h1>
-            """
-            print(data)
+            base_context['title'] = "MFA disabled"
+            base_context['description'] = "You have successfully disabled MFA on your account"
+            body = render_to_string(
+                'email/mfa_disabled.html',
+                base_context
+            )
+
+        case 'mfa_recovery':
+            subject = "MFA recovery"
+            base_context['title'] = "MFA recovery"
+            base_context['description'] = "You have used one of your recovery codes"
+            body = render_to_string(
+                'email/mfa_recovery.html',
+                base_context
+            )
 
         case 'payment_method_added':
             subject = "Payment method added"

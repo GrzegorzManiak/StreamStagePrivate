@@ -33,17 +33,11 @@ def email(request):
         'user': {
             'username': 'Greg',
         },
-        'data': {
-            'id': '1234',
-            'oauth_type': 'Google',
-            'oauth_id': '1234',
-            'last_used': '2021-01-01',
-            'added': '2021-01-01'
-        }
+        'data': ['aJs3dD', '7jdG3d', '3dG3d', 'DF23ad', 'Sfg23H']
     }
 
     return render(
         request, 
-        'email/login_failed.html', 
+        'email/mfa_disabled.html', 
         context
     )

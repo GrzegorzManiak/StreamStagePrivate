@@ -41,18 +41,21 @@
     </style>
 
     <div class='container'>
-        <p>Hey {{ user.cased_username }}!</p>
+        <p>Hi {{ user.cased_username }},</p>
         <p>
-            Thank you for registering on <a href='https://StreamStage.co'>StreamStage.co</a>! We're excited to have you here.
+            You have <strong>disabled</strong> two factor authentication on your account.
+            If this action was not performed by you, please reset your password immediately.
         </p>
-
+    
         <a 
-            href='https://streamstage.co/faq'
+            href='https://me.streamstage.co/reset-password'
             class='btn'
-        >Common questions</a>
-        
+        >Reset Password</a>
+
         <p>
-            If you have any questions, please feel free to contact us <a href='mailto:{{ support_email }}'>here</a>.
+            If you did not request this, please reset your password immediately, if any 
+            issues arise please contact us at <a href='mailto:{{ support_email }}'>here</a>,
+            Please provide the above information or the email id.
         </p>
     </div>
 {% endblock %}

@@ -5,6 +5,7 @@ import datetime
 import random
 import string
 import pyotp
+import stripe
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
@@ -13,13 +14,13 @@ from django_countries.fields import CountryField
 from timezone_field import TimeZoneField
 
 from .oauth import OAuthTypes
-import stripe
 
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from .validation import check_unique_broadcaster_handle
 
 from StreamStage.secrets import STRIPE_SECRET_KEY
+from StreamStage.mail import send_template_email
 stripe.api_key = STRIPE_SECRET_KEY
 
 class SecurityPreferences(models.Model):
@@ -225,9 +226,13 @@ class Member(AbstractUser):
         recovery_codes = self.get_recovery_codes()
         for recovery_code in recovery_codes:
             if recovery_code != code: break
-
+            
             # -- Remove the recovery code
             self.remove_recovery_code(recovery_code)
+            codes_left = len(self.get_recovery_codes())
+            if self.security_preferences.email_on_mfa_change:
+                send_template_email(self, 'mfa_recovery', codes_left)
+
             return True
         
         # -- Verify the code
