@@ -5,7 +5,7 @@ from django_countries.fields import CountryField
 from django.core.validators import MaxValueValidator, MinValueValidator 
 
 from accounts.models import Broadcaster
-
+from datetime import datetime
 import uuid
 
 # Event/Broadcaster Category Model
@@ -37,6 +37,8 @@ class Event(models.Model):
     contributors = models.ManyToManyField(get_user_model(), related_name="event_contributors", blank=True)
     approved = models.BooleanField("Approved", default=False)
 
+    # Event
+
     def get_absolute_url(self):
         return reverse('event_view', args=[self.event_id])
     
@@ -44,21 +46,9 @@ class Event(models.Model):
         return self.title
     
     def short_description(self):
-        return self.description[:200]
+        return self.description[:250]
     
-    def get_average_rating(self, reviews_in = None):
-        avg_rating = 0
-
-        reviews = reviews_in or self.get_reviews()
-        count = reviews.count()
-
-        if count > 0:
-            for review in reviews:
-                avg_rating += review.rating
-            
-            avg_rating /= count
-        
-        return round(avg_rating,1)
+    # Media
 
     def get_cover_picture(self):
         media = EventMedia.objects.filter(event=self).all()
@@ -74,12 +64,28 @@ class Event(models.Model):
     def get_media_count(self):
         return EventMedia.objects.filter(event=self).all().count()
 
+    # Reviews
+
     def get_reviews(self):
         return EventReview.objects.filter(event=self).all()
     
     def get_review_count(self):
         return EventReview.objects.filter(event=self).all().count()
+    
+    def get_average_rating(self, reviews_in = None):
+        avg_rating = 0
 
+        reviews = reviews_in or self.get_reviews()
+        count = reviews.count()
+
+        if count > 0:
+            for review in reviews:
+                avg_rating += review.rating
+            
+            avg_rating /= count
+        
+        return round(avg_rating,1)
+    
     def get_top_review(self, reviews_in = None):
         reviews = reviews_in or self.get_reviews()
 
@@ -89,13 +95,28 @@ class Event(models.Model):
             if review.rating > rating:
                 rating = review.rating
                 top_review = review
-        return top_review
+        return top_review.short_review
     
+    # Showings
+
     def get_showings(self):
         return EventShowing.objects.filter(event=self).all().order_by('time')
            
     def get_next_showing(self):
         return self.get_showings().first()
+               
+    def get_last_showing(self):
+        return self.get_showings().last()
+    
+    def get_num_upcoming_showings(self):
+        showings = []
+        for showing in self.get_showings():
+            if showing.time >= datetime.now(tz = showing.time.tzinfo):
+                showings.append(showing)
+        return len(showings)
+    
+    def get_showings_count(self):
+        return EventShowing.objects.filter(event=self).all().count()
 
 # Event Review Model
 class EventReview(models.Model):
@@ -117,10 +138,11 @@ class EventReview(models.Model):
         return self.body[:100]
     
     def short_review(self):
-        return self.body[:25]
+        self.body = self.body[:50]
+        return self
     
-    # def get_review_likes(self):
-    #     return EventReview.objects.filter(event=self).filter(review_id=self.review_id).count()
+    def get_review_likes(self):
+        return EventReview.objects.filter(event=self).filter(review_id=self.review_id).count()
     
     # def like(self):
     #     if EventReview.author == get_user_model():

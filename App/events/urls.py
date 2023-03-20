@@ -1,7 +1,8 @@
 from django.urls import path
 from .views import (event_create,
                     event_view,
-                    get_all_events,
+                    get_past_events,
+                    get_upcoming_events,
                     event_update,
                     event_delete,
                     review_create,
@@ -14,7 +15,8 @@ from .views import (event_create,
 
 urlpatterns = [
     # Events
-    path('', get_all_events, name='all_events'),
+    path('past/', get_past_events, name='past_events'),
+    path('upcoming/', get_upcoming_events, name='upcoming_events'),
     path('new/', event_create, name='event_new'),
     path('<slug:event_id>/', event_view, name='event_view'),
     path('<slug:event_id>/update/', event_update, name='event_update'),

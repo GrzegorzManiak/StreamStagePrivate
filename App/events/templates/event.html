@@ -53,10 +53,10 @@
 
                 <!-- Showings -->
                 <div class="row">
-                    <h4 class="my-4">Showings</h4>
+                    <h4 class="my-4 text-center">Showings</h4>
                     <div class="row">
-                        <h6 class="col-6">When?</h6>
-                        <h6 class="col-6">Where?</h6>
+                        <h6 class="col-6 sub-title"><b>When?</b></h6>
+                        <h6 class="col-6 sub-title"><b>Where?</b></h6>
                     </div>
 
                     <div class="row">
@@ -66,8 +66,10 @@
                         </div>
                         <div class="col-6">
                             <p>
-                            {% if showing.city %}
+                            {% if showing.venue and showing.city %}
                                 {{ showing.venue }} - {{ showing.city }}
+                            {% elif showing.city %}
+                                {{ showing.city }}
                             {% endif %}
                             </p>
                             <p>{{showing.country.name}}</p>

@@ -39,12 +39,19 @@ def event_view(request, event_id):
 
     return render(request, 'event.html', context)
 
-# Display All Events
-def get_all_events(request):
+# Display Past Events
+def get_past_events(request):
     context = {}
     context["events"] = Event.objects.all()
 
-    return render(request, "event_list.html", context)
+    return render(request, "event_list_past.html", context)
+
+# Display Upcoming Events
+def get_upcoming_events(request):
+    context = {}
+    context["events"] = Event.objects.all()
+
+    return render(request, "event_list_upcoming.html", context)
 
 def event_create(request):
     context = {}

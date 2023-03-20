@@ -106,9 +106,15 @@ header .accordion:focus {
     margin: .5em auto;
     text-align: center;
     color: #ffb25a;
-
 }
-
+.link-page-title a:hover, a:active{
+    background-color: #ffb25a;
+    color: #000000;
+    text-align: center;
+}
+.sub-title {
+    color: #ffb25a;
+}
 
 
 /***** Forms *****/
@@ -120,7 +126,13 @@ form > input {
 
 
 /***** Images *****/
-
+.banner_image{
+    max-height: auto;
+    margin: auto;
+    display: block;
+    max-width: 100%;
+    width: 1rem;
+}
 
 /***** Links *****/
 div > a {

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags%}
+
+{% block metadescription %}
+Past Events
+{% endblock %}
+{% block title %}
+Past Events | StreamStage
+{% endblock title %}
+
+{% block content %}
+<div class="row link-page-title page-title">
+    <a href="#" class="col-6">
+        <h1>Past Events</h1>
+    </a>
+    <a href="{% url 'upcoming_events' %}" class="col-6">
+        <h1>Upcoming Events</h1>
+    </a>
+</div>
+<div>
+
+    <!-- Listing Past Events (if has showings and showing dates have passed)-->
+    {% for event in events %}
+    {% if event.get_showings_count > 0 and event.get_num_upcoming_showings == 0 %}
+    {% include 'event_list.html' with event=event %}
+    {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}
