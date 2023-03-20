@@ -31,6 +31,9 @@ from .payments.views import (
     start_subscription
 )
 
+from .other import (
+    get_reviews
+)
 from .views import get_token, login, logout, register, validate_token
 
 from django.conf import settings
@@ -85,4 +88,7 @@ urlpatterns = [
     path('email/verify/', verify_key_view, name='verify_key'),
     path('api/email/recent/', check_if_verified_recently_view, name='recent_key'),
     path('api/email/change/', change_email_view, name='change_email'),
+
+    # -- Other
+    path('api/other/get_reviews', get_reviews, name='get_reviews'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

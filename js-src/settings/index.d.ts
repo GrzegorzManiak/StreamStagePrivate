@@ -8,6 +8,7 @@ export type PanelType =
     'help' |
     'purchases' |
     'events' |
+    'reviews' |
     'event-request' |
     'venues' |
     'security-preferences' |
@@ -115,6 +116,16 @@ interface SubscriptionIntent {
     }
 }
 
+export interface Review {
+    id: string,
+    event: string,
+    event_name: string,
+    rating: number,
+    body: string,
+    title: string,
+    created: number,
+    likes: number,
+}
   
 // 
 // Default Server response structure
@@ -156,3 +167,12 @@ export type GetCardsResponse = GetCardsSuccess | DefaultResponse;
 
 export type StartSubscriptionSuccess = DefaultResponseData & { data: SubscriptionIntent }
 export type StartSubscriptionResponse = StartSubscriptionSuccess | DefaultResponse;
+
+export type GetReviewsSuccess = DefaultResponseData & { data: {
+    reviews: Array<Review>,
+    total: number,
+    per_page: number,
+    page: number,
+    pages: number
+}}
+export type GetReviewsResponse = GetReviewsSuccess | DefaultResponse;

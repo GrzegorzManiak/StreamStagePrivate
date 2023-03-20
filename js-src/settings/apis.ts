@@ -1,6 +1,6 @@
 import { create_toast } from "../toasts";
 import { configuration } from "./";
-import { AddCardResponse, Card, DefaultResponse, DefaultResponseData, GetCardsResponse, SecurityInfoResponse, StartSubscriptionResponse, SubscriptionMethod, VerifyAccessResponse } from "./index.d";
+import { AddCardResponse, Card, DefaultResponse, DefaultResponseData, GetCardsResponse, GetReviewsResponse, SecurityInfoResponse, StartSubscriptionResponse, SubscriptionMethod, VerifyAccessResponse } from "./index.d";
 
 export async function base_request (
     mehod: string,
@@ -306,6 +306,23 @@ export const change_email = async (
     'POST',
     configuration.change_email,
     { token, email }
+);
+
+
+/**
+ * @name get_reviews
+ * @param filter - Filter
+ * @param sort - Sort
+ * @param page - Page
+ */
+export const get_reviews = async (
+    sort: 'created' | 'rating' | 'likes',
+    order: 'asc' | 'desc',
+    page: number
+): Promise<GetReviewsResponse> => base_request(
+    'POST',
+    configuration.get_reviews,
+    { sort, order, page }
 );
     
 

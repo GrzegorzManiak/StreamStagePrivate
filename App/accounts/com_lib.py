@@ -174,11 +174,19 @@ def required_data(required):
             not_provided = []
             data_object = {}
 
-            for data in required:
-                if data not in request.data:
-                    not_provided.append(data)
+            if request.method == 'GET':
+                for data in required:
+                    if data not in request.GET:
+                        not_provided.append(data)
 
-                else: data_object[data] = request.data[data]
+                    else: data_object[data] = request.GET[data]
+            
+            else: 
+                for data in required:
+                    if data not in request.data:
+                        not_provided.append(data)
+
+                    else: data_object[data] = request.data[data]
 
             # -- Check if we have any data that was not provided
             if len(not_provided) > 0:

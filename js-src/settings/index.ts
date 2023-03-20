@@ -4,6 +4,7 @@ import { create_toast } from '../toasts';
 import { manage_payments_panel } from './core/payments';
 import { manage_subscription_panel } from './core/subscription';
 import { manage_profile_panel } from './core/profile';
+import { manage_reviews_panel } from './core/reviews';
 
 export function get_or_error<e>(element: HTMLElement, attribute: string): e {
     const value = element.getAttribute(attribute);
@@ -51,6 +52,7 @@ export const configuration = {
     remove_payment: get_or_error<string>(config, 'data-remove-payment'),
 
     start_subscription: get_or_error<string>(config, 'data-start-subscription'),
+    get_reviews: get_or_error<string>(config, 'data-get-reviews'),
 }
 
 
@@ -70,3 +72,6 @@ if (subscription_panel) manage_subscription_panel(subscription_panel);
 
 const profile_panel = get_pod('profile');
 if (profile_panel) manage_profile_panel(profile_panel);
+
+const reviews_panel = get_pod('reviews');
+if (reviews_panel) manage_reviews_panel(reviews_panel);

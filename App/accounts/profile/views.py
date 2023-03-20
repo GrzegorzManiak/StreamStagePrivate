@@ -54,6 +54,7 @@ def profile(request):
             'get_payments': reverse_lazy('get_payments'),
             'remove_payment': reverse_lazy('remove_payment'),
             'start_subscription': reverse_lazy('start_subscription'),
+            'get_reviews': reverse_lazy('get_reviews'),
         },
         'stripe': request.user.get_stripe_customer(),
         'stripe_key': STRIPE_PUB_KEY,

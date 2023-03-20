@@ -1,0 +1,1 @@
+from .reviews import get_reviews

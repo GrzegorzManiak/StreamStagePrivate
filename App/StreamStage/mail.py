@@ -164,11 +164,20 @@ def send_template_email(
 
     # -- Add the email to the database
     sent_email = apps.get_model('StreamStage', 'SentEmail')
+    
+    # -- Check if the 'member' has an id
+    member_id = None
+    if isinstance(member, dict):
+        if 'id' in member:
+            member_id = member['id']
+        else: member_id = None
+
     if log: sent_email.objects.create(
         email=email,
         subject=subject,
         body=body,
-        email_id=email_id
+        email_id=email_id,
+        member_id=member_id
     )
 
     # -- Send out the email

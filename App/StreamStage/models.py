@@ -5,6 +5,7 @@ class SentEmail(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     email_id = models.UUIDField(default=uuid.uuid4, editable=False)
+    member_id = models.UUIDField(null=True, blank=True)
     email = models.EmailField()
     subject = models.CharField(max_length=100)
     body = models.TextField()
