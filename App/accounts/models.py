@@ -1,4 +1,5 @@
 import datetime
+from datetime import timezone
 import uuid
 import requests
 
@@ -86,36 +87,22 @@ class Member(AbstractUser):
         except Exception as e:
             print(e)
             return False
-        
-    def get_membership(self):
-        return PremiumMembershipStatus.objects.filter(member=self).first()
-    
-    def has_membership(self):
-        membership = self.get_membership()
-
-        if membership == None:
-            return False
-        
-        return membership.is_valid()
 
     def save(self, *args, **kwargs):
         self.is_over_18()
         self.cased_username = self.username.lower()
         super(Member, self).save(*args, **kwargs)
 
-class PremiumMembershipStatus(models.Model):
+class MembershipStatus(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
-    expires_on = models.DateTimeField("Membership Expiration Date")
-
-    def is_valid(self):
-        now = datetime.datetime.now()
-
-        remaining = (now - self.expires_on.date())
-            
-        return remaining.total_seconds() > 0
+    expires_on = models.DateTimeField("Membership Expiration Date", blank=True)
     
-
-
+    def is_valid(self):
+        return self.get_remaining_time().total_seconds() > 0
+    
+    def get_remaining_time(self):
+        return (self.expires_on.astimezone(timezone.utc) - datetime.datetime.now(tz=timezone.utc))
+    
 # Broadcaster - entity that controls events/streams
 class Broadcaster(models.Model):
     handle = models.CharField("Broadcaster Handle", unique=True, primary_key=True, max_length=20, validators=[ check_unique_broadcaster_handle ])

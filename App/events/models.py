@@ -13,6 +13,7 @@ class Category(models.Model):
     name = models.CharField("Category Name", max_length=48)
     description = models.TextField("Brief Description", max_length=256)
     splash_photo = models.ImageField(upload_to="events")
+    hex_color = models.CharField(max_length=6, default="FFFFFF")
 
     class Meta:
         verbose_name = 'Category'
@@ -32,6 +33,8 @@ class Event(models.Model):
     primary_media_idx = models.IntegerField(default=0) # Points to an item in the 'media' field - used as a cover photo 
     contributors = models.ManyToManyField(get_user_model(), related_name="event_contributors", blank=True)
     approved = models.BooleanField("Approved", default=False)
+
+    ticket_price = models.DecimalField("Ticket Price", validators=[MinValueValidator(0), MaxValueValidator(999)], decimal_places=2, max_digits=10)
 
     def get_absolute_url(self):
         return reverse('event_view', args=[self.event_id])
