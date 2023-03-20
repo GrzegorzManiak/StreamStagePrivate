@@ -41,20 +41,18 @@
     </style>
 
     <div class='container'>
-        <p>Hi {{ user.cased_username }},</p>
+        <p>Hey {{ user.cased_username }}!</p>
         <p>
-            Just making sure that you changed your password recently, if you did not
-            please reset your password immediately, if any issues arise please contact
-            us at <a href='mailto:{{ support_email }}'>here</a>.
+            Thank you for registering on <a href='https://StreamStage.co'>StreamStage.co</a>! We're excited to have you here.
         </p>
-        
-        <a 
-            href='https://me.streamstage.com/reset-password'
-            class='btn'
-        >Reset Password</a>
 
+        <a 
+            href='https://streamstage.com/faq'
+            class='btn'
+        >Common questions</a>
+        
         <p>
-            If you did change your password recently, you can ignore this email.
+            If you have any questions, please feel free to contact us <a href='mailto:{{ support_email }}'>here</a>.
         </p>
     </div>
 {% endblock %}

@@ -43,18 +43,25 @@
     <div class='container'>
         <p>Hi {{ user.cased_username }},</p>
         <p>
-            Just making sure that you changed your password recently, if you did not
-            please reset your password immediately, if any issues arise please contact
-            us at <a href='mailto:{{ support_email }}'>here</a>.
+            Oops, that's not the password chief! You recently tried to log in to
+            your account, but you've entered in the wrong password. But don't
+            worry, we've got your back, you can reset your password by clicking
+            the button below.
         </p>
-        
+
         <a 
             href='https://me.streamstage.com/reset-password'
             class='btn'
         >Reset Password</a>
 
         <p>
-            If you did change your password recently, you can ignore this email.
+            If this was not you, please change your password immediately and add
+            two-factor authentication to your account (if you haven't already),
+            Or if you're brave, you can just ignore this email.
+        </p>
+
+        <p>
+            If you have any questions, please feel free to contact us <a href='mailto:{{ support_email }}'>here</a>.
         </p>
     </div>
 {% endblock %}

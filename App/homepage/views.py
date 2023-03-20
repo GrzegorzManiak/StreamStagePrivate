@@ -44,6 +44,6 @@ def email(request):
 
     return render(
         request, 
-        'email/password_change.html', 
+        'email/login_failed.html', 
         context
     )

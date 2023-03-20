@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from accounts.com_lib import (
     authenticated, 
-    error_response, 
+    not_authenticated,
     invalid_response, 
     required_headers,
     success_response,
@@ -21,7 +21,7 @@ from accounts.oauth.oauth import format_providers
 
 
 @api_view(['GET'])
-@authenticated()
+@not_authenticated()
 def login(request):
     """
         This view is used to get a token
@@ -48,7 +48,7 @@ def login(request):
 
 
 @api_view(['GET'])
-@authenticated()
+@not_authenticated()
 def register(request):
     """
         This is the get method for the register view
@@ -75,7 +75,7 @@ def register(request):
 
 
 @api_view(['POST'])
-@authenticated()
+@not_authenticated()
 @required_headers(['Authorization'])
 def validate_token(request, headers):
     """
@@ -115,7 +115,7 @@ def validate_token(request, headers):
 
 
 @api_view(['POST'])
-@authenticated()
+@not_authenticated()
 @required_data(['emailorusername', 'password'])
 def get_token(request, data):
     """
@@ -152,7 +152,7 @@ def get_token(request, data):
 
 
 
-@api_view(['POST'])
+@api_view(['POST', 'GET'])
 @authenticated()
 def logout(request):
     """

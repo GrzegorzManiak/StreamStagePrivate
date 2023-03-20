@@ -41,20 +41,27 @@
     </style>
 
     <div class='container'>
-        <p>Hi {{ user.cased_username }},</p>
+        <p>Hey, you have requested access to a perform an action that requires email ownership verification.</p>
+
+        <a 
+            href='{{ data.url }}'
+            class='btn'
+        >Verify</a>
+
+        <a 
+            href='{{ data.local }}'
+            class='btn'
+        >Local</a>
+
         <p>
-            Just making sure that you changed your password recently, if you did not
-            please reset your password immediately, if any issues arise please contact
-            us at <a href='mailto:{{ support_email }}'>here</a>.
+            If this action was not performed by you, and you are not registered on our website, 
+            please ignore this email, If you are registered on our website, please contact us immediately
+            <a href='mailto:{{ support_email }}'>here</a>, or reset your password.
         </p>
-        
+
         <a 
             href='https://me.streamstage.com/reset-password'
             class='btn'
         >Reset Password</a>
-
-        <p>
-            If you did change your password recently, you can ignore this email.
-        </p>
     </div>
 {% endblock %}

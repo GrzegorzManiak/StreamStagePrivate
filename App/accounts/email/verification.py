@@ -9,7 +9,7 @@
 import requests
 import secrets
 import time
-from StreamStage.mail import send_email as sm
+from StreamStage.mail import send_template_email
 
 
 REMOVE_AFTER = 60 * 60 * 24 * 7
@@ -243,10 +243,13 @@ def send_email(
     if test: return (True, message)
     else: 
         try: 
-            sm(
+            send_template_email(
                 key['email'],
-                'Verification Link',
-                message,
+                'verification',
+                {
+                    'url': f'https://me.streamstage.co/email/verify?token={key["key"]}',
+                    'local': f'http://localhost:8000/accounts/email/verify?token={key["key"]}',
+                }
             )
             return (True, 'Email sent')
 

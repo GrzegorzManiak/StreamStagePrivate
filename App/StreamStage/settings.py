@@ -99,6 +99,7 @@ INSTALLED_APPS = [
     'stream',
     'applications',
     'homepage',
+    'StreamStage',
 
     # 3rd Party
     'crispy_forms',

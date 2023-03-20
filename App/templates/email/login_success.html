@@ -43,9 +43,14 @@
     <div class='container'>
         <p>Hi {{ user.cased_username }},</p>
         <p>
-            Just making sure that you changed your password recently, if you did not
-            please reset your password immediately, if any issues arise please contact
-            us at <a href='mailto:{{ support_email }}'>here</a>.
+            Just checking in, we noticed that <strong>"you"</strong> just logged in to your account,
+            and we wanted to make sure that it was <strong>"you"</strong> who's done this on purpose.
+        </p>
+
+        <p>
+            If this was not you, please change your password immediately and add
+            two-factor authentication to your account (if you haven't already), you 
+            can do this by clicking the button below.
         </p>
         
         <a 
@@ -54,7 +59,7 @@
         >Reset Password</a>
 
         <p>
-            If you did change your password recently, you can ignore this email.
+            If you have any questions, please feel free to contact us <a href='mailto:{{ support_email }}'>here</a>.
         </p>
     </div>
 {% endblock %}
