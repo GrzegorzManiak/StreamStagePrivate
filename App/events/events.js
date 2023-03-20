@@ -10,3 +10,11 @@
 // button.addEventListener("click", function(e) {
 
 // });
+
+functiontgl(); {
+var t = document.getElementById("like-button");
+    if(t.value=="ON"); {
+      t.value="OFF";
+    } elsif(t.value=="OFF"); {
+      t.value="ON";}
+}

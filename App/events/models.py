@@ -37,12 +37,11 @@ class Event(models.Model):
     primary_media_idx = models.IntegerField(default=0) # Points to an item in the 'media' field - used as a cover photo 
     contributors = models.ManyToManyField(get_user_model(), related_name="event_contributors", blank=True)
     approved = models.BooleanField("Approved", default=False)
-
-    # Event
-    
     stream_price = models.DecimalField("Streaming Ticket Price", validators=[MinValueValidator(0), MaxValueValidator(999)], decimal_places=2, max_digits=10, null=True)
     live_price = models.DecimalField("In-Person Ticket Price", validators=[MinValueValidator(0), MaxValueValidator(999)], decimal_places=2, max_digits=10, null=True)
 
+    # Event
+    
     def get_absolute_url(self):
         return reverse('event_view', args=[self.event_id])
     
@@ -148,7 +147,7 @@ class EventReview(models.Model):
     def get_review_likes(self):
         return EventReview.objects.filter(event=self).filter(review_id=self.review_id).count()
     
-    # def like(self):
+    # def like_review(self):
     #     if EventReview.author == get_user_model():
     #         EventReview.likes
     #     else:
