@@ -194,10 +194,13 @@ def remove_oauth(request, data):
     if oauth is None: return invalid_response(
         'Sorry, but it looks like you have provided an invalid OAuth ID. Please try again.')
     
+    # -- Serialize the oauth
+    serialized = oauth.serialize()
+
     # -- Delete the oauth
     oauth.delete()
     if request.user.security_preferences.email_on_oauth_change:
-        send_template_email(request.user, 'oauth_account_removed')
+        send_template_email(request.user, 'oauth_account_removed', serialized)
 
     # -- Return success
     return success_response('OAuth removed successfully')

@@ -28,11 +28,22 @@ def email(request):
         'support_email': 'adsfsadf@gmail.com',
         'year': '2023',
         'title': 'MFA Enabled',
-        'description': 'You have successfully enabled MFA on your account'
+        'description': 'You have successfully enabled MFA on your account',
+        'email_id': '1234',
+        'user': {
+            'username': 'Greg',
+        },
+        'data': {
+            'id': '1234',
+            'oauth_type': 'Google',
+            'oauth_id': '1234',
+            'last_used': '2021-01-01',
+            'added': '2021-01-01'
+        }
     }
 
     return render(
         request, 
-        'email/base.html', 
+        'email/password_change.html', 
         context
     )

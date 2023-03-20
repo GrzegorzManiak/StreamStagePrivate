@@ -1,10 +1,9 @@
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
+from django.template.loader import render_to_string
 from django.conf import settings
 
-def send_email(to: str, subject: str, body: str):
-    print(body)
-    
+def send_email(to: str, subject: str, body: str):    
     try:
         email = Mail(
             from_email=settings.OUTBOUND_EMAIL,
@@ -29,6 +28,18 @@ def send_template_email(
     subject = ""
     body = ""
 
+    base_context = {
+        'email': email,
+        'support_email': settings.SUPPORT_EMAIL,
+        'year': '2023',
+        'title': 'Title',
+        'description': 'Description',
+        'email_id': '1234',
+        'user': member,
+        'data': data
+    }
+
+
     # -- Get the template
     match template_id:
         case 'password_change':
@@ -38,16 +49,22 @@ def send_template_email(
             """
 
         case 'oauth_account_linked':
-            subject = "Account link"
-            body = """
-                <h1>Account link</h1>
-            """
+            subject = "Oauth account linked"
+            base_context['title'] = "Account link"
+            base_context['description'] = "You have successfully linked your account"
+            body = render_to_string(
+                'email/oauth_link.html',
+                base_context
+            )
 
         case 'oauth_account_removed':
-            subject = "Account unlink"
-            body = """
-                <h1>Account unlink</h1>
-            """
+            subject = "Oauth account removed"
+            base_context['title'] = "Account unlink"
+            base_context['description'] = "You have successfully unlinked your account"
+            body = render_to_string(
+                'email/oauth_unlink.html',
+                base_context
+            )
 
         case 'login':
             subject = "Login"

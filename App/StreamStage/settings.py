@@ -228,6 +228,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap5'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 INBOUND_EMAIL = 'inquiries@StreamStage.co'
 OUTBOUND_EMAIL = 'mail@streamstage.co'
+SUPPORT_EMAIL = 'help@streamstage.co'
 
 # DEV Key
 SENDGIRD_TOKEN = SENDGIRD_TOKEN

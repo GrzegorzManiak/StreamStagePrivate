@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from rest_framework.decorators import api_view
-
+from django.shortcuts import render
 from StreamStage.mail import send_template_email
 
 from .providers import google, github, discord
@@ -238,14 +238,18 @@ def link_oauth_account(user, oauth_key: str) -> list[bool, str]:
             return [False, 'This account is already linked to another user']
         
         # -- Create the oauth model
-        oauth_model.objects.create(
+        oauth = oauth_model.objects.create(
             user=user,
             oauth_id=oauth_data['oauth_id'],
             oauth_type=oauth_data['type']
         )
 
         if user.security_preferences.email_on_oauth_change:
-            send_template_email(user, 'oauth_account_linked')
+            send_template_email(
+                user, 
+                'oauth_account_linked', 
+                oauth.serialize()
+            )
 
         # -- Return true since the user was linked
         return [True, 'The account was linked successfully']

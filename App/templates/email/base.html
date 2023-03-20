@@ -5,7 +5,6 @@
         so I'm not sure if this is the correct way to do it. 
     -->
     <head>
-        <title>My Email Template</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -36,6 +35,8 @@
                 /* VERY IMPORTANT: common font */
                 font-family: 'Roboto', sans-serif;
                 color: var(--greyed-out-font-color);
+                min-height: 600px;
+                overflow: auto;
             }
 
             .header {
@@ -53,10 +54,9 @@
 
 
             .legal {
-                position: fixed;
                 bottom: 0;
                 right: 0;
-                width: 100vw;
+                width: 100%;
                 background-color: var(--theme-color);
             }
 
@@ -119,6 +119,8 @@
 
         <!-- Legal -->
         <div class='legal'>
+            <p> Email ID: {{ email_id }} </p>
+
             <!-- Recviers email -->
             <p>You are receiving this email because you ({{ email }}) are a registerd member of StreamStage</p>
 
