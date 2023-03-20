@@ -1,37 +1,32 @@
 from django.db import models
 
-from store.models import Ticket
 from accounts.models import Member
 
-class Order(models.Model):
-    purchaser = models.ForeignKey(Member, null=True, blank=True, on_delete=models.SET_NULL)
-    order_id = models.CharField(max_length=32, blank=True)
+from django.core.validators import MaxValueValidator, MinValueValidator
 
-    purchase_datetime = models.DateTimeField(auto_now_add=True)
+class Purchase(models.Model):
+    purchaser = models.ForeignKey(Member, null=True, blank=True, on_delete=models.SET_NULL)
+    purchase_id = models.CharField(max_length=32, blank=True)
+
+    purchase_timestamp = models.DateTimeField(auto_now_add=True)
 
     billingName = models.CharField(max_length=250, blank=True)
     billingAddress1 = models.CharField(max_length=250, blank=True)
     billingCity = models.CharField(max_length=250, blank=True)
     billingPostcode = models.CharField(max_length=10, blank=True)
     billingCountry = models.CharField(max_length=200, blank=True)
-    
-    # voucher = models.ForeignKey(Voucher, 
-    #                             related_name='orders', 
-    #                             null=True, 
-    #                             blank=True, 
-    #                             on_delete=models.SET_NULL)
-    # discount = models.IntegerField(default = 0, 
-    #                             validators=[MinValueValidator(0), 
-    #                             MaxValueValidator(100)])
+
+    # how much the total was multiplied after summing (pertains to discounts)s
+    total_multiplier = models.FloatField(default = 0, validators=[MinValueValidator(0), MaxValueValidator(1)])
 
     def get_items(self):
-        return OrderItem.objects.filter(model=self).all()
+        return PurchaseItem.objects.filter(model=self).all()
     
     def get_total(self):
-        return sum(OrderItem.objects.filter(model=self).all().values_list('price_paid'))
+        return sum(PurchaseItem.objects.filter(model=self).all().values_list('price_paid')) * self.total_multiplier
 
-class OrderItem(models.Model):
-    model = models.ForeignKey(Order, null=False, on_delete=models.CASCADE) # orders should not be deleted ever (even if member is deleted)
-    ticket = models.ForeignKey(Ticket, null=False, on_delete=models.CASCADE)
-    price_paid = models.FloatField()
+class PurchaseItem(models.Model):
+    purchase = models.ForeignKey(Purchase, null=False, on_delete=models.CASCADE)
+    item_name = models.CharField(max_length=80)
+    price = models.DecimalField("Price", decimal_places=2, max_digits=10)
 

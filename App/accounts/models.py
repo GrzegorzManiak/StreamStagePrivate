@@ -1,3 +1,5 @@
+import datetime
+from datetime import timezone
 import uuid
 import requests
 
@@ -91,8 +93,16 @@ class Member(AbstractUser):
         self.cased_username = self.username.lower()
         super(Member, self).save(*args, **kwargs)
 
-        
-
+class MembershipStatus(models.Model):
+    member = models.ForeignKey(Member, on_delete=models.CASCADE)
+    expires_on = models.DateTimeField("Membership Expiration Date", blank=True)
+    
+    def is_valid(self):
+        return self.get_remaining_time().total_seconds() > 0
+    
+    def get_remaining_time(self):
+        return (self.expires_on.astimezone(timezone.utc) - datetime.datetime.now(tz=timezone.utc))
+    
 # Broadcaster - entity that controls events/streams
 class Broadcaster(models.Model):
     handle = models.CharField("Broadcaster Handle", unique=True, primary_key=True, max_length=20, validators=[ check_unique_broadcaster_handle ])

@@ -13,6 +13,7 @@ class Category(models.Model):
     name = models.CharField("Category Name", max_length=48)
     description = models.TextField("Brief Description", max_length=256)
     splash_photo = models.ImageField(upload_to="events")
+    hex_color = models.CharField(max_length=6, default="FFFFFF")
 
     class Meta:
         verbose_name = 'Category'
@@ -38,6 +39,9 @@ class Event(models.Model):
     approved = models.BooleanField("Approved", default=False)
 
     # Event
+    
+    stream_price = models.DecimalField("Streaming Ticket Price", validators=[MinValueValidator(0), MaxValueValidator(999)], decimal_places=2, max_digits=10, null=True)
+    live_price = models.DecimalField("In-Person Ticket Price", validators=[MinValueValidator(0), MaxValueValidator(999)], decimal_places=2, max_digits=10, null=True)
 
     def get_absolute_url(self):
         return reverse('event_view', args=[self.event_id])
