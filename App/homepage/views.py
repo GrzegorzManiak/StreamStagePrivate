@@ -19,3 +19,20 @@ def index(request):
         'main.html', 
         context
     )
+
+@api_view(['GET'])
+def email(request):
+    
+    context = {
+        'email': 'test@greg.co',
+        'support_email': 'adsfsadf@gmail.com',
+        'year': '2023',
+        'title': 'MFA Enabled',
+        'description': 'You have successfully enabled MFA on your account'
+    }
+
+    return render(
+        request, 
+        'email/base.html', 
+        context
+    )
