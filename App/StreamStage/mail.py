@@ -2,6 +2,7 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from django.template.loader import render_to_string
 from django.conf import settings
+import uuid
 
 def send_email(to: str, subject: str, body: str):    
     try:
@@ -24,7 +25,11 @@ def send_template_email(
     template_id,
     data = None
 ): 
-    email = member.email
+    # -- Generate a new uuid
+    email_id = str(uuid.uuid4())
+    if template_id == 'verification':
+        email = member
+    else: email = member.email
     subject = ""
     body = ""
 
@@ -34,7 +39,7 @@ def send_template_email(
         'year': '2023',
         'title': 'Title',
         'description': 'Description',
-        'email_id': '1234',
+        'email_id': email_id,
         'user': member,
         'data': data
     }
@@ -42,6 +47,15 @@ def send_template_email(
 
     # -- Get the template
     match template_id:
+        case 'welcome':
+            subject = "Welcome to StreamStage"
+            base_context['title'] = "Welcome"
+            base_context['description'] = "You have successfully registered an account"
+            body = render_to_string(
+                'email/welcome.html',
+                base_context
+            )
+            
         case 'password_change':
             subject = "Password changed"
             base_context['title'] = "Password changed"
@@ -70,16 +84,33 @@ def send_template_email(
             )
 
         case 'login_success':
-            subject = "Login"
-            body = """
-                <h1>Login</h1>
-            """
+            subject = "Successful login"
+            base_context['title'] = "Login success"
+            base_context['description'] = "You have successfully logged in"
+            body = render_to_string(
+                'email/login_success.html',
+                base_context
+            )
 
         case 'login_failed':
             subject = "Login failed"
-            body = """
-                <h1>Login failed</h1>
-            """
+            base_context['title'] = "Login failed"
+            base_context['description'] = "You have failed to login"
+            body = render_to_string(
+                'email/login_failed.html',
+                base_context
+            )
+
+        case 'verification':
+            subject = "Email verification"
+            base_context['title'] = "Email verification"
+            base_context['description'] = "Please verify access to your email address"
+            body = render_to_string(
+                'email/verification.html',
+                base_context
+            )
+        
+                
 
         case 'mfa_enabled':
             subject = "MFA enabled"
@@ -111,5 +142,5 @@ def send_template_email(
                 <h1>Email change</h1>
             """
             
-
+    # -- Send out the email
     send_email(email, subject, body)
