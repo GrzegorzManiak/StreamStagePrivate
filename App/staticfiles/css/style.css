@@ -186,6 +186,11 @@ div > a:hover {
     color: var(--font-color)!important;
 }
 
+.inp-dark { 
+    background-color: var(--theme-color)!important;
+    color: var(--font-color)!important;
+}
+
 .form-control {
     border: 2px solid!important;
     border-color: transparent!important;

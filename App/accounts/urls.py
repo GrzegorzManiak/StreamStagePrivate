@@ -32,7 +32,9 @@ from .payments.views import (
 )
 
 from .other import (
-    get_reviews
+    get_reviews,
+    update_review,
+    delete_review
 )
 from .views import get_token, login, logout, register, validate_token
 
@@ -91,4 +93,6 @@ urlpatterns = [
 
     # -- Other
     path('api/other/get_reviews', get_reviews, name='get_reviews'),
+    path('api/other/update_review', update_review, name='update_review'),
+    path('api/other/delete_review', delete_review, name='delete_review'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

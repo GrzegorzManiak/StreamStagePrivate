@@ -326,6 +326,40 @@ export const get_reviews = async (
 );
     
 
+/**
+ * @name update_review
+ * @param id - Review id
+ * @param rating - Rating
+ * @param title - Title
+ * @param body - Body
+ */
+export const update_review = async (
+    id: string,
+    rating: number,
+    title: string,
+    body: string
+): Promise<DefaultResponse> => base_request(
+    'POST',
+    configuration.update_review,
+    { id, rating, title, body }
+);
+
+
+/**
+ * @name delete_review
+ * @param id - Review id
+ * @returns Promise<DefaultResponse>
+ */
+export const delete_review = async (
+    id: string
+): Promise<DefaultResponse> => base_request(
+    'POST',
+    configuration.delete_review,
+    { id }
+);
+
+
+
 //
 // AUXILIARY FUNCTIONS
 //

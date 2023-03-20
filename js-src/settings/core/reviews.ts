@@ -1,6 +1,7 @@
+import { attach } from '../../click_handler';
 import { create_toast } from '../../toasts';
 import { get_reviews } from '../apis';
-import { create_reviews } from '../elements/review';
+import { create_review_edit, create_reviews } from '../elements/review';
 import { GetReviewsSuccess, Pod } from '../index.d';
 
 /**

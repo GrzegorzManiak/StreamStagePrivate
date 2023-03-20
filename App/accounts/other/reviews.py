@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view
 from accounts.com_lib import authenticated, invalid_response, required_data, success_response
 from events.models import EventReview
 
+
 @api_view(['GET', 'POST'])
 @authenticated()
 @required_data(['page', 'sort', 'order'])
@@ -52,3 +53,67 @@ def get_reviews(request, data):
         'total': len(processed_reviews),
         'pages': total_pages,
     })
+
+
+
+@api_view(['POST'])
+@authenticated()
+@required_data(['id', 'rating', 'title', 'body'])
+def update_review(request, data):
+    """
+        This view is used to update the review
+    """
+    # -- Get the review
+    review = EventReview.objects.filter(
+        author=request.user,
+        review_id=data['id']
+    ).first()
+
+    if review is None:
+        return invalid_response('Review not found')
+
+    # -- Check if the rating is valid
+    if data['rating'] < 1 or data['rating'] > 10:
+        return invalid_response('Invalid rating')
+
+    title = data['title'].replace('<', '&lt;').replace('>', '&gt;')
+    if len(title) < 1 or len(title) > 50:
+        return invalid_response('Invalid title')
+    
+    body = data['body'].replace('<', '&lt;').replace('>', '&gt;')
+    if len(body) < 1 or len(body) > 3096:
+        return invalid_response('Invalid body')
+    
+    # -- Update the review
+    review.rating = int(data['rating'])
+    review.title = data['title']
+    review.body = data['body']
+    review.save()
+
+    # -- Return the review
+    return success_response('Review updated successfully')
+
+
+
+@api_view(['POST'])
+@authenticated()
+@required_data(['id'])
+def delete_review(request, data):
+    """
+        This view is used to delete the review
+    """
+
+    # -- Get the review
+    review = EventReview.objects.filter(
+        author=request.user,
+        review_id=data['id']
+    ).first()
+
+    if review is None:
+        return invalid_response('Review not found')
+    
+    # -- Delete the review
+    review.delete()
+
+    # -- Return the review
+    return success_response('Review deleted successfully')

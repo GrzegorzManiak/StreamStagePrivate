@@ -53,6 +53,8 @@ export const configuration = {
 
     start_subscription: get_or_error<string>(config, 'data-start-subscription'),
     get_reviews: get_or_error<string>(config, 'data-get-reviews'),
+    update_review: get_or_error<string>(config, 'data-update-review'),
+    delete_review: get_or_error<string>(config, 'data-delete-review'),
 }
 
 

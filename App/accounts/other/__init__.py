@@ -1,1 +1,1 @@
-from .reviews import get_reviews
+from .reviews import get_reviews, update_review, delete_review
