@@ -6,11 +6,10 @@ import time
 from django.apps import apps
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.http.response import JsonResponse
-from rest_framework import status
-
 from django.urls import reverse, reverse_lazy
 from rest_framework.decorators import api_view
+
+from StreamStage.mail import send_template_email
 
 from .providers import google, github, discord
 from .types import OAuthRespone, OAuthTypes
@@ -244,6 +243,9 @@ def link_oauth_account(user, oauth_key: str) -> list[bool, str]:
             oauth_id=oauth_data['oauth_id'],
             oauth_type=oauth_data['type']
         )
+
+        if user.security_preferences.email_on_oauth_change:
+            send_template_email(user, 'oauth_account_linked')
 
         # -- Return true since the user was linked
         return [True, 'The account was linked successfully']

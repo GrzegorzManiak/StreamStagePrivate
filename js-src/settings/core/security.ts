@@ -366,7 +366,10 @@ function fill_data(
     password_monitor(npass, password_errors);
     rp_password_monitor(npass, cfpass);
     npass.addEventListener('focus', () => requirements.style.display = 'block');
-    npass.addEventListener('blur', () => requirements.style.display = 'none');
+    npass.addEventListener('blur', () => {
+        requirements.style.display = 'none';
+        npass.removeAttribute('data-strength');
+    });
 
     // -- Set the button
     change_password_btn.onclick = async () => {
@@ -393,7 +396,11 @@ function fill_data(
 
         // -- Check if the request was successful
         if (res.code !== 200) create_toast('error', 'Oops, there appears to be an error', res.message);
-        else create_toast('success', 'Success', 'Your password has been updated');
+        else {
+            create_toast('success', 'Success', 'Your password has been updated');
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            document.location = '/';
+        }
         return stop_spinner();
     };
 

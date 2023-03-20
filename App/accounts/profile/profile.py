@@ -21,6 +21,7 @@ from timezone_field import TimeZoneField
 
 from accounts.create.create import username_taken
 from accounts.models import Member
+from StreamStage.mail import send_template_email
 
 import secrets
 import time
@@ -234,6 +235,9 @@ def update_profile(user, data, sensitive=False) -> tuple[bool, str]:
             return (False, 'Old password is incorrect')
         
         user.set_password(data['password'])
+        if user.security_preferences.email_on_password_change:
+            send_template_email(user, 'password_change')
+
 
     # -- Update the email
     if 'email' in data:

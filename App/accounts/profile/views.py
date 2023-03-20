@@ -7,6 +7,7 @@ from rest_framework.decorators import api_view
 
 from django_countries.fields import CountryField
 from timezone_field import TimeZoneField
+from StreamStage.mail import send_template_email
 from accounts.com_lib import authenticated, error_response, invalid_response, required_data, success_response
 
 from accounts.oauth.oauth import get_all_oauth_for_member, format_providers
@@ -193,6 +194,10 @@ def remove_oauth(request, data):
     
     # -- Delete the oauth
     oauth.delete()
+    if request.user.security_preferences.email_on_oauth_change:
+        send_template_email(request.user, 'oauth_account_removed')
+
+    # -- Return success
     return success_response('OAuth removed successfully')
 
 

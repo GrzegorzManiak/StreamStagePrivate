@@ -4,13 +4,11 @@ from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
 from rest_framework import status
 from rest_framework.decorators import api_view
-from django.db.models.functions import Lower
-from accounts.com_lib import authenticated
+from StreamStage.mail import send_template_email
 
 from accounts.auth_lib import authenticate_key, generate_key
-from accounts.email.verification import send_email, add_key
-from accounts.models import Member, LoginHistory, oAuth2
-from accounts.oauth.oauth import format_providers, get_oauth_data
+from accounts.models import Member, LoginHistory, SecurityPreferences
+from accounts.oauth.oauth import format_providers
 
 
 """
@@ -134,6 +132,15 @@ def validate_token(request):
             ip=request.META['REMOTE_ADDR'],
             method=user[1]
         )
+
+        # -- Check if the user has security preferences
+        if user[0].security_preferences is None:
+            user[0].security_preferences = SecurityPreferences.objects.create()
+            user[0].save()
+
+        if user[0].security_preferences.email_on_login:
+            send_template_email(user[0], 'login')
+
 
         # -- Return the user to the member profile
         return JsonResponse({

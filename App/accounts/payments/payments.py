@@ -4,6 +4,7 @@
 """
 
 # -- Imports
+from StreamStage.mail import send_template_email
 from accounts.models import Member
 from StreamStage.secrets import STRIPE
 import stripe
@@ -87,6 +88,9 @@ def add_stripe_payment_method(
             payment_method.id,
             customer=customer.id,
         )
+
+        if user.security_preferences.email_on_payment_change:
+            send_template_email(user, 'payment_method_added')
 
         return [
             format_payment_method(payment_method),
@@ -195,6 +199,10 @@ def remove_stripe_payment_method(user: Member, card_id: str):
             payment_method=card_id,
         )
 
+        # -- Email the user
+        if user.security_preferences.email_on_payment_change:
+            send_template_email(user, 'payment_method_removed')
+            
         return True
     
     except Exception as e:

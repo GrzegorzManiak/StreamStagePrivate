@@ -283,3 +283,7 @@
 .payment-plan > div:not(.selected):hover {
     outline: 2px solid var(--accent-color);
 }
+
+select {
+    border: none!important;
+}

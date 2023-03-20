@@ -17,7 +17,6 @@ from .validation import check_unique_broadcaster_handle
 from StreamStage.secrets import STRIPE_SECRET_KEY
 
 
-
 class SecurityPreferences(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
@@ -31,6 +30,14 @@ class SecurityPreferences(models.Model):
         help_text="Send an email when you reset your password")
     email_on_oauth_change    = models.BooleanField('Email on OAuth Change',    default=True,
         help_text="Send an email when you add or remove an OAuth provider")
+    email_on_payment_change  = models.BooleanField('Email on Payment Change',  default=True,
+        help_text="Send an email when you add or remove a payment method")
+    email_on_subscription_change = models.BooleanField('Email on Subscription Change', default=True,
+        help_text="Send an email when you add or remove a subscription")
+    email_on_mfa_change      = models.BooleanField('Email on MFA Change',      default=True,
+        help_text="Send an email when you add or remove MFA")
+    email_on_purchases       = models.BooleanField('Email on Purchases',       default=True,
+        help_text="Send an email when you make a purchase")                                        
     require_mfa_on_login     = models.BooleanField('Require MFA on Login',     default=False,
         help_text="Require MFA when you log in")
     require_mfa_on_payment   = models.BooleanField('Require MFA on Payment',   default=False,
@@ -63,7 +70,7 @@ class SecurityPreferences(models.Model):
             }
     
         return formated
-
+    
 
 # Create your models here.
 class Member(AbstractUser):
@@ -76,7 +83,7 @@ class Member(AbstractUser):
     profile_pic = models.ImageField("Profile Photo", upload_to='member', blank=True)
     description = models.TextField("Description", blank=True)
     stripe_customer = models.CharField("Stripe Customer ID", max_length=100, blank=True)
-    security_preferences = models.OneToOneField("SecurityPreferences", on_delete=models.CASCADE, default=SecurityPreferences.objects.create())
+    security_preferences = models.OneToOneField("SecurityPreferences", on_delete=models.CASCADE, default=None, null=True)
     country = CountryField(default='Ireland')
     time_zone = TimeZoneField(default="Europe/Dublin")
     tfa_secret = models.CharField(
@@ -162,6 +169,10 @@ class Member(AbstractUser):
 
     def save(self, *args, **kwargs):
         self.is_over_18()
+
+        # -- Check if the user has a security preferences object
+        if self.security_preferences == None:
+            self.security_preferences = SecurityPreferences.objects.create()
 
         # -- Make sure we have a cased username
         if self.username != self.cased_username.lower():
