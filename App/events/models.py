@@ -4,8 +4,8 @@ from django.urls import reverse
 from django_countries.fields import CountryField
 from django.core.validators import MaxValueValidator, MinValueValidator 
 
-from accounts.models import Broadcaster
-from datetime import datetime
+from accounts.models import Broadcaster, Member
+from datetime import datetime, timedelta
 import uuid
 
 # Event/Broadcaster Category Model
@@ -104,7 +104,13 @@ class Event(models.Model):
 
     def get_showings(self):
         return EventShowing.objects.filter(event=self).all().order_by('time')
-           
+
+    # def get_showings(self):
+    #     showings = EventShowing.objects.filter(event=self).all().order_by('time')
+    #     for showing in showings:
+    #         showing.time = showing.time(tz = showing.time.tzinfo)
+    #     return showings
+
     def get_next_showing(self):
         return self.get_showings().first()
                
@@ -114,7 +120,7 @@ class Event(models.Model):
     def get_num_upcoming_showings(self):
         showings = []
         for showing in self.get_showings():
-            if showing.time >= datetime.now(tz = showing.time.tzinfo):
+            if showing.time + timedelta(hours=1) >= datetime.now(tz = showing.time.tzinfo):
                 showings.append(showing)
         return len(showings)
     
@@ -124,7 +130,7 @@ class Event(models.Model):
 # Event Review Model
 class EventReview(models.Model):
     review_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    author = models.ForeignKey(get_user_model(), related_name="Author", on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     title = models.CharField("Review Title", max_length=50)
     body = models.TextField("Review Body", max_length=500)
@@ -132,6 +138,7 @@ class EventReview(models.Model):
     updated = models.DateTimeField("Updated", auto_now=True)
     likes = models.IntegerField("Review Likes", default=0)
     rating = models.SmallIntegerField("Event Rating", default=10, validators=[MinValueValidator(0), MaxValueValidator(10)])
+    likers = models.ManyToManyField(to=Member)
 
     class Meta:
         verbose_name = 'Event Review'
@@ -144,16 +151,29 @@ class EventReview(models.Model):
         self.body = self.body[:50]
         return self
     
+    def get_review_body_length(self):
+        return len(self.body)
+
     def get_review_likes(self):
         return EventReview.objects.filter(event=self).filter(review_id=self.review_id).count()
     
-    # def like_review(self):
-    #     if EventReview.author == get_user_model():
-    #         EventReview.likes
-    #     else:
-    #         if 
-    #         EventReview.likes += 1
+    def toggle_like(self, member):
+        if member in self.likers.all():
+            self.likers.remove(member)
+        else:
+            self.likers.add(member)
+        self.likes = self.likers.count()
+        self.save()
+
+    def user_liked(self, member):
+        return member in self.likers.all()
     
+    def get_likers_list(self):
+        list = []
+        for liker in self.likers.all():
+            list.append(liker.id)
+        return list
+
 
 # Event Media Model
 class EventMedia(models.Model):

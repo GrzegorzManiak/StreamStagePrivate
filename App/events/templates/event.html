@@ -34,18 +34,20 @@
             </div>
             <!-- Overall Event Rating -->
             <div class="mx-2 my-4">
-                <h4>Audience Rating <span class="text-light mt-2">{{ avg_rating }}/10</span></h4>
+                <h4><b>Audience Rating</b> <span class="text-light mt-2">{{ avg_rating }}/10</span></h4>
             </div>
             <!-- Streamer Name -->
             <div class="mx-2 my-4">
-                <h4>Streamer</h4>
-                <p>@{{ event.broadcaster.handle }}</p>
+                <h4><b>Streamer</b></h4>
+                <a href="">
+                    <p>@{{ event.broadcaster.handle }}</p>
+                </a>
             </div>
         </div>
 
         <div class="col-6 mx-auto p-2">
             <!-- Event Title -->
-            <h1 class="page-title">{{ event.title }}</h1>
+            <h2 class="page-title">{{ event.title }}</h2>
 
             <!-- Event Description -->
             <div class="m-4">
@@ -53,7 +55,7 @@
 
                 <!-- Showings -->
                 <div class="row">
-                    <h4 class="my-4 text-center">Showings</h4>
+                    <h4 class="my-4"><b>Showings</b></h4>
                     <div class="row">
                         <h6 class="col-6 sub-title"><b>When?</b></h6>
                         <h6 class="col-6 sub-title"><b>Where?</b></h6>
@@ -66,11 +68,11 @@
                         </div>
                         <div class="col-6">
                             <p>
-                            {% if showing.venue and showing.city %}
+                                {% if showing.venue and showing.city %}
                                 {{ showing.venue }} - {{ showing.city }}
-                            {% elif showing.city %}
+                                {% elif showing.city %}
                                 {{ showing.city }}
-                            {% endif %}
+                                {% endif %}
                             </p>
                             <p>{{showing.country.name}}</p>
                         </div>
@@ -83,7 +85,7 @@
         <!-- Event Reviews -->
         <div class="col-3 text-start mx-auto p-2">
             <div>
-                <h4 class="mx-2 my-4">Reviews</h4>
+                <h4 class="mx-2 my-4"><b>Reviews</b></h4>
                 <div>
                     <!-- Allow users to review -->
                     {% if user.is_authenticated %}
@@ -113,5 +115,6 @@
     </div>
 
 </div>
+<script src="/static/js/events.js"></script>
 
 {% endblock content %}

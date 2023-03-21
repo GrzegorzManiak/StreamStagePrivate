@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
 from .models import Event, EventReview, EventShowing
 from .forms import (EventApplyForm, 
                     EventUpdateForm, 
@@ -225,3 +226,9 @@ def review_delete(request, event_id, review_id):
     }
 
     return render(request, "reviews/review_delete.html", context)
+
+
+def review_like(request, review_id):
+    review = EventReview.objects.filter(review_id=review_id).first()
+    review.toggle_like(request.user)
+    return HttpResponse()

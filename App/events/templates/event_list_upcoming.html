@@ -9,22 +9,24 @@ Upcoming Events | StreamStage
 {% endblock title %}
 
 {% block content %}
-<div class="row link-page-title page-title">
-    <a href="{% url 'past_events' %}" class="col-6">
-        <h1>Past Events</h1>
-    </a>
-    <a href="#" class="col-6">
-        <h1>Upcoming Events</h1>
-    </a>
-</div>
-<div>
-    <!-- Listing Upcoming Events (if they have upcoming showings) -->
-    {% for event in events %}
-    {% if event.get_num_upcoming_showings > 0 %}
+<div style="height: 100vh;">
+    <div class="row link-page-title page-title">
+        <a href="{% url 'past_events' %}" class="col-6">
+            <h1>Past Events</h1>
+        </a>
+        <a href="#" class="col-6">
+            <h1>Upcoming Events</h1>
+        </a>
+    </div>
+    <div>
+        <!-- Listing Upcoming Events (if they have upcoming showings) -->
+        {% for event in events %}
+        {% if event.get_num_upcoming_showings > 0 %}
 
-    {% include 'event_list.html' with event=event %}
+        {% include 'event_list.html' with event=event %}
 
-    {% endif %}
-    {% endfor %}
+        {% endif %}
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}
