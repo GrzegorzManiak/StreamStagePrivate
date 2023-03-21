@@ -17,6 +17,8 @@ from StreamStage.mail import send_template_email
 from accounts.auth_lib import authenticate_key, generate_key
 from accounts.models import Member, LoginHistory, SecurityPreferences
 from accounts.oauth.oauth import format_providers
+from accounts.email.verification import add_key, send_email
+import secrets
 
 
 
@@ -139,16 +141,56 @@ def get_token(request, data):
     if not user.check_password(data['password']):
         if user.security_preferences.email_on_login:
             send_template_email(user, 'login_failed')
-
         return invalid_response('Invalid credentials')
 
+    # -- Check if the user requires MFA
+    if user.security_preferences.require_mfa_on_login:
+        # -- Check what type of MFA is required
+        if user.tfa_secret is not None:
 
-    # TODO: Refactor the typescript to use the new API Response
-    return JsonResponse({
-        'message': 'Successfully logged in',
-        'token': generate_key(user),
-        'status': 'success'
-    }, status=status.HTTP_200_OK)
+            # -- Check if the user has provided a TOTP
+            totp = request.data.get('totp', None)
+            if totp is not None:
+                if user.verify_mfa(totp):
+                    return success_response('Successfully logged in', { 
+                        'mode': 'none',
+                        'token': generate_key(user)
+                    })
+                else: return invalid_response('Invalid TOTP')
+
+            # -- TOTP, we need to send a key
+            return success_response(
+                'MFA required', 
+                { 'mode': 'totp', }, 
+                status.HTTP_202_ACCEPTED
+            )
+        
+        else: 
+            # -- EMail, we need to send a key
+            token = f'EMAIL:{secrets.token_urlsafe(32)}'
+            def callback(member):
+                generate_key(member, token)
+
+            keys = add_key(user, user.email, callback=callback)
+            send_email(keys[0])
+
+            # -- Return the response
+            return success_response('MFA required', { 
+                    'mode': 'mfa', 
+                    'resend': keys[1],
+                    'verify': keys[2],
+                    'token': token,
+                }, status.HTTP_202_ACCEPTED
+            )
+
+    
+    else: return success_response(
+        'Successfully logged in',
+        { 
+            'mode': 'none',
+            'token': generate_key(user)
+        }
+    )
 
 
 

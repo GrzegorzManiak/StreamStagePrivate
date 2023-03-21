@@ -1,9 +1,9 @@
 import { Panel, PanelType, Response } from '../index.d';
 import { get_panel, hide_all_panels_except, hide_panel, show_panel } from '../core/panel_manager';
 import { ToastType, create_toast } from '../../toasts';
-import { attach } from '../core/spinner';
 import { recent, resend } from '../api/email';
 import { login_url, sleep } from '..';
+import { attach } from '../../click_handler';
 
 
 // -- This function will run every x seconds

@@ -1,4 +1,4 @@
-import { create_toast } from '../toasts';
+import { get_or_error } from '../api/config';
 import { PageType } from './index.d';
 import { instruction_handler } from './methods/instructions';
 import { login_handler } from './methods/login';
@@ -15,7 +15,7 @@ const instructions = url.searchParams.get('instructions');
 
 
 // -- Get auth configuration
-const sso_config = document.getElementById('sso');
+const sso_config = document.getElementById('config');
 export const token_url = sso_config?.getAttribute('data-token-url'),
     get_token_url = sso_config?.getAttribute('data-get-token-url'),
     register_url = sso_config?.getAttribute('data-register-url'),
@@ -24,9 +24,21 @@ export const token_url = sso_config?.getAttribute('data-token-url'),
 
 
 // -- Email verification
-export const email_recent = sso_config?.getAttribute('data-email-recent'),
+export const email_recent = sso_config?.getAttribute('data-recent-verification'),
     email_verify = sso_config?.getAttribute('data-email-verify'),
     email_resend = sso_config?.getAttribute('data-email-resend');
+
+
+export const configuration = {
+    verify_token_url: get_or_error<string>(sso_config, 'data-token-url'),
+    get_token_url: get_or_error<string>(sso_config, 'data-get-token-url'),
+    register_url: get_or_error<string>(sso_config, 'data-register-url'),
+    login_url: get_or_error<string>(sso_config, 'data-login-url'),
+    csrf_token: get_or_error<string>(sso_config, 'data-csrf-token'),
+    email_recent: get_or_error<string>(sso_config, 'data-recent-verification'),
+    email_verify: get_or_error<string>(sso_config, 'data-email-verify'),
+    email_resend: get_or_error<string>(sso_config, 'data-email-resend'),
+};
 
 
 
@@ -36,42 +48,6 @@ export const email_recent = sso_config?.getAttribute('data-email-recent'),
 // page we are on.
 //
 const page: PageType = sso_config?.getAttribute('data-page') as PageType;
-
-if (!csrf_token) {
-    create_toast('error', 'CSRF Error', 'No CSRF token found, please reload the page');
-    // -- Wait 3 seconds and reload the page
-    setTimeout(() => {
-        window.location.reload();
-    }, 3000);
-}
-
-
-// -- If theres no urls or auth token, error out
-if (
-    !token_url || !get_token_url || 
-    !register_url || !login_url || 
-    !page || !email_recent ||
-    !email_verify || !email_resend
-) {
-    create_toast('error', 'Configuration Error', 'No configuration found, please reload the page');
-    // -- Wait 3 seconds and reload the page
-    setTimeout(() => {
-        window.location.reload();
-    }, 3000);
-};
-
-
-// -- Handle PAGES
-switch (page) {
-    case 'login':
-        if (instructions) instruction_handler(instructions);
-        else login_handler();
-        break;
-
-
-    case 'register':
-        register_handler();
-        break;
-}
-
-
+if (instructions) instruction_handler(instructions);
+else if (page === 'login') login_handler();
+else if (page === 'register') register_handler();

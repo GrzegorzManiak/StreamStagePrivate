@@ -54,9 +54,10 @@ authentication_keys = {}
     Generate a key for the user to use to
     authenticate with
 """
-def generate_key(member: Member) -> str:
+def generate_key(member: Member, key: str = None) -> str:
     # -- Generate a key
-    key = f'EMAIL:{secrets.token_urlsafe(32)}'
+    if key is None:
+        key = f'EMAIL:{secrets.token_urlsafe(32)}'
 
     # -- Add the key to the dictionary
     authentication_keys[key] = {

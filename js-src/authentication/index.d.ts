@@ -1,3 +1,6 @@
+import { DefaultResponseData, DefaultResponse } from '../api/index.d'
+
+
 type CSRF_Token = string;
 type OAUTH_Error = string;
 
@@ -45,3 +48,24 @@ export interface Panel {
     type: PanelType;
     element: HTMLDivElement;
 }
+
+
+
+//
+// Response types
+//
+export type LoginTOTP = { mode: 'totp' }
+export type LoginMFA = { 
+    mode: 'mfa',
+    resend: string,
+    verify: string,
+    token: string
+}
+export type LoginNone = { 
+    mode: 'none',
+    token: string
+}
+
+export type LoginSuccess = DefaultResponseData & { 
+    data: LoginTOTP | LoginMFA | LoginNone }
+export type LoginResponse = LoginSuccess | DefaultResponse;

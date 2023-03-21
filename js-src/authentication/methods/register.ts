@@ -3,8 +3,8 @@ import { get_panel } from '../core/panel_manager';
 import { create_toast } from '../../toasts';
 import { name_monitor, password_monitor, rp_password_monitor, validate_name, validate_password } from '../core/validation';
 import { register } from '../api/register';
-import { attach } from '../core/spinner';
 import { complete_verification } from './verification';
+import { attach } from '../../click_handler';
 
 
 export const register_handler = async () => {

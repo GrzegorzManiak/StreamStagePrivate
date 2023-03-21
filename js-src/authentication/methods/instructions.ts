@@ -4,9 +4,9 @@ import { create_toast } from '../../toasts';
 import { name_monitor, password_monitor, rp_password_monitor, validate_name, validate_password } from '../core/validation';
 import * as DOMPurify from 'dompurify';
 import { register_with_oauth } from '../api/register';
-import { login_with_token } from '../api/login';
-import { attach } from '../core/spinner';
 import { complete_verification } from './verification';
+import { attach } from '../../click_handler';
+import { authenticate_token } from '../api';
 
 // -- Handle instructions
 const instruction_parser = (instructions: string): Response | null => {
@@ -24,7 +24,7 @@ function auth_token(token: string): Promise<boolean> {
     // -- Make the request
     return new Promise(async (resolve, reject) => {
         // -- Make the request
-        const response = await login_with_token(token);
+        const response = await authenticate_token(token) as any;
 
         // -- If there was an error, show the error
         if (response.code !== 200) {

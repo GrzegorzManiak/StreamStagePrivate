@@ -28,7 +28,7 @@ from functools import wraps
 
     :return: A JsonResponse with the message and data
 """
-def success_response(message, data=None):
+def success_response(message, data=None, status: int = 200):
     # -- Create the response
     response = {
         'message': message,
@@ -40,7 +40,7 @@ def success_response(message, data=None):
         response['data'] = data
 
     # -- Return the response
-    return JsonResponse(response, status=status.HTTP_200_OK)
+    return JsonResponse(response, status=status)
     
 
 

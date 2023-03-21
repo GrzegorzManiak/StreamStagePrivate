@@ -1,7 +1,12 @@
-from django.http.response import JsonResponse
 from django.shortcuts import render
-from rest_framework import status
 from rest_framework.decorators import api_view
+
+from accounts.com_lib import (
+    required_data,
+    required_headers,
+    success_response,
+    invalid_response,
+)
 
 from .verification import (
     check_if_verified_recently,
@@ -13,109 +18,79 @@ from .verification import (
 )
 
 
-@api_view(['POST'])
-def remove_key_view(request):
-    key = request.data.get('token', None)
 
-    if key is None:
-        return JsonResponse({
-            'status': 'error',
-            'message': 'Missing key',
-        }, status=status.HTTP_400_BAD_REQUEST)
+@api_view(['POST'])
+@required_data(['token'])
+def remove_key_view(request, data):
+    """
+        This view is used to remove a key
+    """
 
     # -- Get the key data
-    key_data = get_key_by_resend_key(key)
-    if key_data is None:
-        return JsonResponse({
-            'status': 'error',
-            'message': 'Key not found',
-        }, status=status.HTTP_400_BAD_REQUEST)
+    key_data = get_key_by_resend_key(data['token'])
+    if key_data is None: return invalid_response('Invalid key')
     res = remove_key(key_data['key'])
 
-    return JsonResponse({
-        'status': res[0],
-        'message': res[1],
-    }, status=status.HTTP_200_OK)
+    # -- Send the response
+    if res[0] is False: return invalid_response(res[1])
+    return success_response(res[1])
+
 
 
 @api_view(['GET'])
-def verify_key_view(request):
-    key = request.GET.get('token', None)
+@required_data(['token'])
+def verify_key_view(request, data):
+    """
+        This view is used to verify a key,
+        this is for the user.
+    """
 
-    res = verify_key(key)
-
-        # -- Build the context
-    context = {
-        'verified': res[0],
-        'message': res[1]
-    }
-
-    # -- Render the page
-    return render(
-        request, 
-        'verify.html', 
-        context=context
+    res = verify_key(data['token'])
+    print(res)
+    return render(request, 'verify.html', 
+        context= {
+            'verified': res[0],
+            'message': res[1]
+        }
     )
 
 
+
 @api_view(['POST'])
-def resend_key_view(request):
-    key = request.data.get('token', None)
-
-    if key is None:
-        return JsonResponse({
-            'status': 'error',
-            'message': 'Missing key',
-        }, status=status.HTTP_400_BAD_REQUEST)
-
+@required_data(['token'])
+def resend_key_view(request, data):
+    """
+        This view is used to resend a verification email
+        and to change the email to send to.
+    """
     # -- Get the key data
-    key_data = get_key_by_resend_key(key)
-
-    # -- Check if they are allowed to change the email
-    if key_data is None:
-        return JsonResponse({
-            'status': 'error',
-            'message': 'Invalid key',
-        }, status=status.HTTP_400_BAD_REQUEST)
+    key_data = get_key_by_resend_key(data['token'])
+    if key_data is None: return invalid_response('Invalid key')
 
 
+    # -- Check if the user porivded an email to send to
+    #    this is only used for account creation
     email = request.data.get('email', None)
-    key_res = regenerate_key(key, email)
-    if key_res[0] is False:
-        return JsonResponse({
-            'status': 'error',
-            'message': key_res[1],
-        }, status=status.HTTP_200_OK)
+    key_res = regenerate_key(data['token'], email)
+    if key_res[0] is False: return invalid_response(key_res[1])
 
+
+    # -- Send the email and return the response
     res = send_email(key_res[2][0])
-    return JsonResponse({
-        'status': res[0],
-        'message': res[1],
+    return success_response(res[1], {
         'token': key_res[2][1],
         'verify': key_res[2][2],
-    }, status=status.HTTP_200_OK)
+    })
+
 
 
 @api_view(['POST'])
-def check_if_verified_recently_view(request):
-    key = request.data.get('token', None)
-
-    if key is None:
-        return JsonResponse({
-            'status': 'error',
-            'message': 'Missing key',
-        }, status=status.HTTP_400_BAD_REQUEST)
-
-    res = check_if_verified_recently(key)
-
-    if res is False:
-        return JsonResponse({
-            'status': 'error',
-            'message': 'Key not found',
-        }, status=status.HTTP_404_NOT_FOUND)
-
-    return JsonResponse({
-        'status': 'success',
-        'message': 'Key found',
-    }, status=status.HTTP_200_OK)
-    
+@required_data(['token'])
+def check_if_verified_recently_view(request, data):
+    """
+        This view is used to check if a key has been verified
+        recently (15 minutes)
+    """
+    if check_if_verified_recently(data['token']) is False:
+        return invalid_response('Key not verified recently', 404)
+    else: return success_response('Key verified recently')
