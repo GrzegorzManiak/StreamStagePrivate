@@ -8,6 +8,14 @@ import { manage_reviews_panel } from './core/reviews';
 
 export function get_or_error<e>(element: HTMLElement, attribute: string): e {
     const value = element.getAttribute(attribute);
+
+    // Unused config setting - used to avoid errors on pages that do not
+    // need to load all configuration values, but attempt to due to the
+    // 'configuration' const being compiled by association.
+    if (value != null && value === '-uu-') {
+        return "0" as e;
+    }
+
     if (!value) {
         create_toast('error', 'Configuration Error', `No ${attribute} found, please reload the page`);
         // -- Wait 3 seconds and reload the page

@@ -36,7 +36,7 @@ if ERRORLEVEL 3 goto :fin
 echo Making migrations...
 echo:
 
-set apps= accounts applications events orders store search
+set apps= accounts applications events orders store search StreamStage
 
 for %%i in (%apps%) do (
     py App/manage.py makemigrations %%i
