@@ -7,16 +7,16 @@
 """
 
 from django.contrib.auth.hashers import make_password
+from StreamStage.mail import send_template_email
 from django.http.response import JsonResponse
 from rest_framework import status
 from django.conf import settings
 import time
 import secrets
 
+from accounts.email.verification import send_email, add_key
 from accounts.oauth.oauth import link_oauth_account, get_oauth_data
-from accounts.email.verification import send_email
 from accounts.models import Member
-from accounts.email.verification import add_key
 
 temp_users = {}
 
@@ -163,6 +163,9 @@ def start_email_verification(
 
             # -- Link the account
             link_oauth_account(member, oauth)
+
+        # -- Send the welcome email
+        send_template_email(member, 'welcome')
 
         # -- Attempt to remove the user from the temp_users
         try: del temp_users[temp_user_key]

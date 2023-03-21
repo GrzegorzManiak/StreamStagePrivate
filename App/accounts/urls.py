@@ -12,14 +12,29 @@ from .profile import (
     profile, 
     send_verification, 
     security_info, 
-    update_profile, 
+    update_profile_view, 
     remove_oauth, 
     extend_session,
+    close_session,
+    change_email_view
 )
 from .mfa import (
     setup_mfa,
     verify_mfa,
     disable_mfa
+)
+from .payments.views import (
+    add_payment_method,
+    get_payment_methods,
+    remove_payment_method,
+    create_payment_intent,
+    start_subscription
+)
+
+from .other import (
+    get_reviews,
+    update_review,
+    delete_review
 )
 from .views import get_token, login, logout, register, validate_token
 
@@ -40,9 +55,10 @@ urlpatterns = [
 
     # -- Profile
     path('api/send_verification/', send_verification, name='send_verification'),
-    path('api/update_profile/', update_profile, name='update_profile'),
+    path('api/update_profile/', update_profile_view, name='update_profile'),
     path('api/security/', security_info, name='security_info'),
     path('api/extend_session/', extend_session, name='extend_session'),
+    path('api/close_session/', close_session, name='close_session'),
 
     # -- Authentication
     path('api/token/', validate_token, name='token'),
@@ -57,7 +73,15 @@ urlpatterns = [
     path('sso/github/', determine_app(OAuthTypes.GITHUB), name='github'),
     path('api/sso/remove/', remove_oauth, name='remove_oauth'),
 
-
+    # -- Payments
+    path('api/payment/methods/', get_payment_methods, name='get_payments'),
+    path('api/payment/add/', add_payment_method, name='add_payment'),
+    path('api/payment/remove/', remove_payment_method, name='remove_payment'),
+    path('api/payment/create/', create_payment_intent, name='create_payment'),
+    
+    # -- Subscriptions
+    path('api/subscription/start/', start_subscription, name='start_subscription'),
+    
     # -- EMail Verification
     path('register/email', send_reg_verification, name='send_reg_verification'),
 
@@ -65,4 +89,10 @@ urlpatterns = [
     path('api/email/resend/', resend_key_view, name='resend_key'),
     path('email/verify/', verify_key_view, name='verify_key'),
     path('api/email/recent/', check_if_verified_recently_view, name='recent_key'),
+    path('api/email/change/', change_email_view, name='change_email'),
+
+    # -- Other
+    path('api/other/get_reviews', get_reviews, name='get_reviews'),
+    path('api/other/update_review', update_review, name='update_review'),
+    path('api/other/delete_review', delete_review, name='delete_review'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

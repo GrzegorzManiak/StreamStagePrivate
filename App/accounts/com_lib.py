@@ -12,7 +12,7 @@
 
 # -- Imports
 from django.http.response import JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from rest_framework.decorators import api_view
 from rest_framework import status
 
@@ -71,17 +71,18 @@ def error_response(message):
                   to the user, this is used when the user has done
                   a boo boo, like sending the wrong password
     :param message: The message to send back to the user
+    :param status: The code to send back to the user (optional)
     :return: A JsonResponse with the message
 """
-def invalid_response(message):
+def invalid_response(message, s = 400):
     # -- Create the response
     response = {
-        'message': message,
+        'message': str(message),
         'status': 'invalid'
     }
 
     # -- Return the response
-    return JsonResponse(response, status=status.HTTP_400_BAD_REQUEST)
+    return JsonResponse(response, status=s)
 
 
 
@@ -132,6 +133,33 @@ def not_authenticated():
 
 
 """
+    :name: is_admin
+    :description: This function is used to check if the user is
+                    an admin, if they are not, it will return   
+                    an error response
+"""
+def is_admin():
+    def decorator(view_func):
+        @wraps(view_func)
+        def wrapper(request, *args, **kwargs):
+            # If it is a GET request, Render a error page
+            if request.method == 'GET' and not request.user.is_superuser:
+                return render(request, 'error.html', {
+                    'message': 'You do not have permission to do that'
+                })
+            
+            # -- Check if user is an admin
+            if not request.user.is_superuser:
+                return error_response('You do not have permission to do that')
+            
+            # -- Call the original function with the request object
+            return view_func(request, *args, **kwargs)
+        return wrapper
+    return decorator
+
+
+
+"""
     :name: required_data
     :description: This function is used to check if the user has
                   provided all of the required data accounting 
@@ -146,16 +174,56 @@ def required_data(required):
             not_provided = []
             data_object = {}
 
-            for data in required:
-                if data not in request.data:
-                    not_provided.append(data)
+            if request.method == 'GET':
+                for data in required:
+                    if data not in request.GET:
+                        not_provided.append(data)
 
-                else: data_object[data] = request.data[data]
+                    else: data_object[data] = request.GET[data]
+            
+            else: 
+                for data in required:
+                    if data not in request.data:
+                        not_provided.append(data)
+
+                    else: data_object[data] = request.data[data]
 
             # -- Check if we have any data that was not provided
             if len(not_provided) > 0:
                 return invalid_response('You did not provide the following required fields: {}'.format(', '.join(not_provided)))
             
+            
+            # -- Call the original function with the request object
+            return view_func(request, data_object, *args, **kwargs)
+        return wrapper
+    return decorator
+
+
+
+"""
+    :name: required_headers
+    :description: This function is used to check if the user has
+                    provided all of the required headers accounting 
+                    for the method that they are using
+    :param required: A list of the required headers
+"""
+def required_headers(required):
+    def decorator(view_func):
+        @wraps(view_func)
+        def wrapper(request, *args, **kwargs):
+            # -- Check if the user has provided all of the required data
+            not_provided = []
+            data_object = {}
+
+            for data in required:
+                if data not in request.headers:
+                    not_provided.append(data)
+
+                else: data_object[data] = request.headers[data]
+
+            # -- Check if we have any data that was not provided
+            if len(not_provided) > 0:
+                return invalid_response('You did not provide the following required headers: {}'.format(', '.join(not_provided)))
             
             # -- Call the original function with the request object
             return view_func(request, data_object, *args, **kwargs)

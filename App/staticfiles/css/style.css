@@ -195,10 +195,18 @@ div > a:hover {
 
 /***** Site wide *****/
 .inp {
-    border: 0px solid!important;
-    /* border-color: var(--accent-color)!important; */
     background-color: var(--theme-backdrop-color)!important;
     color: var(--font-color)!important;
+}
+
+.inp-dark { 
+    background-color: var(--theme-color)!important;
+    color: var(--font-color)!important;
+}
+
+.form-control {
+    border: 2px solid!important;
+    border-color: transparent!important;
 }
 
 .pop-up-buttons > * {
@@ -268,7 +276,7 @@ div > a:hover {
     position: fixed;
     top: 0;
     right: 0;
-    z-index: 9999;
+    z-index: 99999;
     margin: 20px;
 }
 

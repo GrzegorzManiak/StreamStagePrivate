@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    SRR Visualizer
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/server_manager/srr_visualizer.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div id='toasts'></div>
+    <span id='config'
+        data-csrf-token = '{{ csrf_token }}'
+        data-get-ssr-tree = '{{ get_srr_tree }}'
+        data-proxy-request = '{{ proxy_request }}'
+    ></span>
+    
+    <div id='app' class='w-100 h-100' oncontextmenu="return false;"></div>
+    <div id='ui' class='w-100 h-100' oncontextmenu="return false;">
+
+        <!-- Node tooltip -->
+        <div id='node-tooltip'>
+            <div class='
+                d-flex 
+                justify-content-between
+                align-items-center
+                gap-3
+                flex-column
+            '>
+                <!-- Node info -->
+                <div class='
+                    node-info
+                    w-100
+                '>  
+                    <!-- Node Name -->
+                    <p id='node-name' class='text-light'>Node Name</p>
+
+                    <!-- Node id -->
+                    <p id='node-id' class='grey-text'>345623462</p>
+
+                    <!-- Node type and usage -->
+                    <div class='
+                        d-flex 
+                        justify-content-between
+                        align-items-center
+                        gap-3
+                    '>
+                        <p id='node-type' class='grey-text'>Relay</p>
+                        <p id='node-usage' class='grey-text'>50%</p>
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <!-- 
+                    Node Statistics:
+                    uptime
+                    bytes in
+                    bytes out
+                    bytes total
+                    clients
+                    lifetime clients
+                -->
+                <div class='
+                    node-stats
+                    w-100
+                '>
+                    <div class='
+                        d-flex 
+                        justify-content-between
+                        align-items-center
+                        gap-3
+                    '>
+                        <p class='grey-text'>Uptime</p>
+                        <p id='node-uptime' class='text-muted'>0d 0h 0m</p>
+                    </div>
+
+                    <div class='
+                        d-flex 
+                        justify-content-between
+                        align-items-center
+                        gap-3
+                    '>
+                        <p class='grey-text'>Bytes In</p>
+                        <p id='node-bytes-in' class='text-muted'>0.00B</p>
+                    </div>
+
+                    <div class='
+                        d-flex 
+                        justify-content-between
+                        align-items-center
+                        gap-3
+                    '>
+                        <p class='grey-text'>Bytes Out</p>
+                        <p id='node-bytes-out' class='text-muted'>0.00B</p>
+                    </div>
+
+                    <div class='
+                        d-flex 
+                        justify-content-between
+                        align-items-center
+                        gap-3
+                    '>
+                        <p class='grey-text'>Bytes Total</p>
+                        <p id='node-bytes-total' class='text-muted'>0.00B</p>
+                    </div>
+
+                    <div class='
+                        d-flex 
+                        justify-content-between
+                        align-items-center
+                        gap-3
+                    '>
+                        <p class='grey-text'>Clients</p>
+                        <p id='node-clients' class='text-muted'>0</p>
+                    </div>
+
+                    <div class='
+                        d-flex 
+                        justify-content-between
+                        align-items-center
+                        gap-3
+                    '>
+                        <p class='grey-text'>Lifetime Clients</p>
+                        <p id='node-lifetime-clients' class='text-muted'>0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Node right click quick menu -->
+        <div id='node-rightclick'>
+            <div class='
+                d-flex 
+                justify-content-between
+                align-items-center
+                gap-3
+                flex-column
+            '>
+                <!-- quick action row -->
+                <div class='
+                    d-flex 
+                    justify-content-between
+                    align-items-center
+                    gap-3
+                    w-100
+                    quick-actions
+                '>
+                    <!-- Open -->
+                    <button class='btn btn-sm text-light' id='open'>
+                        <i class='fas fa-external-link-alt'></i>
+                    </button>
+
+                    <!-- Shutdown -->
+                    <button class='btn btn-sm text-light' id='shutdown'>
+                        <i class="fa-solid fa-plug-circle-exclamation"></i>
+                    </button>
+
+                    <!-- Graceful Shutdown -->
+                    <button class='btn btn-sm text-light' id='graceful-shutdown'>
+                        <i class="fa-solid fa-plug"></i>
+                    </button>
+
+                    <!-- Reboot -->
+                    <button class='btn btn-sm text-light' id='reboot'>
+                        <i class="fa-solid fa-rotate-exclamation"></i>
+                    </button>
+
+                    <!-- Graceful Reboot -->
+                    <button class='btn btn-sm text-light' id='graceful-reboot'>
+                        <i class="fa-solid fa-rotate"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom bar -->
+        <article class='
+            zoom
+            d-flex
+            justify-content-center
+            w-100
+        '>
+            <div>
+
+                <div class='
+                    d-flex 
+                    justify-content-between
+                    align-items-center
+                    gap-3
+                '>
+                    <!--Zoom + -->
+                    <button class='btn btn-sm col-2' id='zoom-in'>
+                        <i class='fas fa-search-plus'></i>
+                    </button>
+
+                    <!--Zoom Level-->
+                    <input type='text' class='
+                        form-control
+                        form-control-sm
+                        text-center
+                        text-light
+                        bg-dark
+                        border-0
+                    ' id='zoom-level' min='0' max='1000' value='100%'>
+
+                    <!--Zoom - -->
+                    <button class='btn btn-sm col-2' id='zoom-out'>
+                        <i class='fas fa-search-minus'></i>
+                    </button>
+                </div>
+
+                
+                <div class='
+                    d-flex 
+                    justify-content-between
+                    align-items-center
+                '>
+                    <!--Coordinates-->
+                    <div class='
+                        d-flex 
+                        justify-content-between
+                        align-items-center
+                        gap-1
+                    '>
+                        <input type='text' class='
+                            form-control
+                            form-control-sm
+                            text-center
+                            text-light
+                            bg-dark
+                            border-0
+                        ' id='x-coord' min='0' max='100000' value='0.00x'>
+
+                        <input type='text' class='
+                            form-control
+                            form-control-sm
+                            text-center
+                            text-light
+                            bg-dark
+                            border-0
+                        ' id='y-coord' min='0' max='100000' value='0.00y'>
+                    </div>
+                </div>
+
+
+            </div>
+        </article>
+
+
+        <!-- Right node panel -->
+        {% include 'right_panel.html' %}
+    </div>
+
+    <script src="{% static 'js/srr_visualizer_bin.js' %}"></script>
+{% endblock %}

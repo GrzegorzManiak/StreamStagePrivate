@@ -6,7 +6,9 @@ import { create_toast } from '../../toasts';
 
 import create_login_history from '../elements/history';
 import mfa from "../elements/mfa";
-import { check_email_verification, extend_session, get_security_info, remove, send_verification } from "../apis";
+import { change_email, check_email_verification, close_session, extend_session, get_security_info, remove, send_verification, update_profile } from "../apis";
+import { create_preference_toggles } from "../elements/security";
+import { password_monitor, rp_password_monitor } from "../../authentication/core/validation";
 
 const security_panels = [
     'security-preferences',
@@ -226,7 +228,7 @@ async function mfa_click_handler(
  * @name open_security_panel
  * @param stop: () => void - A function that stops the spinner
  *                           eg the mfa button spinner
- * @param access_key: string - The access key of the user (this is the 
+ * @param access_key: string - The access key of the user s(this is the 
  *                             key that the user verified their details for,
  *                             it is used to get sensitive information)
  * @returns Promise<void>
@@ -253,8 +255,8 @@ async function open_security_panel(stop: () => void, access_key: string) {
     // -- Show all the panels 
     for (let sec_panel in security_panels) {
         show_pod(security_panels[sec_panel] as PanelType);
-        console.log("Showing panel: " + sec_panel);
     }
+
     open_panel('security-verified');
 }
 
@@ -277,9 +279,23 @@ function fill_data(
     access_key: string
 ) {
     // -- Get the timer panel
-    const timer_panel = document.querySelector('#security-timer');
+    const timer_panel = document.querySelector('#security-timer'),
+        security_items = document.querySelector('.security-items');
+
     timer_panel.setAttribute('data-panel-status', '');
-    
+    security_items.setAttribute('data-panel-status', '');
+
+    add_callback((panel_type: PanelType) => {
+        if (panel_type !== 'security') security_items.setAttribute('data-panel-status', 'hidden');
+        else security_items.setAttribute('data-panel-status', '');
+    });
+    const pods = security_items.querySelectorAll('[data-sec-pod]') as NodeListOf<HTMLElement>;
+    pods.forEach((pod) => {
+        const pod_type = pod.getAttribute('data-sec-pod');
+        pod.addEventListener('click', () => open_panel(pod_type as PanelType));
+    });
+
+
     // -- Get the security panel
     const security_panel = document.querySelector('#security-panel');
     security_panel.setAttribute('data-panel-status', 'hidden');
@@ -288,16 +304,15 @@ function fill_data(
     verified = true;
 
     //
-    // -- Extend session
+    // -- Session Management
     //
     const ES_ID = 'extend-verification-time-container',
-        es_elm = panel.querySelector(`#${ES_ID}`) as HTMLDivElement;
-
-    const btn = es_elm.querySelector('button') as HTMLButtonElement,
+        es_elm = panel.querySelector(`#${ES_ID}`) as HTMLDivElement,
+        btn = es_elm.querySelector('button') as HTMLButtonElement,
         timer = es_elm.querySelector('#extend-verification-time-timer') as HTMLHeadingElement;
 
     let time_left = 15 * 60 * 1000; // -- 15 minutes
-    btn.addEventListener('click', async () => {
+    btn.onclick = async () => {
         const stop_spinner = attach(btn);
         const res = await extend_session(access_key);
         stop_spinner();
@@ -307,8 +322,12 @@ function fill_data(
 
         // -- Reset the timer
         time_left = 15 * 60 * 1000;
-    });
+    };
     
+
+    // -- Close session
+    const close_session_btn = es_elm.querySelector('#close-secure-session') as HTMLButtonElement;
+
 
 
     //
@@ -349,8 +368,56 @@ function fill_data(
     // -- Change Password
     //
     const CP_ID = 'change-password-container',
-        cp_elm = panel.querySelector(`#${CP_ID}`) as HTMLDivElement;
+        cp_elm = panel.querySelector(`#${CP_ID}`) as HTMLDivElement,
+        requirements = cp_elm.querySelector('.requirements') as HTMLDivElement,
+        password_errors = cp_elm.querySelector('.password-errors') as HTMLDivElement,
+        change_password_btn = cp_elm.querySelector('#change-password') as HTMLButtonElement;
 
+    // -- Inputs #cpass, #npass, #vpass
+    const cpass = cp_elm.querySelector('#cpass') as HTMLInputElement,
+        npass = cp_elm.querySelector('#npass') as HTMLInputElement,
+        cfpass = cp_elm.querySelector('#cfpass') as HTMLInputElement;
+    
+    password_monitor(npass, password_errors);
+    rp_password_monitor(npass, cfpass);
+    npass.addEventListener('focus', () => requirements.style.display = 'block');
+    npass.addEventListener('blur', () => {
+        requirements.style.display = 'none';
+        npass.removeAttribute('data-strength');
+    });
+
+    // -- Set the button
+    change_password_btn.onclick = async () => {
+        // -- Attach the spinner
+        const stop_spinner = attach(change_password_btn);
+
+        // -- Get the values
+        const current_password = cpass.value,
+            new_password = npass.value,
+            confirm_password = cfpass.value;
+
+        // -- Check if the passwords match
+        if (new_password !== confirm_password) {
+            stop_spinner();
+            return create_toast('error', 'Oops, there appears to be an error', 'The passwords do not match');
+        }
+            
+        // -- Send the request
+        const res = await update_profile({
+            token: access_key,
+            old_password: current_password.trim(),
+            password: new_password.trim()
+        });
+
+        // -- Check if the request was successful
+        if (res.code !== 200) create_toast('error', 'Oops, there appears to be an error', res.message);
+        else {
+            create_toast('success', 'Success', 'Your password has been updated');
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            document.location = '/';
+        }
+        return stop_spinner();
+    };
 
 
     //
@@ -359,7 +426,36 @@ function fill_data(
     const CE_ID = 'change-email-container',
         ce_elm = panel.querySelector(`#${CE_ID}`) as HTMLDivElement;
 
-    console.log(ce_elm);
+    // #email, #change-email
+    const email = ce_elm.querySelector('#email') as HTMLInputElement,
+        change_email_btn = ce_elm.querySelector('#change-email') as HTMLButtonElement,
+        current_email = ce_elm.querySelector('.current-email') as HTMLParagraphElement;
+    current_email.innerText = 'Your current email is ' + data.email;
+
+    // -- Set the button
+    change_email_btn.onclick = async () => {
+        // -- Attach the spinner
+        const stop_spinner = attach(change_email_btn),
+            new_email = email.value;
+
+
+        // -- Send the request, make sure the email is valid
+        const res = await change_email(access_key, new_email);
+        if (res.code !== 200) {
+            stop_spinner();
+            return create_toast('error', 'Oops, there appears to be an error', res.message);
+        }
+        create_toast('success', 'Success', 'A verification email has been sent to your new email address');
+
+
+        const data = (res as VerifyAccessSuccess).data;
+        check_email_verification(() => data.verify_key, 3000, 15 * 60 * 1000,
+        'Your email has been changed successfully!').then((success) => {
+            stop_spinner();
+            if (!success) create_toast('error', 'Oops, there appears to be an error', 'Your email has not been changed');
+            else current_email.innerText = 'Your current email is ' + new_email;
+        });
+    }
 
 
 
@@ -392,22 +488,39 @@ function fill_data(
 
     
 
+    //
+    // -- Security preferences
+    //
+    const SP_ID = 'security-preferences-container',
+        sp_elm = panel.querySelector(`#${SP_ID}`) as HTMLDivElement;
 
-    // 
-    // -- Update interval (5 sec)
-    // 
-    const wipe = () => {
-        linked_accounts.innerHTML = '';
-        login_history.innerHTML = '';
-    };
+    // -- Toggles
+    const toggles_elm = sp_elm.querySelector('.toggles') as HTMLDivElement;
+    const update_toogles = (data: SecurityInfo) => {
+        toggles_elm.innerHTML = '';
+        const toggles = create_preference_toggles(data.security_preferences, async(pref: string, val: boolean) => {
+            const res = await update_profile({ [pref]: val, token: access_key });
+            if (res.code !== 200) return create_toast('error', 'Oops, there appears to be an error', res.message);
+        });
+        toggles.forEach((elm) => toggles_elm.appendChild(elm));
+    }
+    update_toogles(data);
 
-    // -- Start the timer
-    const int = setInterval(() => {
+
+
+    /**
+     * @name timer_interval
+     * @description This interval will update the timer
+     * every second, this is the big timer on top of the 
+     * page indicating how much time the user has left
+     * to make changes to their account.
+     */
+    const timer_interval = setInterval(() => {
         // -- Update the timer
         time_left -= 1000;
         
-        let min = Math.floor(time_left / 1000 / 60);
-        let sec = Math.floor(time_left / 1000) % 60;
+        let min = Math.floor(time_left / 1000 / 60),
+            sec = Math.floor(time_left / 1000) % 60;
 
         timer.innerText = `${min}:${sec < 10 ? '0' + sec : sec}`;
 
@@ -418,25 +531,44 @@ function fill_data(
         }
     }, 1000);
 
+
+    /**
+     * @name close
+     * @description Closes the security panel AND 
+     * revokes the users PAK (access key) and clears
+     * any remianing intervals and data
+     */
+    const close = () => {
+        linked_accounts.innerHTML = '';
+        login_history.innerHTML = '';
+
+        clearInterval(timer_interval);
+        clearInterval(data_interval);
+
+        verified = false;
+        timer_panel.setAttribute('data-panel-status', 'hidden');
+        security_panel.setAttribute('data-panel-status', '');
+        
+        // -- Hide all the panels
+        for (let sec_panel in security_panels) {
+            hide_pod(security_panels[sec_panel] as PanelType, 'security');
+        } 
+
+        show_pod('security');
+        open_panel('security');
+    }
+
+
+    /**
+     * @name data_interval
+     * @description Updates the data every 5 seconds
+     * And checks if the users PAK is still valid
+     */
     const data_interval = setInterval(async () => {
         const res = await get_security_info(access_key);
         if (res.code !== 200) {
             create_toast('error', 'Oops, there appears to be an error', res.message);
-            wipe();
-
-            show_pod('security');
-            open_panel('security');
-            clearInterval(int);
-
-            verified = false;
-
-            timer_panel.setAttribute('data-panel-status', 'hidden');
-            security_panel.setAttribute('data-panel-status', '');
-            
-            // -- Hide all the panels
-            for (let sec_panel in security_panels) {
-                hide_pod(security_panels[sec_panel] as PanelType, 'security');
-            } return clearInterval(data_interval);
+            return close();
         }
 
         // -- Get the data
@@ -446,6 +578,29 @@ function fill_data(
         // -- Update data
         update_providers(data);
         update_history(data);
+        update_toogles(data);
     }, 5000);
     
+    
+    /**
+     * @name close_session_btn
+     * @description Closes the current session for the user 
+     * It actually removes the access key from the database
+     * so its completely useless, unlike refresing the page
+     * where the access key is still valid.
+     */
+    close_session_btn.onclick = async () => {
+        const stop_spinner = attach(close_session_btn),
+            res = await close_session(access_key);
+
+        if (res.code !== 200) {
+            stop_spinner();
+            return create_toast('error', 'Oops, there appears to be an error', res.message);
+        }
+
+        // -- Clear the data
+        create_toast('success', 'Success', 'Your session has been closed');
+        stop_spinner();
+        close();
+    };
 }

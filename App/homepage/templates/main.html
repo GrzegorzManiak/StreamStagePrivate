@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block metadescription %}
+    
+{% endblock %}
+
+{% block title %}
+    StreamStage - Main Page
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+    <link rel="stylesheet" href="{% static 'css/homepage/index.css' %}">
+
+    <!-- StreamStage font -->
+    <link rel="stylesheet" href="{% static 'fonts/lust/lust.css' %}">
+{% endblock %}
+
+{% block content %}
+    <span 
+        id='config'
+    ></span>
+
+    <!-- Logo -->
+    <div 
+        id='logo-loader'
+        state='finished'
+    >
+        {% include 'email/logo.svg' %}
+    </div>
+
+    <!-- Showcase -->
+    {% include 'showcase.html' %}
+
+    <!-- Thumbnail -->
+    {% include 'thumbnail.html' %}
+    {% include 'carousel.html' %}
+    
+    <!-- Main -->
+    <main>
+        <!-- Featured -->
+        <!-- Carousel -->
+        <div id='c1'></div>
+        <div id='c2' class='car'></div>
+        <div id='c3' class='car'></div>
+    </main>
+
+    <!-- Js -->
+    <script src="{% static 'js/homepage_bin.js' %}"></script>
+{% endblock %}

@@ -6,11 +6,13 @@ module.exports = {
     optimization: { minimizer: [new TerserPlugin()] },
     entry: {
         settings: './settings/index.ts',
-        authentication: './authentication/index.ts',
-        toast: './toasts/index.ts',
-        click_handler: './click_handler/index.ts',
-        ping_server: './ping_server/index.ts',
-        streamer_apps: './streamer_apps/index.ts'
+        // authentication: './authentication/index.ts',
+        // toast: './toasts/index.ts',
+        // click_handler: './click_handler/index.ts',
+        // ping_server: './ping_server/index.ts',
+        // streamer_apps: './streamer_apps/index.ts',
+        // srr_visualizer: './srr_visualizer/index.ts',
+        homepage: './homepage/index.ts',
     },
     module: {
         rules: [
@@ -39,5 +41,5 @@ module.exports = {
     output: {
         filename: '[name]_bin.js',
         path: path.resolve(__dirname, '../App/staticfiles/js'),
-    },
+    }
 };

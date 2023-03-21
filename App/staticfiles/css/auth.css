@@ -79,7 +79,7 @@ hr {
 }
 
 /* On focus */
-#password:focus ~ .requirements, 
+.password:focus ~ .requirements, 
 #username:focus + .requirements {
     display: block;
 }

@@ -1,6 +1,10 @@
 import { attach_event_listeners, get_pod } from './core/panels';
 import { manage_security_panel } from './core/security';
 import { create_toast } from '../toasts';
+import { manage_payments_panel } from './core/payments';
+import { manage_subscription_panel } from './core/subscription';
+import { manage_profile_panel } from './core/profile';
+import { manage_reviews_panel } from './core/reviews';
 
 export function get_or_error<e>(element: HTMLElement, attribute: string): e {
     const value = element.getAttribute(attribute);
@@ -36,10 +40,21 @@ export const configuration = {
     update_profile: get_or_error<string>(config, 'data-update-profile'),
     remove_oauth: get_or_error<string>(config, 'data-remove-oauth'),
     extend_session: get_or_error<string>(config, 'data-extend-session'),
+    close_session: get_or_error<string>(config, 'data-close-session'),
+    change_email: get_or_error<string>(config, 'data-change-email'),
 
     setup_mfa: get_or_error<string>(config, 'data-mfa-setup'),
     verify_mfa: get_or_error<string>(config, 'data-mfa-verify'),
     disable_mfa: get_or_error<string>(config, 'data-mfa-disable'),
+
+    add_payment: get_or_error<string>(config, 'data-add-payment'),
+    get_payments: get_or_error<string>(config, 'data-get-payments'),
+    remove_payment: get_or_error<string>(config, 'data-remove-payment'),
+
+    start_subscription: get_or_error<string>(config, 'data-start-subscription'),
+    get_reviews: get_or_error<string>(config, 'data-get-reviews'),
+    update_review: get_or_error<string>(config, 'data-update-review'),
+    delete_review: get_or_error<string>(config, 'data-delete-review'),
 }
 
 
@@ -48,5 +63,17 @@ attach_event_listeners();
 
 
 // -- Attach to all panels
-let security_panel = get_pod('security');
+const security_panel = get_pod('security');
 if (security_panel) manage_security_panel(security_panel);
+
+const payments_panel = get_pod('payment');
+if (payments_panel) manage_payments_panel(payments_panel);
+
+const subscription_panel = get_pod('streamstageplus');
+if (subscription_panel) manage_subscription_panel(subscription_panel);
+
+const profile_panel = get_pod('profile');
+if (profile_panel) manage_profile_panel(profile_panel);
+
+const reviews_panel = get_pod('reviews');
+if (reviews_panel) manage_reviews_panel(reviews_panel);

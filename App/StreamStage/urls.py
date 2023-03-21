@@ -28,4 +28,5 @@ urlpatterns = [
     path('events/', include('events.urls')),
     path('applications/', include('applications.urls')),
     path('search/', include('search.urls')),
+    path('', include('homepage.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

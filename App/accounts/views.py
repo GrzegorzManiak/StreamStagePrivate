@@ -4,256 +4,163 @@ from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
 from rest_framework import status
 from rest_framework.decorators import api_view
-from django.db.models.functions import Lower
-from accounts.com_lib import authenticated
+from accounts.com_lib import (
+    authenticated, 
+    not_authenticated,
+    invalid_response, 
+    required_headers,
+    success_response,
+    required_data
+)
+from StreamStage.mail import send_template_email
 
 from accounts.auth_lib import authenticate_key, generate_key
-from accounts.email.verification import send_email, add_key
-from accounts.models import Member, LoginHistory, oAuth2
-from accounts.oauth.oauth import format_providers, get_oauth_data
+from accounts.models import Member, LoginHistory, SecurityPreferences
+from accounts.oauth.oauth import format_providers
 
 
-"""
-    This view is used to get a token
-    aka, login
-"""
+
 @api_view(['GET'])
+@not_authenticated()
 def login(request):
-    # -- Make sure that the user isint already logged in
-    if request.user.is_authenticated:
-        return redirect(
-            reverse_lazy('member_profile')
-        )
-
-    # -- Construct the context
-    context = {
-        'providers': format_providers(),
-
-        'token': reverse('token'),
-        'get_token': reverse('get_token'),
-        'register': reverse('send_reg_verification'),
-        'login': reverse('login'),
-
-        # -- Security
-        'has_tfa': False,
-
-        # -- Email
-        'email_recent': reverse('recent_key'),
-        'email_verify': reverse('verify_key'),
-        'email_resend': reverse('resend_key'),
-        'email_remove': reverse('remove_key'),
-    }
-    
+    """
+        This view is used to get a token
+        aka, login
+    """
     # -- Render the login page
     return render(
         request, 
         'login.html', 
-        context=context
+        context={
+            'providers': format_providers(),
+            'token': reverse('token'),
+            'get_token': reverse('get_token'),
+            'register': reverse('send_reg_verification'),
+            'login': reverse('login'),
+            'has_tfa': False,
+            'email_recent': reverse('recent_key'),
+            'email_verify': reverse('verify_key'),
+            'email_resend': reverse('resend_key'),
+            'email_remove': reverse('remove_key'),
+        }
     )
 
 
 
-"""
-    This is the get method for the register view
-    that is used to render the register page
-"""
 @api_view(['GET'])
+@not_authenticated()
 def register(request):
-    # -- Make sure that the user isint already logged in
-    if request.user.is_authenticated:
-        return redirect(
-            reverse_lazy('member_profile')
-        )
-
-    # -- Construct the context
-    context = {
-        'providers': format_providers(),
-
-        'token': reverse('token'),
-        'get_token': reverse('get_token'),
-        'register': reverse('send_reg_verification'),
-        'login': reverse('login'),
-
-        # -- Email
-        'email_recent': reverse('recent_key'),
-        'email_verify': reverse('verify_key'),
-        'email_resend': reverse('resend_key'),
-        'email_remove': reverse('remove_key'),
-    }
+    """
+        This is the get method for the register view
+        that is used to render the register page
+    """
 
     # -- Render the register page
     return render(
         request, 
         'register.html', 
-        context=context
+        context={
+            'providers': format_providers(),
+            'token': reverse('token'),
+            'get_token': reverse('get_token'),
+            'register': reverse('send_reg_verification'),
+            'login': reverse('login'),
+            'email_recent': reverse('recent_key'),
+            'email_verify': reverse('verify_key'),
+            'email_resend': reverse('resend_key'),
+            'email_remove': reverse('remove_key'),
+        }
     )
 
 
 
-
-"""
-    This view is used to validate a token
-    Which is the standardaized way of authenticating
-    with our app.
-"""
 @api_view(['POST'])
-def validate_token(request):
-    # -- Make sure that the user isint already logged in
-    if request.user.is_authenticated:
-        return JsonResponse({
-            'message': 'You are already logged in'
-        }, status=status.HTTP_400_BAD_REQUEST)
-
-    # -- Make sure we have the Authorization header 
-    if 'Authorization' not in request.headers:
-        return JsonResponse({
-            'message': 'Missing Authorization header'
-        }, status=status.HTTP_400_BAD_REQUEST)
-
-    # -- Get the authorization header
-    auth_header = request.headers['Authorization']
-
-    # -- Make sure the header is not too long or too short
-    if len(auth_header) < 10 or len(auth_header) > 150:
-        return JsonResponse({
-            'message': 'Invalid Authorization header'
-        }, status=status.HTTP_400_BAD_REQUEST)
-
+@not_authenticated()
+@required_headers(['Authorization'])
+def validate_token(request, headers):
+    """
+        This view is used to validate a token
+        Which is the standardaized way of authenticating
+        with our app.
+    """
 
     # Pass the header to the authenication function
-    user = authenticate_key(auth_header)
-    if user[0] is not None:
-        # -- Log the user in
-        request._request.user = user[0]
-        request._request.method = 'GET'
-        dj_login(request._request, user[0])
+    user = authenticate_key(headers['Authorization'])
+    if user[0] is None: return invalid_response('Invalid Authorization header')
 
-        # -- Add to the login history
-        LoginHistory.objects.create(
-            member=user[0],
-            ip=request.META['REMOTE_ADDR'],
-            method=user[1]
-        )
+    # -- Log the user in
+    request._request.user = user[0]
+    request._request.method = 'GET'
+    dj_login(request._request, user[0])
 
-        # -- Return the user to the member profile
-        return JsonResponse({
-            'message': 'Successfully logged in',
-            'status': 'success'
-        }, status=status.HTTP_200_OK)
+    # -- Add to the login history
+    LoginHistory.objects.create(
+        member=user[0],
+        ip=request.META['REMOTE_ADDR'],
+        method=user[1]
+    )
 
-    
-    # -- Otherwise return an error message
-    return JsonResponse({
-        'message': 'Invalid Authorization header'
-    }, status=status.HTTP_400_BAD_REQUEST)
-    
+    # -- Check if the user has security preferences
+    if user[0].security_preferences is None:
+        user[0].security_preferences = SecurityPreferences.objects.create()
+        user[0].save()
+
+    # -- Inform the user that they have logged in
+    if user[0].security_preferences.email_on_login:
+        send_template_email(user[0], 'login_success')
+
+    # -- Return the user to the member profile
+    return success_response('Successfully logged in')
 
 
 
-"""
-    This view is responsible for generating a token
-    for the user depending on the requirements
-    of their login.
-"""
 @api_view(['POST'])
-def get_token(request):
-    # -- Make sure that the user isint already logged in
-    if request.user.is_authenticated:
-        return JsonResponse({
-            'message': 'You are already logged in'
-        }, status=status.HTTP_400_BAD_REQUEST)
-
-    # -- Get the json data
-    if 'emailorusername' not in request.data or 'password' not in request.data:
-        return JsonResponse({
-            'message': 'Missing email or password',
-            'status': 'error'
-        }, status=status.HTTP_400_BAD_REQUEST)
-
-    # -- Get the email and password
-    emailorusername = request.data['emailorusername'].lower()
-    password = request.data['password']
-
+@not_authenticated()
+@required_data(['emailorusername', 'password'])
+def get_token(request, data):
+    """
+        This view is responsible for generating a token
+        for the user depending on the requirements
+        of their login.
+    """
 
     # -- Probably an email
-    if emailorusername.find('@') != -1:
-        try: user = Member.objects.get(email=emailorusername.lower())
-        except Member.DoesNotExist:
-            return JsonResponse({
-                'message': 'Invalid credentials',
-                'status': 'error'
-            }, status=status.HTTP_400_BAD_REQUEST)
+    if data['emailorusername'].find('@') != -1:
+        try: user = Member.objects.get(email=data['emailorusername'].lower())
+        except Member.DoesNotExist: return invalid_response('Invalid credentials')
 
     # -- Probably a username
     else:
-        # -- We need to find the user by username even if they are in different cases
-        try: user = Member.objects.get(cased_username=emailorusername)
-        except Member.DoesNotExist:
-            return JsonResponse({
-                'message': 'Invalid credentials',
-                'status': 'error'
-            }, status=status.HTTP_400_BAD_REQUEST)
+        try: user = Member.objects.get(cased_username=data['emailorusername'].lower())
+        except Member.DoesNotExist: return invalid_response('Invalid credentials')
+
 
     # -- Authenticate the user
-    if not user.check_password(password):
-        return JsonResponse({
-            'message': 'Invalid credentials',
-            'status': 'error'
-        }, status=status.HTTP_400_BAD_REQUEST)
+    if not user.check_password(data['password']):
+        if user.security_preferences.email_on_login:
+            send_template_email(user, 'login_failed')
 
-    # -- Generate the token for the user
-    token = generate_key(user)
+        return invalid_response('Invalid credentials')
 
+
+    # TODO: Refactor the typescript to use the new API Response
     return JsonResponse({
         'message': 'Successfully logged in',
-        'token': token,
+        'token': generate_key(user),
         'status': 'success'
     }, status=status.HTTP_200_OK)
 
 
 
-"""
-    This view is used to logout the user
-"""
 @api_view(['POST', 'GET'])
+@authenticated()
 def logout(request):
-    match request.method:
-        case 'POST': return logout_post(request)
-        case 'GET': return logout_get(request)
-
-    return JsonResponse({
-        'message': 'Invalid method'
-    }, status=status.HTTP_400_BAD_REQUEST)
-
-
-def logout_post(request):
-    # -- Make sure that the user is logged in
-    if not request.user.is_authenticated:
-        return JsonResponse({
-            'message': 'You are not logged in'
-        }, status=status.HTTP_400_BAD_REQUEST)
-
+    """
+        This view is used to logout the user
+    """
     # -- Log the user out
     request._request.method = 'GET'
     request._request.user = request.user
     dj_logout(request._request)
 
-    # -- Return a success message
-    return JsonResponse({
-        'message': 'Successfully logged out',
-        'status': 'success'
-    }, status=status.HTTP_200_OK)
-
-
-def logout_get(request):
-    # -- Make sure that the user is logged in
-    if not request.user.is_authenticated:
-        return redirect('login')
-
-    # -- Log the user out
-    request._request.method = 'GET'
-    request._request.user = request.user
-    dj_logout(request._request)
-
-    # -- Return a success message
-    return redirect('login')
+    return success_response('Successfully logged out')

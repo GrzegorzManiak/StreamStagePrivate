@@ -1,0 +1,189 @@
+<div class='showcase w-100'>
+    <!--
+        This is going to be split up like so.
+        ------- |  SMALL
+        --BIG-- | [SMALL]
+        ------- |  SMALL
+
+        Where [SMALL] is a smaller version of the current BIG.
+        The smaller section is going to work like a carousel,
+        Where everytime you click on the top one, it will
+        migrate down to the middle, pulling down the next
+        one in the carousel, same with the bottom one (inreverse ofc)
+    -->
+
+    <!-- BIG Col -->
+    <div class='
+        col-12 
+        col-md-6 
+        col-lg-4
+        d-flex
+        w-100
+        gap-2
+        inner-showcase
+    '>
+        <div 
+        style='
+            background-image: url(https://thumbor.forbes.com/thumbor/fit-in/900x510/https://www.forbes.com/advisor/wp-content/uploads/2022/10/best_places_to_live_in_california.jpeg.jpg);
+        '
+        class='
+            showcase-big 
+            w-100
+            d-flex
+            justify-content-center
+            align-items-center
+        '>
+            <div class='showcase-inner'>
+                <!-- 
+                    This is going to be the inner showcase
+                    Where the text, buttons etc will be
+                    placed in the bottom left corner.
+                -->
+                <div class='
+                    w-100
+                    h-100
+                    d-flex
+                    justify-content-start
+                    align-items-end
+                    p-2
+                '>
+                    <div>
+                        <h1 data-sci-elm='title'></h1>
+                        
+                        <div data-sci-elm='desc'>
+
+                            <!-- Streamer details -->
+                            <div class='
+                                d-flex
+                                gap-2
+                                flex-wrap
+                                align-items-center
+                            '>
+                                <!-- PFP -->
+                                <div 
+                                    class='showcase-pfp'
+                                >
+                                    <img 
+                                        data-skeleton='image'
+                                        src='https://picsum.photos/50/50' 
+                                        alt=''
+                                    >
+                                </div>
+
+                                <!-- View count -->
+                                <div class='thumbnail-view-count'>
+                                    <p 
+                                        class='skeleton m-0'
+                                        data-elm='view-count'
+                                        data-skeleton='text'
+                                    > 1.3K views</p>
+                                </div>
+
+                                <!-- Date -->
+                                <div class='thumbnail-date d-flex gap-2'>
+                                    <p 
+                                        class='skeleton m-0'
+                                        data-elm='date-vod'
+                                        data-skeleton='text'
+                                    ></p>
+
+                                    <p 
+                                        class='skeleton m-0'
+                                        data-elm='date-live'
+                                        data-skeleton='text'
+                                    >NOW</p>
+
+                                    <!-- DOT -->
+                                    <div class='thumbnail-dot'>
+                                        <i class="fa-solid fa-circle"></i>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <p class='description'></p>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!--
+                    This is the tags at the top
+                -->
+                <div class='
+                    w-100
+                    h-100
+                    d-flex
+                    justify-content-end
+                    align-items-end
+                    pb-2
+                    px-2
+                '>
+                    <div class='
+                        d-flex
+                        gap-2
+                        flex-wrap
+                        tags
+                    '>
+      
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SMALL Col -->
+        <div class='
+            showcase-small
+            d-flex
+            flex-column
+            gap-2
+        '>
+            <div 
+                data-stream-views='1.3K'
+                data-stream-date='12/02/2023'
+                data-stream-title='The best show'
+                data-stream-desc='Poo sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...'
+                data-stream-pfp='https://picsum.photos/50/50'
+                data-stream-big='https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.04xHP1JZa6wRk9UxKbtp4AHaE8%26pid%3DApi&f=1&ipt=53ab06721e4263c6a48925a501ae5982f0edfc4f0ba06e42c0acceaf8af9cfcf&ipo=images'
+                data-stream-tags='Swag, tf, 18+'
+                data-is-live='true'
+
+                class='showcase-small-img'>
+                <div class='darken'></div>
+                <img src='https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.04xHP1JZa6wRk9UxKbtp4AHaE8%26pid%3DApi&f=1&ipt=53ab06721e4263c6a48925a501ae5982f0edfc4f0ba06e42c0acceaf8af9cfcf&ipo=images' alt=''>
+            </div>
+
+            <div 
+                data-stream-views='2.3K'
+                data-stream-date='12/02/2023'
+                data-stream-title='The not very best show'
+                data-stream-desc='Lorem ipsum dolor dfhgd amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...'
+                data-stream-pfp='https://picsum.photos/50/50'
+                data-stream-big='https://thumbor.forbes.com/thumbor/fit-in/900x510/https://www.forbes.com/advisor/wp-content/uploads/2022/10/best_places_to_live_in_california.jpeg.jpg'
+                data-stream-tags='Nope, Comedy'
+                data-is-live='false'
+
+                class='showcase-small-img active'>
+                <div class='darken'></div>
+                <img src='https://thumbor.forbes.com/thumbor/fit-in/900x510/https://www.forbes.com/advisor/wp-content/uploads/2022/10/best_places_to_live_in_california.jpeg.jpg' alt=''>
+            </div>
+
+            <div 
+                data-stream-views='3.3K'
+                data-stream-date='12/02/2023'
+                data-stream-title='The bestest of shows'
+                data-stream-desc='Lorem ipsum 2345 sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...'
+                data-stream-pfp='https://picsum.photos/50/50'
+                data-stream-big='https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimg.theculturetrip.com%2F1440x807%2Fwp-content%2Fuploads%2F2017%2F04%2Fshutterstock_490898872-pisaphotography.jpg&f=1&nofb=1&ipt=098ce3f529155e02c1c226a8cd381392a46383e391470d25d24c8ac2ad7ba102&ipo=images'
+                data-stream-tags='Swag, Drama'
+                data-is-live='false'
+                
+                class='showcase-small-img'>
+                <div class='darken'></div>
+                <img src='https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimg.theculturetrip.com%2F1440x807%2Fwp-content%2Fuploads%2F2017%2F04%2Fshutterstock_490898872-pisaphotography.jpg&f=1&nofb=1&ipt=098ce3f529155e02c1c226a8cd381392a46383e391470d25d24c8ac2ad7ba102&ipo=images' alt=''>
+            </div>
+
+        </div>
+
+    </div>
+            
+</div>

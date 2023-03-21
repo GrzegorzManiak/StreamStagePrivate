@@ -1,0 +1,305 @@
+line {
+    stroke: var(--theme-color)!important;
+}
+
+#app {
+    margin-top: var(--header-height);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+}
+
+#ui {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2;
+
+    pointer-events: none;
+}
+
+.no-pointer-events * {
+    pointer-events: none!important;
+}
+
+
+@keyframes fade-in {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+.fade-in {
+    animation: fade-in 0.5s ease-in-out 1 forwards;
+}
+
+/*  
+    ZOOM
+*/
+.zoom {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: 3;
+    width: 100%;
+    pointer-events: none;
+}
+
+.zoom > div {
+    background-color: var(--theme-secondary-color);
+
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    margin: 1rem;
+    width: 12rem;
+
+    pointer-events: all;
+}
+
+#zoom-level {
+    /* Disables the incramentor */
+    -moz-appearance: textfield;
+}
+
+#zoom-in, #zoom-out {
+    color: var(--font-color);
+    font-size: 1.05rem;
+    text-align: center;
+    cursor: pointer;
+    width: auto;
+}
+
+
+#x-coord, #y-coord {
+    color: var(--font-color);
+    margin-top: 0.5rem;
+    height: 0.25rem;
+}
+
+
+
+/*
+    node-tooltip
+*/
+#node-tooltip {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 4;
+    pointer-events: none;
+    display: none;
+}
+
+#node-tooltip hr {
+    margin: 0.25rem 0;
+    border: 1px solid var(--muted-font-color);
+    width: 100%;
+}
+
+#node-tooltip > div {
+    position: absolute;
+    background-color: var(--theme-secondary-color);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    margin: 1rem;
+    width: 12rem;
+    pointer-events: all;
+}
+
+
+.node-info > #node-name {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.node-info > #node-id {
+    font-size: 0.9rem;
+    margin-bottom: 0;
+    color: var(--muted-font-color);
+}
+
+.node-info #node-type {
+    font-size: 0.9rem;
+    margin-bottom: 0;
+    color: var(--muted-font-color);
+}
+
+.node-info #node-usage {
+    font-size: 0.9rem;
+    margin-bottom: 0;
+    color: var(--muted-font-color);
+}
+
+
+.node-stats > div {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+.node-stats > div > p {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+
+/* 
+    node-rightclick
+*/
+#node-rightclick {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 5;
+    pointer-events: none;
+    display: none;
+}
+
+#node-rightclick > div {
+    position: absolute;
+    background-color: var(--theme-secondary-color);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    margin: 1rem;
+    width: 15rem;
+    pointer-events: all;
+}
+
+
+
+/* 
+    NODE PANEL
+    To make scaling easier, and to simplify the code,
+    in general, the node-panel will just be centered
+    on the screen and the background behimd it will
+    be grayed out. meaning no interaction with the
+    background is possible.
+*/
+#node-panel {
+    position: fixed;
+    z-index: 6;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+#node-panel > div {
+    position: absolute;
+    background-color: var(--theme-secondary-color);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin: 1rem;
+    width: 50%;
+    max-width: 60rem;
+    height: fit-content;
+    height: -moz-fit-content;
+    pointer-events: all;
+    margin-top: var(--header-height);
+}
+
+#minimize { font-size: large; }
+
+#node-panel .quick-actions {
+    padding: 0.5rem;
+    background-color: var(--theme-color);
+    border-radius: 0.5rem;
+}
+
+#node-panel .detailed-info p {
+    width: 100%;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+#node-panel .detailed-info p :first-child {
+    color: var(--font-color);
+}
+
+
+
+/* 
+    Node panel tabs
+    - I/O
+    - Logs
+    - Live
+*/
+
+#node-graphs-tabs { border-bottom: 1px solid var(--theme-color); }
+#node-graphs-tabs-content {
+    background-color: var(--theme-color);
+    height: 100%;
+    display: inherit;
+
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+}
+
+.nav-item { border: none!important; color: var(--font-color)!important; }
+.nav-item button { color: var(--font-color)!important; }
+
+.nav-item:hover {
+    background-color: var(--theme-color)!important;
+    color: var(--font-color)!important;
+    border: none!important;
+    border-top-left-radius: 0.5rem!important;
+    border-top-right-radius: 0.5rem!important;
+}
+
+.nav-item .active {
+    background-color: var(--theme-color)!important;
+    color: var(--font-color)!important;
+    border: none!important;
+    border-top-left-radius: 0.5rem!important;
+    border-top-right-radius: 0.5rem!important;
+}
+
+/* Graph */
+#node-io {
+    height: 15rem;
+    width: 100%;
+    border-radius: 1rem;
+}
+
+
+/* 
+    Node panel visibility
+*/
+.hidden {
+    display: none;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    top: -9999px;
+    left: -9999px;
+}
+
+.visable {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: all;
+    top: 0;
+    left: 0;
+}
+
+
+/*
+    Node panel Reactivity
+*/
+@media (max-width: 360px) {
+    #node-panel > div { 
+        padding-top: var(--header-height);
+        width: 100vw!important;
+        height: 100vh;
+        margin: 0;
+    }
+}
+@media (max-width: 768px) {
+    #node-panel > div { width: 90%; }
+}

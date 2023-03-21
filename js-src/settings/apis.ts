@@ -1,6 +1,6 @@
 import { create_toast } from "../toasts";
 import { configuration } from "./";
-import { DefaultResponse, DefaultResponseData, SecurityInfoResponse, VerifyAccessResponse } from "./index.d";
+import { AddCardResponse, Card, DefaultResponse, DefaultResponseData, GetCardsResponse, GetReviewsResponse, SecurityInfoResponse, StartSubscriptionResponse, SubscriptionMethod, VerifyAccessResponse } from "./index.d";
 
 export async function base_request (
     mehod: string,
@@ -15,7 +15,7 @@ export async function base_request (
                 "Content-Type": "application/json",
                 "X-CSRFToken": configuration.csrf_token,
             },
-            body: JSON.stringify(data),
+            body: mehod === 'GET' ? undefined : JSON.stringify(data),
         },
     );
 
@@ -110,7 +110,7 @@ export const send_verification = async (
     'POST',
     configuration.send_verification,
     { mode, mfa: mfa_code }
-) as Promise<VerifyAccessResponse>;
+);
 
 
 
@@ -165,6 +165,22 @@ export const extend_session = async (
 
 
 /**
+ * @name close_session
+ * @param token - PAK token
+ * @returns Promise<DefaultResponse>
+ * @description Closes the session of the user (PAK Secure area access)
+ */
+export const close_session = async (
+    token: string
+): Promise<DefaultResponse> => base_request(
+    'POST',
+    configuration.close_session,
+    { token }
+);
+
+
+
+/**
  * @name remove_oauth
  * @param token - PAK token
  * @param oauth_id - Oauth id
@@ -174,13 +190,11 @@ export const extend_session = async (
 export const remove_oauth = async (
     token: string, 
     oauth_id: string
-): Promise<DefaultResponse> => {
-    return base_request(
-        'POST',
-        configuration.remove_oauth,
-        { token, oauth_id }
-    );
-}
+): Promise<DefaultResponse> => base_request(
+    'POST',
+    configuration.remove_oauth,
+    { token, oauth_id }
+);
 
 
 
@@ -193,13 +207,156 @@ export const remove_oauth = async (
  */
 export const get_security_info = async (
     token: string,
-): Promise<SecurityInfoResponse> => {
-    return base_request(
+): Promise<SecurityInfoResponse> => base_request(
+    'POST',
+    configuration.security_info,
+    { token }
+);
+
+
+
+/**
+ * @name add_card
+ * @param card - Card: Token, number, exp_month, exp_year, cvc
+ * @returns Promise<DefaultResponse>
+ */
+export const add_card = async (
+    card: Card
+): Promise<AddCardResponse> => base_request(
+    'POST',
+    configuration.add_payment,
+    card
+);
+
+
+/**
+ * @name get_cards
+ * @returns Promise<DefaultResponse>
+ * @description Get the cards of the user
+ */
+export const get_cards = async (): Promise<GetCardsResponse> => base_request(
+    'GET',
+    configuration.get_payments,
+    {}
+);
+
+
+/**
+ * @name remove_card
+ * @param id - Card id
+ * @returns Promise<DefaultResponse>
+ * @description Remove a card from the user
+ */
+export const remove_card = async (
+    id: string
+): Promise<DefaultResponse> => base_request(
+    'POST',
+    configuration.remove_payment,
+    { id }
+);
+
+
+/**
+ * @name update_profile
+ * @param token - PAK token
+ * @param data - Profile data
+ * @returns Promise<DefaultResponse>
+ * @description Update the profile of the user
+ *             (name, email, etc)
+*/
+export const update_profile = async (
+    data: { [key: string]: any },
+): Promise<DefaultResponse> => base_request(
+    'POST',
+    configuration.update_profile,
+    data
+);
+
+
+/**
+ * @name start_subscription
+ * @param method - SubscriptionMethod
+ * @returns Promise<StartSubscriptionResponse>
+ * @description Start a subscription for the user
+ */
+export const start_subscription = async (
+    method: SubscriptionMethod
+): Promise<StartSubscriptionResponse> => {
+    // -- If the method is a string
+    if (typeof method === 'string') return base_request(
         'POST',
-        configuration.security_info,
-        { token }
-    ) as Promise<SecurityInfoResponse>;
+        configuration.start_subscription,
+        { payment_method: method }
+    );
+
 }
+
+
+/**
+ * @name change_email
+ * @param token - PAK token
+ * @param email - New email
+ * @returns Promise<VerifyAccessResponse>
+ * @description Change the email of the user (Sends verification code)
+ */
+export const change_email = async (
+    token: string,
+    email: string
+): Promise<VerifyAccessResponse> => base_request(
+    'POST',
+    configuration.change_email,
+    { token, email }
+);
+
+
+/**
+ * @name get_reviews
+ * @param filter - Filter
+ * @param sort - Sort
+ * @param page - Page
+ */
+export const get_reviews = async (
+    sort: 'created' | 'rating' | 'likes',
+    order: 'asc' | 'desc',
+    page: number
+): Promise<GetReviewsResponse> => base_request(
+    'POST',
+    configuration.get_reviews,
+    { sort, order, page }
+);
+    
+
+/**
+ * @name update_review
+ * @param id - Review id
+ * @param rating - Rating
+ * @param title - Title
+ * @param body - Body
+ */
+export const update_review = async (
+    id: string,
+    rating: number,
+    title: string,
+    body: string
+): Promise<DefaultResponse> => base_request(
+    'POST',
+    configuration.update_review,
+    { id, rating, title, body }
+);
+
+
+/**
+ * @name delete_review
+ * @param id - Review id
+ * @returns Promise<DefaultResponse>
+ */
+export const delete_review = async (
+    id: string
+): Promise<DefaultResponse> => base_request(
+    'POST',
+    configuration.delete_review,
+    { id }
+);
 
 
 

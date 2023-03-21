@@ -1,8 +1,10 @@
+from srr import NodeType
 from . import ServerMode
 from server_manager.models.publisher import Publisher
 from server_manager.models.server import Server
 
 import uuid
+from .router import router
 
 """
     :name: get_servers_by_mode
@@ -50,6 +52,20 @@ def get_publisher_by_server(server: Server) -> list[Publisher]:
 
 
 """
+    :name: get_all_servers
+    :param active: If the server should be active or not
+    :return: A list of servers
+"""
+def get_all_servers(active: bool = True) -> list[Server]:
+    servers = []
+    if active: servers = Server.objects.filter(live=True)
+    else: servers = Server.objects.all()
+
+    return [server.serialize() for server in servers]
+
+
+
+"""
     :name: add_server
     :description: This function is used to add a server to the database.
     :param rtmp_ip: The IP address of the RTMP server
@@ -72,6 +88,9 @@ def add_server(
     """
         This function is used to add a server to the database.
     """
+    # -- Figure out what the server's mode is
+    mode = ServerMode.from_string(router.suggest_node_type(True))
+    s_mode = NodeType.to_str(NodeType.translate_cc(mode.to_string()))
 
     # -- Check if the server already exists
     try:
@@ -81,11 +100,20 @@ def add_server(
             # -- Update the server
             server.rtmp_port = rtmp_port
             server.http_port = http_port
+            server.mode = mode.to_string()
             server.save()
             
             server.regenerate_secret()
             if server.update_cloudflare() == False:
-                return None
+                return None 
+            
+            # -- Update the router configuration
+            router.add_node(
+                name=str(server.id),
+                type=s_mode,
+                latency=0,
+                usage=0,
+            )
 
             return server
     except Exception as e:
@@ -98,9 +126,18 @@ def add_server(
         rtmp_port=rtmp_port,
         http_ip=http_ip,
         http_port=http_port,
+        mode=mode.to_string(),
     )
     server.save()
     if server.update_cloudflare() == False:
         return None
+    
+    # -- Update the router configuration
+    router.add_node(
+        name=str(server.id),
+        type=s_mode,
+        latency=0,
+        usage=0,
+    )
     
     return server

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+    <!-- 
+        I've never written HTML for a Email template before, 
+        so I'm not sure if this is the correct way to do it. 
+    -->
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <style>
+            :root {
+                --theme-color: #0d1116;
+                --theme-secondary-color: #161a1f;
+                --theme-backdrop-color: #1e242b;
+                --accent-color: #E5BA73;
+                --font-color: #ffffff;
+                --greyed-out-font-color: #b3b3b3;
+                --font-color-inverted: #111111;
+                --muted-font-color: #b3b3b3;
+            
+                --header-height: 3.5rem;
+                --header-fade-out: 0.5rem;
+                --header-button-speed: 0.5s;
+            
+                --ss-warning: #E3C567;
+                --ss-error: #FF6666;
+                --ss-success: #6FD08C;
+                --ss-info: #39A9DB;
+            }
+
+            body {
+                margin: 0;
+                background-color: var(--theme-secondary-color);
+                /* VERY IMPORTANT: common font */
+                font-family: 'Roboto', sans-serif;
+                color: var(--greyed-out-font-color);
+                min-height: 600px;
+                overflow: auto;
+            }
+
+            .header {
+                background-color: var(--theme-color);
+                display: flex;
+                padding: 1rem 5rem;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .logo {
+                height: auto;
+                fill: var(--accent-color);
+            }
+
+
+            .legal {
+                bottom: 0;
+                right: 0;
+                width: 100%;
+                background-color: var(--theme-color);
+            }
+
+            .legal p {
+                font-size: 0.8rem;
+                color: var(--greyed-out-font-color);
+                text-align: center;
+                margin: 0;
+                width: 100%;
+                padding: 0.3rem 0;
+            }
+
+            .legal a {
+                color: var(--accent-color);
+                text-decoration: none;
+            }
+
+            .title {
+                text-align: center;
+                width: 100%;
+                padding: 1rem 0;
+            }
+
+            .title h1 {
+                font-size: 1.5rem;
+                color: var(--font-color);
+                margin: 0;
+            }
+
+            .title p {
+                font-size: 1rem;
+                color: var(--greyed-out-font-color);
+                margin: 0;
+            }
+
+            .btn {
+                display: block;
+                width: 100%;
+                max-width: 200px;
+                margin: 0 auto;
+                padding: 0.5rem;
+                background-color: var(--ss-info);
+                color: var(--text-color);
+                text-align: center;
+                border-radius: 0.25rem;
+                text-decoration: none;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class='header'>
+            {% include 'email/logo.svg' %}
+        </div>
+
+        <!-- Divider -->
+        <hr style='width: 100%; border: 1px solid var(--theme-backdrop-color);'>
+
+        <!-- Titile + Description -->
+        <div class='title'>
+            <h1>{{ title }}</h1>
+            <p>{{ description }}</p>
+        </div>
+
+        <!-- Divider -->
+        <hr style='width: 100%; border: 1px solid var(--theme-backdrop-color);'>
+
+        <!-- Content -->
+        <div class='content'>
+            {% block content %}
+            {% endblock %}
+        </div>
+
+        <!-- Legal -->
+        <div class='legal'>
+            <p> Email ID: {{ email_id }} </p>
+
+            <!-- Recviers email -->
+            <p>You are receiving this email because you ({{ email }}) are a registerd member of StreamStage</p>
+
+            <!-- Privacy Policy and Terms of Service -->
+            <p>
+                Read our
+                <a href='https://streamstage.co/privacy-policy'>Privacy Policy</a> | 
+                <a href='https://streamstage.co/terms-of-service'>Terms of Service</a>.
+                If you have any questions, please contact us <a href='mailto:
+                {{ support_email }}'>here.</a>
+            </p>
+
+            <!-- Rights -->
+            <p>
+                &copy; {{ year }} StreamStage. All rights reserved.
+            </p>
+        </div>
+    </body>
+</html>

@@ -1,4 +1,5 @@
 # - Imports
+from StreamStage.mail import send_template_email
 from .mfa import generate_token, delete_duplicate, get_token, verify_temp_otp
 from rest_framework.decorators import api_view
 from accounts.com_lib import authenticated, invalid_response, required_data, success_response
@@ -46,6 +47,16 @@ def verify_mfa(request, data):
     request.user.tfa_secret = get_token(request.user)[0]
     request.user.save()
     delete_duplicate(request.user)
+    
+    # -- Set the recovery codes and email the user
+    request.user.set_recovery_codes()
+    send_template_email(
+        request.user, 
+        'mfa_enabled', 
+        request.user.get_recovery_codes()
+    )
+
+    # -- Return a success response
     return success_response('MFA has been enabled successfully')
 
     
@@ -61,5 +72,9 @@ def disable_mfa(request, data):
     # -- Remove MFA
     request.user.tfa_secret = None
     request.user.save()
+
+    # -- Email the user
+    if request.user.security_preferences.email_on_mfa_change:
+        send_template_email(request.user, 'mfa_disabled')
 
     return success_response('MFA has been disabled successfully')

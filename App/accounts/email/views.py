@@ -6,7 +6,6 @@ from rest_framework.decorators import api_view
 from .verification import (
     check_if_verified_recently,
     get_key_by_resend_key,
-    get_key,
     regenerate_key,
     remove_key,
     send_email,

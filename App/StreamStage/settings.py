@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-
 import CloudFlare
 from .secrets import DJANGO_SECRET_KEY, SENDGIRD_TOKEN, CLOUDFLARE_TOKEN
 
@@ -39,7 +38,7 @@ ALLOWED_HOSTS = [
     '.streamstage.co',
 ]
 
-
+CERT_DIR = str(BASE_DIR / 'certs')
 
 #
 # Cloudflare
@@ -68,7 +67,7 @@ SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_SAMESITE = None
 CSRF_COOKIE_SAMESITE = None
 
-
+SESSION_COOKIE_DOMAIN=".streamstage.co"
 
 #
 # CSRF / CORS
@@ -76,11 +75,11 @@ CSRF_COOKIE_SAMESITE = None
 CSRF_TRUSTED_ORIGINS = [
     'https://me.streamstage.co',
     'https://streamstage.co',
+    'https://applications.streamstage.co'
 ]
 X_FRAME_OPTIONS = 'ALLOW-FROM *://*.streamstage.co/*'
 CORS_ALLOWED_ORIGIN_REGEXES = [r"^https://.+$"]
-
-
+CORS_ORIGIN_ALLOW_ALL = True
 
 #
 # Application definition
@@ -102,11 +101,13 @@ INSTALLED_APPS = [
     'search',
     'store',
     'orders',
+    'homepage',
+    'StreamStage',
 
     # 3rd Party
     'crispy_forms',
 
-    # 'corsheaders',
+    'corsheaders',
     'crispy_bootstrap5',
     'django_countries',
     'rest_framework',
@@ -120,7 +121,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    # 'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -231,6 +232,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap5'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 INBOUND_EMAIL = 'inquiries@StreamStage.co'
 OUTBOUND_EMAIL = 'mail@streamstage.co'
+SUPPORT_EMAIL = 'help@streamstage.co'
 
 # DEV Key
 SENDGIRD_TOKEN = SENDGIRD_TOKEN

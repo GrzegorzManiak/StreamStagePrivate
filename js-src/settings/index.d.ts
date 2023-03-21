@@ -1,12 +1,14 @@
 export type PanelType = 
     'profile' |
     'security' |
+    'streamstageplus' |
     'payment' |
     'notifications' |
     'security-verified' |
     'help' |
     'purchases' |
     'events' |
+    'reviews' |
     'event-request' |
     'venues' |
     'security-preferences' |
@@ -57,6 +59,14 @@ export interface LoginHistory {
     method: string,
 }
 
+export interface SecurityPreferences {
+    [key: string]: {
+        value: boolean,
+        help_text: string,
+        name: string
+    }
+}
+
 export interface SecurityInfo {
     email: string,
     dob: string,
@@ -68,11 +78,55 @@ export interface SecurityInfo {
     is_admin: boolean,
     over_18: boolean,
     service_providers: Array<ServiceProvider>,
-    login_history: Array<LoginHistory>
+    login_history: Array<LoginHistory>,
+    security_preferences: SecurityPreferences
 }
 
+export interface Card {
+    card: string,
+    exp_month: number,
+    exp_year: number,
+    cvc: string,
+    name: string
+}
 
+export interface PaymentMethod {
+    brand: string;
+    exp_month: number;
+    exp_year: number;
+    id: string;
+    last4: string;
+    created: number;
+}
 
+export type SubscriptionMethod = Card | PaymentMethod;
+
+interface SubscriptionIntent {
+    id: string,
+    start: number,
+    end: number,
+    created: number,
+    invoice_id: string,
+    payment_intent_id: string,
+    payment_intent_secret: string,
+    requires_action: boolean,
+    next_action?: {
+        type: string,
+        [key: string]: string
+    }
+}
+
+export interface Review {
+    id: string,
+    event: string,
+    event_name: string,
+    rating: number,
+    body: string,
+    title: string,
+    created: number,
+    likes: number,
+}
+  
 // 
 // Default Server response structure
 // 
@@ -104,3 +158,21 @@ export type VerifyAccessResponse = VerifyAccessSuccess | DefaultResponse;
 
 export type SecurityInfoSuccess = DefaultResponseData & { data: SecurityInfo }
 export type SecurityInfoResponse =SecurityInfoSuccess | DefaultResponse;
+
+export type AddCardSuccess = DefaultResponseData & { data: PaymentMethod }
+export type AddCardResponse = AddCardSuccess | DefaultResponse;
+
+export type GetCardsSuccess = DefaultResponseData & { data: Array<PaymentMethod> }
+export type GetCardsResponse = GetCardsSuccess | DefaultResponse;
+
+export type StartSubscriptionSuccess = DefaultResponseData & { data: SubscriptionIntent }
+export type StartSubscriptionResponse = StartSubscriptionSuccess | DefaultResponse;
+
+export type GetReviewsSuccess = DefaultResponseData & { data: {
+    reviews: Array<Review>,
+    total: number,
+    per_page: number,
+    page: number,
+    pages: number
+}}
+export type GetReviewsResponse = GetReviewsSuccess | DefaultResponse;
