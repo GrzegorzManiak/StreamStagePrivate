@@ -94,9 +94,7 @@ INSTALLED_APPS = [
     
     # Local
     'accounts',
-    'server_manager',
     'events',
-    'stream',
     'applications',
     'search',
     'store',
