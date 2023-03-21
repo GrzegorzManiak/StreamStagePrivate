@@ -85,6 +85,22 @@
         <!-- Event Reviews -->
         <div class="col-3 text-start mx-auto p-2">
             <div>
+                <h4 class="mx-2 my-4"><b>Tickets</b></h4>
+                <div>
+                    {% if event.stream_price != None %}
+                        <div class="row border m-1">
+                            <div class="col-6">
+                                <div class="b">Flexible Streaming Ticket</div>
+                                <span>€{{event.stream_price}}</span>
+                            </div>
+                            <div class="col-6">
+                                <span class="btn btn-success m-auto">Purchase</span>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div>
                 <h4 class="mx-2 my-4"><b>Reviews</b></h4>
                 <div>
                     <!-- Allow users to review -->

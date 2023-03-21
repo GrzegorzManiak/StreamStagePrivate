@@ -11,7 +11,7 @@ class FlexibleTicket(models.Model):
     item = models.ForeignKey(PurchaseItem, on_delete=models.SET_NULL, null=True)
     
     event = models.ForeignKey(Event, null=True, on_delete=models.DO_NOTHING) # if event is deleted - keep ticket
-
+    
     purchased_date = models.DateTimeField(auto_now_add=True)
     
     # this field is null until member chooses a showing to watch

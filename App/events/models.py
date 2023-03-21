@@ -40,6 +40,8 @@ class Event(models.Model):
     stream_price = models.DecimalField("Streaming Ticket Price", validators=[MinValueValidator(0), MaxValueValidator(999)], decimal_places=2, max_digits=10, null=True)
     live_price = models.DecimalField("In-Person Ticket Price", validators=[MinValueValidator(0), MaxValueValidator(999)], decimal_places=2, max_digits=10, null=True)
 
+    live_ticket_stock = models.IntegerField("Remaining Live Ticket Stock", default=0)
+
     # Event
     
     def get_absolute_url(self):

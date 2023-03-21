@@ -35,3 +35,13 @@ def new_ticket_id():
         id += TICKET_ID_CHARS[random.randint(0, len(TICKET_ID_CHARS) - 1)]
 
     return id
+
+
+PURCHASE_ID_LEN = 20
+def new_purchase_id():
+    id = ""
+
+    for _ in range(PURCHASE_ID_LEN):
+        id += TICKET_ID_CHARS[random.randint(0, len(TICKET_ID_CHARS) - 1)]
+
+    return id
