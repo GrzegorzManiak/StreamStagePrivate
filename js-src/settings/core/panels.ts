@@ -277,8 +277,6 @@ export function hide_pod(panel_type: PanelType, redirect: PanelType) {
     pod.element.setAttribute('data-pod-status', 'hidden');
 }
 
-
-
 /**
  * @name show_pod
  * @param panel_type: PanelType - The panel type

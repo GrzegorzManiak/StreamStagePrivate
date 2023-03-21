@@ -53,6 +53,7 @@
     data-stripe-pub='{{ stripe_key }}'
     data-stripe-customer='{{ stripe }}'
 ></span>
+
 <div class="container">
 
     <!-- Main Details -->
@@ -124,7 +125,7 @@
                 </div>
             </div>
         </div>
-
+        
         <!-- Event Reviews -->
         <div class="col-3 text-start mx-auto p-2">
             <div>
@@ -148,9 +149,10 @@
                 <div>
                     <!-- Allow users to review -->
                     {% if user.is_authenticated %}
-                    <!-- Need to add code for authenticating that user has seen event -->
-                    {% include 'reviews/review_new.html' %}
+                        <!-- Need to add code for authenticating that user has seen event -->
+                        {% include 'reviews/review_new.html' %}
                     {% endif %}
+                    
                     <!-- Display Reviews -->
                     {% for review in reviews %}
                     {% include 'reviews/review.html' with review=review %}

@@ -1,13 +1,14 @@
+<div id="add-review-panel">
+    {% if not new_review_form %}
+    <span class="btn btn-sm btn-secondary" id="admin-review-override-btn" >Add another</span>
+    {% endif %}
 
-{% if new_review_form %}
-<div class="col 3">
-    <h4>Add Review</h4>
-    <form class="form-layout review-form" action="" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ new_review_form.as_p }}
-        <input type="submit" value="Save" />
-    </form>
+    <div id="add-review-panel" class="col 3" {% if not new_review_form %}elem-status="hidden"{% endif %}>
+        <h4>Add Review</h4>
+        <form class="form-layout review-form" action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ new_review_form.as_p }}
+            <input type="submit" value="Save" />
+        </form>
+    </div>
 </div>
-{% else %}
-    <a class="btn btn-sm btn-secondary" href="?review_override=y">Add another</a>
-{% endif %}

@@ -18,8 +18,6 @@ from accounts.auth_lib import authenticate_key, generate_key
 from accounts.models import Member, LoginHistory, SecurityPreferences
 from accounts.oauth.oauth import format_providers
 
-
-
 @api_view(['GET'])
 @not_authenticated()
 def login(request):
