@@ -3,11 +3,40 @@ import { attach } from "../../click_handler";
 import { email_verification } from './email';
 import { show_panel } from '..';
 import { name_monitor, password_monitor, rp_password_monitor, validate_name, validate_password } from './validation';
-import { register } from '../api';
+import { authenticate_token, register } from '../api';
 import { Register, RegisterSuccess } from '../index.d';
+import { Response } from '../../login/index.d';
 
+async function manage_instructions(
+    button: HTMLButtonElement,
+    email_input: HTMLInputElement,
+    name_input: HTMLInputElement,
+): Promise<void | string> {
+    // -- Handle all URL parameters
+    const url = new URL(window.location.href);
+    const instructions = url.searchParams.get('instructions');
+    if (!instructions) return;
 
-export function register_handler() {
+    // -- Decode the instructions (base64)
+    const decoded = JSON.parse(atob(instructions)) as unknown as Response;
+
+    // -- Check if the user has an account 
+    if (decoded.instructions.has_account === true) 
+        return submit_auth_token(button, decoded.token);
+    
+    // -- Check if the user needs an email
+    if (!decoded.instructions.needs_email)
+        email_input.parentElement.style.display = 'none';
+
+    // -- Set the details
+    name_input.value = decoded.user.given_name;
+    email_input.value = decoded.user.email;
+
+    // -- Return the Oauth token
+    return decoded.token;
+}
+
+export async function register_handler() {
     // -- Get the email input and set the value
     const email_input = document.querySelector('input[name="email"]') as HTMLInputElement,
         name_input = document.querySelector('input[name="username"]') as HTMLInputElement,
@@ -18,6 +47,13 @@ export function register_handler() {
     name_monitor(name_input);
     password_monitor(password_input);
     rp_password_monitor(password_input, rp_password_input);
+
+    // -- Handle instructions
+    const token = await manage_instructions(
+        submit_button, 
+        email_input, 
+        name_input
+    );
 
     // -- Add the event listners to the inputs
     const check_inputs = () => {
@@ -41,7 +77,8 @@ export function register_handler() {
         name_input,
         email_input,
         password_input,
-        rp_password_input
+        rp_password_input,
+        token
     ));
 }
 
@@ -52,7 +89,8 @@ async function handle_click(
     name_input: HTMLInputElement,
     email_input: HTMLInputElement,
     password_input: HTMLInputElement,
-    rp_password_input: HTMLInputElement
+    rp_password_input: HTMLInputElement,
+    Authorization: string | void
 ) {
     // -- Start the spinner
     const stop_spinner = attach(button);
@@ -92,18 +130,22 @@ async function handle_click(
     const res = await register(
         email_input.value,
         name_input.value,
-        password_input.value
+        password_input.value,
+        { Authorization }
     )
 
     // -- Check if the request was successful
-    if (res.code !== 200) {
+    if (res.code !== 200 && res.code !== 201) {
         create_toast('error', 'Error', res.message);
         return await stop_spinner();
     }
 
     // -- Show the email verification panel
     const data = (res as RegisterSuccess).data;
-    if (data.type === 'verified') {}
+    if (data.type === 'verified') {
+        create_toast('success', 'Success', 'Your account has been created successfully!');
+        await submit_auth_token(button, data.token);
+    }
 
     else {
         const email_tokens = data as Register,
@@ -120,4 +162,40 @@ async function handle_click(
             () => new_email_input.value
         );
     }
+}
+
+
+
+/**
+ * @name submit_auth_token
+ * 
+ * @description This function is used to submit the authentication token
+ * to the server and attempts to login the user in.
+ * 
+ * @param button {HTMLButtonElement} The button that was clicked
+ * @param token {string} The token that was sent to the user
+ * @returns {Promise<void>}
+ */
+export async function submit_auth_token(
+    button: HTMLButtonElement,
+    token: string,
+) {
+    // -- Start the spinner
+    const stop_spinner = attach(button);
+
+    // -- Make the request
+    const response = await authenticate_token(token);
+    if (response.code !== 200) {
+        create_toast('error', 'login', response.message);
+        return stop_spinner();
+    }
+
+    // -- Login was successful
+    create_toast('success', 'login', "You have successfully logged in, redirecting you to the dashboard");
+
+    // -- Wait for 3 seconds
+    await new Promise(() => setTimeout(() => {
+        // -- Redirect the user to the dashboard
+        window.location.href = '/';
+    }, 3000));
 }

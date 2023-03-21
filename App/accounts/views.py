@@ -85,7 +85,7 @@ def validate_token(request, headers):
         Which is the standardaized way of authenticating
         with our app.
     """
-
+    print(headers)
     # Pass the header to the authenication function
     user = authenticate_key(headers['Authorization'])
     if user[0] is None: return invalid_response('Invalid Authorization header')

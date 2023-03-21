@@ -4,14 +4,34 @@ import { attach } from "../../click_handler";
 import { authenticate_token, login } from '../api';
 import { email_verification } from './email';
 import { totp_verification } from './totp';
+import { Response } from '../index.d';
 import { show_panel } from '..';
 
+function manage_instructions(button: HTMLButtonElement) {
+    // -- Handle all URL parameters
+    const url = new URL(window.location.href);
+    const instructions = url.searchParams.get('instructions');
+    if (!instructions) return;
+
+    // -- Decode the instructions (base64)
+    const decoded = JSON.parse(atob(instructions)) as unknown as Response;
+
+    // -- Check if the user has an account 
+    if (!decoded.instructions.has_account)
+        document.location.href = '/register?instructions=' + instructions;
+    
+    // -- Authenticate the user
+    else submit_auth_token(button, decoded.token);
+}
 
 export function login_handler() {
     // -- Get the login fields
     const emailorname_input = document.querySelector('input[name="emailorusername"]') as HTMLInputElement,
     password_input = document.querySelector('input[name="password"]') as HTMLInputElement,
     button = document.querySelector('button') as HTMLButtonElement;
+
+    // -- Handle instructions
+    manage_instructions(button);
 
     // -- Add the event listners to the inputs
     const check_inputs = () => {

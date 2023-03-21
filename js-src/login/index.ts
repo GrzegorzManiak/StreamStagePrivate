@@ -1,5 +1,6 @@
 import { get_or_error } from '../api/config';
-import { login_handler } from './src/core';
+import { login_handler, submit_auth_token } from './src/core';
+import { authenticate_token } from './api';
 
 const sso_config = document.getElementById('config');
 export const configuration = {

@@ -6,7 +6,6 @@ module.exports = {
     optimization: { minimizer: [new TerserPlugin()] },
     entry: {
         // settings: './settings/index.ts',
-        // authentication: './authentication/index.ts',
         api: './api/index.ts',
         toast: './toasts/index.ts',
         click_handler: './click_handler/index.ts',
