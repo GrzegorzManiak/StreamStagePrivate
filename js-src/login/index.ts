@@ -30,6 +30,7 @@ export function show_panel(panel: string) {
     // -- Get the new panel
     const new_panel = panel_elms[panel];
     new_panel.classList.add('login-area-panel-in');
+    new_panel.classList.remove('login-area-panel-out');
     current_panel = panel;
 }
 

@@ -51,7 +51,7 @@ def send_reg_verification(request, data):
         # -- Check if the email is verified
         if email_verified is False:
             keys = start_email_verification(
-                email.lower(), 
+                data['email'].lower(), 
                 data['password'], 
                 data['username'], 
                 oauth_token

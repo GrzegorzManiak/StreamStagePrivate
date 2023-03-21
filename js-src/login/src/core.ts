@@ -17,21 +17,24 @@ function manage_instructions(button: HTMLButtonElement) {
     const decoded = JSON.parse(atob(instructions)) as unknown as Response;
 
     // -- Check if the user has an account 
-    if (!decoded.instructions.has_account)
+    if (!decoded.instructions.has_account) {
         document.location.href = '/register?instructions=' + instructions;
-    
+        return new Promise(() => {});
+    }
+
     // -- Authenticate the user
     else submit_auth_token(button, decoded.token);
 }
 
-export function login_handler() {
+export async function login_handler() {
     // -- Get the login fields
     const emailorname_input = document.querySelector('input[name="emailorusername"]') as HTMLInputElement,
     password_input = document.querySelector('input[name="password"]') as HTMLInputElement,
     button = document.querySelector('button') as HTMLButtonElement;
 
     // -- Handle instructions
-    manage_instructions(button);
+    await manage_instructions(button);
+    show_panel('login');
 
     // -- Add the event listners to the inputs
     const check_inputs = () => {

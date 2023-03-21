@@ -133,7 +133,7 @@ def get_token(request, data):
 
     # -- Probably a username
     else:
-        try: user = Member.objects.get(cased_username=data['emailorusername'].lower())
+        try: user = Member.objects.get(username=data['emailorusername'].lower())
         except Member.DoesNotExist: return invalid_response('Invalid credentials')
 
 
