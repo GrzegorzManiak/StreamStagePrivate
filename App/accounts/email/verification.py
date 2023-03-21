@@ -286,10 +286,7 @@ def regenerate_key(
         return [False, 'Key has expired', None]
 
     # -- Check if we are changing the email
-    if (
-        new_email is not None and
-        key['allow_email_change'] is True
-    ): 
+    if (new_email is not None and key['allow_email_change'] is True): 
         # -- Check if we have a callback function
         if key['email_change_callback'] is not None:
             try: 

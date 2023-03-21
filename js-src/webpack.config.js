@@ -11,6 +11,7 @@ module.exports = {
         toast: './toasts/index.ts',
         click_handler: './click_handler/index.ts',
         login: './login/index.ts',
+        register: './register/index.ts',
         // ping_server: './ping_server/index.ts',
         // streamer_apps: './streamer_apps/index.ts',
         // srr_visualizer: './srr_visualizer/index.ts',

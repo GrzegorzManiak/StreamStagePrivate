@@ -59,14 +59,16 @@ export const recent = async (
 /**
  * @name resend_verification
  * @param {string} token
+ * @param {string} email (optional)
  * @returns {Promise<ResendVerificationResponse>}
  */
 export const resend_verification = async (
     token: string,
+    email?: string,
 ): Promise<ResendVerificationResponse> => base_request(
     'POST',
     configuration.resend_verification,
-    { token }
+    { token, email },
 );
 
 

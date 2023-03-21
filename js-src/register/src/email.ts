@@ -3,17 +3,15 @@ import { ResendVerification } from '../../api/index.d';
 import { check_email_verification, resend_verification } from '../../api';
 import { attach } from '../../click_handler';
 import { create_toast } from '../../toasts';
-import { submit_auth_token } from './core';
+import { submit_auth_token } from '../../login/src/core';
 
 
 export async function email_verification(
+    resend_button: HTMLButtonElement,
     verify_token: string,
     resend_token: string,
-    access_token: string,
+    new_email: () => string,
 ): Promise<void> {
-    // -- Show the email verification panel
-    show_panel('mfa');
-
     // -- Get the clock element and the resned button
     const clock = document.querySelector('.clock') as HTMLDivElement,
         resend = document.querySelector('#email-resend-btn') as HTMLButtonElement;
@@ -40,16 +38,21 @@ export async function email_verification(
     }, 1000);
 
 
+
     // -- Start listening for the verification code
-    check_email_verification(() => verify_token).then(async () => 
-        // -- Using the access token, log the user in
-        await submit_auth_token(resend, access_token));
+    check_email_verification(() => verify_token).then(async () => {
+        // -- Wait for 3 seconds
+        await new Promise(() => setTimeout(() => {
+            // -- Redirect the user to the dashboard
+            window.location.href = '/'; 
+        }, 3000));
+    });
 
 
     // -- Add the event listener to the resend button
-    resend.addEventListener('click', async () => {
-        const stop_spinner = attach(resend);
-        const res = await resend_verification(resend_token);
+    resend_button.addEventListener('click', async () => {
+        const stop_spinner = attach(resend_button);
+        const res = await resend_verification(resend_token, new_email());
         if (res.code !== 200) {
             create_toast('error', 'Authentication', 'Failed to resend the verification code');
             return stop_spinner();

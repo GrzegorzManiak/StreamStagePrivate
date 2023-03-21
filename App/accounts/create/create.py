@@ -134,8 +134,6 @@ def start_email_verification(
     oauth: str = None,
 ): 
     email = email.lower()
-
-    # -- This is the identifier for the temp user
     temp_user_key = secrets.token_urlsafe(32)
 
     # -- Create the callback
@@ -147,8 +145,8 @@ def start_email_verification(
         # -- The user's email is verified
         #    so we can create the account
         member = Member.objects.create(
-            username=username,
-            cased_username=username.lower(),
+            username=username.lower(),
+            cased_username=username,
             email=temp_users[temp_user_key]['email'].lower(),
             password=make_password(password),
         )
@@ -157,11 +155,7 @@ def start_email_verification(
         if oauth is not None:
             # -- Get the OAuth Data
             oauth_data = get_oauth_data(oauth)
-
-            # -- Add the profile picture
             member.add_profile_pic_from_url(oauth_data['data']['picture'])
-
-            # -- Link the account
             link_oauth_account(member, oauth)
 
         # -- Send the welcome email
@@ -171,26 +165,27 @@ def start_email_verification(
         try: del temp_users[temp_user_key]
         except KeyError: pass
 
+
     def change_email_callback(user, new_email):
-        # -- First, make sure the 
-        #    user is not None
+        # -- First, make sure the user is not None
         if user is None or new_email is None: return False
 
         # -- Check if its taken 
-        if email_taken(new_email):
-            return False
+        if new_email.lower() == email.lower(): return True
+        if email_taken(new_email): return False
 
         # Find the user in the temp_users
         temp_users[temp_user_key]['email'] = new_email.lower()
         return True
         
+
     # -- Create the key
     key = add_key(
         {
             'email': email.lower(),
-            'cased_username': username.lower(),
+            'cased_username': username,
             'password': password,
-            'username': username,
+            'username': username.lower(),
             'oauth': oauth,
             'provided_oauth': oauth is not None,
         },
@@ -202,9 +197,9 @@ def start_email_verification(
     # -- Create the account
     temp_users[temp_user_key] = {
         'email': email,
-        'cased_username': username.lower(),
+        'cased_username': username,
         'password': password,
-        'username': username,
+        'username': username.lower(),
         'created': time.time(),
         'oauth': oauth,
     }
