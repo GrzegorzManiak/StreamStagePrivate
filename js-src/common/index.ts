@@ -1,4 +1,15 @@
+import { get_or_error } from '../api/config';
 import { ToastType } from './index.d';
+
+
+// -- Get the global configuration
+const config = document.getElementById('config');
+export const configuration = {
+    add_payment: get_or_error<string>(config, 'data-add-payment'),
+    get_payments: get_or_error<string>(config, 'data-get-payments'),
+    remove_payment: get_or_error<string>(config, 'data-remove-payment'),
+}
+
 
 /**
  * @name sleep

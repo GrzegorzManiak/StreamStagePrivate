@@ -2,8 +2,6 @@ import { attach_to_showcases } from './featured';
 import { Event, Streamer } from './index.d';
 import { create_carousel } from './thumbnail';
 
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
 const streamer: Streamer = {
     id: '1',
     name: 'Test Streamer',

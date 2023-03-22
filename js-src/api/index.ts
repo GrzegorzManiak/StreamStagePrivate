@@ -1,6 +1,8 @@
 import { create_toast } from '../common';
-import { configuration } from './config';
 import { DefaultResponse, DefaultResponseData, ResendVerificationResponse } from './index.d';
+import { get_config } from './config';
+
+const configuration = get_config();
 
 export async function base_request (
     mehod: string,

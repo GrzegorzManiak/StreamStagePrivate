@@ -5,9 +5,10 @@ import { add_callback, get_active_pod, hide_pod, open_panel, show_pod } from './
 
 import create_login_history from '../elements/history';
 import mfa from "../elements/mfa";
-import { change_email, check_email_verification, close_session, extend_session, get_security_info, remove, send_verification, update_profile } from "../apis";
+import { change_email, close_session, extend_session, get_security_info, remove, send_verification, update_profile } from "../apis";
 import { create_preference_toggles } from "../elements/security";
 import { password_monitor, rp_password_monitor } from "../../register/src/validation";
+import { check_email_verification } from "../../api";
 
 const security_panels = [
     'security-preferences',
