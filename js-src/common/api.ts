@@ -12,7 +12,7 @@ export const add_card = async (
     card: Card
 ): Promise<AddCardResponse> => base_request(
     'POST',
-    configuration.add_payment,
+    configuration().add_payment,
     card
 );
 
@@ -24,7 +24,7 @@ export const add_card = async (
  */
 export const get_cards = async (): Promise<GetCardsResponse> => base_request(
     'GET',
-    configuration.get_payments,
+    configuration().get_payments,
     {}
 );
 
@@ -39,6 +39,6 @@ export const remove_card = async (
     id: string
 ): Promise<DefaultResponse> => base_request(
     'POST',
-    configuration.remove_payment,
+    configuration().remove_payment,
     { id }
 );
