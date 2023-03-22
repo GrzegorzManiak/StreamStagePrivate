@@ -19,8 +19,10 @@ from django.core.validators import validate_email
 from django_countries.fields import CountryField
 from timezone_field import TimeZoneField
 
-from accounts.create.create import username_taken
+from accounts.email.verification import add_key, send_email
+from accounts.create.create import email_taken, username_taken
 from accounts.models import Member
+from StreamStage.mail import send_template_email
 
 import secrets
 import time
@@ -32,8 +34,7 @@ import time
     :description: This is a username validator
         -- Must be between 3 and 20 characters
         -- Must Start with a letter
-        -- Must only contain letters, numbers, and underscores
-        -- Must not contain two underscores in a row
+        def callback(data)
         -- Must not end with an underscore
         -- Must not contain spaces
     :param username: str - The username to validate
@@ -67,11 +68,14 @@ def validate_username(username) -> tuple[bool, str]:
 def change_username(user, new_username) -> tuple[bool, str]:
     # -- Check if the username is already taken
     if username_taken(new_username):
-        return (False, 'Username is already taken')
+        # -- Find the user with the username
+        user_with_username = Member.objects.get(username=new_username.lower())
+        if user_with_username != user:
+            return (False, 'Username is already taken')
 
     # -- Check that the username is different
     if user.username == new_username:
-        return (False, 'Username is the same')
+        return (True, 'Username is the same')
 
     # -- Check if the user is valid
     if not isinstance(user, Member):
@@ -84,6 +88,7 @@ def change_username(user, new_username) -> tuple[bool, str]:
 
     # -- Change the username
     user.username = new_username.lower()
+    user.cased_username = new_username
     user.save()
 
     return (True, 'Username changed successfully')
@@ -112,7 +117,7 @@ def change_description(user, new_description) -> tuple[bool, str]:
 
     # -- Make sure the description is not the same
     if user.description == new_description:
-        return (False, 'Description is the same')
+        return (True, 'Description is the same')
 
     # -- Clean the description
     clean_description = escape(new_description)
@@ -178,11 +183,13 @@ def update_profile(user, data, sensitive=False) -> tuple[bool, str]:
 
     # -- Update the username
     if 'username' in data:
-        change_username(user, data['username'])
+        res = change_username(user, data['username'])
+        if res[0] == False: return res
 
     # -- Update the description
     if 'description' in data:
-        change_description(user, data['description'])
+        res = change_description(user, data['description'])
+        if res[0] == False: return res
 
     # -- Update the first name
     if 'first_name' in data:
@@ -193,15 +200,25 @@ def update_profile(user, data, sensitive=False) -> tuple[bool, str]:
         user.last_name = data['last_name']
 
     # -- Update the time zone
+    # NOTE: I have absolutely no idea why the time zone field
+    # wont let me use the validate function, so i have to do this
+    # abomination of a for loop
     if 'time_zone' in data:
-        if TimeZoneField.validate(data['time_zone']) == False:
-            return (False, 'Time zone is not valid')
-        user.time_zone = data['time_zone']
+        values = TimeZoneField().choices
+        found = False
+
+        for value in values:
+            if value[1] == data['time_zone']:
+                user.time_zone = data['time_zone']
+                found = True
+                break
+
+        if found == False: return (False, 'Time zone is not valid')
 
     # -- Update the country
     if 'country' in data:
-        if CountryField.validate(data['country']) == False:
-            return (False, 'Country is not valid')
+        try: CountryField().validate(model_instance=None, value=data['country'])
+        except ValidationError: return (False, 'Country is not valid')
         user.country = data['country']
 
     # -- Update the 2FA token
@@ -218,6 +235,9 @@ def update_profile(user, data, sensitive=False) -> tuple[bool, str]:
             return (False, 'Old password is incorrect')
         
         user.set_password(data['password'])
+        if user.security_preferences.email_on_password_change:
+            send_template_email(user, 'password_change')
+
 
     # -- Update the email
     if 'email' in data:
@@ -228,7 +248,13 @@ def update_profile(user, data, sensitive=False) -> tuple[bool, str]:
         except ValidationError:
             return (False, 'Email is not valid')
 
+    # -- Get security preferences
+    keys = user.security_preferences.get_keys()
+    for key in keys:
+        if key in data:
+            user.security_preferences.set(key, data[key])
 
+            
     # -- Save the user
     try: 
         user.save()
@@ -352,3 +378,98 @@ def extend_pat(token, member) -> list[bool, str]:
     pat_data[0]['time'] = time.time()
 
     return [True, 'Token extended successfully']
+
+
+
+"""
+    :name: revoke_pat
+    :description: This function revokes a personal access token
+    :param token: str - The token to revoke
+    :param member: Member - The member to revoke the token for
+    :return: list[bool, str] - A list containing a bool
+        which is True if the token is revoked, False if it is not
+        and a string which is the reason why it is not revoked
+"""
+def revoke_pat(token, member) -> list[bool, str]:
+    # -- Check if the token is valid
+    if not isinstance(token, str):
+        return [False, 'Sorry, but it appears that the token is not valid']
+
+    # -- Check if the member is valid
+    if not isinstance(member, Member):
+        return [False, 'Sorry, but it appears that the member is not valid']
+
+    # -- Check if the token is in the temporary list
+    pat_data = get_pat(token)
+    if pat_data[0] == None:
+        return [False, pat_data[1]]
+    
+    # -- Check if the token belongs to the member
+    if pat_data[0]['user'] != member:
+        return [False, 'Sorry, but it appears that the token does not belong to you']
+
+    # -- Revoke the token
+    temporary_pats.remove(pat_data[0])
+
+    return [True, 'Token revoked successfully']
+
+
+
+"""
+    :name: change_email
+    :description: This function is responsible for changing the email
+    :param member: Member - The member to change the email for
+    :param new_email: str - The new email to change to
+    :return: (string, string, string) - A tuple containing the new key
+        or none if it failed, and a string which is the reason why it was not changed
+"""
+def change_email(
+    member: Member,
+    new_email: str,
+) -> tuple[bool, str] or tuple[str, str, str]:
+    new_email = new_email.lower()
+
+    # -- Check if the email is already in use
+    if email_taken(new_email): return (False, 'Email already in use')
+    cur_email = member.email
+
+    # -- Begin the transaction
+    try:
+        def callback(data):
+            
+            # -- Check if the email was taken
+            if email_taken(new_email):
+                raise Exception('Email already in use, Unlucky')
+            
+            # -- Check if the email was changed
+            if member.email != cur_email:
+                raise Exception('Email changed mid another email change')
+            
+            # -- Inform the user that the email was changed
+            if member.security_preferences.email_on_email_change:
+                send_template_email(member, 'email_change')
+
+            
+            # -- Change the email
+            member.email = new_email.lower()
+            member.save()
+
+            
+        keys = add_key(
+            member,
+            new_email,
+            callback,
+        )
+
+        # -- Send the email
+        res = send_email(keys[0])
+
+        # -- Check if the email was sent
+        if res[0] == False:
+            return (False, res[1])
+
+        # -- Return the keys
+        return (keys[0], keys[1], keys[2])
+
+    except Exception as e:
+        return (False, 'An error occurred while trying to change the email')

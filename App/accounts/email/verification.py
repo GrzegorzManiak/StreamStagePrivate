@@ -9,9 +9,7 @@
 import requests
 import secrets
 import time
-
-from StreamStage.mail import send_email as sm
-from ..models import Member
+from StreamStage.mail import send_template_email
 
 
 REMOVE_AFTER = 60 * 60 * 24 * 7
@@ -196,7 +194,7 @@ def verify_key(key) -> tuple[bool, str]:
 
     # -- Try to call the callback
     try: key['callback'](key['data'])
-    except Exception as e:
+    except Exception:
         return (False, 'Failed to call callback')
 
     # -- Remove the key from the store
@@ -237,18 +235,21 @@ def send_email(
         URL: https://me.streamstage.co/email/verify?token={key['key']}
         Local: http://localhost:8000/accounts/email/verify?token={key['key']}
     """ 
-
+    print(message)
     # NOTE: This is PURELY for testing purposes
-    requests.get(f'https://me.streamstage.co/email/verify?token={key["key"]}')
+    # requests.get(f'https://me.streamstage.co/email/verify?token={key["key"]}')
     
     # -- Send the email
     if test: return (True, message)
     else: 
         try: 
-            sm(
+            send_template_email(
                 key['email'],
-                'Verification Link',
-                message,
+                'verification',
+                {
+                    'url': f'https://me.streamstage.co/email/verify?token={key["key"]}',
+                    'local': f'http://localhost:8000/accounts/email/verify?token={key["key"]}',
+                }
             )
             return (True, 'Email sent')
 
@@ -285,10 +286,7 @@ def regenerate_key(
         return [False, 'Key has expired', None]
 
     # -- Check if we are changing the email
-    if (
-        new_email is not None and
-        key['allow_email_change'] is True
-    ): 
+    if (new_email is not None and key['allow_email_change'] is True): 
         # -- Check if we have a callback function
         if key['email_change_callback'] is not None:
             try: 
@@ -314,6 +312,7 @@ def regenerate_key(
     # -- Return the new key, or None if it failed
     if new_key is not None: return [True, 'Key regenerated', new_key]
     else: return [False, 'Failed to regenerate key', None]
+
 
 
 """

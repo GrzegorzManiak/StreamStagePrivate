@@ -1,0 +1,67 @@
+{% extends "email/base.html" %}
+
+{% block content %}
+    <style>
+        .container {
+            width: 90%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .container a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        .data {
+            display: flex;
+            flex-direction: column;
+        }
+        .data > div { width: 100%; display: flex; }
+        .data h2, .data p { width: 50%; }
+
+        .data h2 {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin: 0;
+            padding: 0.25rem;
+        }
+
+        .data p {
+            margin: 0;
+            text-align: right;
+            padding: 0.5rem;
+        }
+
+        .data div:nth-child(odd) {
+            background-color: #00000015;
+            border-radius: 0.25rem;
+        }
+    </style>
+
+    <div class='container'>
+        <p>Hey, you have requested access to a perform an action that requires email ownership verification.</p>
+
+        <a 
+            href='{{ data.url }}'
+            class='btn'
+        >Verify</a>
+
+        <a 
+            href='{{ data.local }}'
+            class='btn'
+        >Local</a>
+
+        <p>
+            If this action was not performed by you, and you are not registered on our website, 
+            please ignore this email, If you are registered on our website, please contact us immediately
+            <a href='mailto:{{ support_email }}'>here</a>, or reset your password.
+        </p>
+
+        <a 
+            href='https://me.streamstage.co/reset-password'
+            class='btn'
+        >Reset Password</a>
+    </div>
+{% endblock %}

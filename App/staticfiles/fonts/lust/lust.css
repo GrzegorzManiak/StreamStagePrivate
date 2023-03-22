@@ -1,0 +1,10 @@
+@font-face {
+    font-family: 'Lust Script';
+    src: url('/static/fonts/lust/LustScript.woff2') format('woff2'),
+         url('/static/fonts/lust/LustScript.woff') format('woff'),
+         url('/static/fonts/lust/LustScript.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+

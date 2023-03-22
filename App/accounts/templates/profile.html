@@ -2,16 +2,17 @@
 {% load static %}
 
 {% block metadescription %}
-    {{ user.username }} control panel
+    {{ user.cased_username }} control panel
 {% endblock %}
 
 {% block title %}
-    {{ user.username }} - Control Panel
+    {{ user.cased_username }} - Control Panel
 {% endblock %}
 
 {% block head %}
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
     <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+    <link rel="stylesheet" href="{% static 'css/payments.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -35,15 +36,30 @@
         data-resend-verification='{{ api.resend_verification }}'
         data-remove-verification='{{ api.remove_verification }}'
         data-recent-verification='{{ api.recent_verification }}'
-
+        data-change-email='{{ api.change_email }}'
+        
         data-security-info='{{ api.security_info }}'
         data-update-profile='{{ api.update_profile }}'
         data-remove-oauth='{{ api.remove_oauth }}'
         data-extend-session='{{ api.extend_session }}'
+        data-close-session='{{ api.close_session }}'
 
+        data-add-payment='{{ api.add_payment }}'
+        data-get-payments='{{ api.get_payments }}'
+        data-remove-payment='{{ api.remove_payment }}'
+
+        data-start-subscription='{{ api.start_subscription }}'
+        
         data-mfa-setup='{{ api.setup_mfa }}'
         data-mfa-verify='{{ api.verify_mfa }}'
         data-mfa-disable='{{ api.disable_mfa }}'
+
+        data-get-reviews='{{ api.get_reviews }}'
+        data-update-review='{{ api.update_review }}'
+        data-delete-review='{{ api.delete_review }}'
+
+        data-stripe-pub='{{ stripe_key }}'
+        data-stripe-customer='{{ stripe }}'
     ></span>
     <div 
     id = 'main-container'
@@ -136,7 +152,7 @@
                             <!-- Text -->
                             <div class='side-panel-pod-text'>
                                 <p class='side-panel-pod-text-text m-0 mb-0'>
-                                    Payment
+                                    Payments
                                 </p>
                             </div>
                         </div>
@@ -145,13 +161,14 @@
                         -->
 
 
+
                         <!-- 
-                            Pod - Notifications
+                            Pod - StreamStage+
                         -->
                         <div 
                             data-pod-status=''
-                            data-pod='notifications'
-                            class='
+                            data-pod='streamstageplus'
+                        class='
                             side-panel-pod
                             text-light d-flex
                             align-items-center
@@ -167,17 +184,54 @@
                                 '
                             >
                                 <i class="fa-solid text-justify accordion
-                                    fa-bell
+                                    fa-video-plus
                                 "></i>
                             </div>
 
                             <!-- Text -->
                             <div class='side-panel-pod-text'>
                                 <p class='side-panel-pod-text-text m-0 mb-0'>
+                                    StreamStage+
+                                </p>
+                            </div>
+                        </div>
+                        <!-- 
+                            End of Pod - StreamStage+
+                        -->
+                            
+
+
+                        <!-- 
+                            Pod - Notifications
+                        <div 
+                            data-pod-status=''
+                            data-pod='notifications'
+                            class='
+                            side-panel-pod
+                            text-light d-flex
+                            align-items-center
+                            justify-content-start
+                        '>
+                            <div 
+                                class='
+                                    side-panel-pod-icon
+                                    d-flex
+                                    align-items-center
+                                    justify-content-center
+                                '
+                            >
+                                <i class="fa-solid text-justify accordion
+                                    fa-bell
+                                "></i>
+                            </div>
+
+                            <div class='side-panel-pod-text'>
+                                <p class='side-panel-pod-text-text m-0 mb-0'>
                                     Notifications
                                 </p>
                             </div>
                         </div>
+                        -->
                     </div>
                 </section>
 
@@ -779,6 +833,15 @@
                                 <!-- Security panel -->
                                 {% include 'panels/security.html' %}
 
+                                <!-- Payments panel -->
+                                {% include 'panels/payments.html' %}
+
+                                <!-- StreamStage+ -->
+                                {% include 'panels/streamstageplus.html' %}
+
+                                <!-- Reviews -->
+                                {% include 'panels/reviews.html' %}
+                                
                                 <!--
                                     Events Panel
                                 -->

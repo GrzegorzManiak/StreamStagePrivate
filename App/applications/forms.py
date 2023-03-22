@@ -38,7 +38,8 @@ class EventAppForm(forms.ModelForm):
             'title', 
             'description', 
             'categories',
-            'over_18s', 
+            'over_18s',
+            'stream_price'
         #    'showings', 
         #    'media',
         ]

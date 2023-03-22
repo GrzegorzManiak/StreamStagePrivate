@@ -1,0 +1,58 @@
+{% extends "email/base.html" %}
+
+{% block content %}
+    <style>
+        .container {
+            width: 90%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .container a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        .data {
+            display: flex;
+            flex-direction: column;
+        }
+        .data > div { width: 100%; display: flex; }
+        .data h2, .data p { width: 50%; }
+
+        .data h2 {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin: 0;
+            padding: 0.25rem;
+        }
+
+        .data p {
+            margin: 0;
+            text-align: right;
+            padding: 0.5rem;
+        }
+
+        .data div:nth-child(odd) {
+            background-color: #00000015;
+            border-radius: 0.25rem;
+        }
+    </style>
+
+    <div class='container'>
+        <p>Hey {{ user.cased_username }}!</p>
+        <p>
+            Thank you for registering on <a href='https://StreamStage.co'>StreamStage.co</a>! We're excited to have you here.
+        </p>
+
+        <a 
+            href='https://streamstage.co/faq'
+            class='btn'
+        >Common questions</a>
+        
+        <p>
+            If you have any questions, please feel free to contact us <a href='mailto:{{ support_email }}'>here</a>.
+        </p>
+    </div>
+{% endblock %}

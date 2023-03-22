@@ -1,7 +1,6 @@
 import { configuration } from '../';
 import { PanelType, Panel, Pod } from '../index.d';
-import { create_toast } from '../../toasts';
-import { sleep } from '../../click_handler';
+import { sleep, create_toast } from '../../common';
 
 let panels: Array<Panel> = [];
 export let pods: Array<Pod> = [];
@@ -229,18 +228,18 @@ export function open_panel(panel_type: PanelType) {
         active_pod = get_active_pod();
     
     // -- Check if the panel exists
-    if (!pod || !active_pod) return;
+    if (!pod) return;
 
 
     // -- Set the active panel to inactive
-    active_pod.panel.element.setAttribute('data-panel-status', 'hidden');
+    if (active_pod) active_pod.panel.element.setAttribute('data-panel-status', 'hidden');
     pod.panel.element.setAttribute('data-panel-status', 'active');
 
     // -- If the active pod is not the same as the
     //    one that was clicked, then set the active
     //    pod to inactive and set the clicked pod to
     //    active
-    active_pod.element.setAttribute('data-pod-status', '');
+    if (active_pod) active_pod.element.setAttribute('data-pod-status', '');
     pod.element.setAttribute('data-pod-status', 'active');
 
     // -- Call all the callbacks

@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block metadescription %}
+Search for an event that suits your tastes & price range
+{% endblock %}
+
+{% block title %}
+Search Events | StreamStage
+{% endblock %}
+{% block content %}
+
+<div class="container mx-auto">
+    <div class="m-2">
+
+        {% if query %}
+        <p class="text-center">You have searched for: <b>"{{ query }}"</b></p>
+        {% elif category %}
+        <p class="text-center">Sorting category: <b>{{ category_name }}</b></p>
+        {% endif %}
+    </div>
+    <!-- Refine Search Options -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-sm-12 col-12 mx-auto">
+                {% include 'search_filters.html' %}
+            </div>
+
+            <!-- Display Search Results -->
+
+            {% for event in events_list %}
+
+            <div class="m-2 p-2 border border-2 rounded" style="border-color: #ffb25a;">
+                <div class="row">
+                    <div class="col-9">
+                        <a href="{% url 'event_view' event.event_id %}">
+                            <div class="row">
+
+                                <div class="col-3">
+                                    <!-- Event Categories -->
+                                    {% for category in event.categories.all %}
+                                    <span class="badge bg-primary">{{category.name}}</span>
+                                    {% endfor %}
+                                    <!-- Event Broadcaster -->
+                                    <h6>@{{ event.broadcaster.handle }}</h6>
+                                    <!-- Event Cover Picture (if any) -->
+                                    {% if event.get_media_count == 0 %}
+                                    <img class="event-cover col-3" src="{% static 'images/default_event_cover.png' %}"
+                                        alt="No Event Cover Photo">
+                                    {% else %}
+                                    <img class="event-cover col-3" src="{{ cover_pic.picture.url }}" alt="Event Cover Photo">
+                                    {% endif %}
+                                </div>
+                                <div class="col-9">
+                                    <!-- Event title & description -->
+                                    <h4>{{ event.title }}</h4>
+                                    <p>{{ event.short_description }}...</p>
+
+                                    <!-- Displaying next showing (if any) -->
+                                    <div class="row">
+                                        {% if event.get_showings_count > 0 %}
+                                        <div class="col-6">
+                                            <h6><b>Next Showing</b></h6>
+                                            <p>{{ event.get_next_showing }}</p>
+                                        </div>
+                                        <div class="col-6">
+                                            <h6><b>Where</b></h6>
+                                            <p>{{ event.get_next_showing.city }} - {{ event.get_next_showing.country.name }}</p>
+                                        </div>
+                                        {% else %}
+                                        <div class="col-12">
+                                            <h6><b>No upcoming showings</b></h6>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <!-- Top Review for Event -->
+                    <div class="col-3">
+                        <div class="m-4">
+                            {% if event.get_review_count > 0 %}
+                            <h6 class="text-center">Top Review</h6>
+                            {% include 'reviews/review.html' with review=event.get_top_review %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="row mx-auto">
+                <p class="text-center">No results found.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Paginator -->
+<!-- <div class="mx-auto">
+        {% if is_paginated %}
+        <hr>
+        <div class="text-center">
+            {% for pg in paginator.page_range %}
+            <a href="?q={{query}}&cat={{cat.id}}&b={{broadcaster}}&s={{sort_by}}^mip={{min_price}}&map={{max_price}}&page={{pg}}" class="btn btn-light btn-sm 
+                {% if products.number == pg %}active{% endif %}">{{pg}}
+            </a>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    <br>
+</div> -->
+{% endblock %}

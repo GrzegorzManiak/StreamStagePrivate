@@ -3,13 +3,36 @@
 
 {% block title %}Event{% endblock title %}
 
-{% comment %}
-{% block additional_styles %}
-<link rel="stylesheet" href="{% static 'css/events.css' %}">
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/payments.css' %}">
 {% endblock %}
-{% endcomment %}
 
 {% block content %}
+<span id='toasts'>
+</span>
+
+<span 
+    id='config'
+
+    data-csrf-token='{{ csrf_token }}'
+
+    data-send-verification='{{ api.send_verification }}'
+    data-resend-verification='{{ api.resend_verification }}'
+    data-remove-verification='{{ api.remove_verification }}'
+    data-recent-verification='{{ api.recent_verification }}'
+
+    data-add-payment='{{ api.add_payment }}'
+    data-get-payments='{{ api.get_payments }}'
+    data-remove-payment='{{ api.remove_payment }}'
+
+    data-get-reviews='{{ api.get_reviews }}'
+    data-update-review='{{ api.update_review }}'
+    data-delete-review='{{ api.delete_review }}'
+
+    data-stripe-pub='{{ stripe_key }}'
+    data-stripe-customer='{{ stripe }}'
+></span>
+
 <div class="container">
 
     <!-- Main Details -->
@@ -34,18 +57,20 @@
             </div>
             <!-- Overall Event Rating -->
             <div class="mx-2 my-4">
-                <h4>Audience Rating <span class="text-light mt-2">{{ avg_rating }}/10</span></h4>
+                <h4><b>Audience Rating</b> <span class="text-light mt-2">{{ avg_rating }}/10</span></h4>
             </div>
             <!-- Streamer Name -->
             <div class="mx-2 my-4">
-                <h4>Streamer</h4>
-                <p>@{{ event.broadcaster.handle }}</p>
+                <h4><b>Streamer</b></h4>
+                <a href="">
+                    <p>@{{ event.broadcaster.handle }}</p>
+                </a>
             </div>
         </div>
 
         <div class="col-6 mx-auto p-2">
             <!-- Event Title -->
-            <h1 class="page-title">{{ event.title }}</h1>
+            <h2 class="page-title">{{ event.title }}</h2>
 
             <!-- Event Description -->
             <div class="m-4">
@@ -53,10 +78,10 @@
 
                 <!-- Showings -->
                 <div class="row">
-                    <h4 class="my-4">Showings</h4>
+                    <h4 class="my-4"><b>Showings</b></h4>
                     <div class="row">
-                        <h6 class="col-6">When?</h6>
-                        <h6 class="col-6">Where?</h6>
+                        <h6 class="col-6 sub-title"><b>When?</b></h6>
+                        <h6 class="col-6 sub-title"><b>Where?</b></h6>
                     </div>
 
                     <div class="row">
@@ -66,9 +91,11 @@
                         </div>
                         <div class="col-6">
                             <p>
-                            {% if showing.city %}
+                                {% if showing.venue and showing.city %}
                                 {{ showing.venue }} - {{ showing.city }}
-                            {% endif %}
+                                {% elif showing.city %}
+                                {{ showing.city }}
+                                {% endif %}
                             </p>
                             <p>{{showing.country.name}}</p>
                         </div>
@@ -77,17 +104,34 @@
                 </div>
             </div>
         </div>
-
+        
         <!-- Event Reviews -->
         <div class="col-3 text-start mx-auto p-2">
             <div>
-                <h4 class="mx-2 my-4">Reviews</h4>
+                <h4 class="mx-2 my-4"><b>Tickets</b></h4>
+                <div>
+                    {% if event.stream_price != None %}
+                        <div class="row border m-1">
+                            <div class="col-6">
+                                <div class="b">Flexible Streaming Ticket</div>
+                                <span>€{{event.stream_price}}</span>
+                            </div>
+                            <div class="col-6">
+                                <span id="buy-streaming-ticket" class="btn btn-success m-auto" name="purchase-stream">Purchase</span>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div>
+                <h4 class="mx-2 my-4"><b>Reviews</b></h4>
                 <div>
                     <!-- Allow users to review -->
                     {% if user.is_authenticated %}
-                    <!-- Need to add code for authenticating that user has seen event -->
-                    {% include 'reviews/review_new.html' %}
+                        <!-- Need to add code for authenticating that user has seen event -->
+                        {% include 'reviews/review_new.html' %}
                     {% endif %}
+                    
                     <!-- Display Reviews -->
                     {% for review in reviews %}
                     {% include 'reviews/review.html' with review=review %}
@@ -111,5 +155,7 @@
     </div>
 
 </div>
+<script src="/static/js/events.js"></script>
+<script src="/static/js/events_bin.js"></script>
 
 {% endblock content %}

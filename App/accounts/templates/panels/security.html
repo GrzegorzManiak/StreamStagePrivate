@@ -189,7 +189,7 @@
 
             <button 
                 type="submit" 
-                id="extend-verification-time" 
+                id="close-secure-session"
                 class="
                     btn 
                     btn-danger
@@ -208,10 +208,71 @@
                 <p>Close Session</p>
             </button>
         </div>
-        
     </div>
 
-    <hr>
+    <div class='security-items'>
+        <hr>
+        <!-- 2xX grid -->
+        <div class="
+            toggles
+            d-flex
+            flex-wrap
+        ">
+
+            <div data-sec-pod='security-preferences' class='side-panel-pod text-light d-flex align-items-center justify-content-start sec-pod'>
+                <div class='side-panel-pod-icon d-flex align-items-center justify-content-center'>
+                    <i class="fa-solid text-justify accordion fa-cog"></i></div>
+                <div class='side-panel-pod-text'> <p class='side-panel-pod-text-text m-0 mb-0'>
+                    Preferences</p></div>
+            </div>
+
+            <div data-sec-pod='security-mfa' class='side-panel-pod text-light d-flex align-items-center justify-content-start sec-pod'>
+                <div class='side-panel-pod-icon d-flex align-items-center justify-content-center'>
+                    <i class="fa-solid text-justify accordion fa-shield-check"></i></div>
+                <div class='side-panel-pod-text'> <p class='side-panel-pod-text-text m-0 mb-0'>
+                    MFA</p></div>
+            </div>
+
+
+            <div data-sec-pod='security-linked-accounts' class='side-panel-pod text-light d-flex align-items-center justify-content-start sec-pod'>
+                <div class='side-panel-pod-icon d-flex align-items-center justify-content-center'>
+                    <i class="fa-solid text-justify accordion fa-link"></i></div>
+                <div class='side-panel-pod-text'> <p class='side-panel-pod-text-text m-0 mb-0'>
+                    Linked Accounts</p></div>
+            </div>
+
+            <div data-sec-pod='security-password' class='side-panel-pod text-light d-flex align-items-center justify-content-start sec-pod'>
+                <div class='side-panel-pod-icon d-flex align-items-center justify-content-center'>
+                    <i class="fa-solid text-justify accordion fa-key"></i></div>
+                <div class='side-panel-pod-text'> <p class='side-panel-pod-text-text m-0 mb-0'>
+                    Password</p></div>
+            </div>
+            
+
+            <div data-sec-pod='security-email' class='side-panel-pod text-light d-flex align-items-center justify-content-start sec-pod'>
+                <div class='side-panel-pod-icon d-flex align-items-center justify-content-center'>
+                    <i class="fa-solid text-justify accordion fa-envelope"></i></div>
+                <div class='side-panel-pod-text'> <p class='side-panel-pod-text-text m-0 mb-0'>
+                    Email</p></div>
+            </div>
+            
+            <div data-sec-pod='security-history' class='side-panel-pod text-light d-flex align-items-center justify-content-start sec-pod'>
+                <div class='side-panel-pod-icon d-flex align-items-center justify-content-center'>
+                    <i class="fa-solid text-justify accordion fa-history"></i></div>
+                <div class='side-panel-pod-text'> <p class='side-panel-pod-text-text m-0 mb-0'>
+                    History</p></div>
+            </div>
+
+            
+            <div data-sec-pod='security-delete' class='w-100 side-panel-pod text-light d-flex align-items-center justify-content-start sec-pod'>
+                <div class='side-panel-pod-icon d-flex align-items-center justify-content-center'>
+                    <i class="fa-solid text-justify accordion fa-trash"></i></div>
+                <div class='side-panel-pod-text'> <p class='side-panel-pod-text-text m-0 mb-0'>
+                    Delete Account</p></div>
+            </div>
+
+        </div>
+    </div>
 </article>
 
 
@@ -250,153 +311,12 @@
             2x2 grid
         --> 
         <div class="
+            toggles
+            d-flex
+            flex-wrap
         ">
 
-            <!-- 
-                New Device Login
-            -->
-            <div class="d-flex justify-content-start align-items-center flex-wrap mb-5 w-50">
 
-                <!-- Toggle -->
-                <div class="d-flex justify-content-center align-items-center flex-column col-2">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="new-device-login" 
-                            {% if user.new_device_login %}checked{% endif %}>
-                        <label class="form-check-label" for="new-device-login"></label>
-                    </div>
-                </div>
-
-                <div class='col-10'>
-                    <h5 class="fw-bold">New Device Login</h5>
-                    <p class="text-muted">Receive an email when you login from a new device.</p>
-                </div>
-            </div>
-
-
-            <!-- 
-                Password Change Email
-            -->
-            <div class="d-flex justify-content-start align-items-center flex-wrap mb-5 w-50">
-
-                <!-- Toggle -->
-                <div class="d-flex justify-content-center align-items-center flex-column col-2">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="new-device-login" 
-                            {% if user.new_device_login %}checked{% endif %}>
-                        <label class="form-check-label" for="new-device-login"></label>
-                    </div>
-                </div>
-
-                <div class='col-10'>
-                    <h5 class="fw-bold">Password Change Email</h5>
-                    <p class="text-muted">Receive an email when the password for your account is changed.</p>
-                </div>
-            </div>
-
-
-            <!-- 
-                Email Change Email
-            -->
-            <div class="d-flex justify-content-start align-items-center flex-wrap mb-5 w-50">
-
-                <!-- Toggle -->
-                <div class="d-flex justify-content-center align-items-center flex-column col-2">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="new-device-login" 
-                            {% if user.new_device_login %}checked{% endif %}>
-                        <label class="form-check-label" for="new-device-login"></label>
-                    </div>
-                </div>
-
-                <div class='col-10'>
-                    <h5 class="fw-bold">Email Change Email</h5>
-                    <p class="text-muted">Receive an email when the email for your account is changed.</p>
-                </div>
-            </div>
-
-
-            <!--
-                Security Panel Email
-            -->
-            <div class="d-flex justify-content-start align-items-center flex-wrap mb-5">
-
-                <!-- Toggle -->
-                <div class="d-flex justify-content-center align-items-center flex-column col-2">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="new-device-login" 
-                            {% if user.new_device_login %}checked{% endif %}>
-                        <label class="form-check-label" for="new-device-login"></label>
-                    </div>
-                </div>
-
-                <div class='col-10'>
-                    <h5 class="fw-bold">Security Panel Email</h5>
-                    <p class="text-muted">Receive an email when you login to the security panel.</p>
-                </div>
-            </div>
-
-
-            <!-- 
-                Linked Accounts Email
-            -->
-            <div class="d-flex justify-content-start align-items-center flex-wrap mb-5">
-
-                <!-- Toggle -->
-                <div class="d-flex justify-content-center align-items-center flex-column col-2">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="new-device-login" 
-                            {% if user.new_device_login %}checked{% endif %}>
-                        <label class="form-check-label" for="new-device-login"></label>
-                    </div>
-                </div>
-
-                <div class='col-10'>
-                    <h5 class="fw-bold">Linked Accounts Email</h5>
-                    <p class="text-muted">Receive an email when a linked account is added or removed.</p>
-                </div>
-            </div>
-
-
-            <!--
-                Require MFA on login
-            -->
-            <div class="d-flex justify-content-start align-items-center flex-wrap mb-5 w-50">
-
-                <!-- Toggle -->
-                <div class="d-flex justify-content-center align-items-center flex-column col-2">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="new-device-login" 
-                            {% if user.new_device_login %}checked{% endif %}>
-                        <label class="form-check-label" for="new-device-login"></label>
-                    </div>
-                </div>
-
-                <div class='col-10'>
-                    <h5 class="fw-bold">Require MFA on login</h5>
-                    <p class="text-muted">You may be required to enter a code from your authenticator app, or to click a code sent to your email upon login.</p>
-                </div>
-            </div>
-
-
-            <!--
-                Require MFA on password reset
-            -->
-            <div class="d-flex justify-content-start align-items-center flex-wrap mb-5 w-50">
-
-                <!-- Toggle -->
-                <div class="d-flex justify-content-center align-items-center flex-column col-2">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="new-device-login" 
-                            {% if user.new_device_login %}checked{% endif %}>
-                        <label class="form-check-label" for="new-device-login"></label>
-                    </div>
-                </div>
-
-                <div class='col-10'>
-                    <h5 class="fw-bold">Require MFA on password reset</h5>
-                    <p class="text-muted">If TOTP is setup, you will be required to enter a code from your authenticator app upon password reset.</p>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -609,11 +529,12 @@
                 text-muted
             ">
                 Change your password, you will be required to enter your current password and then your new password.
+                Note, you will be logged out of all devices after changing your password, and youll be required to re-login.
             </p>
         </p>
 
         <!-- Form -->
-        <form 
+        <div 
             id="change-password-form"
             class="
                 w-100
@@ -629,6 +550,7 @@
                     name="cpass" 
                     id="cpass" 
                     placeholder="J0sFun66us123" 
+                    type="password"
                 class="
                     form-control 
                     form-control-lg
@@ -646,15 +568,17 @@
                     mb-4 
                 "
             >
-                <div class="w-100">
+                <div class="w-100 password">
                     <label class="form-label" for="npass">New Password</label>
                     <input 
                         name="npass" 
                         id="npass" 
                         placeholder="J0sFun66us123!" 
+                        type="password"
                     class="
                         form-control 
                         form-control-lg
+                        password
                         inp
                     ">
                 </div>
@@ -665,6 +589,7 @@
                         name="cfpass" 
                         id="cfpass" 
                         placeholder="1F0rget2!"
+                        type="password"
                     class="
                         form-control 
                         form-control-lg
@@ -673,6 +598,26 @@
                 </div>
             </div>
 
+            <!-- Password requirements -->
+            <span class='password password-errors'></span>
+            <div class="
+                text-muted
+                small
+                p-2
+                requirements
+                w-100
+            ">
+                <ul class="text-muted d-flex flex-wrap">
+                    <li class='length w-50'>Must be between 8 and 64 characters</li>
+                    <li class='spaces w-50'>Must not contain spaces</li>
+                    <li class='number w-50'>Must contain at least one number</li>
+                    <li class='uppercase w-50'>Must contain at least one uppercase letter</li>
+                    <li class='lowercase w-50'>Must contain at least one lowercase letter</li>
+                </ul>
+            </div>
+
+
+            
             <!-- Button -->
             <button 
                 type="submit" 
@@ -689,7 +634,7 @@
             >
                 Change Password
             </button>
-        </form>
+        </div>
 
     </div>
 
@@ -725,8 +670,10 @@
             </p>
         </p>
 
+        <p class='current-email w-100 text-center text-muted'></p>
+
         <!-- Form -->
-        <form 
+        <div 
             id="change-password-form"
             class="
                 w-100
@@ -765,7 +712,7 @@
             >
                 Change email
             </button>
-        </form>
+        </div>
     
     </div>
 </article>
