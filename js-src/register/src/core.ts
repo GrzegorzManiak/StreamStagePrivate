@@ -41,7 +41,7 @@ export async function register_handler() {
         name_input = document.querySelector('input[name="username"]') as HTMLInputElement,
         password_input = document.querySelector('input[name="password"]') as HTMLInputElement,
         rp_password_input = document.querySelector('input[name="rp-password"]') as HTMLInputElement,
-        submit_button = document.querySelector('button[type="submit"]') as HTMLButtonElement;
+        submit_button = document.querySelector('#register-btn') as HTMLButtonElement;
 
     name_monitor(name_input);
     password_monitor(password_input);

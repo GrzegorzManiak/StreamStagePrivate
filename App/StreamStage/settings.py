@@ -27,6 +27,11 @@ SECRET_KEY = DJANGO_SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+
+# SET THIS TO TRUE IF YOU ARE USING LOCALHOST
+RUNNING_ON_LOCALHOST = False
+
+
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
@@ -63,11 +68,17 @@ DEFAULT_HOST = 'www'
 ROOT_HOSTCONF = 'StreamStage.hosts'
 ROOT_URLCONF = 'StreamStage.urls'
 
-SESSION_COOKIE_SECURE = True
-SESSION_COOKIE_SAMESITE = None
-CSRF_COOKIE_SAMESITE = None
+if RUNNING_ON_LOCALHOST == False:
+    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_SAMESITE = None
+    CSRF_COOKIE_SAMESITE = None
+    SESSION_COOKIE_DOMAIN=".streamstage.co"
 
-SESSION_COOKIE_DOMAIN="localhost"
+elif RUNNING_ON_LOCALHOST == True:
+    SESSION_COOKIE_SECURE = False
+    SESSION_COOKIE_SAMESITE = None
+    CSRF_COOKIE_SAMESITE = None
+    SESSION_COOKIE_DOMAIN = 'localhost'
 
 #
 # CSRF / CORS
@@ -104,7 +115,6 @@ INSTALLED_APPS = [
 
     # 3rd Party
     'crispy_forms',
-
     'corsheaders',
     'crispy_bootstrap5',
     'django_countries',
@@ -237,4 +247,4 @@ SENDGIRD_TOKEN = SENDGIRD_TOKEN
 
 
 # Key TTL's
-EMAIL_VERIFICATION_TTL = 60 * 60 * 24 * 2
+EMAIL_VERIFICATION_TTL = 60 * 24 * 2

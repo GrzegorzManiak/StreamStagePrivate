@@ -29,7 +29,7 @@ export async function login_handler() {
     // -- Get the login fields
     const emailorname_input = document.querySelector('input[name="emailorusername"]') as HTMLInputElement,
     password_input = document.querySelector('input[name="password"]') as HTMLInputElement,
-    button = document.querySelector('button') as HTMLButtonElement;
+    button = document.querySelector('#login-btn') as HTMLButtonElement;
 
     // -- Handle instructions
     await manage_instructions(button);
