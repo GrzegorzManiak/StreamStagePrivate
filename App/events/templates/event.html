@@ -13,14 +13,6 @@
 
 <span 
     id='config'
-    data-admin='{{ user.is_staff }}'
-    data-username='{{ user.username }}'
-    data-userid='{{ user.id }}'
-    data-useremail='{{ user.mask_email }}'
-    data-userfirst='data:{{ user.first_name }}'
-    data-userlast='data:{{ user.last_name }}'
-    data-access-level='{{ user.access_level }}'
-    data-profile-picture='/media/{{ user.profile_pic }}'
 
     data-csrf-token='{{ csrf_token }}'
 
@@ -28,23 +20,10 @@
     data-resend-verification='{{ api.resend_verification }}'
     data-remove-verification='{{ api.remove_verification }}'
     data-recent-verification='{{ api.recent_verification }}'
-    data-change-email='{{ api.change_email }}'
-
-    data-security-info='{{ api.security_info }}'
-    data-update-profile='{{ api.update_profile }}'
-    data-remove-oauth='{{ api.remove_oauth }}'
-    data-extend-session='{{ api.extend_session }}'
-    data-close-session='{{ api.close_session }}'
 
     data-add-payment='{{ api.add_payment }}'
     data-get-payments='{{ api.get_payments }}'
     data-remove-payment='{{ api.remove_payment }}'
-
-    data-start-subscription='{{ api.start_subscription }}'
-
-    data-mfa-setup='{{ api.setup_mfa }}'
-    data-mfa-verify='{{ api.verify_mfa }}'
-    data-mfa-disable='{{ api.disable_mfa }}'
 
     data-get-reviews='{{ api.get_reviews }}'
     data-update-review='{{ api.update_review }}'
