@@ -6,6 +6,7 @@ import { sleep } from '../../click_handler';
 let panels: Array<Panel> = [];
 export let pods: Array<Pod> = [];
 
+
 /**
  * @name locate_panels
  * @returns void
@@ -276,6 +277,8 @@ export function hide_pod(panel_type: PanelType, redirect: PanelType) {
     // -- Set the pod to hidden
     pod.element.setAttribute('data-pod-status', 'hidden');
 }
+
+
 
 /**
  * @name show_pod
