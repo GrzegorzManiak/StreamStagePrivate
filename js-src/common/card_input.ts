@@ -285,7 +285,6 @@ export async function load_cards(
     cards_container.innerHTML = '';
 
     // -- Check if there are no cards
-    console.log(cards_object.length);
     if (cards_object.length === 0) 
         cards_container.innerHTML = '<div class="no-cards w-100 h-100 d-flex justify-content-center align-items-center"><h3 class="text-center">You have no cards saved</h3></div>';
 
