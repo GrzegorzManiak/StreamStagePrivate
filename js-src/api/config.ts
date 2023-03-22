@@ -1,4 +1,4 @@
-import { create_toast } from "../toasts";
+import { create_toast } from '../common';
 
 export function get_or_error<e>(element: HTMLElement, attribute: string): e {
     const value = element.getAttribute(attribute);

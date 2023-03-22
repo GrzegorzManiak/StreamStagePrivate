@@ -7,8 +7,7 @@ module.exports = {
     entry: {
         // settings: './settings/index.ts',
         api: './api/index.ts',
-        toast: './toasts/index.ts',
-        click_handler: './click_handler/index.ts',
+        common: './common/index.ts',
         login: './login/index.ts',
         register: './register/index.ts',
         // ping_server: './ping_server/index.ts',

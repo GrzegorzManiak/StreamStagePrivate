@@ -1,4 +1,4 @@
-import { attach } from '../../click_handler';
+import { attach } from '../../common';
 import { create_new_card, fit_card, pay_now } from '../elements/card';
 import { PaymentMethod, Pod, SubscriptionMethod } from '../index.d';
 import { load_cards, read_card_modal } from './payments';

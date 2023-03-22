@@ -1,4 +1,4 @@
-import { construct_modal } from '../../click_handler';
+import { construct_modal } from '../../common';
 import { PaymentMethod, SubscriptionMethod } from '../index.d';
 
 export function card_type(card: string): string {

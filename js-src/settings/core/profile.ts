@@ -1,5 +1,4 @@
-import { attach } from '../../click_handler';
-import { create_toast } from '../../toasts';
+import { attach, create_toast } from '../../common';
 import { update_profile } from '../apis';
 import { Pod } from '../index.d';
 

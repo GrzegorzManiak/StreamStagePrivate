@@ -1,5 +1,4 @@
-import { attach, confirmation_modal, construct_modal } from '../../click_handler';
-import { create_toast } from '../../toasts';
+import { attach, confirmation_modal, construct_modal, create_toast} from '../../common';
 import { delete_review, update_review } from '../apis';
 import { Review } from '../index.d';
 

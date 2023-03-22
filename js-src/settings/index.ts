@@ -1,10 +1,10 @@
 import { attach_event_listeners, get_pod } from './core/panels';
 import { manage_security_panel } from './core/security';
-import { create_toast } from '../toasts';
 import { manage_payments_panel } from './core/payments';
 import { manage_subscription_panel } from './core/subscription';
 import { manage_profile_panel } from './core/profile';
 import { manage_reviews_panel } from './core/reviews';
+import { create_toast } from '../common';
 
 export function get_or_error<e>(element: HTMLElement, attribute: string): e {
     const value = element.getAttribute(attribute);

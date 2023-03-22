@@ -1,4 +1,4 @@
-import { create_toast } from "../toasts";
+import { create_toast } from "../common";
 import { configuration } from "./";
 import { AddCardResponse, Card, DefaultResponse, DefaultResponseData, GetCardsResponse, GetReviewsResponse, SecurityInfoResponse, StartSubscriptionResponse, SubscriptionMethod, VerifyAccessResponse } from "./index.d";
 

@@ -1,6 +1,6 @@
 import { configuration } from '.';
-import request from '../api'
-import { create_toast } from '../toasts';
+import { base_request } from '../api';
+import { create_toast } from '../common';
 import { SRRUpdateResponse, Server, StatisticsResponse, UpdateSRRRequestData } from './index.d';
 import { deserialize } from './src/deserialize';
 
@@ -9,10 +9,10 @@ import { deserialize } from './src/deserialize';
 // REQUESTS
 //
 export const get_updated_tree = async (): Promise<SRRUpdateResponse> => 
-    request('GET', configuration.srr_tree_url, configuration.csrf_token, {});
+    base_request('GET', configuration.srr_tree_url, configuration.csrf_token, {});
 
 export const get_node_statistics = async (server: Server): Promise<StatisticsResponse> =>
-    request('GET', configuration.proxy_request_url, undefined, {}, { 
+    base_request('GET', configuration.proxy_request_url, {}, { 
         'p-headers': '{ "NodeSecret": "' + server.secret + '" }',
         'p-url': server.http_url + '/statistics/server'
     });

@@ -1,5 +1,4 @@
-import { attach, confirmation_modal } from '../../click_handler';
-import { create_toast } from '../../toasts';
+import { attach, confirmation_modal, create_toast } from '../../common';
 import { add_card, get_cards, remove_card } from '../apis';
 import { card_modal, card_type, card_type_to_fontawesome, create_new_card } from '../elements/card';
 import { Card, GetCardsSuccess, Pod } from '../index.d';

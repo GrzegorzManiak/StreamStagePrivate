@@ -1,6 +1,5 @@
-import { attach, confirmation_modal, construct_modal, handle_tfa_input } from '../../click_handler';
+import { attach, confirmation_modal, construct_modal, handle_tfa_input, create_toast } from '../../common';
 import { SecurityInfo } from '../index.d';
-import { create_toast } from '../../toasts';
 import { disable_mfa, verify_mfa, setup_mfa } from '../apis';
 
 

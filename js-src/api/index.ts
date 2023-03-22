@@ -1,4 +1,4 @@
-import { create_toast } from '../toasts';
+import { create_toast } from '../common';
 import { configuration } from './config';
 import { DefaultResponse, DefaultResponseData, ResendVerificationResponse } from './index.d';
 
