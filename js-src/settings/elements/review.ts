@@ -55,8 +55,8 @@ export function create_reviews(
         const elm = create_review(review),
             edit_btn = elm.querySelector('.review-btn') as HTMLButtonElement,
             remove_btn = elm.querySelector('.remove-review-btn') as HTMLButtonElement;
+            
         review_elements.push(elm);
-
         edit_btn.addEventListener('click', async() => {
             const stop = attach(edit_btn);
             create_review_edit(review, elm);

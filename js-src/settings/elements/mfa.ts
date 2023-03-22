@@ -100,7 +100,7 @@ function remove_listner(
  *              or a link they can click, usally on mobile that
  *              will open the authenticator app.
  */ 
-async function add_listner(
+export async function add_listner(
     button: HTMLButtonElement,
     access_key: string,
     data: SecurityInfo,

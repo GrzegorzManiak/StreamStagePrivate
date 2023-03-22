@@ -1,3 +1,6 @@
+// 
+// Default Server response structure
+// 
 export interface DefaultResponseNoData {
     code: number,
     message: string
@@ -12,5 +15,9 @@ export interface DefaultResponseData {
     message: string
 }
 
-export type DefaultResponse = DefaultResponseData | DefaultResponseNoData;
 
+export type DefaultResponse = DefaultResponseNoData | DefaultResponseNoData;
+
+export type ResendVerification = DefaultResponseData & {
+    data: { token: string, verify: string, }};
+export type ResendVerificationResponse = ResendVerification | DefaultResponse;

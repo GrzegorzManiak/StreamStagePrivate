@@ -196,18 +196,18 @@ export function confirmation_modal(
  * @description This function handles the input of a TFA code
  */
 export function handle_tfa_input(
-    parent_elm: HTMLElement,
+    parent_elm: HTMLElement | Element,
     complete: (code: string) => void,
     invalid: () => void,
 ) {
+    const inputs = 6;
+
     const check = () => {
         // -- Check if the code is valid
         const code = Array.from(parent_elm.querySelectorAll('input')).map((i) => i.value)
         if (code.length === inputs) complete(code.join(''));
         else invalid();
     };
-
-    const inputs = 6;
 
     for (let i = 0; i < inputs; i++) {
         const input = document.createElement('input');
@@ -253,7 +253,7 @@ export function handle_tfa_input(
             }
             
             // -- Set the value to the first character
-            elm.value = e.key;
+            elm.value = e.key.charAt(0);
 
             // -- Check if the code is valid
             check();    

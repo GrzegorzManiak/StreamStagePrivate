@@ -1,7 +1,3 @@
-type CSRF_Token = string;
-type OAUTH_Error = string;
-
-
 export interface Instructions {
     has_account: boolean;
     email_verified: boolean;
@@ -32,16 +28,28 @@ export interface Response {
     instructions: Instructions;
 }
 
-export interface ParsedHeaders {
-    csrf_token: CSRF_Token;
-    oauth_error: OAUTH_Error | null;
+
+//
+// Response types
+//
+import { 
+    DefaultResponse, 
+    DefaultResponseData 
+} from '../api/index.d';
+
+
+export type LoginTOTP = { mode: 'totp' }
+export type LoginMFA = { 
+    mode: 'mfa',
+    resend: string,
+    verify: string,
+    token: string
+}
+export type LoginNone = { 
+    mode: 'none',
+    token: string
 }
 
-
-export type PanelType = 'defualt' | 'tfa' | 'oauth' | 'register' | 'email-wait';
-export type PageType = 'login' | 'register';
-
-export interface Panel {
-    type: PanelType;
-    element: HTMLDivElement;
-}
+export type LoginSuccess = DefaultResponseData & { 
+    data: LoginTOTP | LoginMFA | LoginNone }
+export type LoginResponse = LoginSuccess | DefaultResponse;
