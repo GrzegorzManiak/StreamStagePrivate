@@ -12,7 +12,7 @@ export function get_or_error<e>(element: HTMLElement, attribute: string): e {
     return value as unknown as e;
 }
 
-export function get_config() {
+export function configuration() {
     const config = document.getElementById('config');
     return {
         csrf_token: get_or_error<string>(config, 'data-csrf-token'),
