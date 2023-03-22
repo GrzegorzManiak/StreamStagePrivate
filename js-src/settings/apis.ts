@@ -1,40 +1,14 @@
-import { create_toast } from "../toasts";
+import { PaymentIntentMethod } from "../common/index.d";
+import { create_toast } from "../common";
 import { configuration } from "./";
-import { AddCardResponse, Card, DefaultResponse, DefaultResponseData, GetCardsResponse, GetReviewsResponse, SecurityInfoResponse, StartSubscriptionResponse, SubscriptionMethod, VerifyAccessResponse } from "./index.d";
-
-export async function base_request (
-    mehod: string,
-    endpoint: string,
-    data: any,
-): Promise<DefaultResponse> {
-    const response = await fetch(
-        endpoint,
-        {
-            method: mehod,
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": configuration.csrf_token,
-            },
-            body: mehod === 'GET' ? undefined : JSON.stringify(data),
-        },
-    );
-
-    try {
-        const data = await response.json();
-
-        return {
-            data: data.data as any,
-            code: response.status,
-            message: data.message as string,
-        } as DefaultResponseData;
-    }
-    catch (error) {
-        return {
-            code: response.status,
-            message: 'An unknown error has occured, ' + error.message,
-        };
-    }
-}
+import { 
+    DefaultResponse, 
+    GetReviewsResponse, 
+    SecurityInfoResponse, 
+    StartSubscriptionResponse, 
+    VerifyAccessResponse 
+} from "./index.d";
+import { base_request } from "../api";
 
 
 //
@@ -216,47 +190,6 @@ export const get_security_info = async (
 
 
 /**
- * @name add_card
- * @param card - Card: Token, number, exp_month, exp_year, cvc
- * @returns Promise<DefaultResponse>
- */
-export const add_card = async (
-    card: Card
-): Promise<AddCardResponse> => base_request(
-    'POST',
-    configuration.add_payment,
-    card
-);
-
-
-/**
- * @name get_cards
- * @returns Promise<DefaultResponse>
- * @description Get the cards of the user
- */
-export const get_cards = async (): Promise<GetCardsResponse> => base_request(
-    'GET',
-    configuration.get_payments,
-    {}
-);
-
-
-/**
- * @name remove_card
- * @param id - Card id
- * @returns Promise<DefaultResponse>
- * @description Remove a card from the user
- */
-export const remove_card = async (
-    id: string
-): Promise<DefaultResponse> => base_request(
-    'POST',
-    configuration.remove_payment,
-    { id }
-);
-
-
-/**
  * @name update_profile
  * @param token - PAK token
  * @param data - Profile data
@@ -273,14 +206,15 @@ export const update_profile = async (
 );
 
 
+
 /**
  * @name start_subscription
- * @param method - SubscriptionMethod
+ * @param method - PaymentIntentMethod
  * @returns Promise<StartSubscriptionResponse>
  * @description Start a subscription for the user
  */
 export const start_subscription = async (
-    method: SubscriptionMethod
+    method: PaymentIntentMethod
 ): Promise<StartSubscriptionResponse> => {
     // -- If the method is a string
     if (typeof method === 'string') return base_request(
@@ -290,6 +224,7 @@ export const start_subscription = async (
     );
 
 }
+
 
 
 /**
@@ -309,6 +244,7 @@ export const change_email = async (
 );
 
 
+
 /**
  * @name get_reviews
  * @param filter - Filter
@@ -325,6 +261,7 @@ export const get_reviews = async (
     { sort, order, page }
 );
     
+
 
 /**
  * @name update_review
@@ -345,6 +282,7 @@ export const update_review = async (
 );
 
 
+
 /**
  * @name delete_review
  * @param id - Review id
@@ -357,64 +295,3 @@ export const delete_review = async (
     configuration.delete_review,
     { id }
 );
-
-
-
-//
-// AUXILIARY FUNCTIONS
-//
-
-/**
- * 
- * @param verify_token: () => string  - A function that returns the token 
- *                                      That is used to check if the email has been verified
- * @param interval: ?number            - The interval to check if the email has been verified    
- * @param timeout: ?number            - The timeout to stop checking if the email has been verified
- * @param message: ?string            - The message to show when the email has been verified successfully
- * @returns Promise<boolean>          - A promise that resolves to true if
- *                                      the email has been verified, false
- *                                      otherwise
- * 
- * @description This function will check if the email has been verified
- *              every x seconds, if the email has been verified, it will
- *              resolve the promise, if the email has not been verified
- *              after x ammount of time, it will reject the promise.
- */
-export async function check_email_verification(
-    verify_token: () => string,
-    interval: number = 3000,
-    timeout: number = 15 * 60 * 1000, // -- 15 minutes
-    message: string = 'Your email has been verified, you\'ll be given access to your account in a few seconds.'
-): Promise<boolean> {
-    return new Promise(async (resolve, reject) => {
-        let verified = false;
-        const int = setInterval(async () => {
-            const response = await recent(verify_token());
-    
-            // -- If the email has been verified
-            if (response.code === 404) {} // -- Do nothing
-            else if (response.code === 200) {
-                // -- Login the user
-                create_toast('success', 'Congratulations!', message);
-                clearInterval(int);
-                verified = true;
-                return resolve(true);
-            }
-
-            // -- Server error
-            else {
-                // -- Show the error
-                create_toast('error', 'Error', response.message);
-                clearInterval(int);
-                return reject(false);
-            }
-        }, interval);
-        
-        // -- Stop the interval after 15 minutes
-        setTimeout(() => {
-            clearInterval(int);
-            reject(false);
-            if (!verified) create_toast('error', 'Error', 'The verification email has expired');
-        }, timeout);
-    });
-}

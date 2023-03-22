@@ -1,3 +1,5 @@
+import { PaymentMethod, PaymentIntent } from "../common/index.d";
+
 export type PanelType = 
     'profile' |
     'security' |
@@ -82,39 +84,6 @@ export interface SecurityInfo {
     security_preferences: SecurityPreferences
 }
 
-export interface Card {
-    card: string,
-    exp_month: number,
-    exp_year: number,
-    cvc: string,
-    name: string
-}
-
-export interface PaymentMethod {
-    brand: string;
-    exp_month: number;
-    exp_year: number;
-    id: string;
-    last4: string;
-    created: number;
-}
-
-export type SubscriptionMethod = Card | PaymentMethod;
-
-interface SubscriptionIntent {
-    id: string,
-    start: number,
-    end: number,
-    created: number,
-    invoice_id: string,
-    payment_intent_id: string,
-    payment_intent_secret: string,
-    requires_action: boolean,
-    next_action?: {
-        type: string,
-        [key: string]: string
-    }
-}
 
 export interface Review {
     id: string,
@@ -159,13 +128,7 @@ export type VerifyAccessResponse = VerifyAccessSuccess | DefaultResponse;
 export type SecurityInfoSuccess = DefaultResponseData & { data: SecurityInfo }
 export type SecurityInfoResponse =SecurityInfoSuccess | DefaultResponse;
 
-export type AddCardSuccess = DefaultResponseData & { data: PaymentMethod }
-export type AddCardResponse = AddCardSuccess | DefaultResponse;
-
-export type GetCardsSuccess = DefaultResponseData & { data: Array<PaymentMethod> }
-export type GetCardsResponse = GetCardsSuccess | DefaultResponse;
-
-export type StartSubscriptionSuccess = DefaultResponseData & { data: SubscriptionIntent }
+export type StartSubscriptionSuccess = DefaultResponseData & { data: PaymentIntent }
 export type StartSubscriptionResponse = StartSubscriptionSuccess | DefaultResponse;
 
 export type GetReviewsSuccess = DefaultResponseData & { data: {

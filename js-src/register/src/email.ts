@@ -1,9 +1,7 @@
 import { show_panel } from '..';
 import { ResendVerification } from '../../api/index.d';
 import { check_email_verification, resend_verification } from '../../api';
-import { attach } from '../../click_handler';
-import { create_toast } from '../../toasts';
-import { submit_auth_token } from '../../login/src/core';
+import { attach, create_toast } from '../../common';
 
 
 export async function email_verification(

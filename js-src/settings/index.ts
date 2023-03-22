@@ -1,22 +1,10 @@
 import { attach_event_listeners, get_pod } from './core/panels';
 import { manage_security_panel } from './core/security';
-import { create_toast } from '../toasts';
 import { manage_payments_panel } from './core/payments';
 import { manage_subscription_panel } from './core/subscription';
 import { manage_profile_panel } from './core/profile';
 import { manage_reviews_panel } from './core/reviews';
-
-export function get_or_error<e>(element: HTMLElement, attribute: string): e {
-    const value = element.getAttribute(attribute);
-    if (!value) {
-        create_toast('error', 'Configuration Error', `No ${attribute} found, please reload the page`);
-        // -- Wait 3 seconds and reload the page
-        setTimeout(() => {
-            window.location.reload();
-        }, 3000);
-    }
-    return value as unknown as e;
-}
+import { get_or_error } from '../api/config';
 
 const config = document.getElementById('config');
 
@@ -46,10 +34,6 @@ export const configuration = {
     setup_mfa: get_or_error<string>(config, 'data-mfa-setup'),
     verify_mfa: get_or_error<string>(config, 'data-mfa-verify'),
     disable_mfa: get_or_error<string>(config, 'data-mfa-disable'),
-
-    add_payment: get_or_error<string>(config, 'data-add-payment'),
-    get_payments: get_or_error<string>(config, 'data-get-payments'),
-    remove_payment: get_or_error<string>(config, 'data-remove-payment'),
 
     start_subscription: get_or_error<string>(config, 'data-start-subscription'),
     get_reviews: get_or_error<string>(config, 'data-get-reviews'),

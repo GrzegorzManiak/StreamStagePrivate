@@ -1,6 +1,7 @@
-import { create_toast } from '../toasts';
-import { configuration } from './config';
+import { create_toast } from '../common';
 import { DefaultResponse, DefaultResponseData, ResendVerificationResponse } from './index.d';
+import { configuration } from './config';
+
 
 export async function base_request (
     mehod: string,
@@ -14,7 +15,7 @@ export async function base_request (
             method: mehod,
             headers: {
                 "Content-Type": "application/json",
-                "X-CSRFToken": configuration.csrf_token,
+                "X-CSRFToken": configuration().csrf_token,
                 ...headers,
             },
             body: mehod === 'GET' ? undefined : JSON.stringify(data),
@@ -51,7 +52,7 @@ export const recent = async (
     token: string
 ): Promise<DefaultResponse> => base_request(
     'POST',
-    configuration.recent_verification,
+    configuration().recent_verification,
     { token }
 );
 
@@ -67,7 +68,7 @@ export const resend_verification = async (
     email?: string,
 ): Promise<ResendVerificationResponse> => base_request(
     'POST',
-    configuration.resend_verification,
+    configuration().resend_verification,
     { token, email },
 );
 

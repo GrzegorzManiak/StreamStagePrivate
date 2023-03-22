@@ -1,4 +1,4 @@
-import { create_toast } from '../../toasts';
+import { create_toast } from '../../common';
 import { get_reviews } from '../apis';
 import { create_reviews } from '../elements/review';
 import { GetReviewsSuccess, Pod } from '../index.d';

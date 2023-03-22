@@ -1,5 +1,4 @@
-import { create_toast } from '../../toasts';
-import { attach } from "../../click_handler";
+import { attach, create_toast } from "../../common";
 import { email_verification } from './email';
 import { show_panel } from '..';
 import { name_monitor, password_monitor, rp_password_monitor, validate_name, validate_password } from './validation';

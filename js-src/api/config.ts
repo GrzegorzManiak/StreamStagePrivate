@@ -1,4 +1,4 @@
-import { create_toast } from "../toasts";
+import { create_toast } from '../common';
 
 export function get_or_error<e>(element: HTMLElement, attribute: string): e {
     const value = element.getAttribute(attribute);
@@ -12,9 +12,11 @@ export function get_or_error<e>(element: HTMLElement, attribute: string): e {
     return value as unknown as e;
 }
 
-const config = document.getElementById('config');
-export const configuration = {
-    csrf_token: get_or_error<string>(config, 'data-csrf-token'),
-    recent_verification: get_or_error<string>(config, 'data-recent-verification'),
-    resend_verification: get_or_error<string>(config, 'data-resend-verification'),
+export function configuration() {
+    const config = document.getElementById('config');
+    return {
+        csrf_token: get_or_error<string>(config, 'data-csrf-token'),
+        recent_verification: get_or_error<string>(config, 'data-recent-verification'),
+        resend_verification: get_or_error<string>(config, 'data-resend-verification'),
+    }
 }

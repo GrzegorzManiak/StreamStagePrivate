@@ -1,6 +1,5 @@
 import { LoginMFA, LoginNone, LoginSuccess } from '../index.d';
-import { create_toast } from '../../toasts';
-import { attach } from "../../click_handler";
+import { create_toast, attach} from '../../common';
 import { authenticate_token, login } from '../api';
 import { email_verification } from './email';
 import { totp_verification } from './totp';

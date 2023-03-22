@@ -1,5 +1,4 @@
-import { show_panel } from '..';
-import { handle_tfa_input } from '../../click_handler';
+import { handle_tfa_input } from '../../common';
 import { submit_details } from './core';
 
 export async function totp_verification(

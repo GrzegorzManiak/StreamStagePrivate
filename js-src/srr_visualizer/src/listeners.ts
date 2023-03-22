@@ -1,6 +1,6 @@
 import Konva from 'konva';
 import { NodeDataLink } from '../index.d';
-import { align_connection, get_connections, reset_connection } from './connection';
+import { get_connections, reset_connection } from './connection';
 import { center_text, focus_node, get_formated_nodes, unfocus_node } from './node';
 import { hide_right_click } from '../ui/context';
 

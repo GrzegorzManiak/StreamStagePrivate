@@ -1,6 +1,14 @@
-import { construct_modal } from '../../click_handler';
-import { PaymentMethod, SubscriptionMethod } from '../index.d';
+import { construct_modal } from './';
+import { PaymentMethod, PaymentIntentMethod } from './index.d';
 
+
+/**
+ * @name card_type
+ * @description This function returns the type of card
+ *             that was passed in. eg 4242 4242 4242 4242 -> Visa
+ * @param {string} card - The card number (can contain spaces)
+ * @returns {string} - The card type
+ */
 export function card_type(card: string): string {
     // Visa: 4 (starts with 4)
     // Mastercard: 2 (first digit is 5, second digit is between 1 and 5)
@@ -28,6 +36,13 @@ export function card_type(card: string): string {
 }
 
 
+
+/**
+ * @name card_type_to_fontawesome
+ * @description This function returns the fontawesome class
+ * @param {string} card - The card type
+ * @returns {string} - The fontawesome class
+ */
 export function card_type_to_fontawesome(card: string): string {
     switch (card) {
         case 'Visa': return 'fa-brands fa-cc-visa';
@@ -43,6 +58,15 @@ export function card_type_to_fontawesome(card: string): string {
 }
 
 
+
+/**
+ * @name create_new_card
+ * @description This function creates a new card element
+ * @param {PaymentMethod} card - The card object
+ * @param {boolean} remove_button - Whether to show the remove button
+ * @returns {HTMLDivElement} - The card element
+ * @returns {HTMLButtonElement} - The remove button
+ */
 export function create_new_card(
     card: PaymentMethod,
     remove_button: boolean = true,
@@ -110,6 +134,12 @@ export function create_new_card(
   
 
 
+/**
+ * @name card_input
+ * @description This function returns the card input element
+ * @param {boolean} save_card - Whether to show the save card checkbox
+ * @returns {string} - The card input element
+ */
 const card_input = (
     save_card: boolean = false,
 ) => `
@@ -157,6 +187,16 @@ const card_input = (
 `
 
 
+
+/**
+ * @name card_modal
+ * 
+ * @description This function returns the card modal
+ * @param {boolean} save_card - Whether to show the save card checkbox
+ * @param {string} title - The title of the modal
+ * @param {string} body - The body of the modal
+ * @returns {string} - The card modal
+ */
 export const card_modal = (
     save_card: boolean = false,
     title: string = 'Add Card',
@@ -164,6 +204,12 @@ export const card_modal = (
 ) => construct_modal(title, body, true, 'primary', card_input(save_card));
 
 
+
+/**
+ * @name tds_modal
+ * 
+ * NOTE: DONT USE THIS AINT WORKING
+ */
 export const tds_modal = (
     url: string,
 ) => construct_modal(
@@ -195,6 +241,18 @@ export const tds_modal = (
 );
 
 
+
+/**
+ * @name pay_now
+ * @description Creates the HTML sting for the pay now modal 
+ * TODO: Add callbacks for when the purchase is successful
+ * 
+ * @param {string} title - Title of the item (Preferrably just 'Pay now')
+ * @param {string} body - Description of the item
+ * @param {string} item - Name of the item
+ * @param {string} cost - Cost of the item (You have to format it yourself)
+ * @returns {string} - Returns the HTML for the modal
+ */
 export const pay_now = (
     title: string = 'Pay now',
     body: string = 'Please enter your card details, or select a saved payment method.',
@@ -250,17 +308,17 @@ export const pay_now = (
 
 
 
-/*
+/**
     @name fit_card
-    @param card: SubscriptionMethod 
-    @returns PaymentMethod
+    @param {PaymentIntentMethod} card
+    @returns {PaymentMethod}
 
     @description This is a really simple funciton that takes in both 
     a Card object and a PaymentMethod object, and returns a PaymentMethod
     object. This is used to convert a Card object into a PaymentMethod object
     so that it can be used in the payment modal.
 */
-export function fit_card(card: SubscriptionMethod): PaymentMethod {
+export function fit_card(card: PaymentIntentMethod): PaymentMethod {
     if ('id' in card) return card;
 
     let brand = card_type(card.card),

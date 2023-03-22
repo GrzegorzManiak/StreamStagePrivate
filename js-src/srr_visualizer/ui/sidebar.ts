@@ -1,7 +1,7 @@
 import { Chart } from 'frappe-charts';
 import { NodeDataLink, Server, StatisticsRequestData } from '../index.d'
-import { create_toast } from "../../toasts";
 import { get_node_statistics } from "../api";
+import { create_toast } from '../../common';
 
 const side_panel = document.querySelector('#node-panel') as HTMLDivElement;
 if (!side_panel) {

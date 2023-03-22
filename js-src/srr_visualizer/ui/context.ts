@@ -1,4 +1,4 @@
-import { confirmation_modal } from '../../click_handler';
+import { confirmation_modal } from '../../common';
 import { NodeDataLink } from '../index.d';
 
 const right_click_menu = document.getElementById('node-rightclick'),

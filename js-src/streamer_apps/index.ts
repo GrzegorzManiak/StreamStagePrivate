@@ -1,5 +1,4 @@
-import { get_panel } from '../authentication/core/panel_manager';
-import { create_toast } from '../toasts';
+import { create_toast } from "../common";
 
 export function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));

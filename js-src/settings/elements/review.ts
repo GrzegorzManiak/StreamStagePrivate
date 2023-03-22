@@ -1,5 +1,4 @@
-import { attach, confirmation_modal, construct_modal } from '../../click_handler';
-import { create_toast } from '../../toasts';
+import { attach, confirmation_modal, construct_modal, create_toast} from '../../common';
 import { delete_review, update_review } from '../apis';
 import { Review } from '../index.d';
 
@@ -146,7 +145,7 @@ export async function create_review_edit(
         'success',
         modal_template
     );
-        console.log(modal);
+
     const modal_elm = document.createElement('div');
     modal_elm.innerHTML = modal;
     document.body.appendChild(modal_elm);
