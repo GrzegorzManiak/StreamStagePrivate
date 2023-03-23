@@ -16,11 +16,8 @@
 {% endblock %}
 
 {% block content %}
-    <span id='toasts'>
-    </span>
-
     <span 
-        id='config'
+        class='config'
         data-admin='{{ user.is_staff }}'
         data-username='{{ user.username }}'
         data-userid='{{ user.id }}'

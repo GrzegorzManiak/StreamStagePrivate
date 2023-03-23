@@ -4,43 +4,41 @@ import { manage_payments_panel } from './core/payments';
 import { manage_subscription_panel } from './core/subscription';
 import { manage_profile_panel } from './core/profile';
 import { manage_reviews_panel } from './core/reviews';
-import { get_or_error } from '../api/config';
+import { Type, build_configuration } from '../api/config';
+import { Configuration } from './index.d';
 
-const config = document.getElementById('config');
+export const configuration = build_configuration<Configuration>({
+    admin: new Type('data-admin', 'boolean'),
+    username: new Type('data-username', 'string'),
+    userid: new Type('data-userid', 'string'),
+    useremail: new Type('data-useremail', 'string'),
+    userfirst: new Type('data-userfirst', 'string'),
+    userlast: new Type('data-userlast', 'string'),
+    access_level: new Type('data-access-level', 'number'),
+    profile_picture: new Type('data-profile-picture', 'string'),
+    csrf_token: new Type('data-csrf-token', 'string'),
 
-export const configuration = {
-    admin: get_or_error<string>(config, 'data-admin') === 'True',
-    username: get_or_error<string>(config, 'data-username'),
-    userid: get_or_error<number>(config, 'data-userid'),
-    useremail: get_or_error<string>(config, 'data-useremail'),
-    userfirst: get_or_error<string>(config, 'data-userfirst'),
-    userlast: get_or_error<string>(config, 'data-userlast'),
-    access_level: get_or_error<number>(config, 'data-access-level'),
-    profile_picture: get_or_error<string>(config, 'data-profile-picture'),
-    csrf_token: get_or_error<string>(config, 'data-csrf-token'),
+    send_verification: new Type('data-send-verification', 'string'),
+    resend_verification: new Type('data-resend-verification', 'string'),
+    remove_verification: new Type('data-remove-verification', 'string'),
+    recent_verification: new Type('data-recent-verification', 'string'),
+    
+    security_info: new Type('data-security-info', 'string'),
+    update_profile: new Type('data-update-profile', 'string'),
+    remove_oauth: new Type('data-remove-oauth', 'string'),
+    extend_session: new Type('data-extend-session', 'string'),
+    close_session: new Type('data-close-session', 'string'),
+    change_email: new Type('data-change-email', 'string'),
 
-    send_verification: get_or_error<string>(config, 'data-send-verification'),
-    resend_verification: get_or_error<string>(config, 'data-resend-verification'),
-    remove_verification: get_or_error<string>(config, 'data-remove-verification'),
-    recent_verification: get_or_error<string>(config, 'data-recent-verification'),
+    setup_mfa: new Type('data-mfa-setup', 'string'),
+    verify_mfa: new Type('data-mfa-verify', 'string'),
+    disable_mfa: new Type('data-mfa-disable', 'string'),
 
-    security_info: get_or_error<string>(config, 'data-security-info'),
-    update_profile: get_or_error<string>(config, 'data-update-profile'),
-    remove_oauth: get_or_error<string>(config, 'data-remove-oauth'),
-    extend_session: get_or_error<string>(config, 'data-extend-session'),
-    close_session: get_or_error<string>(config, 'data-close-session'),
-    change_email: get_or_error<string>(config, 'data-change-email'),
-
-    setup_mfa: get_or_error<string>(config, 'data-mfa-setup'),
-    verify_mfa: get_or_error<string>(config, 'data-mfa-verify'),
-    disable_mfa: get_or_error<string>(config, 'data-mfa-disable'),
-
-    start_subscription: get_or_error<string>(config, 'data-start-subscription'),
-    get_reviews: get_or_error<string>(config, 'data-get-reviews'),
-    update_review: get_or_error<string>(config, 'data-update-review'),
-    delete_review: get_or_error<string>(config, 'data-delete-review'),
-}
-
+    start_subscription: new Type('data-start-subscription', 'string'),
+    get_reviews: new Type('data-get-reviews', 'string'),
+    update_review: new Type('data-update-review', 'string'),
+    delete_review: new Type('data-delete-review', 'string'),
+});
 
 // -- Attach the event listeners
 attach_event_listeners();

@@ -1,3 +1,10 @@
+import { build_configuration, Type } from "../api/config";
+
+// const configuration = build_configuration<{ homepage: string; }>({
+//     homepage: new Type('data-home-url', 'string'),
+// });
+
+
 // -- Get the navbar element
 const navbar = document.getElementById('nav'),
     toggle_at = 50;
@@ -67,3 +74,43 @@ export async function manage_dropdown(
     });
     
 }
+
+
+
+// -- This manages all the buttons on the navbar
+const logo = document.querySelector('#nav .logo-text'),
+    buttons = document.querySelectorAll('[data-nav-area]'),
+    nav_items = document.querySelector('#nav .nav-items'),
+    home_locations = ['home', 'live', 'upcoming', 'past'];
+
+// -- If the logo is clicked, go to the home page
+const get_current_location = () => {
+    const location = window.location.pathname.split('/')[1];
+    return location;
+}
+
+const current = get_current_location(),
+    is_home = home_locations.includes(current);
+
+// -- Set location function (no reload)
+const set_location = (location: string) => {
+    if (!is_home) window.location 
+    window.history.pushState(null, '', `/${location}`);
+    window.dispatchEvent(new Event('locationchange'));
+}
+
+// -- If the logo is clicked, go to the home page
+logo?.addEventListener('click', () => set_location('home'));
+buttons.forEach(button => {
+    const location = button.getAttribute('data-nav-area');
+    if (!location) return;
+    button.addEventListener('click', () => {
+        set_location(location);
+        nav_items.setAttribute('data-nav-active', location);
+    });
+});
+
+
+// -- Get the initial location
+const initial_location = get_current_location();
+nav_items.setAttribute('data-nav-active', initial_location);

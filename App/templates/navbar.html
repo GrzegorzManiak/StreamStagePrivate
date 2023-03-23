@@ -2,6 +2,9 @@
 {% load tags %}
 
 <nav id='nav'>
+    <span class='config'
+        data-home-url = '{% cross_app_reverse_tag 'homepage' 'homepage_index' %}'
+    ></span>
 
     <!-- Control Panel Dropdown Menu -->
     <div class="sidepanel-button" elem-status='hidden'>

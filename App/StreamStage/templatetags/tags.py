@@ -9,31 +9,35 @@ def cross_app_reverse(app, view):
         that are in other apps
     """
 
-    subdomain = 'www'
+    subdomain = 'www.'
     conf = ''
     match app:
         case 'accounts': 
-            subdomain = 'me'
+            subdomain = 'me.'
             conf = 'accounts.urls'
 
         case 'events': 
-            subdomain = 'events'
+            subdomain = 'events.'
             conf = 'events.urls'
 
         case 'applications': 
-            subdomain = 'applications'
+            subdomain = 'applications.'
             conf = 'applications.urls'
         
         case 'search':
-            subdomain = 'search'
+            subdomain = 'search.'
             conf = 'search.urls'
+
+        case 'homepage':
+            subdomain = ''
+            conf = 'homepage.urls'
 
 
     if RUNNING_ON_LOCALHOST == True:
         return f'/{app}{reverse(view, urlconf=conf)}'
 
 
-    full_domain = f'{subdomain}.{DOMAIN_NAME}'
+    full_domain = f'{subdomain}{DOMAIN_NAME}'
     reversed = reverse(view, urlconf=conf)
     return f'https://{full_domain}{reversed}'
 

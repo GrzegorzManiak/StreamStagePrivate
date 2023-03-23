@@ -6,14 +6,14 @@ module.exports = {
     optimization: { minimizer: [new TerserPlugin()] },
     entry: {
         settings: './settings/index.ts',
-        // api: './api/index.ts',
-        // common: './common/index.ts',
-        // login: './login/index.ts',
-        // register: './register/index.ts',
-        // streamer_apps: './streamer_apps/index.ts',
-        // srr_visualizer: './srr_visualizer/index.ts',
+        api: './api/index.ts',
+        common: './common/index.ts',
+        login: './login/index.ts',
+        register: './register/index.ts',
+        streamer_apps: './streamer_apps/index.ts',
+        srr_visualizer: './srr_visualizer/index.ts',
         homepage: './homepage/index.ts',
-        // events: './events/index.ts'
+        events: './events/index.ts',
         navbar: './elements/navbar.ts',
     },
     module: {
