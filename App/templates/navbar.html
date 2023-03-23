@@ -1,56 +1,93 @@
 {% load static %}
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
+<nav id='nav'>
 
-        <!-- Control Panel Dropdown Menu -->
-        <div class="dropdown col-2">
-            <div class='
-                        carrot
-                        d-flex
-                        align-items-center                
-                        ps-4
-                    '>
-                <input type="checkbox" name="navbar-carrot" id="navbar-carrot" autocomplete="off">
+    <!-- Control Panel Dropdown Menu -->
+    {% comment %} <div class="dropdown col-2">
+        <div class='
+                    carrot
+                    d-flex
+                    align-items-center                
+                    ps-4
+                '>
+            <input type="checkbox" name="navbar-carrot" id="navbar-carrot" autocomplete="off">
 
-                <label for="navbar-carrot" id="navbar-carrot-label">
-                    <i class="fa-solid fa-square-caret-down"></i>
-                </label>
-            </div>
+            <label for="navbar-carrot" id="navbar-carrot-label">
+                <i class="fa-solid fa-square-caret-down"></i>
+            </label>
         </div>
-        <!-- Search Bar -->
-        <div class="col-4">
-            <a href="#">
-                <img class="banner-image" src="{% static 'images/banner_logo.png' %}" alt="StreamStage Banner Logo">
-            </a>
+    </div> {% endcomment %}
+
+    <!-- Nav backgrounds -->
+    <div class="nav-bg nav-bg-transparent"></div>
+    <div class="nav-bg nav-bg-dark"></div>
+
+    <div class='nav-limiter'>
+        <!-- Logo -->
+        <div class="logo-text">
+            StreamStage
         </div>
 
-        <!-- Search Bar -->
-        {% if not is_search_page %}
-        <div class="col-4">
-            <form class="d-flex align-items-center me-2" action="" method="get">
-                <input type="search" class="search-bar form-control" placeholder="Search Events..." aria-label="Search"
-                    name="q">
-                <button class="d-flex btn" style="background-color: #ffb25a;" type="submit"><i
-                        class="fa-solid fa-magnifying-glass p-1"></i></button>
-            </form>
-        </div>
-        {% endif %}
-
-        <!-- User Profile Settings Dropdown Menu -->
-        <div class="flex-shrink-0 dropdown col-2">
-            <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser2"
-                data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="https://github.com/mdo.png" alt="mdo" class="rounded-1" width="32" height="32">
-            </a>
-            <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
-                <li><a class="dropdown-item" href="#">New project...</a></li>
-                <li><a class="dropdown-item" href="#">Settings</a></li>
-                <li><a class="dropdown-item" href="#">Profile</a></li>
-                <li>
-                    <hr class="dropdown-divider">
-                </li>
-                <li><a class="dropdown-item" href="#">Sign out</a></li>
+        <!-- Common items -->
+        <div class="nav-items" data-nav-active='home'>
+            <ul class="d-flex">
+                <li data-nav-area='home'><a> Home </a></li>
+                <li data-nav-area='live'><a> Live </a></li>
+                <li data-nav-area='upcoming'><a> Upcoming </a></li>
+                <li data-nav-area='past'><a> Past </a></li>
             </ul>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="nav-search-bar">
+            <i class="fa-solid fa-search search-icon"></i>
+            <input 
+                name="nav-search-bar"
+                id="nav-search-bar"
+                placeholder="Title, Genre, etc." 
+                value="admin" class="form-control form-control-lg inp">
+        </div>
+
+        <!-- User Dropdown Menu -->
+        <div class="user-dropdown">
+            <div class='nav-dropdown-toggle d-flex align-items-center gap-2'>
+                <!-- User Icon -->
+                <div class="user-icon">
+                    <img src="https://picsum.photos/50/50" alt="User Icon">
+                </div>
+
+                <!-- Carrot -->
+                <i class="fa-solid fa-caret-down nav-caret"></i>
+            </div>
+
+            <!-- Dropdown Menu -->
+            <div class="nav-dropdown-menu">
+                <!-- Little arrow pointing up-->
+                <i class="fa-solid fa-caret-up nav-caret-up"></i>
+                
+                <ul>
+                    <li>
+                        <a class="user-icon-drop-down pe-2">
+                            <img src="https://picsum.photos/50/50" alt="User Icon">
+                        </a>
+                        <a class="user-name">Admin</a>
+                    </li>
+                    <li><hr></li>
+                    <li class='nav-selectable' nav-id='profile'>
+                        <i class="fa-solid fa-user-circle pe-2"></i>
+                        <a>Profile</a>
+                    </li>
+                    <li class='nav-selectable' nav-id='settings'>
+                        <i class="fa-solid fa-cog pe-2"></i>
+                        <a>Settings</a>
+                    </li>
+                    <li class='nav-selectable' nav-id='help'>
+                        <i class="fa-solid fa-question-circle pe-2"></i>
+                        <a>Help center</a>
+                    </li>
+                    <li><hr></li>
+                    <li><a>Sign out of StreamStage</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 </nav>

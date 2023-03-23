@@ -12,7 +12,7 @@ module.exports = {
         register: './register/index.ts',
         // streamer_apps: './streamer_apps/index.ts',
         // srr_visualizer: './srr_visualizer/index.ts',
-        // homepage: './homepage/index.ts',
+        homepage: './homepage/index.ts',
         // events: './events/index.ts'
     },
     module: {

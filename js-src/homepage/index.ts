@@ -1,5 +1,6 @@
 import { attach_to_showcases } from './featured';
 import { Event, Streamer } from './index.d';
+import { manage_navbar } from './navbar';
 import { create_carousel } from './thumbnail';
 
 const streamer: Streamer = {
@@ -226,3 +227,4 @@ function set_splash_state(
 //     sleep(1500).then(() => set_splash_state('finished'));
 // });
 attach_to_showcases();
+manage_navbar();
