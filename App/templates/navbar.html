@@ -1,21 +1,18 @@
 {% load static %}
+{% load tags %}
+
 <nav id='nav'>
 
     <!-- Control Panel Dropdown Menu -->
-    {% comment %} <div class="dropdown col-2">
-        <div class='
-                    carrot
-                    d-flex
-                    align-items-center                
-                    ps-4
-                '>
+    <div class="sidepanel-button" elem-status='hidden'>
+        <div class='carrot d-flex align-items-center ps-4'>
             <input type="checkbox" name="navbar-carrot" id="navbar-carrot" autocomplete="off">
 
             <label for="navbar-carrot" id="navbar-carrot-label">
                 <i class="fa-solid fa-square-caret-down"></i>
             </label>
         </div>
-    </div> {% endcomment %}
+    </div>
 
     <!-- Nav backgrounds -->
     <div class="nav-bg nav-bg-transparent"></div>
@@ -52,7 +49,11 @@
             <div class='nav-dropdown-toggle d-flex align-items-center gap-2'>
                 <!-- User Icon -->
                 <div class="user-icon">
-                    <img src="https://picsum.photos/50/50" alt="User Icon">
+                    {% if user.is_authenticated %}
+                        <img src="{{ user.get_profile_pic }}" alt="pfp">
+                    {% else %}
+                        <img src="{% static 'images/placeholder-pfp.png' %}" alt="pfp">
+                    {% endif %}
                 </div>
 
                 <!-- Carrot -->
@@ -67,27 +68,46 @@
                 <ul>
                     <li>
                         <a class="user-icon-drop-down pe-2">
-                            <img src="https://picsum.photos/50/50" alt="User Icon">
+                            {% if user.is_authenticated %}
+                                <img src="{{ user.get_profile_pic }}" alt="pfp">
+                            {% else %}
+                                <img src="{% static 'images/placeholder-pfp.png' %}" alt="pfp">
+                            {% endif %}
                         </a>
-                        <a class="user-name">Admin</a>
+                        <a href='{% cross_app_reverse_tag 'accounts' 'member_profile' %}' class="user-name">
+                            {% if user.is_authenticated %}
+                                {{ user.username }}
+                            {% else %}
+                                Visitor
+                            {% endif %}
+                        </a>
                     </li>
                     <li><hr></li>
-                    <li class='nav-selectable' nav-id='profile'>
-                        <i class="fa-solid fa-user-circle pe-2"></i>
-                        <a>Profile</a>
-                    </li>
-                    <li class='nav-selectable' nav-id='settings'>
-                        <i class="fa-solid fa-cog pe-2"></i>
-                        <a>Settings</a>
-                    </li>
+                    {% if user.is_authenticated %}
+                        <li class='nav-selectable' nav-id='profile'>
+                            <i class="fa-solid fa-user-circle pe-2"></i>
+                            <a>Profile</a>
+                        </li>
+                        <li class='nav-selectable' nav-id='settings'>
+                            <i class="fa-solid fa-cog pe-2"></i>
+                            <a href='{% cross_app_reverse_tag 'accounts' 'member_profile' %}'>Settings</a>
+                        </li>
+                    {% endif %}
                     <li class='nav-selectable' nav-id='help'>
                         <i class="fa-solid fa-question-circle pe-2"></i>
                         <a>Help center</a>
                     </li>
                     <li><hr></li>
-                    <li><a>Sign out of StreamStage</a></li>
-                </ul>
+                    {% if user.is_authenticated %}
+                        <li><a href='{% cross_app_reverse_tag 'accounts' 'logout' %}'>Sign out of StreamStage</a></li>
+                    {% else %}
+                        <li><a href='{% cross_app_reverse_tag 'accounts' 'login' %}'>Sign in to StreamStage</a></li>
+                    {% endif %}
+                </ul
             </div>
         </div>
     </div>
+
+    <!-- Nav script -->
+    <script src="{% static 'js/navbar_bin.js' %}"></script>
 </nav>

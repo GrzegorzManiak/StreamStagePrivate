@@ -1,6 +1,7 @@
 import { configuration } from '../';
 import { PanelType, Panel, Pod } from '../index.d';
 import { sleep, create_toast } from '../../common';
+import { scrolled } from '../../elements/navbar';
 
 let panels: Array<Panel> = [];
 export let pods: Array<Pod> = [];
@@ -86,7 +87,12 @@ export function attach_to_sidepanel() {
     // -- Get the sidepanel button #navbar-carrot and the sidepanel
     const sidepanel_button = document.getElementById('navbar-carrot') as HTMLInputElement,
         main_container = document.getElementById('main-container'),
+        nav_bar = document.getElementById('nav'),
+        sidepanel_btn_group = document.querySelector('.sidepanel-button') as HTMLElement,
         sidepanel = document.getElementById('side-panel');
+
+    // -- Make sure the sidepanel button is visible
+    sidepanel_btn_group.removeAttribute('elem-status');
 
     const allow_overflow = (status: boolean) => {
         if (status) {
@@ -113,11 +119,13 @@ export function attach_to_sidepanel() {
         switch(sidepanel_button.checked) {
             case true: 
                 sidepanel.setAttribute('side-panel', 'in'); 
+                nav_bar.classList.add('scrolled');
                 allow_overflow(true);
                 break;
 
             case false: 
                 sidepanel.setAttribute('side-panel', 'out');
+                scrolled();
                 allow_overflow(false);
                 break;
         }

@@ -29,6 +29,8 @@ DEBUG = True
 
 
 # SET THIS TO TRUE IF YOU ARE USING LOCALHOST
+# IF THIS IS TRUE, COOKIES WONT WORK (SESSIONS WONT WORK)
+# AND REVERSE'S WONT WORK
 RUNNING_ON_LOCALHOST = False
 
 
@@ -216,9 +218,10 @@ STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
 ]
+
 # User-uploaded content
-MEDIA_URL = '/media/'
 MEDIA_ROOT = str(BASE_DIR.joinpath('media'))
+MEDIA_URL = 'media/'
 
 
 # Default primary key field type

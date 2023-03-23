@@ -1,24 +1,23 @@
-export function manage_navbar() {
-    // -- Get the navbar element
-    const navbar = document.getElementById('nav'),
-        toggle_at = 50;
+// -- Get the navbar element
+const navbar = document.getElementById('nav'),
+    toggle_at = 50;
 
-    const scrolled = () => {
-        const scroll = window.scrollY;
-        if (scroll > toggle_at) navbar.classList.add('scrolled');
-        else navbar.classList.remove('scrolled');
-    }
-
-    // -- Listen to scroll on the window
-    window.addEventListener('scroll', () => scrolled());
-    scrolled();
-
-    // -- Manage the dropdown menu
-    manage_dropdown(
-        '#nav .nav-dropdown-menu', 
-        '#nav .nav-dropdown-toggle'
-    );
+export const scrolled = () => {
+    const scroll = window.scrollY;
+    if (scroll > toggle_at) navbar.classList.add('scrolled');
+    else navbar.classList.remove('scrolled');
 }
+
+// -- Listen to scroll on the window
+window.addEventListener('scroll', () => scrolled());
+scrolled();
+
+// -- Manage the dropdown menu
+manage_dropdown(
+    '#nav .nav-dropdown-menu', 
+    '#nav .nav-dropdown-toggle'
+);
+
 
 
 /**

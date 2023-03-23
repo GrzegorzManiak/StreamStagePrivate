@@ -6,7 +6,12 @@
 }
 
 .main-content {
+    padding-top: var(--header-height);
     height: auto!important;
+}
+
+.sidepanel-button {
+    z-index: 101;
 }
 
 .side-panel-pod {
