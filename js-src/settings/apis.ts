@@ -300,14 +300,16 @@ export const delete_review = async (
 
 
 /**
- * @name change_pfp
+ * @name change_image
  * @param {string} base64 - Base64 image
+ * @param {string} type - 'pfp' or 'banner'
  * @returns Promise<UpdateProiflePictureResponse>
  */
-export const change_pfp = async (
-    base64: string
+export const change_image = async (
+    base64: string,
+    type: 'pfp' | 'banner'
 ): Promise<UpdateProiflePictureResponse> => base_request(
     'POST',
-    configuration.change_pfp,
-    { image: base64 }
+    configuration.change_img,
+    { image: base64, type }
 );

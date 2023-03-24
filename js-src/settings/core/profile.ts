@@ -1,7 +1,8 @@
 import { configuration } from '..';
-import { attach, construct_modal, create_toast } from '../../common';
+import { attach, create_toast } from '../../common';
 import { picture_upload_modal } from '../../common/picture';
-import { change_pfp, update_profile } from '../apis';
+import { update_profile_picture } from '../../elements/navbar';
+import { change_image, update_profile } from '../apis';
 import { Pod } from '../index.d';
 
 
@@ -22,6 +23,7 @@ export function manage_profile_panel(pod: Pod) {
         lname = panel.querySelector('#lname') as HTMLInputElement,
         bio = panel.querySelector('#bio') as HTMLInputElement,
         pfp = panel.querySelector('.profile-picture') as HTMLInputElement,
+        banner_img = panel.querySelector('.profile-banner-img') as HTMLInputElement,
         timezone = panel.querySelector('#timezone') as HTMLSelectElement,
         country = panel.querySelector('#country') as HTMLSelectElement;
 
@@ -30,7 +32,7 @@ export function manage_profile_panel(pod: Pod) {
         'Profile Picture',
         'Upload a profile picture',
         async (image: string) => {
-            const res = await change_pfp(image);
+            const res = await change_image(image, 'pfp');
             if (res.code !== 200) {
                 create_toast('error', 'Oops!', res.message);
                 return false;
@@ -39,6 +41,26 @@ export function manage_profile_panel(pod: Pod) {
             else {
                 create_toast('success', 'Success!', res.message);
                 pfp.src = image;
+                update_profile_picture(image);
+                return true;
+            }
+        }
+    ));
+
+    banner_img.addEventListener('click', () => picture_upload_modal(
+        configuration.banner_picture, 21 / 7,
+        'Profile Banner',
+        'Upload a profile banner',
+        async (image: string) => {
+            const res = await change_image(image, 'banner');
+            if (res.code !== 200) {
+                create_toast('error', 'Oops!', res.message);
+                return false;
+            }
+
+            else {
+                create_toast('success', 'Success!', res.message);
+                banner_img.style.backgroundImage = `url(${image})`;
                 return true;
             }
         }

@@ -26,8 +26,10 @@
         data-userfirst='data:{{ user.first_name }}'
         data-userlast='data:{{ user.last_name }}'
         data-access-level='{{ user.access_level }}'
+
         data-profile-picture='{{ user.get_profile_pic }}'
-        data-change-profile-picture='{{ api.change_pfp }}'
+        data-banner-picture='{{ user.get_profile_banner }}'
+        data-change-picture='{{ api.change_pfp }}'
 
         data-csrf-token='{{ csrf_token }}'
 

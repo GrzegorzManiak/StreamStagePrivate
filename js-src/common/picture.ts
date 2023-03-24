@@ -164,7 +164,7 @@ const upload_template = (picture: string) => `
     <img 
         class="modal-body img-upload rounded"
         src="${picture}"
-        alt="Profile Picture"
+        alt="picture"
     >
 </div>
 

@@ -76,6 +76,23 @@ export async function manage_dropdown(
 }
 
 
+/**
+ * @name update_profile_picture
+ * @description Updates the profile picture
+ * @param {string} url - The url of the profile picture
+ * @returns {void}
+ */
+export function update_profile_picture(url: string) {
+    // .user-icon, user-icon-drop-down
+    const main = document.querySelector('.user-icon img') as HTMLImageElement,
+        dropdown = document.querySelector('.user-icon-drop-down img') as HTMLImageElement;
+
+    if (main) main.src = url;
+    if (dropdown) dropdown.src = url;
+}
+
+
+
 
 // -- This manages all the buttons on the navbar
 const logo = document.querySelector('#nav .logo-text'),
