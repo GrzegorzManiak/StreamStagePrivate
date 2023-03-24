@@ -20,5 +20,6 @@ from .views import (
     extend_session,
     update_profile_view,
     change_email_view,
-    close_session
+    close_session,
+    upload_profile_image
 )

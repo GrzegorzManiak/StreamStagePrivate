@@ -6,6 +6,7 @@ import {
     GetReviewsResponse, 
     SecurityInfoResponse, 
     StartSubscriptionResponse, 
+    UpdateProiflePictureResponse, 
     VerifyAccessResponse 
 } from "./index.d";
 import { base_request } from "../api";
@@ -294,4 +295,19 @@ export const delete_review = async (
     'POST',
     configuration.delete_review,
     { id }
+);
+
+
+
+/**
+ * @name change_pfp
+ * @param {string} base64 - Base64 image
+ * @returns Promise<UpdateProiflePictureResponse>
+ */
+export const change_pfp = async (
+    base64: string
+): Promise<UpdateProiflePictureResponse> => base_request(
+    'POST',
+    configuration.change_pfp,
+    { image: base64 }
 );

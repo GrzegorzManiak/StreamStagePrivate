@@ -140,6 +140,8 @@ export type GetReviewsSuccess = DefaultResponseData & { data: {
 }}
 export type GetReviewsResponse = GetReviewsSuccess | DefaultResponse;
 
+export type UpdateProiflePictureSuccess = DefaultResponseData & { data: { image: string } }
+export type UpdateProiflePictureResponse = UpdateProiflePictureSuccess | DefaultResponse;
 
 export interface Configuration {
     admin: boolean, 
@@ -168,4 +170,5 @@ export interface Configuration {
     update_review: string, 
     delete_review: string, 
     verify_mfa: string,
+    change_pfp: string,
 }

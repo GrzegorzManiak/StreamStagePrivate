@@ -1,7 +1,7 @@
 import { configuration } from '..';
 import { attach, construct_modal, create_toast } from '../../common';
 import { picture_upload_modal } from '../../common/picture';
-import { update_profile } from '../apis';
+import { change_pfp, update_profile } from '../apis';
 import { Pod } from '../index.d';
 
 
@@ -29,8 +29,18 @@ export function manage_profile_panel(pod: Pod) {
         configuration.profile_picture, 1,
         'Profile Picture',
         'Upload a profile picture',
-        (image: string) => {
-            console.log(image);
+        async (image: string) => {
+            const res = await change_pfp(image);
+            if (res.code !== 200) {
+                create_toast('error', 'Oops!', res.message);
+                return false;
+            }
+
+            else {
+                create_toast('success', 'Success!', res.message);
+                pfp.src = image;
+                return true;
+            }
         }
     ));
 

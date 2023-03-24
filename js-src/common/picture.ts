@@ -17,7 +17,7 @@ export function picture_upload_modal(
     aspect_ratio: number | undefined = undefined,
     title: string = 'Upload Picture',
     description: string = 'Upload a new picture',
-    on_upload: (image: string) => void,
+    on_upload: (image: string) => boolean | Promise<boolean>,
 ) {
     const modal = construct_modal(
         title, description, false,
@@ -122,11 +122,11 @@ export function picture_upload_modal(
 
 
     // -- Close and save the modal
-    save_button.addEventListener('click', () => {
+    save_button.addEventListener('click', async () => {
         const stop_spinner = attach(save_button);
-        on_upload(cropper.getCroppedCanvas().toDataURL());
+        const res = await on_upload(cropper.getCroppedCanvas().toDataURL());
         stop_spinner();
-        modal_elm.remove();
+        if (res) modal_elm.remove();
     });
     cancel_button.addEventListener('click', () => modal_elm.remove());
 }

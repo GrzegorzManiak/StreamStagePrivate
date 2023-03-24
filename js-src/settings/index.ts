@@ -38,6 +38,8 @@ export const configuration = build_configuration<Configuration>({
     get_reviews: new Type('data-get-reviews', 'string'),
     update_review: new Type('data-update-review', 'string'),
     delete_review: new Type('data-delete-review', 'string'),
+
+    change_pfp: new Type('data-change-profile-picture', 'string')
 });
 
 // -- Attach the event listeners

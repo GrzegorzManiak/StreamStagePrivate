@@ -9,6 +9,10 @@ import string
 import pyotp
 import stripe
 import mimetypes
+import base64
+import io
+from PIL import Image
+from django.core.files.base import ContentFile
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
@@ -154,12 +158,38 @@ class Member(AbstractUser):
             
             img_tmp.write(img_content.content)
             img_tmp.flush()   
-            img = File(img_tmp, name=f'profile_pictures/{self.id}{image_ext}')
+            img = File(img_tmp, name=f'profile_pictures/{uuid.uuid4}{image_ext}')
             self.profile_pic = img
             self.save()
         
         except Exception as e: return False
         
+
+    def add_profile_pic_from_base64(self, base64_data: str):
+        """
+            Adds a profile picture to a user
+            from a base64 string, and saves it
+            to the media folder
+        """
+        try:
+            img_tmp = NamedTemporaryFile(delete=True)
+            image_data = base64.b64decode(base64_data.split(',')[1])
+            image = Image.open(io.BytesIO(image_data))
+
+            # -- Save the image to the media folder
+            img_tmp.write(image_data)
+            img_tmp.flush()
+            img = File(img_tmp, name=f'profile_pictures/{uuid.uuid4}.{image.format.lower()}')
+            
+            # -- Set the profile picture to the new image
+            self.profile_pic = img
+            self.save()
+            return True
+
+        except Exception as e:
+            print(e)
+            return False
+
 
 
     def get_stripe_customer(self):
