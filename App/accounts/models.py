@@ -184,16 +184,19 @@ class Member(AbstractUser):
             image_data = base64.b64decode(base64_data.split(',')[1])
             image = Image.open(io.BytesIO(image_data))
 
+            # -- Compress the image
+            image = image.save(img_tmp, 'webp', quality=75)
+
             # -- Save the image to the media folder
             img_tmp.write(image_data)
             img_tmp.flush()
 
             if type == 'pfp':
-                img = File(img_tmp, name=f'profile_pictures/{uuid.uuid4()}.{image.format.lower()}')
+                img = File(img_tmp, name=f'profile_pictures/{uuid.uuid4()}.webp')
                 self.profile_pic = img
 
             elif type == 'banner':
-                img = File(img_tmp, name=f'profile_banners/{uuid.uuid4()}.{image.format.lower()}')
+                img = File(img_tmp, name=f'profile_banners/{uuid.uuid4()}.webp')
                 self.profile_banner = img
 
             self.save()
@@ -297,7 +300,6 @@ class Member(AbstractUser):
         return self.add_pic_from_url(url, 'pfp')
 
     def default_profile_banner(self):
-        print('default banner')
         url = f'https://api.dicebear.com/5.x/thumbs/svg?seed={self.id}'
         return self.add_pic_from_url(url, 'banner')
 
