@@ -150,13 +150,16 @@ nav {
 }
 
 .search-icon {
+    unset: all;
     grid-column: 1;
     grid-row: 1;
     position: absolute;
     cursor: pointer;
     transition: all 0.5s ease-in-out;
     z-index: 101;
-    padding: 0.75rem;
+    background-color: transparent!important;
+    border: none!important;
+    padding: 0.75rem!important;
 }
  
 nav input { font-size: 0.85rem!important; }

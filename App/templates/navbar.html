@@ -30,24 +30,29 @@
         <!-- Common items -->
         <div class="nav-items" data-nav-active='home'>
             <ul class="d-flex">
-                <li data-nav-area='home'><a href="{% cross_app_reverse_tag 'homepage' 'homepage_index' %}"> Home </a></li>
+                <li data-nav-area='home'><a> Home </a></li>
                 <li data-nav-area='live'><a> Live </a></li>
-                <li data-nav-area='upcoming'><a href="{% cross_app_reverse_tag 'events' 'upcoming_events' %}"> Upcoming </a></li>
-                <li data-nav-area='past'><a href="{% cross_app_reverse_tag 'events' 'past_events' %}"> Past </a></li>
+                <li data-nav-area='upcoming'><a> Upcoming </a></li>
+                <li data-nav-area='past'><a> Past </a></li>
             </ul>
         </div>
 
         <!-- Search Bar -->
-        <div class="nav-search-bar">
-            <form class="d-flex align-items-center me-2" action="{% cross_app_reverse_tag 'search' 'searchResult' %}" method="get">
-                <input 
-                    id="nav-search-bar" placeholder="Title, Genre, etc." 
-                    value="admin" class="form-control form-control-lg inp"
-                    name="q">
-                <button class="d-flex btn" style="background-color: #ffb25a;" type="submit"><i
-                    class="fa-solid fa-magnifying-glass p-1"></i></button>
-            </form>
-        </div>
+        <form 
+            class="nav-search-bar" 
+            action="{% cross_app_reverse_tag 'search' 'searchResult' %}" 
+            method="get"
+        >
+            <button class="search-icon" type="submit">
+                <i class="fa-solid fa-search text-light"></i>
+            </button>
+
+            <input 
+                name="q"
+                id="nav-search-bar"
+                placeholder="Title, Genre, etc." 
+                class="form-control form-control-lg inp">
+        </form>
 
         <!-- User Dropdown Menu -->
         <div class="user-dropdown">
