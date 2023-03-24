@@ -424,9 +424,9 @@ select {
 .profile-picture {
     background-color: var(--theme-color);
     border-radius: 0.5rem;
-    margin-bottom: 1rem;
-    position: absolute;
-    top: 55%;
+    margin-bottom: -5rem;
+    position: relative;
+    top: -5rem;
 
     /* dropshadown */
     box-shadow: 0 0 0.5rem 0.5rem #0000001a;
