@@ -13,14 +13,12 @@
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
     <link rel="stylesheet" href="{% static 'css/auth.css' %}">
     <link rel="stylesheet" href="{% static 'css/payments.css' %}">
+    <link rel="stylesheet" href="{% static 'css/cropper.css' %}">
 {% endblock %}
 
 {% block content %}
-    <span id='toasts'>
-    </span>
-
     <span 
-        id='config'
+        class='config'
         data-admin='{{ user.is_staff }}'
         data-username='{{ user.username }}'
         data-userid='{{ user.id }}'
@@ -28,7 +26,8 @@
         data-userfirst='data:{{ user.first_name }}'
         data-userlast='data:{{ user.last_name }}'
         data-access-level='{{ user.access_level }}'
-        data-profile-picture='/media/{{ user.profile_pic }}'
+        data-profile-picture='{{ user.get_profile_pic }}'
+        data-change-profile-picture='{{ api.change_pfp }}'
 
         data-csrf-token='{{ csrf_token }}'
 

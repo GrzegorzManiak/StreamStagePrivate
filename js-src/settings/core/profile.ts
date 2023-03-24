@@ -1,6 +1,9 @@
-import { attach, create_toast } from '../../common';
-import { update_profile } from '../apis';
+import { configuration } from '..';
+import { attach, construct_modal, create_toast } from '../../common';
+import { picture_upload_modal } from '../../common/picture';
+import { change_pfp, update_profile } from '../apis';
 import { Pod } from '../index.d';
+
 
 /**
  * @param pod: Pod - The pod that this panel is attached to
@@ -18,12 +21,32 @@ export function manage_profile_panel(pod: Pod) {
         fname = panel.querySelector('#fname') as HTMLInputElement,
         lname = panel.querySelector('#lname') as HTMLInputElement,
         bio = panel.querySelector('#bio') as HTMLInputElement,
+        pfp = panel.querySelector('.profile-picture') as HTMLInputElement,
         timezone = panel.querySelector('#timezone') as HTMLSelectElement,
         country = panel.querySelector('#country') as HTMLSelectElement;
 
-    const save_button = panel.querySelector('#save-btn') as HTMLButtonElement;
+    pfp.addEventListener('click', () => picture_upload_modal(
+        configuration.profile_picture, 1,
+        'Profile Picture',
+        'Upload a profile picture',
+        async (image: string) => {
+            const res = await change_pfp(image);
+            if (res.code !== 200) {
+                create_toast('error', 'Oops!', res.message);
+                return false;
+            }
+
+            else {
+                create_toast('success', 'Success!', res.message);
+                pfp.src = image;
+                return true;
+            }
+        }
+    ));
+
 
     // -- Add the event listener to the save button
+    const save_button = panel.querySelector('#save-btn') as HTMLButtonElement;
     save_button.addEventListener('click', async() => {
         const stop_spinner = attach(save_button);
 

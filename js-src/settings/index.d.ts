@@ -139,3 +139,36 @@ export type GetReviewsSuccess = DefaultResponseData & { data: {
     pages: number
 }}
 export type GetReviewsResponse = GetReviewsSuccess | DefaultResponse;
+
+export type UpdateProiflePictureSuccess = DefaultResponseData & { data: { image: string } }
+export type UpdateProiflePictureResponse = UpdateProiflePictureSuccess | DefaultResponse;
+
+export interface Configuration {
+    admin: boolean, 
+    username: string, 
+    userid: string,
+    useremail: string, 
+    userfirst: string, 
+    userlast: string,
+    access_level: number, 
+    profile_picture: string, 
+    csrf_token: string,
+    send_verification: string, 
+    resend_verification: string,
+    remove_verification: string, 
+    recent_verification: string,
+    security_info: string, 
+    update_profile: string, 
+    remove_oauth: string,
+    extend_session: string, 
+    close_session: string, 
+    change_email: string,
+    setup_mfa: string, 
+    disable_mfa: string,
+    start_subscription: string, 
+    get_reviews: string,
+    update_review: string, 
+    delete_review: string, 
+    verify_mfa: string,
+    change_pfp: string,
+}

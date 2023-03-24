@@ -57,6 +57,7 @@ def profile(request):
             'get_reviews': reverse_lazy('get_reviews'),
             'update_review': reverse_lazy('update_review'),
             'delete_review': reverse_lazy('delete_review'),
+            'change_pfp': reverse_lazy('change_pfp'),
         },
         'stripe': request.user.get_stripe_customer(),
         'stripe_key': STRIPE_PUB_KEY,
@@ -249,4 +250,25 @@ def change_email_view(request, data):
     return success_response('Email changed successfully', {
         'resend_key': res[1],
         'verify_key': res[2],
+    })
+
+
+
+@api_view(['POST'])
+@authenticated()    
+@required_data(['image'])
+def upload_profile_image(request, data):
+    """
+        Uploads a profile image to the server
+        and saves it to the user's profile
+    """ 
+
+    res = request.user.add_profile_pic_from_base64(data['image'])
+
+    # -- Return success
+    if res == False: return invalid_response(
+        'Sorry, but it looks like you have provided an invalid image. Please try again.')
+
+    return success_response('Profile image uploaded successfully', {
+        'image': request.user.get_profile_pic(),
     })

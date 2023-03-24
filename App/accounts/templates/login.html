@@ -15,7 +15,7 @@
 
 {% block content %}
     <span
-        id='config'
+        class='config'
         data-page='login'
         data-csrf-token='{{ csrf_token }}'
         data-token-url='{{ token }}'
@@ -26,6 +26,10 @@
         data-recent-verification='{{ email_recent }}'
         data-email-verify='{{ email_verify }}'
         data-resend-verification='{{ email_resend }}'
+
+        data-add-payment='{{ add_payment }}'
+        data-get-payments='{{ get_payments }}'
+        data-remove-payment='{{ remove_payment }}'
     >
     </span>
 

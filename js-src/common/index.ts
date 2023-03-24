@@ -1,15 +1,28 @@
-import { get_or_error } from '../api/config';
+import { Type, build_configuration } from '../api/config';
 import { ToastType } from './index.d';
 
 
 // -- Get the global configuration
-const config = document.getElementById('config');
-export const configuration = () => {
-    return { 
-        add_payment: get_or_error<string>(config, 'data-add-payment'),
-        get_payments: get_or_error<string>(config, 'data-get-payments'),
-        remove_payment: get_or_error<string>(config, 'data-remove-payment'),
-    }
+export let configuration: {
+    add_payment: string,
+    get_payments: string,
+    remove_payment: string,
+};
+
+
+// -- Get the global configuration
+export function load_cfg() {
+    if (configuration) return configuration;
+    configuration = build_configuration<{
+        add_payment: string,
+        get_payments: string,
+        remove_payment: string,
+    }>({
+        add_payment: new Type('data-add-payment', 'string'),
+        get_payments: new Type('data-get-payments', 'string'),
+        remove_payment: new Type('data-remove-payment', 'string'),
+    });
+    return configuration;
 }
 
 

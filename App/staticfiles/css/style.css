@@ -1,6 +1,7 @@
 /* Variables */
 :root {
     --theme-color: #0d1116;
+    --theme-semi-transparent-color: rgba(13, 17, 22, 0.9);
     --theme-secondary-color: #161a1f;
     --theme-backdrop-color: #1e242b;
     --accent-color: #E5BA73;
@@ -9,7 +10,7 @@
     --font-color-inverted: #111111;
     --muted-font-color: #b3b3b3;
 
-    --header-height: 3.5rem;
+    --header-height: 4rem;
     --header-fade-out: 0.5rem;
     --header-button-speed: 0.5s;
 
@@ -29,6 +30,7 @@
 body {
     background-color: var(--theme-color)!important;
     color: var(--font-color);
+    min-height: 100vh;
 }
 
 
@@ -36,6 +38,277 @@ body {
 /***** Body/Base *****/
 
 /***** Navbar *****/
+nav {
+    background-color: transparent;
+    color: var(--font-color);
+    height: var(--header-height);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    transition: all 0.5s ease-in-out;
+}
+
+.nav-bg {
+    position: fixed;
+    width: 100%;
+    height: var(--header-height);
+    background-color: var(--theme-backdrop-color);
+    opacity: 0;
+    transition: all 0.5s ease-in-out;
+}
+
+.nav-bg-transparent {
+    z-index: 97;
+    background: linear-gradient(
+        180deg, 
+        rgba(0,0,0,0.75) 0%, 
+        rgba(0,0,0,0) 100%
+    );
+}
+
+.nav-bg-dark {
+    z-index: 98;
+    opacity: 0;
+    background: linear-gradient(
+        180deg, 
+        var(--theme-color) 0%,
+        var(--theme-secondary-color) 100%
+    );
+    transition: all 0.5s ease-in-out;
+}
+
+.scrolled .nav-bg-dark { opacity: 1; }
+
+.logo-text {
+    font-family: 'Lust Script';
+    font-size: 2rem;
+    color: var(--accent-color);
+    user-select: none;
+    margin-right: 1rem;
+    z-index: 100;
+}
+
+.nav-items {
+    width: 100%;
+    align-items: start;
+    z-index: 100;
+}
+
+.nav-items ul {
+    list-style: none;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    z-index: 100;
+}
+
+.nav-items a {
+    color: var(--font-color);
+    text-decoration: none;
+    font-size: 0.85rem;
+    padding: 0.5rem 0.8rem;
+    transition: all 0.5s ease-in-out;
+    --selected-weight: 700;
+    cursor: pointer;
+    z-index: 100;
+}
+
+[data-nav-active='home'] [data-nav-area='home'] a { font-weight: var(--selected-weight)!important; }
+[data-nav-active='live'] [data-nav-area='live'] a { font-weight: var(--selected-weight)!important; }
+[data-nav-active='upcoming'] [data-nav-area='upcoming'] a { font-weight: var(--selected-weight)!important; }
+[data-nav-active='past'] [data-nav-area='past'] a { font-weight: var(--selected-weight)!important; }
+
+.nav-items a:hover { color: var(--muted-font-color)!important; }
+.nav-items a:active { background-color: transparent!important; }
+
+
+.nav-search-bar {
+    width: 100%;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    transition: width 0.5s ease-in-out;
+
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    z-index: 100;
+}
+
+#nav-search-bar {
+    grid-column: 1;
+    grid-row: 1;
+    width: 0%;
+    opacity: 0;
+    z-index: 100;
+    transition: all 1s ease-in-out;
+}
+
+.search-icon {
+    grid-column: 1;
+    grid-row: 1;
+    position: absolute;
+    cursor: pointer;
+    transition: all 0.5s ease-in-out;
+    z-index: 101;
+    padding: 0.75rem;
+}
+ 
+nav input { font-size: 0.85rem!important; }
+
+.search-icon:hover + #nav-search-bar {
+    width: 100%;
+    opacity: 0.7;
+}
+
+#nav-search-bar:focus {
+    outline: none;
+    box-shadow: none;
+    width: 100%;
+    opacity: 0.7;
+}
+
+#nav-search-bar:hover {
+    outline: none;
+    box-shadow: none;
+    width: 100%;
+    opacity: 0.7;
+}
+
+.user-icon {
+    width: 2rem;
+    height: 2rem;
+    margin-left: 0.5rem;
+    z-index: 100;
+}
+
+.user-icon img {
+    width: 100%;
+    height: 100%;
+    border-radius: 0.5rem;
+    z-index: 100;
+}
+
+.nav-limiter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    z-index: 100;
+}
+
+.user-dropdown {
+    transition: all 0.5s ease-in-out;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    gap: 0.5rem;
+    z-index: 100;
+}
+
+.nav-caret { transition: transform 0.5s ease-in-out; }
+.nav-caret:hover { transform: rotateX(180deg); }
+
+.nav-dropdown-menu {
+    position: absolute;
+    display: block;
+    top: 100%;
+    margin-top: 1.5rem;
+    right: 0;
+    background-color: var(--theme-semi-transparent-color);
+    opacity: 0;
+    visibility: hidden;
+    border-radius: 0.25rem;
+    padding: 1rem;
+    z-index: 100;
+    transition: all 0.5s ease-in-out;
+}
+
+.show.nav-dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    z-index: 100;
+}
+.show.nav-dropdown-toggle .nav-caret {
+    transform: rotateX(180deg);
+}
+
+.nav-caret-up {
+    margin: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 100;
+    font-size: 1.75rem;
+    transform: translate(-140%, -60%);
+    color: var(--theme-semi-transparent-color);
+}
+
+.nav-dropdown-menu ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    z-index: 100;
+}
+
+.nav-dropdown-menu li { width: 100%; }
+.nav-dropdown-menu a {
+    white-space: nowrap;
+    user-select: none;
+    text-decoration: none;
+}
+
+.nav-dropdown-menu a,
+.nav-dropdown-menu i {
+    transition: all 0.35s ease-in-out;
+    text-decoration: none;
+    color: var(--font-color);
+}
+
+.nav-selectable:hover > * {
+    background-color: none;
+    color: var(--muted-font-color)!important;
+    padding-left: 0.2rem;
+}
+
+.user-icon-drop-down, .user-icon-drop-down img {
+    text-decoration: none!important;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    z-index: 100;
+}
+
+.user-icon-drop-down:active,
+.user-name:active,
+.nav-dropdown-menu a:active
+{ background-color: transparent!important; }
+
+
+
+.user-name {
+    text-decoration: transparent!important;
+    font-weight: 700;
+    color: var(--font-color);
+}
+
+.user-name:hover { color: var(--accent-color); }
+
 
 /* 
     So, we've got a dropdown button in the nav bar
@@ -64,6 +337,8 @@ body {
 [elem-status='hidden'] { 
     display: none!important;
 }
+
+
 
 /***** Header *****/
 header > div, header {
@@ -103,8 +378,22 @@ header .accordion:focus {
     color: var(--font-color)!important;
 }
 
-/***** Footer *****/
 
+
+/***** Footer *****/
+footer {
+    padding: 1rem;
+    background-color: var(--theme-secondary-color)!important;
+    color: var(--font-color);
+
+    width: 100%;
+    height: 2.5rem;
+    margin-top: 5rem;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
 
 /***** Fonts *****/
 
@@ -129,6 +418,34 @@ form > input {
     color: rgb(32, 38, 46);
     font-weight: bold;
 }
+
+.button-slim p, .button-slim i {
+    font-size: 0.9rem;
+    margin: 0;
+    padding: 0;
+}
+
+.button-slim {
+    padding: 0.25rem!important;
+    height: 2.5rem;
+}
+
+.button-group > *:last-child {
+    border-radius: 0!important; 
+    border-top-right-radius: 0.5rem!important;
+    border-bottom-right-radius: 0.5rem!important;
+}
+
+.button-group > *:first-child {
+    border-radius: 0!important; 
+    border-top-left-radius: 0.5rem!important;
+    border-bottom-left-radius: 0.5rem!important;
+}
+
+.button-group > * {
+    border-radius: 0!important; 
+}
+
 
 
 /***** Images *****/

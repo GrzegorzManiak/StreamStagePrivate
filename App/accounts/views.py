@@ -42,6 +42,10 @@ def login(request):
             'email_verify': reverse('verify_key'),
             'email_resend': reverse('resend_key'),
             'email_remove': reverse('remove_key'),
+
+            'add_payment': reverse_lazy('add_payment'),
+            'get_payments': reverse_lazy('get_payments'),
+            'remove_payment': reverse_lazy('remove_payment'),
         }
     )
 
@@ -69,6 +73,10 @@ def register(request):
             'email_verify': reverse('verify_key'),
             'email_resend': reverse('resend_key'),
             'email_remove': reverse('remove_key'),
+
+            'add_payment': reverse_lazy('add_payment'),
+            'get_payments': reverse_lazy('get_payments'),
+            'remove_payment': reverse_lazy('remove_payment'),
         }
     )
 

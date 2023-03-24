@@ -8,6 +8,11 @@ import random
 import string
 import pyotp
 import stripe
+import mimetypes
+import base64
+import io
+from PIL import Image
+from django.core.files.base import ContentFile
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
@@ -22,6 +27,7 @@ from django.core.files.temp import NamedTemporaryFile
 from .validation import check_unique_broadcaster_handle
 
 from StreamStage.secrets import STRIPE_SECRET_KEY
+from StreamStage.settings import MEDIA_URL
 from StreamStage.mail import send_template_email
 stripe.api_key = STRIPE_SECRET_KEY
 
@@ -143,16 +149,47 @@ class Member(AbstractUser):
                 url, headers={
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36'
                 }
-            ).content
+            )
+            
+            image_type = img_content.headers['Content-Type'] # -- Mime type
+            image_ext = mimetypes.guess_extension(image_type) # -- File extension
 
-            img_tmp.write(img_content)
+            if image_ext == None: return False            
+            
+            img_tmp.write(img_content.content)
             img_tmp.flush()   
-            img = File(img_tmp, name=f'profile_pictures/{self.id}.jpg')
+            img = File(img_tmp, name=f'profile_pictures/{uuid.uuid4}{image_ext}')
             self.profile_pic = img
             self.save()
         
         except Exception as e: return False
         
+
+    def add_profile_pic_from_base64(self, base64_data: str):
+        """
+            Adds a profile picture to a user
+            from a base64 string, and saves it
+            to the media folder
+        """
+        try:
+            img_tmp = NamedTemporaryFile(delete=True)
+            image_data = base64.b64decode(base64_data.split(',')[1])
+            image = Image.open(io.BytesIO(image_data))
+
+            # -- Save the image to the media folder
+            img_tmp.write(image_data)
+            img_tmp.flush()
+            img = File(img_tmp, name=f'profile_pictures/{uuid.uuid4}.{image.format.lower()}')
+            
+            # -- Set the profile picture to the new image
+            self.profile_pic = img
+            self.save()
+            return True
+
+        except Exception as e:
+            print(e)
+            return False
+
 
 
     def get_stripe_customer(self):
@@ -242,6 +279,32 @@ class Member(AbstractUser):
 
 
 
+    def default_profile_pic(self):
+        """
+            Sets the profile picture to the default
+            profile picture.
+
+            Im using DiceBear Avatars for this
+            https://api.dicebear.com/5.x/thumbs/svg?seed=
+        """
+        
+        url = f'https://api.dicebear.com/5.x/thumbs/svg?seed={self.id}'
+        return self.add_profile_pic_from_url(url)
+
+
+
+    def get_profile_pic(self):
+        """
+            Returns the profile picture url
+        """
+        if self.profile_pic is None or self.profile_pic == "": 
+            self.default_profile_pic()
+
+        if self.profile_pic is not None:
+            return f'/{MEDIA_URL}{self.profile_pic}'
+
+
+
     def save(self, *args, **kwargs):
         self.is_over_18()
 
@@ -253,8 +316,14 @@ class Member(AbstractUser):
         if self.username != self.cased_username.lower():
             self.cased_username = self.username.lower()
 
+        # -- Check if the user has a profile picture
+        if self.profile_pic is None or self.profile_pic == "":
+            self.default_profile_pic()
+
         # -- Save the user
         super().save(*args, **kwargs)
+
+
 
 class MembershipStatus(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
