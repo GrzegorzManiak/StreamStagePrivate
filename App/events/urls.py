@@ -16,8 +16,8 @@ from .views import (event_create,
 
 urlpatterns = [
     # Events
+    path('', get_upcoming_events, name='upcoming_events'),
     path('past/', get_past_events, name='past_events'),
-    path('upcoming/', get_upcoming_events, name='upcoming_events'),
     path('new/', event_create, name='event_new'),
     path('<slug:event_id>/', event_view, name='event_view'),
     path('<slug:event_id>/update/', event_update, name='event_update'),

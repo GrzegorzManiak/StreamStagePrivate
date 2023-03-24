@@ -30,7 +30,7 @@ class EventShowingAdmin(admin.ModelAdmin):
 
 @admin.register(EventReview)
 class EventReviewAdmin(admin.ModelAdmin):
-    list_display = [ 'review_id', 'author', 'title', 'body', 'likes', 'rating' ]
+    list_display = [ 'review_id', 'author', 'event', 'title', 'body', 'likes', 'rating' ]
     list_editable = [ 'author', 'title', 'body', 'likes', 'rating' ]
     list_display_links = []
 

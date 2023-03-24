@@ -472,7 +472,14 @@ div > a:hover {
 /***** Category Page *****/
 
 
-/***** Events Listings Page *****/
+/***** Events Listings Pages *****/
+/* - Upcoming Events Page */
+/* - Past Events Page */
+/* - Search Events Page */
+.event-listings-title {
+    margin-top: var(--header-height);
+}
+
 .event-media {
     display: inline-block;
 }
@@ -503,7 +510,7 @@ div > a:hover {
     max-width: 100%;
 }
 
-/***** Upcoming Events Page *****/
+
 
 
 /***** Cart Page*****/

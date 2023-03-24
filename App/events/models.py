@@ -98,10 +98,10 @@ class Event(models.Model):
         top_review = None
         likes = 0
         for review in reviews:
-            if review.likes > likes:
+            if review.likes >= likes:
                 likes = review.likes
                 top_review = review
-        return top_review.short_review
+        return top_review
     
     # Showings
 

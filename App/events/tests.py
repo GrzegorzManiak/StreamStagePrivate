@@ -70,6 +70,7 @@ class EventTests(TestCase):
         #     description = 'Media Picture Description'
         # )
 
+
     # *******************
     # *** Event Tests ***
     # *******************
@@ -274,7 +275,7 @@ class EventTests(TestCase):
             likes = 10 
         )
         review = self.event.get_top_review()
-        print(review)
+
         # Testing if correct "top" review is being returned
         self.assertEqual(review.review_id, self.review_high.review_id)
 
