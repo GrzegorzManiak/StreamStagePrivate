@@ -52,7 +52,6 @@ def event_view(request, event_id):
             'update_review': reverse_lazy('update_review'),
             'delete_review': reverse_lazy('delete_review'),
         },
-        'stripe': request.user.get_stripe_customer(),
         'stripe_key': secrets.STRIPE_PUB_KEY,
     }
 

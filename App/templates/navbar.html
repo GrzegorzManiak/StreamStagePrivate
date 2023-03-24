@@ -1,4 +1,5 @@
 {% load static %}
+{% load tags %}
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
 
@@ -27,7 +28,7 @@
         <!-- Search Bar -->
         {% if not is_search_page %}
         <div class="col-4">
-            <form class="d-flex align-items-center me-2" action="" method="get">
+            <form class="d-flex align-items-center me-2" action="{% cross_app_reverse_tag 'search' 'searchResult' %}" method="get">
                 <input type="search" class="search-bar form-control" placeholder="Search Events..." aria-label="Search"
                     name="q">
                 <button class="d-flex btn" style="background-color: #ffb25a;" type="submit"><i
