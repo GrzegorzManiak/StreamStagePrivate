@@ -26,14 +26,14 @@ class SearchResultsListView(ListView):
         country = self.request.GET.get('co')
         # min_price = self.request.GET.get('mip')
         # max_price = self.request.GET.get('map')
-        # purchased = self.request.GET.get('p')
         
         # Null Protection
         results = Event.objects.all()
 
         # Regular Search (User Input)
         if query:
-            results = results.filter(Q(title__icontains=query) | Q(description__icontains=query))
+            results = results.filter(Q(title__icontains=query) | Q(description__icontains=query) | 
+                                     Q(broadcaster__handle__icontains=query) | Q(categories__name__icontains=query))
         
         # Filter by Category
         if category:
@@ -41,9 +41,7 @@ class SearchResultsListView(ListView):
         
         # Filter by Broadcaster
         if broadcaster:
-            print(broadcaster)
             results = results.filter(Q(broadcaster__handle__icontains=broadcaster))
-            print(results)
 
         # Filter by Venue
         if venue:
@@ -133,29 +131,12 @@ class SearchResultsListView(ListView):
             
         #     results = results.filter(price__range=(min_price, max_price))
 
-        # Filter by Previous purchases
-        # if purchased == 'y' and user.is_authenticated:
-        #     valid_products = []
-
-        #     orders = Order.objects.filter(registered_user=user)
-
-        #     for order in orders:
-        #         items = OrderItem.objects.filter(order=order)
-
-        #         for item in items:
-        #             valid_products.append(item.product)
-
-        #     results = results.filter(name__in=valid_products)
-
-
-        return results
+        # Once filtering complete, return results  (with distinct individual events)
+        return results.distinct()
     
     # If second search, keep original values
     def get_context_data(self, **kwargs):
         context = super(SearchResultsListView, self).get_context_data(**kwargs)
-
-        # if you don't order_by brand first, distinct() doesn't seem to work.
-        # context['brands'] = Event.objects.all().order_by('brand').values_list('brand', flat=True).distinct()
 
         context['is_search_page'] = True
 
@@ -171,7 +152,6 @@ class SearchResultsListView(ListView):
         context['country'] = self.request.GET.get('co')
         # context['min_price'] = self.request.GET.get('mip')
         # context['max_price'] = self.request.GET.get('map')
-        # context['purchased'] = self.request.GET.get('p')
 
         return context
 

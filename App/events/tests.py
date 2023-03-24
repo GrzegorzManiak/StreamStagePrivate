@@ -91,7 +91,7 @@ class EventTests(TestCase):
         self.assertTemplateUsed(self.response, 'event.html') 
 
     # Testing Viewing an Event Page
-    def test_event_view(self):
+    def test_event_view_page_displays(self):
         # Defining HTTP response & testing if correct
         self.response = self.client.get(self.event.get_absolute_url())
         self.assertEqual(self.response.status_code, 200)
@@ -100,7 +100,7 @@ class EventTests(TestCase):
  
 
     # Testing Viewing Past Events Page
-    def test_get_upcoming_events(self):
+    def test_get_upcoming_events_page_displays(self):
         # Defining HTTP response & testing if correct
         self.response = self.client.get(reverse('past_events'))
         self.assertEqual(self.response.status_code, 200) 
@@ -108,7 +108,7 @@ class EventTests(TestCase):
         self.assertTemplateUsed(self.response, 'event_list_past.html') 
 
     # Testing Viewing Upcoming Events Page
-    def test_get_upcoming_events(self):
+    def test_get_upcoming_events_page_displays(self):
         # Defining HTTP response & testing if correct
         self.response = self.client.get(reverse('upcoming_events'))
         self.assertEqual(self.response.status_code, 200) 
@@ -117,7 +117,7 @@ class EventTests(TestCase):
 
         
     # Testing Updating an Event
-    def test_event_update(self):
+    def test_event_update_event_updated(self):
         # Updating Event
         event = Event.objects.get(event_id='TstEvnt0')
         event.title = 'Test Event 2'
@@ -136,7 +136,7 @@ class EventTests(TestCase):
         self.assertTemplateUsed(self.response, 'event.html') 
 
     # Testing Deleting an Event
-    def test_event_delete(self):
+    def test_event_delete_event_deleted(self):
         Event.objects.get(event_id='TstEvnt0').delete()
 
         # Logging user in as authentication required for deleting event
@@ -154,7 +154,7 @@ class EventTests(TestCase):
     # **************************
     
     # Testing Creation of Showing
-    def test_showing_create(self):
+    def test_showing_create_showing_created(self):
         showing = EventShowing.objects.filter(event='TstEvnt0').first()
         self.assertEqual(f'{showing.country}', 'AU') 
         self.assertEqual(f'{showing.city}', 'Sydney') 
@@ -168,7 +168,7 @@ class EventTests(TestCase):
         self.assertTemplateUsed(self.response, 'event.html') 
 
     # Testing Updating a Showing
-    def test_showing_update(self):
+    def test_showing_update_showing_updated(self):
         # Updating Showing
         showing = EventShowing.objects.filter(event='TstEvnt0').first()
         showing.country = 'AT'
@@ -190,7 +190,7 @@ class EventTests(TestCase):
         self.assertTemplateUsed(self.response, 'event.html')
 
     # Testing Deleting a Showing
-    def test_showing_delete(self):
+    def test_showing_delete_showing_deleted(self):
         EventShowing.objects.get(event='TstEvnt0').delete()
 
         # Defining HTTP response & testing if correct
@@ -200,7 +200,7 @@ class EventTests(TestCase):
         self.assertTemplateUsed(self.response, 'event.html')
 
     # Testing Getting the next Showing
-    def test_get_next_showing(self):
+    def test_get_next_showing_next_event_showing_returned(self):
         # Create Test Showing 2 - Later
         self.showing_last = EventShowing.objects.create(
             event = self.event,
@@ -219,7 +219,7 @@ class EventTests(TestCase):
     # *************************
 
     # Testing Creation of Review
-    def test_review_create(self):
+    def test_review_create_review_created(self):
         review = EventReview.objects.filter(event='TstEvnt0').first()
         self.assertEqual(f'{review.author}', 'TestMember') 
         self.assertEqual(f'{review.title}', 'Unhappy Review Title') 
@@ -234,7 +234,7 @@ class EventTests(TestCase):
         self.assertTemplateUsed(self.response, 'event.html') 
 
     # Testing Updating a Review
-    def test_review_update(self):
+    def test_review_update_review_updated(self):
         # Updating Review
         review = EventReview.objects.filter(event='TstEvnt0').first()
         review.title = 'Review Title 2'
@@ -254,7 +254,7 @@ class EventTests(TestCase):
         self.assertTemplateUsed(self.response, 'event.html')
 
     # Testing Deleting a Review
-    def test_review_delete(self):
+    def test_review_delete_review_deleted(self):
         EventReview.objects.filter(event='TstEvnt0').first().delete()
 
         # Defining HTTP response & testing if correct
@@ -264,7 +264,7 @@ class EventTests(TestCase):
         self.assertTemplateUsed(self.response, 'event.html')
 
     # Testing getting highest liked Review
-    def test_get_top_review(self):
+    def test_get_top_review_most_liked_review_returned(self):
         # Create Test Review 2 - High Likes, Low Rating
         self.review_high = EventReview.objects.create(
             author = self.member,
