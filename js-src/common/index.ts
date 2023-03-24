@@ -3,16 +3,27 @@ import { ToastType } from './index.d';
 
 
 // -- Get the global configuration
-export const configuration = build_configuration<{
+export let configuration: {
     add_payment: string,
     get_payments: string,
     remove_payment: string,
-}>({
-    add_payment: new Type('data-add-payment', 'string'),
-    get_payments: new Type('data-get-payments', 'string'),
-    remove_payment: new Type('data-remove-payment', 'string'),
-});
+};
 
+
+// -- Get the global configuration
+export function load_cfg() {
+    if (configuration) return configuration;
+    configuration = build_configuration<{
+        add_payment: string,
+        get_payments: string,
+        remove_payment: string,
+    }>({
+        add_payment: new Type('data-add-payment', 'string'),
+        get_payments: new Type('data-get-payments', 'string'),
+        remove_payment: new Type('data-remove-payment', 'string'),
+    });
+    return configuration;
+}
 
 
 /**

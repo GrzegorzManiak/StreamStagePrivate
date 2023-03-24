@@ -43,7 +43,7 @@ nav {
     color: var(--font-color);
     height: var(--header-height);
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     position: fixed;
     top: 0;
@@ -418,6 +418,34 @@ form > input {
     color: rgb(32, 38, 46);
     font-weight: bold;
 }
+
+.button-slim p, .button-slim i {
+    font-size: 0.9rem;
+    margin: 0;
+    padding: 0;
+}
+
+.button-slim {
+    padding: 0.25rem!important;
+    height: 2.5rem;
+}
+
+.button-group > *:last-child {
+    border-radius: 0!important; 
+    border-top-right-radius: 0.5rem!important;
+    border-bottom-right-radius: 0.5rem!important;
+}
+
+.button-group > *:first-child {
+    border-radius: 0!important; 
+    border-top-left-radius: 0.5rem!important;
+    border-bottom-left-radius: 0.5rem!important;
+}
+
+.button-group > * {
+    border-radius: 0!important; 
+}
+
 
 
 /***** Images *****/

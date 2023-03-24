@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
     <link rel="stylesheet" href="{% static 'css/auth.css' %}">
     <link rel="stylesheet" href="{% static 'css/payments.css' %}">
+    <link rel="stylesheet" href="{% static 'css/cropper.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -25,7 +26,7 @@
         data-userfirst='data:{{ user.first_name }}'
         data-userlast='data:{{ user.last_name }}'
         data-access-level='{{ user.access_level }}'
-        data-profile-picture='/media/{{ user.profile_pic }}'
+        data-profile-picture='{{ user.get_profile_pic }}'
 
         data-csrf-token='{{ csrf_token }}'
 

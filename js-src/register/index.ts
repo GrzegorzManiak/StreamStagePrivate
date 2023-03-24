@@ -1,15 +1,22 @@
-import { get_or_error } from '../api/config';
+import { Type, build_configuration } from '../api/config';
 import { register_handler } from './src/core';
 
-const sso_config = document.getElementById('config');
-export const configuration = {
-    verify_token_url: get_or_error<string>(sso_config, 'data-token-url'),
-    get_token_url: get_or_error<string>(sso_config, 'data-get-token-url'),
-    register_url: get_or_error<string>(sso_config, 'data-register-url'),
-    login_url: get_or_error<string>(sso_config, 'data-login-url'),
-    csrf_token: get_or_error<string>(sso_config, 'data-csrf-token'),
-    email_verify: get_or_error<string>(sso_config, 'data-email-verify'),
-};
+export const configuration = build_configuration<{
+    verify_token_url: string,
+    get_token_url: string,
+    register_url: string,
+    login_url: string,
+    csrf_token: string,
+    email_verify: string,
+}>({
+    verify_token_url: new Type('data-token-url', 'string'),
+    get_token_url: new Type('data-get-token-url', 'string'),
+    register_url: new Type('data-register-url', 'string'),
+    login_url: new Type('data-login-url', 'string'),
+    csrf_token: new Type('data-csrf-token', 'string'),
+    email_verify: new Type('data-email-verify', 'string'),
+});
+
 
 
 export const panel_elms = {
