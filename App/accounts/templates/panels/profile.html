@@ -29,7 +29,19 @@
         mb-5
         d-flex
         justify-content-center
+        profile-picture-banner
     ">
+        <!-- Banner -->
+        <div class="profile-banner">
+            <div 
+                style="background-image: url('{{ user.get_profile_banner }}')"
+                class="profile-banner-img"
+            >
+            <img id='banner-img'></div>
+        </div>
+
+
+        <!-- Profile picture -->
         <img 
             src="{{ user.get_profile_pic }}" 
             alt="Profile picture" 

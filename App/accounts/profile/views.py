@@ -256,19 +256,21 @@ def change_email_view(request, data):
 
 @api_view(['POST'])
 @authenticated()    
-@required_data(['image'])
-def upload_profile_image(request, data):
+@required_data(['image', 'type'])
+def upload_image(request, data):
     """
         Uploads a profile image to the server
         and saves it to the user's profile
     """ 
-
-    res = request.user.add_profile_pic_from_base64(data['image'])
+    print(data['type'])
+    if data['type'] not in ['pfp', 'banner']: return invalid_response(
+        'Sorry, but it looks like you have provided an invalid image type. Please try again.')
+    res = request.user.add_pic_from_base64(data['image'], data['type'])
 
     # -- Return success
     if res == False: return invalid_response(
         'Sorry, but it looks like you have provided an invalid image. Please try again.')
 
-    return success_response('Profile image uploaded successfully', {
+    return success_response(f'Updated {data["type"]} succesfully', {
         'image': request.user.get_profile_pic(),
     })

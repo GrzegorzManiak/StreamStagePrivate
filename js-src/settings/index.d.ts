@@ -152,6 +152,7 @@ export interface Configuration {
     userlast: string,
     access_level: number, 
     profile_picture: string, 
+    banner_picture: string,
     csrf_token: string,
     send_verification: string, 
     resend_verification: string,
@@ -170,5 +171,5 @@ export interface Configuration {
     update_review: string, 
     delete_review: string, 
     verify_mfa: string,
-    change_pfp: string,
+    change_img: string,
 }

@@ -38,6 +38,7 @@ class Migration(migrations.Migration):
                 ('date_of_birth', models.DateField(default=None, null=True)),
                 ('over_18', models.BooleanField(default=False)),
                 ('profile_pic', models.ImageField(blank=True, upload_to='member', verbose_name='Profile Photo')),
+                ('profile_banner', models.ImageField(blank=True, upload_to='member', verbose_name='Profile Banner')),
                 ('description', models.TextField(blank=True, verbose_name='Description')),
                 ('stripe_customer', models.CharField(blank=True, max_length=100, verbose_name='Stripe Customer ID')),
                 ('country', django_countries.fields.CountryField(default='Ireland', max_length=2)),

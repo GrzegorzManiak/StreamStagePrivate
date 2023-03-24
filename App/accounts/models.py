@@ -95,6 +95,7 @@ class Member(AbstractUser):
     date_of_birth = models.DateField(default=None, null=True)
     over_18 = models.BooleanField(default=False)
     profile_pic = models.ImageField("Profile Photo", upload_to='member', blank=True)
+    profile_banner = models.ImageField("Profile Banner", upload_to='member', blank=True)
     description = models.TextField("Description", blank=True)
     stripe_customer = models.CharField("Stripe Customer ID", max_length=100, blank=True)
     security_preferences = models.OneToOneField("SecurityPreferences", on_delete=models.CASCADE, default=None, null=True)
@@ -137,7 +138,7 @@ class Member(AbstractUser):
 
 
 
-    def add_profile_pic_from_url(self, url: str):
+    def add_pic_from_url(self, url: str, type: str):
         """
             Adds a profile picture to a user
             from a url, and saves it to the
@@ -158,14 +159,21 @@ class Member(AbstractUser):
             
             img_tmp.write(img_content.content)
             img_tmp.flush()   
-            img = File(img_tmp, name=f'profile_pictures/{uuid.uuid4}{image_ext}')
-            self.profile_pic = img
+            
+            if type == 'pfp':
+                img = File(img_tmp, name=f'profile_pictures/{self.id}{image_ext}')
+                self.profile_pic = img
+
+            elif type == 'banner':
+                img = File(img_tmp, name=f'profile_banners/{self.id}{image_ext}')
+                self.profile_banner = img
+
             self.save()
         
         except Exception as e: return False
         
 
-    def add_profile_pic_from_base64(self, base64_data: str):
+    def add_pic_from_base64(self, base64_data: str, type: str):
         """
             Adds a profile picture to a user
             from a base64 string, and saves it
@@ -176,13 +184,21 @@ class Member(AbstractUser):
             image_data = base64.b64decode(base64_data.split(',')[1])
             image = Image.open(io.BytesIO(image_data))
 
+            # -- Compress the image
+            image = image.save(img_tmp, 'webp', quality=75)
+
             # -- Save the image to the media folder
             img_tmp.write(image_data)
             img_tmp.flush()
-            img = File(img_tmp, name=f'profile_pictures/{uuid.uuid4}.{image.format.lower()}')
-            
-            # -- Set the profile picture to the new image
-            self.profile_pic = img
+
+            if type == 'pfp':
+                img = File(img_tmp, name=f'profile_pictures/{uuid.uuid4()}.webp')
+                self.profile_pic = img
+
+            elif type == 'banner':
+                img = File(img_tmp, name=f'profile_banners/{uuid.uuid4()}.webp')
+                self.profile_banner = img
+
             self.save()
             return True
 
@@ -280,17 +296,12 @@ class Member(AbstractUser):
 
 
     def default_profile_pic(self):
-        """
-            Sets the profile picture to the default
-            profile picture.
-
-            Im using DiceBear Avatars for this
-            https://api.dicebear.com/5.x/thumbs/svg?seed=
-        """
-        
         url = f'https://api.dicebear.com/5.x/thumbs/svg?seed={self.id}'
-        return self.add_profile_pic_from_url(url)
+        return self.add_pic_from_url(url, 'pfp')
 
+    def default_profile_banner(self):
+        url = f'https://api.dicebear.com/5.x/thumbs/svg?seed={self.id}'
+        return self.add_pic_from_url(url, 'banner')
 
 
     def get_profile_pic(self):
@@ -302,6 +313,17 @@ class Member(AbstractUser):
 
         if self.profile_pic is not None:
             return f'/{MEDIA_URL}{self.profile_pic}'
+
+
+    def get_profile_banner(self):
+        """
+            Returns the profile banner url
+        """
+        if self.profile_banner is None or self.profile_banner == "": 
+            return self.default_profile_banner()
+
+        if self.profile_banner is not None:
+            return f'/{MEDIA_URL}{self.profile_banner}'
 
 
 
@@ -319,6 +341,10 @@ class Member(AbstractUser):
         # -- Check if the user has a profile picture
         if self.profile_pic is None or self.profile_pic == "":
             self.default_profile_pic()
+
+        # -- Check if the user has a profile banner\
+        if self.profile_banner is None or self.profile_banner == "":
+            self.default_profile_banner()
 
         # -- Save the user
         super().save(*args, **kwargs)

@@ -16,6 +16,7 @@ export const configuration = build_configuration<Configuration>({
     userlast: new Type('data-userlast', 'string'),
     access_level: new Type('data-access-level', 'number'),
     profile_picture: new Type('data-profile-picture', 'string'),
+    banner_picture: new Type('data-banner-picture', 'string'),
     csrf_token: new Type('data-csrf-token', 'string'),
 
     send_verification: new Type('data-send-verification', 'string'),
@@ -39,7 +40,7 @@ export const configuration = build_configuration<Configuration>({
     update_review: new Type('data-update-review', 'string'),
     delete_review: new Type('data-delete-review', 'string'),
 
-    change_pfp: new Type('data-change-profile-picture', 'string')
+    change_img: new Type('data-change-picture', 'string')
 });
 
 // -- Attach the event listeners
