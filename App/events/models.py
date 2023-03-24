@@ -91,14 +91,15 @@ class Event(models.Model):
         
         return round(avg_rating,1)
     
+    # Get top review based on likes
     def get_top_review(self, reviews_in = None):
         reviews = reviews_in or self.get_reviews()
 
         top_review = None
-        rating = 0
+        likes = 0
         for review in reviews:
-            if review.rating > rating:
-                rating = review.rating
+            if review.likes > likes:
+                likes = review.likes
                 top_review = review
         return top_review.short_review
     
