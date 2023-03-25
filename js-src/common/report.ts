@@ -14,8 +14,13 @@ export const report = (
     r_id: string,
 ) => {
     const template = `
-        <div class="form-group mb-2">
-            <textarea class="form-control" id="report-reason" rows="4"></textarea>
+        <div class="form-group mb-3">
+            <textarea 
+                class="form-control form-control-lg inp" 
+                id="report-reason"
+                rows="5"
+                placeholder="This user is being rude... he said 'I hate you' :("
+            ></textarea>
         </div>
     `;
 

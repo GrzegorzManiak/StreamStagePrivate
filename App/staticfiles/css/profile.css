@@ -93,7 +93,9 @@
     z-index: 3;
 }
 
-
+#report-reason {
+    background-color: var(--theme-secondary-color)!important;
+}
 
 main {
     width: 100%;

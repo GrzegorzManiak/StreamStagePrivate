@@ -444,7 +444,7 @@ class Report(models.Model):
     r_review = models.ForeignKey('events.EventReview', on_delete=models.CASCADE, related_name="reported_review", null=True, blank=True)
     r_event = models.ForeignKey('events.Event', on_delete=models.CASCADE, related_name="reported_event", null=True, blank=True)
 
-    reason = models.CharField("Reason", max_length=256)
+    reason = models.CharField("Reason", max_length=4000)
     time = models.TimeField(auto_now_add=True)
     date = models.DateField(auto_now_add=True)
 

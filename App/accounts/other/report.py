@@ -9,7 +9,9 @@ from events.models import Event, EventReview
 @authenticated()
 @required_data(['type', 'r_id', 'reason'])
 def submit_report(request, data):
-
+    # -- Make sure the report isint over 4000 characters
+    if len(data['reason']) > 4000: return invalid_response('Reason is too long')
+    
     # -- Validate the target
     valid_targets = ['event', 'review', 'user', 'broadcaster']
     if data['type'] not in valid_targets: return invalid_response('Invalid target')
