@@ -1,5 +1,7 @@
+{% load tags %}
+
 <div id="refine-search-container">
-    <form action="{% url 'search:searchResult' %}" method="get" class="row">
+    <form action="{% cross_app_reverse_tag 'search' 'searchResult' %}" method="get" class="row">
         <h4 class="text-center m-0 border border-3 rounded border-light">Refine Search</h4>
 
     <!-- New Search -->

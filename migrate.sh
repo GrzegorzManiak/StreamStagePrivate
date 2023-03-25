@@ -1,21 +1,36 @@
 #!/bin/bash
+echo ""
+echo "WOULD YOU LIKE TO DELETE YOUR MIGRATIONS?"
+echo ""
+while true; do
+    read -p "[y/n] > " yn
+    case $yn in 
+        [Yy]* ) 
+            echo "Deleting existing migrations..."
+            echo ""
+            find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
+            find . -path "*/migrations/*.pyc" -delete
+            echo ""
+            echo "Deleting complete."
+            echo ""
+            break
+            ;;
+        [Nn]* ) 
+            echo ""
+            break
+            ;;
+        * ) 
+            echo "Please answer Y or N."
+            ;;
+    esac
+done
 
 echo ""
-echo "Deleting existing migrations..."
-echo ""
-
-find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
-find . -path "*/migrations/*.pyc" -delete
-
-echo ""
-echo "Deleting complete."
-echo ""
-
 echo "WOULD YOU LIKE TO DELETE YOUR DATABASE?"
 echo ""
 
 while true; do
-    read -p "Type Y for YES, N for NO, or S to skip migration altogether: " yn
+    read -p "[y/n] > " yn
     case $yn in
         [Yy]* ) 
             echo "Deleting Database..."
@@ -31,16 +46,13 @@ while true; do
             echo ""
             break
             ;;
-        [Ss]* ) 
-            echo ""
-            break
-            ;;
         * ) 
-            echo "Please answer Y, N, or S."
+            echo "Please answer Y, or N."
             ;;
     esac
 done
 
+echo ""
 echo "Making migrations..."
 echo ""
 
@@ -57,12 +69,11 @@ echo ""
 python App/manage.py migrate
 
 echo ""
-
 echo "WOULD YOU LIKE TO CREATE A SUPERUSER WITH DEFAULT PARAMETERS?"
 echo ""
 
 while true; do
-    read -p "Type Y for YES, or N for NO: " yn
+    read -p "[y/n] > " yn
     case $yn in
         [Yy]* ) 
             echo "Creating superuser..."

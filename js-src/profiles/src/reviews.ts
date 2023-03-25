@@ -1,20 +1,25 @@
-import { GetReviewsSuccess } from '../../common/index.d';
-import { create_toast } from '../../common';
-import { get_reviews } from '../../common/api';
-import { create_reviews } from '../elements/review';
-import { Pod } from '../index.d';
-import { configuration } from '..';
+import { GetReviewsSuccess, Review } from "../../common/index.d";
+import { create_toast } from "../../common";
+import { get_reviews } from "../../common/api";
+import { create_review } from "../../common/review";
+import { configuration } from "..";
 
-/**
- * @param pod: Pod - The pod that this panel is attached to
- * 
- * @returns void
- * 
- * @description This function manages the reviews panel
- */
-export function manage_reviews_panel(pod: Pod) {
+function create_reviews(
+    reviews: Array<Review>
+): Array<HTMLDivElement> {
+    const review_elements: Array<HTMLDivElement> = [];
+    reviews.forEach((review) => review_elements.push(create_review(
+        review, 
+        false, 
+        configuration.is_you
+    )));
+    return review_elements;
+}
+
+
+export function manage_reviews_panel() {
     // -- Get the panel
-    const panel = pod.panel.element;
+    const panel = document.querySelector('#reviews-tab') as HTMLDivElement;
 
     // -- Get the review container
     const review_container = panel.querySelector('.reviews') as HTMLDivElement,
@@ -34,7 +39,7 @@ export function manage_reviews_panel(pod: Pod) {
         const reviews = await get_reviews(
             filter.value as 'created' | 'rating' | 'likes',
             order.value as 'asc' | 'desc', page,
-            configuration.username.toLowerCase()
+            configuration.username
         );
 
         // -- Check if the request was successful
@@ -90,4 +95,5 @@ export function manage_reviews_panel(pod: Pod) {
     order.addEventListener('change', reload_reviews);
 
     reload_reviews();
+    console.log('Reviews panel loaded');
 }

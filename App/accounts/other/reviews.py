@@ -2,16 +2,16 @@
 from rest_framework.decorators import api_view
 from accounts.com_lib import authenticated, invalid_response, required_data, success_response
 from events.models import EventReview
-
+from accounts.models import Member
 
 @api_view(['GET', 'POST'])
-@authenticated()
-@required_data(['page', 'sort', 'order'])
+@required_data(['page', 'sort', 'order', 'username'])
 def get_reviews(request, data):
     """
         This view is used to get the reviews
         of the user
     """
+    
     # -- Pagination
     try: page = int(data['page'])
     except ValueError: return invalid_response('Page must be an integer')
@@ -25,9 +25,13 @@ def get_reviews(request, data):
     per_page = 5
     sort = '-' + data['sort'] if data['order'] == 'desc' else data['sort']
 
+    # -- Get the user
+    try: user = Member.objects.get(username=data['username'].lower())
+    except Member.DoesNotExist: return invalid_response('User does not exist')
+
     # -- Get the reviews
     reviews = EventReview.objects.filter(
-        author=request.user
+        author=user
     ).order_by(sort)
 
     total_pages = int(len(reviews) / per_page)
@@ -43,6 +47,7 @@ def get_reviews(request, data):
             'title': review.title,
             'created': review.created,
             'likes': review.likes,
+            'username': review.author.username,
         })
 
     # -- Return the reviews

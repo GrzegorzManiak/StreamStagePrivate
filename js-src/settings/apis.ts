@@ -1,9 +1,7 @@
-import { PaymentIntentMethod } from "../common/index.d";
-import { create_toast } from "../common";
+import { GetReviewsResponse, PaymentIntentMethod } from "../common/index.d";
 import { configuration } from "./";
 import { 
     DefaultResponse, 
-    GetReviewsResponse, 
     SecurityInfoResponse, 
     StartSubscriptionResponse, 
     UpdateProiflePictureResponse, 
@@ -244,24 +242,6 @@ export const change_email = async (
     { token, email }
 );
 
-
-
-/**
- * @name get_reviews
- * @param filter - Filter
- * @param sort - Sort
- * @param page - Page
- */
-export const get_reviews = async (
-    sort: 'created' | 'rating' | 'likes',
-    order: 'asc' | 'desc',
-    page: number
-): Promise<GetReviewsResponse> => base_request(
-    'POST',
-    configuration.get_reviews,
-    { sort, order, page }
-);
-    
 
 
 /**

@@ -56,6 +56,12 @@ class SecurityPreferences(models.Model):
         help_text="Require MFA when you log in")
     require_mfa_on_payment   = models.BooleanField('Require MFA on Payment',   default=False,
         help_text="Require MFA when you make a payment")
+    public_profile           = models.BooleanField('Public Profile',           default=True,
+        help_text="Make your profile public")
+    public_name              = models.BooleanField('Public Name',              default=False,
+        help_text="Makes your full name public on your profile")
+    public_country           = models.BooleanField('Public Country',           default=False,
+        help_text="Makes your country public on your profile")
 
     
     def get_keys(self):
@@ -363,7 +369,8 @@ class MembershipStatus(models.Model):
     
 # Broadcaster - entity that controls events/streams
 class Broadcaster(models.Model):
-    handle = models.CharField("Broadcaster Handle", unique=True, primary_key=True, max_length=20, validators=[ check_unique_broadcaster_handle ])
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    handle = models.CharField("Broadcaster Handle", unique=True, max_length=20, validators=[ check_unique_broadcaster_handle ])
     # Streamer who creates events/streams and invites contributors to broadcast event
     streamer = models.ForeignKey(
         get_user_model(),
@@ -425,4 +432,28 @@ class LoginHistory(models.Model):
             "time": self.time,
             "date": self.date,
             "method": self.method,
+        }
+
+
+class Report(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    reporter = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="reporter")
+        
+    r_user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="reported_user", null=True, blank=True)
+    r_broadcaster = models.ForeignKey('accounts.Broadcaster', on_delete=models.CASCADE, related_name="reported_broadcaster", null=True, blank=True)
+    r_review = models.ForeignKey('events.EventReview', on_delete=models.CASCADE, related_name="reported_review", null=True, blank=True)
+    r_event = models.ForeignKey('events.Event', on_delete=models.CASCADE, related_name="reported_event", null=True, blank=True)
+
+    reason = models.CharField("Reason", max_length=256)
+    time = models.TimeField(auto_now_add=True)
+    date = models.DateField(auto_now_add=True)
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "reporter": self.reporter,
+            "reported": self.reported,
+            "reason": self.reason,
+            "time": self.time,
+            "date": self.date,
         }
