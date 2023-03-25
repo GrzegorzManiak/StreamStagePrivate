@@ -12,11 +12,11 @@ def apply_broadcaster(request):
     user = request.user
 
     if not request.user.is_authenticated:
-        return redirect('all_events')
+        return redirect('homepage_index')
     # user must either have a streamer application submitted, or be a streamer
     # to apply for a broadcaster profile.
     if get_streamer_application(request.user) is None and not request.user.is_streamer:
-        return redirect('all_events')
+        return redirect('homepage_index')
     
     print(request.POST)
     # if the skip button was pressed
@@ -38,7 +38,7 @@ def apply_streamer(request):
     user = request.user
 
     if not request.user.is_authenticated:# or request.user.is_streamer:
-        return redirect('all_events')
+        return redirect('homepage_index')
     
     form = StreamerAppForm(request.POST or None)
     
@@ -55,11 +55,11 @@ def apply_event(request):
     user = request.user
 
     if not request.user.is_authenticated:
-        return redirect('all_events')
+        return redirect('homepage_index')
     # user must either have a broadcaster application submitted, or be a streamer
     # to apply for an event.
     if get_streamer_application(request.user) is None and not request.user.is_streamer:
-        return redirect('all_events')
+        return redirect('homepage_index')
     # if the skip button was pressed
     if request.POST.get('skip') is not None:
         return redirect('landing')
@@ -89,7 +89,7 @@ def list_applications(request):
     user = request.user
 
     if not (user.is_authenticated and user.is_staff):
-        return redirect('all_events')
+        return redirect('homepage_index')
     
     streamer_apps = StreamerApplication.objects.filter(status=STATUS_WAITING).all()
     broadcaster_apps = BroadcasterApplication.objects.filter(status=STATUS_WAITING).all()
@@ -109,7 +109,7 @@ def review_streamer_application(request, id):
     user = request.user
 
     if not (user.is_authenticated and user.is_staff):
-        return redirect('all_events')
+        return redirect('homepage_index')
     if application is None:
         return redirect('review_applications')
 
@@ -129,7 +129,7 @@ def review_broadcaster_application(request, id):
     user = request.user
 
     if not (user.is_authenticated and user.is_staff):
-        return redirect('all_events')
+        return redirect('homepage_index')
     if application is None:
         return redirect('review_applications')
 
@@ -149,7 +149,7 @@ def review_event_application(request, id):
     user = request.user
 
     if not (user.is_authenticated and user.is_staff):
-        return redirect('all_events')
+        return redirect('homepage_index')
     if application is None:
         return redirect('review_applications')
 
@@ -167,7 +167,7 @@ def landing_url(request):
     user = request.user
 
     if not user.is_authenticated:
-        return redirect('all_events')
+        return redirect('homepage_index')
 
     if user.is_staff:
         return redirect('review_applications')
