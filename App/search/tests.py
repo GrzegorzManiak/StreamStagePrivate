@@ -1,5 +1,4 @@
-from django.test import Client, TestCase, RequestFactory
-from .views import SearchResultsListView
+from django.test import Client, TestCase
 from events.models import Category, Event, EventShowing
 from accounts.models import Member, Broadcaster
 
