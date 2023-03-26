@@ -1,0 +1,263 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block metadescription %}
+    {{ user.cased_username }} control panel
+{% endblock %}
+
+{% block title %}
+    {{ user.cased_username }} - Control Panel
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+    <link rel="stylesheet" href="{% static 'css/payments.css' %}">
+    <link rel="stylesheet" href="{% static 'css/cropper.css' %}">
+    <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+{% endblock %}
+
+{% block content %}
+    <span 
+        class='config'
+        data-admin='{{ user.is_staff }}'
+        data-username='{{ user.username }}'
+        data-userid='{{ user.id }}'
+        data-useremail='{{ user.mask_email }}'
+        data-userfirst='data:{{ user.first_name }}'
+        data-userlast='data:{{ user.last_name }}'
+        data-access-level='{{ user.access_level }}'
+
+        data-profile-picture='{{ user.get_profile_pic }}'
+        data-banner-picture='{{ user.get_profile_banner }}'
+        data-change-picture='{{ api.change_pfp }}'
+
+        data-csrf-token='{{ csrf_token }}'
+
+        data-send-verification='{{ api.send_verification }}'
+        data-resend-verification='{{ api.resend_verification }}'
+        data-remove-verification='{{ api.remove_verification }}'
+        data-recent-verification='{{ api.recent_verification }}'
+        data-change-email='{{ api.change_email }}'
+        
+        data-security-info='{{ api.security_info }}'
+        data-update-profile='{{ api.update_profile }}'
+        data-remove-oauth='{{ api.remove_oauth }}'
+        data-extend-session='{{ api.extend_session }}'
+        data-close-session='{{ api.close_session }}'
+
+        data-add-payment='{{ api.add_payment }}'
+        data-get-payments='{{ api.get_payments }}'
+        data-remove-payment='{{ api.remove_payment }}'
+
+        data-start-subscription='{{ api.start_subscription }}'
+        
+        data-mfa-setup='{{ api.setup_mfa }}'
+        data-mfa-verify='{{ api.verify_mfa }}'
+        data-mfa-disable='{{ api.disable_mfa }}'
+
+        data-get-reviews='{{ api.get_reviews }}'
+        data-update-review='{{ api.update_review }}'
+        data-delete-review='{{ api.delete_review }}'
+
+        data-stripe-pub='{{ stripe_key }}'
+        data-stripe-customer='{{ stripe }}'
+    ></span>
+    <div 
+    id = 'main-container'
+    class='
+        main-container
+    '>
+        <!-- 1/4 Of the page-->
+        <div 
+            id='side-panel'
+            class='side-panel text-light'
+            side-panel='hidden'
+        >
+            <div class='width-limiter'>
+                <section id='pod-statistics'>
+                    <!-- 
+                        Header - Statistics
+                    -->
+                    <div class='side-panel-header'>
+                        <p class='side-panel-header-text'>
+                            Statistics
+                        </p>
+                    </div>
+
+                    <div class='pods'>
+                        <!-- 
+                            Pod - Accounts
+                        -->
+                        <div 
+                            data-pod-status='active'
+                            data-pod='accounts'
+                        class='
+                            side-panel-pod
+                            text-light d-flex
+                            align-items-center
+                            justify-content-start
+                        '>
+                            <!-- Icon -->
+                            <div class='side-panel-pod-icon d-flex align-items-center justify-content-center'>
+                                <i class="fa-solid text-justify accordion fa-users"></i>
+                            </div>
+
+                            <!-- Text -->
+                            <div class='side-panel-pod-text'><p class='side-panel-pod-text-text m-0 mb-0'>
+                                Accounts
+                            </p></div>
+                        </div>
+                        <!-- 
+                            End of Pod - Accounts
+                        -->
+
+
+                        <!-- 
+                            Pod - Server
+                        -->
+                        <div 
+                            data-pod-status=''
+                            data-pod='server'
+                        class='
+                            side-panel-pod
+                            text-light d-flex
+                            align-items-center
+                            justify-content-start
+                        '>
+                            <!-- Icon -->
+                            <div class='side-panel-pod-icon d-flex align-items-center justify-content-center'>
+                                <i class="fa-solid text-justify accordion fa-server"></i>
+                            </div>
+
+                            <!-- Text -->
+                            <div class='side-panel-pod-text'><p class='side-panel-pod-text-text m-0 mb-0'>
+                                Server Status
+                            </p></div>
+                        </div>
+                        <!-- 
+                            End of Pod - Server
+                        -->
+                            
+
+                        <!-- 
+                            Pod - Cash Flow
+                        -->
+                        <div 
+                            data-pod-status=''
+                            data-pod='cash_flow'
+                        class='
+                            side-panel-pod
+                            text-light d-flex
+                            align-items-center
+                            justify-content-start
+                        '>
+                            <!-- Icon -->
+                            <div class='side-panel-pod-icon d-flex align-items-center justify-content-center'>
+                                <i class="fa-solid text-justify accordion fa-money-simple-from-bracket"></i>
+                            </div>
+
+                            <!-- Text -->
+                            <div class='side-panel-pod-text'><p class='side-panel-pod-text-text m-0 mb-0'>
+                                Cash Flow
+                            </p></div>
+                        </div>
+                        <!-- 
+                            End of Pod - Cash Flow
+                        -->
+                        
+
+
+                        <!-- 
+                            Pod - Tickets
+                        -->
+                        <div 
+                            data-pod-status=''
+                            data-pod='tickets'
+                        class='
+                            side-panel-pod
+                            text-light d-flex
+                            align-items-center
+                            justify-content-start
+                        '>
+                            <!-- Icon -->
+                            <div class='side-panel-pod-icon d-flex align-items-center justify-content-center'>
+                                <i class="fa-solid text-justify accordion fa-ticket"></i>
+                            </div>
+
+                            <!-- Text -->
+                            <div class='side-panel-pod-text'><p class='side-panel-pod-text-text m-0 mb-0'>
+                                Tickets
+                            </p></div>
+                        </div>
+                        <!-- 
+                            End of Pod - Tickets
+                        -->
+
+                    </div>
+                </section>
+
+
+
+
+
+            </div>
+
+        <!-- End of menu -->
+        </div>
+
+        
+        <!-- 3/4 Of the page-->
+        <div class='
+            main-panel
+        '>
+            
+            <div class = '
+                mt-4
+                justify-content-center
+                align-items-center
+            '>
+
+            <div class = '
+                size-limiter
+            '>
+                <div class = '
+                    rounded
+                '>
+                    <div class = '
+                        row 
+                        g-0
+                        main-content
+                    '>
+                        <main>
+                            <!--
+                                p-5 on large screens
+                                p-3 on small screens
+                            -->
+                            <div class = "
+                                card-body 
+                                rounded
+                                p-xxl-5
+                                p-xl-5
+                                p-lg-5
+                                p-md-3
+                                p-sm-3
+                                p-2
+                                text-light
+                                smoother
+                            ">
+                                <!-- Main conten goes here -->
+                            </div>
+                        </main>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- Js -->
+    <script src="{% static 'js/admin_bin.js' %}"></script>
+{% endblock %}

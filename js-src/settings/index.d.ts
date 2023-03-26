@@ -1,4 +1,4 @@
-import { PaymentMethod, PaymentIntent } from "../common/index.d";
+import { PaymentIntent } from "../common/index.d";
 
 export type PanelType = 
     'profile' |

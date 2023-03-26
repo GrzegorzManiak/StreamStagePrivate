@@ -43,6 +43,7 @@ from .views import get_token, login, logout, register, validate_token
 from django.conf import settings
 from django.conf.urls.static import static
 
+from .admin import site_panel
 
 # -- Should probably simplify this into GET/POST/PUT/DELETE instead of having multiple paths
 
@@ -99,4 +100,7 @@ urlpatterns = [
     path('api/other/update_review', update_review, name='update_review'),
     path('api/other/delete_review', delete_review, name='delete_review'),
     path('api/other/submit_report', submit_report, name='submit_report'),
+
+    # -- Admin
+    path('site_panel/', site_panel, name='site_panel'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

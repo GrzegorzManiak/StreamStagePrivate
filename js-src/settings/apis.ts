@@ -1,4 +1,4 @@
-import { GetReviewsResponse, PaymentIntentMethod } from "../common/index.d";
+import { PaymentIntentMethod } from "../common/index.d";
 import { configuration } from "./";
 import { 
     DefaultResponse, 

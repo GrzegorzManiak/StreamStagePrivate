@@ -103,6 +103,12 @@
                             <a href="{% cross_app_reverse_tag 'accounts' 'member_profile' %}">Settings</a>
                         </li>
                     {% endif %}
+                    {% if user.is_staff %}
+                        <li class='nav-selectable' nav-id='site_panel'>
+                            <i class="fa-solid fa-lock pe-2"></i>
+                            <a href="{% cross_app_reverse_tag 'accounts' 'site_panel' %}">Site Panel</a>
+                        </li>
+                    {% endif %}
                     <li class='nav-selectable' nav-id='help'>
                         <i class="fa-solid fa-question-circle pe-2"></i>
                         <a>Help center</a>

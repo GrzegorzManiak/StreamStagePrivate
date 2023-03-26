@@ -15,8 +15,9 @@ module.exports = {
         // homepage: './homepage/index.ts',
         // events: './events/index.ts',
         // navbar: './elements/navbar.ts',
-        profiles: './profiles/index.ts',
-        broadcaster_profiles: './broadcaster_profiles/index.ts',
+        // profiles: './profiles/index.ts',
+        // broadcaster_profiles: './broadcaster_profiles/index.ts',
+        admin: './admin/index.ts',
     },
     module: {
         rules: [
