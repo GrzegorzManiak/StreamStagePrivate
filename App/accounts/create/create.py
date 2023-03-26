@@ -8,6 +8,7 @@
 
 from django.contrib.auth.hashers import make_password
 from StreamStage.mail import send_template_email
+from StreamStage.models import Statistics
 from django.http.response import JsonResponse
 from rest_framework import status
 from django.conf import settings
@@ -160,6 +161,7 @@ def start_email_verification(
 
         # -- Send the welcome email
         send_template_email(member, 'welcome')
+        Statistics.log('accounts', 'created')
 
         # -- Attempt to remove the user from the temp_users
         try: del temp_users[temp_user_key]

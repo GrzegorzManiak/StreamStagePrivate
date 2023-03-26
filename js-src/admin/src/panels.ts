@@ -185,9 +185,6 @@ export function attach_event_listeners() {
     locate_panels();
     attach_to_sidepanel();
 
-    // -- Get all admin panel headers
-    const admin_opts = document.querySelector('#admin-options');
-
     // -- Loop through the pods
     pod_elms.forEach(pod => {
         // -- Get the panel type

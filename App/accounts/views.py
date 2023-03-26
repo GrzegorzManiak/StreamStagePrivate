@@ -13,6 +13,7 @@ from accounts.com_lib import (
     required_data
 )
 from StreamStage.mail import send_template_email
+from StreamStage.models import Statistics
 
 from accounts.auth_lib import authenticate_key, generate_key
 from accounts.models import Member, LoginHistory, SecurityPreferences
@@ -102,6 +103,7 @@ def validate_token(request, headers):
     dj_login(request._request, user[0])
 
     # -- Add to the login history
+    Statistics.log('accounts', 'login')
     LoginHistory.objects.create(
         member=user[0],
         ip=request.META['REMOTE_ADDR'],
@@ -165,6 +167,7 @@ def get_token(request, data):
                 else: return invalid_response('Invalid TOTP')
 
             # -- TOTP, we need to send a key
+            Statistics.log('accounts', 'mfa_totp')
             return success_response(
                 'MFA required', 
                 { 'mode': 'totp', }, 
@@ -210,5 +213,6 @@ def logout(request):
     request._request.method = 'GET'
     request._request.user = request.user
     dj_logout(request._request)
+    Statistics.log('accounts', 'logout')
 
     return success_response('Successfully logged out')

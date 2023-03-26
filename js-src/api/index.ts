@@ -9,8 +9,16 @@ export async function base_request (
     data: any = {},
     headers: any = {},
 ): Promise<DefaultResponse> {
+    // -- If the request is a GET request, then
+    //    we need to convert the data to a query string
+    let query = '';
+    if (mehod === 'GET') query = Object.keys(data).map(key => {
+        return encodeURIComponent(key) + '=' + encodeURIComponent(data[key]);
+    }).join('&');
+    
+
     const response = await fetch(
-        endpoint,
+        endpoint + (mehod === 'GET' ? '?' + query : ''),
         {
             method: mehod,
             headers: {

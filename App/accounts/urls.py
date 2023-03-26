@@ -43,7 +43,7 @@ from .views import get_token, login, logout, register, validate_token
 from django.conf import settings
 from django.conf.urls.static import static
 
-from .admin import site_panel
+from .admin import site_panel, get_statistics
 
 # -- Should probably simplify this into GET/POST/PUT/DELETE instead of having multiple paths
 
@@ -103,4 +103,5 @@ urlpatterns = [
 
     # -- Admin
     path('site_panel/', site_panel, name='site_panel'),
+    path('site_panel/get_statistics/', get_statistics, name='get_statistics')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

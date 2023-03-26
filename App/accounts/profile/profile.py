@@ -23,6 +23,7 @@ from accounts.email.verification import add_key, send_email
 from accounts.create.create import email_taken, username_taken
 from accounts.models import Member
 from StreamStage.mail import send_template_email
+from StreamStage.models import Statistics
 
 import secrets
 import time
@@ -238,16 +239,6 @@ def update_profile(user, data, sensitive=False) -> tuple[bool, str]:
         if user.security_preferences.email_on_password_change:
             send_template_email(user, 'password_change')
 
-
-    # -- Update the email
-    if 'email' in data:
-        try:
-            validate_email(data['email'])
-            user.email = data['email']
-
-        except ValidationError:
-            return (False, 'Email is not valid')
-
     # -- Get security preferences
     keys = user.security_preferences.get_keys()
     for key in keys:
@@ -451,6 +442,7 @@ def change_email(
 
             
             # -- Change the email
+            Statistics.log('accounts', 'email_change')
             member.email = new_email.lower()
             member.save()
 

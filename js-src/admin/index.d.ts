@@ -1,5 +1,14 @@
+import { DefaultResponseData, DefaultResponse } from '../api/index.d';
+
 export type PanelType = 
+    'accounts' |
+    'server' |
+    'cash_flow' |
+    'tickets' |
+    'reviews' |
+    'subscriptions' |
     'statistics' |
+    'viewers' |
     'reports' |
     'users' |
     'streamers' |
@@ -20,3 +29,17 @@ export interface Pod {
     type: PanelType
 }
 
+
+export type Frame = 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';
+export interface Statistics {
+    time: number,
+    value: number
+}
+
+export type StatisticsSuccess = DefaultResponseData & { data: Statistics[] }
+export type StatisticsResponse = StatisticsSuccess | DefaultResponse;
+
+
+export interface Configuration {
+    statistics: string
+}

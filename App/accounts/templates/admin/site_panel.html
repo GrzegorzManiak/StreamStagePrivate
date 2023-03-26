@@ -20,48 +20,14 @@
 {% block content %}
     <span 
         class='config'
-        data-admin='{{ user.is_staff }}'
-        data-username='{{ user.username }}'
-        data-userid='{{ user.id }}'
-        data-useremail='{{ user.mask_email }}'
-        data-userfirst='data:{{ user.first_name }}'
-        data-userlast='data:{{ user.last_name }}'
-        data-access-level='{{ user.access_level }}'
-
-        data-profile-picture='{{ user.get_profile_pic }}'
-        data-banner-picture='{{ user.get_profile_banner }}'
-        data-change-picture='{{ api.change_pfp }}'
-
         data-csrf-token='{{ csrf_token }}'
+        data-statistics='{{ api.get_statistics }}'
 
         data-send-verification='{{ api.send_verification }}'
         data-resend-verification='{{ api.resend_verification }}'
         data-remove-verification='{{ api.remove_verification }}'
         data-recent-verification='{{ api.recent_verification }}'
-        data-change-email='{{ api.change_email }}'
-        
-        data-security-info='{{ api.security_info }}'
-        data-update-profile='{{ api.update_profile }}'
-        data-remove-oauth='{{ api.remove_oauth }}'
-        data-extend-session='{{ api.extend_session }}'
-        data-close-session='{{ api.close_session }}'
 
-        data-add-payment='{{ api.add_payment }}'
-        data-get-payments='{{ api.get_payments }}'
-        data-remove-payment='{{ api.remove_payment }}'
-
-        data-start-subscription='{{ api.start_subscription }}'
-        
-        data-mfa-setup='{{ api.setup_mfa }}'
-        data-mfa-verify='{{ api.verify_mfa }}'
-        data-mfa-disable='{{ api.disable_mfa }}'
-
-        data-get-reviews='{{ api.get_reviews }}'
-        data-update-review='{{ api.update_review }}'
-        data-delete-review='{{ api.delete_review }}'
-
-        data-stripe-pub='{{ stripe_key }}'
-        data-stripe-customer='{{ stripe }}'
     ></span>
     <div 
     id = 'main-container'
@@ -194,6 +160,86 @@
                             End of Pod - Tickets
                         -->
 
+
+                        <!-- 
+                            Pod - Reviews
+                        -->
+                        <div 
+                            data-pod-status=''
+                            data-pod='reviews'
+                        class='
+                            side-panel-pod
+                            text-light d-flex
+                            align-items-center
+                            justify-content-start
+                        '>
+                            <!-- Icon -->
+                            <div class='side-panel-pod-icon d-flex align-items-center justify-content-center'>
+                                <i class="fa-solid text-justify accordion fa-star-sharp-half-stroke"></i>
+                            </div>
+
+                            <!-- Text -->
+                            <div class='side-panel-pod-text'><p class='side-panel-pod-text-text m-0 mb-0'>
+                                Reviews
+                            </p></div>
+                        </div>
+                        <!-- 
+                            End of Pod - Reviews
+                        -->
+
+
+                        <!-- 
+                            Pod - Subscriptions
+                        -->
+                        <div 
+                            data-pod-status=''
+                            data-pod='subscriptions'
+                        class='
+                            side-panel-pod
+                            text-light d-flex
+                            align-items-center
+                            justify-content-start
+                        '>
+                            <!-- Icon -->
+                            <div class='side-panel-pod-icon d-flex align-items-center justify-content-center'>
+                                <i class="fa-solid text-justify accordion fa-plus"></i>
+                            </div>
+
+                            <!-- Text -->
+                            <div class='side-panel-pod-text'><p class='side-panel-pod-text-text m-0 mb-0'>
+                                Subscriptions
+                            </p></div>
+                        </div>
+                        <!-- 
+                            End of Pod - Subscriptions
+                        -->
+
+
+                        <!-- 
+                            Pod - Viewrs
+                        -->
+                        <div 
+                            data-pod-status=''
+                            data-pod='viewers'
+                        class='
+                            side-panel-pod
+                            text-light d-flex
+                            align-items-center
+                            justify-content-start
+                        '>
+                            <!-- Icon -->
+                            <div class='side-panel-pod-icon d-flex align-items-center justify-content-center'>
+                                <i class="fa-solid text-justify accordion fa-face-viewfinder"></i>
+                            </div>
+
+                            <!-- Text -->
+                            <div class='side-panel-pod-text'><p class='side-panel-pod-text-text m-0 mb-0'>
+                                Viewers
+                            </p></div>
+                        </div>
+                        <!-- 
+                            End of Pod - Subscriptions
+                        -->
                     </div>
                 </section>
 
@@ -247,6 +293,15 @@
                                 smoother
                             ">
                                 <!-- Main conten goes here -->
+                                <article class='panel' data-panel-type='accounts' data-panel-status=''></article>
+                                <article class='panel' data-panel-type='server' data-panel-status=''></article>
+                                <article class='panel' data-panel-type='cash_flow' data-panel-status=''></article>
+                                <article class='panel' data-panel-type='tickets' data-panel-status=''></article>
+                                <article class='panel' data-panel-type='reviews' data-panel-status=''></article>
+                                <article class='panel' data-panel-type='subscriptions' data-panel-status=''></article>
+                                <article class='panel' data-panel-type='viewers' data-panel-status=''></article>
+
+
                             </div>
                         </main>
                     </div>

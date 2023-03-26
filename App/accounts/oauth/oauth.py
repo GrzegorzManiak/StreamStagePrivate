@@ -10,6 +10,7 @@ from django.urls import reverse, reverse_lazy
 from rest_framework.decorators import api_view
 from django.shortcuts import render
 from StreamStage.mail import send_template_email
+from StreamStage.models import Statistics
 
 from .providers import google, github, discord
 from .types import OAuthRespone, OAuthTypes
@@ -129,6 +130,7 @@ def check_oauth_key(key: str) -> bool:
     entry.save()
 
     # -- Key is valid
+    Statistics.log('accounts', 'oauth')
     return True
 
 
@@ -252,6 +254,7 @@ def link_oauth_account(user, oauth_key: str) -> list[bool, str]:
             )
 
         # -- Return true since the user was linked
+        Statistics.log('accounts', 'oauth')
         return [True, 'The account was linked successfully']
 
     except:
