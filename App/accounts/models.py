@@ -25,6 +25,7 @@ from .oauth import OAuthTypes
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from .validation import check_unique_broadcaster_handle
+from annoying.fields import AutoOneToOneField
 
 from StreamStage.secrets import STRIPE_SECRET_KEY
 from StreamStage.settings import MEDIA_URL
@@ -104,7 +105,7 @@ class Member(AbstractUser):
     profile_banner = models.ImageField("Profile Banner", upload_to='member', blank=True)
     description = models.TextField("Description", blank=True)
     stripe_customer = models.CharField("Stripe Customer ID", max_length=100, blank=True)
-    security_preferences = models.OneToOneField("SecurityPreferences", on_delete=models.CASCADE, default=None, null=True)
+    security_preferences = models.OneToOneField(SecurityPreferences, on_delete=models.CASCADE, null=True, blank=True)
     country = CountryField(default='Ireland')
     time_zone = TimeZoneField(default="Europe/Dublin")
     tfa_secret = models.CharField("tfa_secret", max_length=100, blank=True, null=True)
@@ -333,13 +334,15 @@ class Member(AbstractUser):
 
 
 
-    def save(self, *args, **kwargs):
-        self.is_over_18()
+    def ensure(self, *args, **kwargs):
+        # -- Check if the account has been created
 
-        # -- Check if the user has a security preferences object
-        if self.security_preferences == None:
+        # -- Check if we have a security preferences object
+        if self.security_preferences is None:
             self.security_preferences = SecurityPreferences.objects.create()
-
+            
+        self.is_over_18()
+        
         # -- Make sure we have a cased username
         if self.username != self.cased_username.lower():
             self.cased_username = self.username.lower()
@@ -353,7 +356,7 @@ class Member(AbstractUser):
             self.default_profile_banner()
 
         # -- Save the user
-        super().save(*args, **kwargs)
+        self.save()
 
 
 

@@ -15,7 +15,21 @@ export async function base_request (
     if (mehod === 'GET') query = Object.keys(data).map(key => {
         return encodeURIComponent(key) + '=' + encodeURIComponent(data[key]);
     }).join('&');
-    
+
+
+    // -- Make sure that if any data is undefined/null, then
+    //    we remove it from the data object
+    let clean_data = {};
+    for (let key in data) {
+        if (data[key] !== undefined && data[key] !== null) 
+            clean_data[key] = data[key];
+    }
+        
+    let clean_headers = {};
+    for (let key in headers) {
+        if (headers[key] !== undefined && headers[key] !== null)
+            clean_headers[key] = headers[key];
+    }
 
     const response = await fetch(
         endpoint + (mehod === 'GET' ? '?' + query : ''),
@@ -24,9 +38,9 @@ export async function base_request (
             headers: {
                 "Content-Type": "application/json",
                 "X-CSRFToken": configuration().csrf_token,
-                ...headers,
+                ...clean_headers,
             },
-            body: mehod === 'GET' ? undefined : JSON.stringify(data),
+            body: mehod === 'GET' ? undefined : JSON.stringify(clean_data),
         },
     );
 

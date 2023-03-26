@@ -5,3 +5,61 @@
 [data-pod='reviews'] .side-panel-pod-icon { background-color: #4de061; }
 [data-pod='subscriptions'] .side-panel-pod-icon { background-color: #4de061; }
 [data-pod='viewers'] .side-panel-pod-icon { background-color: #4de061; }
+
+
+.graphs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 0;
+    gap: 2rem;
+    width: 100%;
+    height: 100%;
+}
+
+.data-chart {
+    width: 45%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.data-chart canvas {
+    background-color: var(--theme-color);
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+
+.data-chart > .data-chart-container {
+    width: 100%!important;
+    height: 100%!important;
+}
+
+.data-chart > .data-chart-info {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.data-chart > .data-chart-info h3 {
+    color: var(--font-color);
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+    padding: 0;
+}
+
+.data-chart > .data-chart-info p {
+    color: var(--muted-font-color);
+    font-size: 1rem;
+    font-weight: 400;
+    margin: 0;
+    padding: 0;
+}

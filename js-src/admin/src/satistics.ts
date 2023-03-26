@@ -3,6 +3,7 @@ import { get_statistics } from '../api';
 
 // line chart from chart.js
 import { Chart, LineElement, LineController, LinearScale, CategoryScale, PointElement } from 'chart.js';
+import { create_toast } from '../../common';
 Chart.register(LineElement, LineController, LinearScale, CategoryScale, PointElement);
 
 export async function manage_statistical_panels(
@@ -14,34 +15,97 @@ export async function manage_statistical_panels(
     subscriptions: Pod,
     viewers: Pod
 ) {
-    console.log('Managing statistical panels');
-    const login_stats = await get_statistics(
-        'accounts',
-        'login',
-        2, 
-        0,
-        'day'
-    ) as StatisticsSuccess;
 
-    console.log(login_stats);
+    // -- group the pods
+    const pods = [
+        accounts
+        // , server,
+        // cash_flow, tickets,
+        // reviews, subscriptions,
+        // viewers
+    ];
 
-    // -- Create the chart
-    const ctx = document.createElement('canvas');
-    ctx.width = 250;
-    ctx.height = 250;
-    accounts.panel.element.appendChild(ctx);
+    // -- Build the graphs
+    pods.forEach(async (pod: Pod) => 
+        build_graphs(pod));
+}
 
-    const chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            datasets: [{
-                label: 'Logins',
-                data: login_stats.data,
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 1
-            }]
+
+export async function build_graphs(
+    pod: Pod,
+) {
+
+    // -- Get the graphs element
+    const graphs = pod.panel.element.querySelector('.graphs'),
+        stat_group = graphs.getAttribute('data-stat-group'),
+        stats = graphs.querySelectorAll('.data-chart');
+
+    // -- Get the statistics
+    Array.from(stats).forEach(async (stat: HTMLDivElement) => {
+
+        const type = stat.getAttribute('data-stat-id'),
+            pretty_name = stat.getAttribute('data-pretty'),
+            description = stat.getAttribute('data-description');
+
+        // -- load in the template
+        const template = `
+            <div class="data-chart-info">
+                <h3>${pretty_name}</h3>
+                <p>${description}</p>
+            </div>
+            <div class="data-chart-container"> </div>
+        `;
+
+        stat.innerHTML = template;
+        const container = stat.querySelector('.data-chart-container');
+            
+        // -- Create the chart
+        const ctx = document.createElement('canvas');
+        container.appendChild(ctx);
+
+        // -- Get the statistics
+        const statistics = get_statistics(
+            stat_group,
+            type,
+            7,
+            0,
+            'day'
+        ) as Promise<StatisticsSuccess>;
+        
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                // -- Empty data
+                labels: [],
+                datasets: [{
+                    label: pretty_name,
+                    data: [],
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                resizeDelay: 100,
+                aspectRatio: 1,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+
+        // -- Make sure that the request came back good
+        if ((await statistics).code === 200) {
+            const data = (await statistics).data;
+            chart.data.labels = data.labels;
+            chart.data.datasets[0].data = data.data;
+            chart.update();
         }
-    });
 
+        else create_toast('error', 'Error',
+            'There was an error getting the statistics')
+    });
 }

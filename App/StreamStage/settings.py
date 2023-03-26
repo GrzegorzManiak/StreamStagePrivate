@@ -122,6 +122,7 @@ INSTALLED_APPS = [
     # 3rd Party
     'crispy_forms',
     'corsheaders',
+    'annoying',
     'crispy_bootstrap5',
     'django_countries',
     'rest_framework',

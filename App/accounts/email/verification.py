@@ -194,7 +194,8 @@ def verify_key(key) -> tuple[bool, str]:
 
     # -- Try to call the callback
     try: key['callback'](key['data'])
-    except Exception:
+    except Exception as e:
+        print(e)
         return (False, 'Failed to call callback')
 
     # -- Remove the key from the store

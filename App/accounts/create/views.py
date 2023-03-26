@@ -3,7 +3,8 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from django.contrib.auth.hashers import make_password
 from accounts.com_lib import invalid_response, required_data, not_authenticated, success_response
-from accounts.models import Member
+from accounts.models import Member, SecurityPreferences
+from StreamStage.models import Statistics
 
 from .create import start_email_verification, username_taken, email_taken
 from accounts.oauth.oauth import get_oauth_data, link_oauth_account
@@ -69,7 +70,6 @@ def send_reg_verification(request, data):
             # -- Get the email from the oauth data
             email = oauth_data['data']['email'].lower()
 
-
             # -- The user's email is verified
             #    so we can create the account
             new_member = Member.objects.create(
@@ -81,7 +81,8 @@ def send_reg_verification(request, data):
 
             # -- Link the oauth account
             link_oauth_account(new_member, oauth_token)
-            new_member.add_profile_pic_from_url(oauth_data['data']['picture'])
+            Statistics.log('accounts', 'register')
+            new_member.add_pic_from_url(oauth_data['data']['picture'], 'pfp')
             
 
             # -- If the account was not created successfully

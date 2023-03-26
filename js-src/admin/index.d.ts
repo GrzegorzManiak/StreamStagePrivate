@@ -32,11 +32,11 @@ export interface Pod {
 
 export type Frame = 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';
 export interface Statistics {
-    time: number,
-    value: number
+    data: number[],
+    labels: string[],
 }
 
-export type StatisticsSuccess = DefaultResponseData & { data: Statistics[] }
+export type StatisticsSuccess = DefaultResponseData & { data: Statistics }
 export type StatisticsResponse = StatisticsSuccess | DefaultResponse;
 
 

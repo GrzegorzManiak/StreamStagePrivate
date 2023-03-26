@@ -239,13 +239,22 @@ def update_profile(user, data, sensitive=False) -> tuple[bool, str]:
         if user.security_preferences.email_on_password_change:
             send_template_email(user, 'password_change')
 
+    # -- Update the email
+    if 'email' in data:
+        try:
+            validate_email(data['email'])
+            user.email = data['email']
+
+        except ValidationError:
+            return (False, 'Email is not valid')
+
+
     # -- Get security preferences
     keys = user.security_preferences.get_keys()
     for key in keys:
         if key in data:
             user.security_preferences.set(key, data[key])
 
-            
     # -- Save the user
     try: 
         user.save()

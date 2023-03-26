@@ -104,6 +104,7 @@ def validate_token(request, headers):
 
     # -- Add to the login history
     Statistics.log('accounts', 'login')
+    user[0].ensure()
     LoginHistory.objects.create(
         member=user[0],
         ip=request.META['REMOTE_ADDR'],
@@ -146,6 +147,7 @@ def get_token(request, data):
 
 
     # -- Authenticate the user
+    user.ensure()
     if not user.check_password(data['password']):
         if user.security_preferences.email_on_login:
             send_template_email(user, 'login_failed')
