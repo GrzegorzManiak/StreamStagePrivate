@@ -1,4 +1,4 @@
-import { Pod, StatisticsSuccess } from '../index.d';
+import { Frame, Pod, StatisticsSuccess } from '../index.d';
 import { get_statistics } from '../api';
 
 // line chart from chart.js
@@ -53,6 +53,46 @@ export async function build_graphs(
                 <h3>${pretty_name}</h3>
                 <p>${description}</p>
             </div>
+
+            <!-- FIlters -->
+            <div class='
+                mb-1
+                d-flex
+                graph-filters
+                gap-2
+                w-100
+            '>  
+                <div class='w-50'>
+                    <label class="form-label" for="frame">Frame</label>
+                    <select 
+                        name="frame" 
+                        id="frame" 
+                        class="form-select w-100 inp"
+                    >   
+                        <option value="minute">Minutes</option>
+                        <option value="hour">Hours</option>
+                        <option value="day" selected>Days</option>
+                        <option value="week">Weeks</option>
+                        <option value="month">Months</option>
+                        <option value="year">Years</option>
+                    </select>
+                </div>
+
+                <div class='w-50'>
+                    <label class="form-label" for="scale">Scale</label>
+                    <input
+                        type="text"
+                        inputmode="numeric"
+                        pattern="[0-9]*"
+                        name="scale"
+                        id="scale"
+                        class="form-control w-100 inp"
+                        value="7"
+                    />
+                </div>
+            </div>
+
+
             <div class="data-chart-container"> </div>
         `;
 
@@ -65,11 +105,7 @@ export async function build_graphs(
 
         // -- Get the statistics
         const statistics = get_statistics(
-            stat_group,
-            type,
-            7,
-            0,
-            'day'
+            stat_group, type, 7, 0, 'day'
         ) as Promise<StatisticsSuccess>;
         
         const chart = new Chart(ctx, {
@@ -107,5 +143,32 @@ export async function build_graphs(
 
         else create_toast('error', 'Error',
             'There was an error getting the statistics')
+
+
+        // -- Add the event listeners
+        const scale = stat.querySelector('#scale') as HTMLInputElement,
+            frame = stat.querySelector('#frame') as HTMLSelectElement;
+
+        async function update_graph() {
+            const statistics = get_statistics(
+                stat_group, type, +scale.value, 0, frame.value as Frame
+            ) as Promise<StatisticsSuccess>;
+
+            if ((await statistics).code === 200) {
+                const data = (await statistics).data;
+                chart.data.labels = data.labels;
+                chart.data.datasets[0].data = data.data;
+                chart.update();
+            }
+
+            else create_toast('error', 'Error',
+                'There was an error getting the statistics')
+        }
+
+        scale.addEventListener('change', update_graph);
+        frame.addEventListener('change', update_graph);
+
+        // -- Update the graph every 5 minutes
+        setInterval(update_graph, 1000 * 60 * 5);
     });
 }

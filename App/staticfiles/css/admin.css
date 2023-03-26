@@ -63,3 +63,16 @@
     margin: 0;
     padding: 0;
 }
+
+.graph-filters > div select,
+.graph-filters > div input {
+    background-color: var(--theme-color);
+    color: var(--font-color);
+    border: none!important;
+    border-radius: 0.5rem!important;
+    padding: 0.5rem!important;
+    font-size: 1rem!important;
+    font-weight: 400;
+    margin: 0!important;
+    outline: none;
+}
