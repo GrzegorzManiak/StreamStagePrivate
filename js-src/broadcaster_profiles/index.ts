@@ -1,5 +1,4 @@
 import { Type, build_configuration } from "../api/config";
-import { create_toast } from "../common";
 import { report } from "../common/report";
 import { manage_reviews_panel } from "./src/reviews";
 
@@ -14,10 +13,7 @@ export const configuration = build_configuration<{
 }); 
 
 // -- Load the review panel
-manage_reviews_panel(
-    configuration.username,
-    configuration.is_you,
-);
+manage_reviews_panel();
 
 
 // -- Get the tab selector
@@ -45,8 +41,5 @@ tab_selector.forEach(tab => tab.addEventListener('click', () => {
 // -- Attach to the report button
 const report_button = document.querySelector('.report');
 report_button.addEventListener('click', () => {
-    // -- Check if the user is authenticated
-    if (configuration.authenticated === false) 
-        create_toast('warning', 'Oops!', 'You need to be logged in to report this user.');
-    else report('user', configuration.username);
+    report('user', configuration.username);
 });

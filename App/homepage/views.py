@@ -118,24 +118,33 @@ def broadcaster_profile(request, username):
         This view is used to get a token
         aka, login
     """
+   
+    broadcaster = Broadcaster.objects.filter(
+        handle=username.lower()
+    ).first()
+
     # -- Render the login page
     return render(
         request, 
-        'profiles/broadcaster_profile.html', 
+        'profiles/user_profile.html', 
         context={
-            'providers': format_providers(),
-            'token': reverse('token'),
-            'get_token': reverse('get_token'),
-            'register': reverse('send_reg_verification'),
-            'login': reverse('login'),
-            'has_tfa': False,
-            'email_recent': reverse('recent_key'),
-            'email_verify': reverse('verify_key'),
-            'email_resend': reverse('resend_key'),
-            'email_remove': reverse('remove_key'),
-
-            'add_payment': reverse_lazy('add_payment'),
-            'get_payments': reverse_lazy('get_payments'),
-            'remove_payment': reverse_lazy('remove_payment'),
+            'data': {
+                'handle': broadcaster.handle,
+                'background': broadcaster,
+                'avatar': broadcaster,
+                'description': broadcaster.biography,
+                'is_you': False,
+                'short_description': broadcaster.biography[:50] + '...' if len(broadcaster.biography) > 50 else broadcaster.biography,
+                'name': broadcaster.name,
+                'joined': broadcaster,
+                'reviews': 0,
+            },
+            'api': {
+                'get_reviews': cross_app_reverse('accounts', 'get_reviews'),
+                'resend_verification': cross_app_reverse('accounts', 'resend_key'),
+                'remove_verification': cross_app_reverse('accounts', 'remove_key'),
+                'recent_verification': cross_app_reverse('accounts', 'recent_key'),
+                'submit_report': reverse_lazy('submit_report'),
+            }
         }
     )

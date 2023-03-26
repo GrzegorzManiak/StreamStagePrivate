@@ -16,6 +16,7 @@ module.exports = {
         // events: './events/index.ts',
         // navbar: './elements/navbar.ts',
         profiles: './profiles/index.ts',
+        broadcaster_profiles: './broadcaster_profiles/index.ts',
     },
     module: {
         rules: [

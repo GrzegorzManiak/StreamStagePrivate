@@ -371,6 +371,7 @@ class MembershipStatus(models.Model):
 class Broadcaster(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     handle = models.CharField("Broadcaster Handle", unique=True, max_length=20, validators=[ check_unique_broadcaster_handle ])
+
     # Streamer who creates events/streams and invites contributors to broadcast event
     streamer = models.ForeignKey(
         get_user_model(),
@@ -396,6 +397,15 @@ class Broadcaster(models.Model):
 
     def __str__(self):
         return str("@" + self.handle)
+
+    def change_handle(self, new_handle):
+        """
+            Simply updates the handle of the broadcaster.
+        """
+        self.handle = new_handle.lower()
+        self.save()
+
+        
 
 
 class oAuth2(models.Model):
