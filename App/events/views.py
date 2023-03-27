@@ -26,7 +26,7 @@ def event_view(request, event_id):
     event = Event.objects.filter(event_id=event_id).first()
 
     if event == None:
-        return redirect('all_events')
+        return redirect('upcoming_events')
     
     reviews = event.get_reviews().order_by('-created')
     review_context = inline_reviews.handle(request, event)

@@ -29,7 +29,7 @@ like_buttons.forEach(button => {
 
 
 // Function for Media Carousel
-const settings = {
+const media_settings = {
   slidesPerView: 1,
   loop: true,
   pagination: {
@@ -43,4 +43,21 @@ const settings = {
   },
 };
 
-const swiper = new Swiper('.mySwiper', settings);
+const swiper = new Swiper('.mySwiper', media_settings);
+
+// Function for Event Page Review Carousel
+const review_settings = {
+  loop: true,
+  slidesPerView: 2,
+  pagination: {
+    el: '.swiper-pagination',
+    type: 'bullets',
+    clickable: 'true',
+  },
+  navigation: {
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
+  },
+};
+
+const long_swiper = new Swiper('.longSwiper', review_settings);

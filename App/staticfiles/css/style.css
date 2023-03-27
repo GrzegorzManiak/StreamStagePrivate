@@ -341,8 +341,6 @@ nav input { font-size: 0.85rem!important; }
     display: none!important;
 }
 
-
-
 /***** Header *****/
 header > div, header {
     background-color: var(--theme-secondary-color)!important;
@@ -500,7 +498,7 @@ div > a:hover {
     background-size: cover;
 }
 
-/* - Event Media Carousel */
+/* - Event Page Media Carousel & Event/Search Listings Pages Review Carousel */
 .swiper{
     width: 100%;
 }

@@ -29,9 +29,8 @@ class Category(models.Model):
 class TicketListing(models.Model):
     event = models.ForeignKey(to="events.Event", on_delete=models.CASCADE)
     ticket_detail = models.CharField(max_length=100, blank=True)
-
     price = models.DecimalField(max_digits=1000, decimal_places=2, validators=[MinValueValidator(0)])
-
+    # seat = models.CharField(max_length=25, blank=True)
     ticket_type = models.IntegerField(default=0) # streaming ticket ID
 
     # 0 means no stocking.
@@ -66,7 +65,7 @@ class Event(models.Model):
         return TicketListing.objects.filter(event=self).all()
     
     def has_ticket_listings(self):
-        return self.get_ticket_listings().count > 0
+        return self.get_ticket_listings().count()
     
     # Media
 
