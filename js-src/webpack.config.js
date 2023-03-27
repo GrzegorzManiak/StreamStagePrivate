@@ -5,7 +5,7 @@ module.exports = {
     mode: "production",
     optimization: { minimizer: [new TerserPlugin()] },
     entry: {
-        settings: './settings/index.ts',
+        // settings: './settings/index.ts',
         // api: './api/index.ts',
         // common: './common/index.ts',
         // login: './login/index.ts',
@@ -13,7 +13,8 @@ module.exports = {
         // streamer_apps: './streamer_apps/index.ts',
         // srr_visualizer: './srr_visualizer/index.ts',
         // homepage: './homepage/index.ts',
-        // events: './events/index.ts',
+         events: './events/index.ts',
+         event_edit: './event_edit/index.ts',
         // navbar: './elements/navbar.ts',
     },
     module: {

@@ -1,11 +1,21 @@
 
 import { manage_paynow } from "../common/card_input";
 import { manage_add_review_panel, manage_override_btn } from "./reviews"
+import { manage_tickets_btn } from "./ticketing";
 
 // -- Purchase streaming ticket btn
-const purchase_stream_ticket = document.querySelector('#buy-streaming-ticket') as HTMLButtonElement;
+//const purchase_stream_ticket = document.querySelector('#buy-streaming-ticket') as HTMLButtonElement;
 
-manage_paynow(purchase_stream_ticket as HTMLButtonElement, "Purchase Streaming Ticket", "Test", "Ticket", "10.20");
+//manage_paynow(purchase_stream_ticket as HTMLButtonElement, "Purchase Streaming Ticket", "Test", "Ticket", "10.20");
+
+
+
+
+
+manage_tickets_btn(document.querySelector('#show-tickets-btn'));
+
+
+
 
 const add_review_panel = document.querySelector("#add-review-panel") as HTMLElement;
 if (add_review_panel)

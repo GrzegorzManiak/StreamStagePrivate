@@ -91,7 +91,11 @@ def event_create(request):
 
 # Update an event
 def event_update(request, event_id):
-    context = {}
+    context = {
+        'api': {
+            'get_ticket_listings': reverse_lazy('get_ticket_listings'),
+        }
+    }
     event = Event.objects.get(event_id=event_id)
 
     if not request.user.is_authenticated or not request.user.is_streamer:

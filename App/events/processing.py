@@ -72,5 +72,3 @@ def get_media(self):
 def get_media_count(self):
     return get_media().count()
 
-
-
