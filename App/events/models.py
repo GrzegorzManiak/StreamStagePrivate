@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django_countries.fields import CountryField
@@ -64,7 +65,13 @@ class Event(models.Model):
             return media[self.primary_media_idx]
 
     def get_media(self):
-        return EventMedia.objects.filter(event=self).all()
+        cover_pic = self.get_cover_picture()
+        other_media = EventMedia.objects.filter(event=self).filter(~Q(id=cover_pic.id)).all()
+        media = []
+        media.append(cover_pic)
+        media += other_media
+
+        return media
     
     def get_media_count(self):
         return EventMedia.objects.filter(event=self).all().count()
@@ -72,7 +79,7 @@ class Event(models.Model):
     # Reviews
 
     def get_reviews(self):
-        return EventReview.objects.filter(event=self).all()
+        return EventReview.objects.filter(event=self).all().order_by('likes')
     
     def get_review_count(self):
         return EventReview.objects.filter(event=self).all().count()
@@ -116,7 +123,7 @@ class Event(models.Model):
 
     def get_next_showing(self):
         return self.get_showings().first()
-               
+
     def get_last_showing(self):
         return self.get_showings().last()
     

@@ -45,7 +45,7 @@ class SearchResultsListView(ListView):
 
         # Filter by Venue
         if venue:
-            # Getting City from showings
+            # Getting Venue from showings
             showings = EventShowing.objects.filter(venue=venue)
             # Matching Events to Showings
             events = []

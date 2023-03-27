@@ -21,7 +21,7 @@
                     <img class="event-cover col-3" src="{% static 'images/default_event_cover.png' %}"
                         alt="No Event Cover Photo">
                     {% else %}
-                    <img class="event-cover col-3" src="{{ cover_pic.picture.url }}">
+                    <img class="event-cover col-3" src="{{ event.get_cover_picture.picture.url }}">
                     {% endif %}
                 </div>
                 <div class="col-9">
@@ -50,15 +50,29 @@
             </div>
         </a>
     </div>
-    <!-- Top Review for Event -->
-    <div class="col-3">
-        <div class="m-4">
-            {% if event.get_review_count > 0 %}
-            <h6>Top Review</h6>
-            {% include 'reviews/review.html' with review=event.get_top_review %}
-            {% endif %}
-        </div>
-    </div>
+                        <!-- Reviews for Event -->
+                        <div class="col-3">
+                            <div class="m-4">
+                                {% if event.get_review_count > 0 %}
+                                <h6 class="text-center"><b>Reviews</b></h6>
+                                <!-- Review Carousel -->
+                                <div class="swiper mySwiper">
+                                    <div class="swiper-wrapper">
+                                        {% for review in event.get_reviews %}
+                                        <div class="swiper-slide">
+                                            {% include 'reviews/review.html' %}
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="swiper-pagination"></div>
+                                    <div class="s-btn swiper-button-prev"></div>
+                                    <div class="s-btn swiper-button-next"></div>
+                                </div>
+                                {% else %}
+                                <h6 class="text-center"><b>No reviews yet</b></h6>
+                                {% endif %}
+                            </div>
+                        </div>
 </div>
 <hr />
 {% endblock %}

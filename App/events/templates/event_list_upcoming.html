@@ -1,15 +1,30 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags%}
+{% load tags %}
 
 {% block metadescription %}
 Upcoming Events
 {% endblock %}
+
 {% block title %}
 Upcoming Events | StreamStage
 {% endblock title %}
 
+{% block head %}
+<!-- Carousel css -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
+{% endblock %}
+
 {% block content %}
 <div class="event-listings-title" style="height: 100vh;">
+        <div class="row link-page-title page-title">
+                <a href="{% cross_app_reverse_tag 'events' 'past_events' %}" class="col-6">
+                        <h1>Past Events</h1>
+                </a>
+                <a href="#" class="col-6">
+                        <h1>Upcoming Events</h1>
+                </a>
+                </div>
         <!-- Listing Upcoming Events (if they have upcoming showings) -->
         {% for event in events %}
         {% if event.get_num_upcoming_showings > 0 %}
@@ -19,6 +34,10 @@ Upcoming Events | StreamStage
         {% endif %}
         {% endfor %}
 </div>
+
+<!-- Carousel js -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+<!-- Like button js -->
 <script src="/static/js/events.js"></script>
 
 {% endblock %}

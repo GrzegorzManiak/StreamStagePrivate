@@ -27,3 +27,20 @@ like_buttons.forEach(button => {
   button.addEventListener('click', likeClick);
 })
 
+
+// Function for Media Carousel
+const settings = {
+  slidesPerView: 1,
+  loop: true,
+  pagination: {
+    el: '.swiper-pagination',
+    type: 'bullets',
+    clickable: 'true',
+  },
+  navigation: {
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
+  },
+};
+
+const swiper = new Swiper('.mySwiper', settings);

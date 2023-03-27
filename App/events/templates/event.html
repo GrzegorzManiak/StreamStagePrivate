@@ -5,6 +5,7 @@
 
 {% block head %}
 <link rel="stylesheet" href="{% static 'css/payments.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
 {% endblock %}
 
 {% block content %}
@@ -30,10 +31,10 @@
     data-delete-review='{{ api.delete_review }}'
 
     data-stripe-pub='{{ stripe_key }}'
-    data-stripe-customer='{{ stripe }}'
+    data-stripe-customer='{{ stripe }}' 
 ></span>
 
-<div class="container">
+<div class="event-listings-title container">
 
     <!-- Main Details -->
     <div class="row text-light">
@@ -49,22 +50,51 @@
 
             <!-- Event Poster -->
             <div class="d-flex flex-row mx-2 my-4">
+                <!-- If No Media, Use Default Event Cover Image -->
                 {% if event.get_media_count == 0 %}
                 <img class="event-cover" src="{% static 'images/default_event_cover.png' %}" alt="No Event Cover Photo">
                 {% else %}
-                <img class="event-cover" src="{{ cover_pic.picture.url }}">
+                <!-- Media Carousel -->
+                    <div class="swiper mySwiper">
+                        <div class="swiper-wrapper">
+                            {% for media in event.get_media %}
+                            <div class="swiper-slide">
+                                <img src="{{ media.picture.url }}" alt="Event Media Photo">
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="swiper-pagination"></div>
+                        <div class="s-btn swiper-button-prev"></div>
+                        <div class="s-btn swiper-button-next"></div>
+                    </div>
                 {% endif %}
             </div>
-            <!-- Overall Event Rating -->
-            <div class="mx-2 my-4">
-                <h4><b>Audience Rating</b> <span class="text-light mt-2">{{ avg_rating }}/10</span></h4>
-            </div>
+
+
+
             <!-- Streamer Name -->
             <div class="mx-2 my-4">
                 <h4><b>Streamer</b></h4>
                 <a href="">
                     <p>@{{ event.broadcaster.handle }}</p>
                 </a>
+            </div>
+            <!-- Tickets -->
+            <div>
+                <h4 class="mx-2 my-4"><b>Tickets</b></h4>
+                <div>
+                    {% if event.stream_price != None %}
+                        <div class="row border m-1">
+                            <div class="col-6">
+                                <div class="b">Flexible Streaming Ticket</div>
+                                <span>€{{event.stream_price}}</span>
+                            </div>
+                            <div class="col-6">
+                                <span id="buy-streaming-ticket" class="btn btn-success m-auto" name="purchase-stream">Purchase</span>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
 
@@ -78,7 +108,7 @@
 
                 <!-- Showings -->
                 <div class="row">
-                    <h4 class="my-4"><b>Showings</b></h4>
+                    <h4 class="my-2"><b>Showings</b></h4>
                     <div class="row">
                         <h6 class="col-6 sub-title"><b>When?</b></h6>
                         <h6 class="col-6 sub-title"><b>Where?</b></h6>
@@ -107,24 +137,12 @@
         
         <!-- Event Reviews -->
         <div class="col-3 text-start mx-auto p-2">
-            <div>
-                <h4 class="mx-2 my-4"><b>Tickets</b></h4>
-                <div>
-                    {% if event.stream_price != None %}
-                        <div class="row border m-1">
-                            <div class="col-6">
-                                <div class="b">Flexible Streaming Ticket</div>
-                                <span>€{{event.stream_price}}</span>
-                            </div>
-                            <div class="col-6">
-                                <span id="buy-streaming-ticket" class="btn btn-success m-auto" name="purchase-stream">Purchase</span>
-                            </div>
-                        </div>
-                    {% endif %}
-                </div>
+            <!-- Overall Event Rating -->
+            <div class="mx-2 my-4">
+                <h4><b>Audience Rating</b> <span class="text-light mt-2">{{ avg_rating }}/10</span></h4>
             </div>
             <div>
-                <h4 class="mx-2 my-4"><b>Reviews</b></h4>
+                <h4 class="mx-2 my-2"><b>Reviews</b></h4>
                 <div>
                     <!-- Allow users to review -->
                     {% if user.is_authenticated %}
@@ -155,6 +173,7 @@
     </div>
 
 </div>
+<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
 <script src="/static/js/events.js"></script>
 <script src="/static/js/events_bin.js"></script>
 
