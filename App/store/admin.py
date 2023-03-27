@@ -5,4 +5,4 @@ from .models import FlexibleTicket
 
 @admin.register(FlexibleTicket)
 class FlexibleTicketAdmin(admin.ModelAdmin):
-    list_display = [ 'ticket_id', 'item', 'event', 'purchased_date', 'ticket_price', 'showing' ]
+    list_display = [ 'ticket_id', 'item', 'listing', 'purchased_date', 'ticket_price', 'showing' ]

@@ -10,6 +10,7 @@ def create_flexible_ticket(purchaser: Member, event: Event):
         # ticket_price = event.stream_price
     )
     
+    
 def create_purchase(purchaser: Member, billing_data, ticket: FlexibleTicket):
     purchase = Purchase(
         purchaser = purchaser,

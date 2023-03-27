@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Event, EventMedia, Category, EventShowing, EventReview
+from .models import TicketListing, Event, EventMedia, Category, EventShowing, EventReview
 
 # Register your models here.
 
@@ -9,6 +9,11 @@ class EventAdmin(admin.ModelAdmin):
     list_editable = [ 'title', 'description', 'over_18s', 'broadcaster', 'approved']
     list_display_links = []
     filter_horizontal = ['contributors']
+
+@admin.register(TicketListing)
+class TicketListing(admin.ModelAdmin):
+    list_display = [ 'event', 'ticket_detail', 'ticket_type', 'maximum_stock', 'remaining_stock' ]
+    list_editable = []
 
 @admin.register(EventMedia)
 class EventMediaAdmin(admin.ModelAdmin):

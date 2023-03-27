@@ -2,9 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django_countries.fields import CountryField
-from django.core.validators import MaxValueValidator, MinValueValidator 
-
-from .ticketing import TicketType
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 from accounts.models import Broadcaster, Member
 from datetime import datetime, timedelta
@@ -31,9 +29,9 @@ class TicketListing(models.Model):
     event = models.ForeignKey(to="events.Event", on_delete=models.CASCADE)
     ticket_detail = models.CharField(max_length=100, blank=True)
 
-    price = models.DecimalField(max_digits=1000, decimal_places=2)
+    price = models.DecimalField(max_digits=1000, decimal_places=2, validators=[MinValueValidator(0)])
 
-    ticket_type = models.IntegerField(max_length=3, default=TicketType.Streaming)
+    ticket_type = models.IntegerField(default=0) # streaming ticket ID
 
     # 0 means no stocking.
     maximum_stock = models.IntegerField(default=0, validators=[MinValueValidator(-1)])
@@ -63,8 +61,11 @@ class Event(models.Model):
         return self.description[:250]
     
     # Tickets
-    def get_tickets(self):
+    def get_ticket_listings(self):
         return TicketListing.objects.filter(event=self).all()
+    
+    def has_ticket_listings(self):
+        return self.get_ticket_listings().count > 0
     
     # Media
 
