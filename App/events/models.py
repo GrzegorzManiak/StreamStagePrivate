@@ -4,6 +4,8 @@ from django.urls import reverse
 from django_countries.fields import CountryField
 from django.core.validators import MaxValueValidator, MinValueValidator 
 
+from .ticketing import TicketType
+
 from accounts.models import Broadcaster, Member
 from datetime import datetime, timedelta
 import uuid
@@ -25,6 +27,17 @@ class Category(models.Model):
     def get_all_categories(self):
         return Category.objects.all().order_by('name')
 
+class TicketListing(models.Model):
+    event = models.ForeignKey(to="events.Event", on_delete=models.CASCADE)
+    ticket_detail = models.CharField(max_length=100, blank=True)
+
+    price = models.DecimalField(max_digits=1000, decimal_places=2)
+
+    ticket_type = models.IntegerField(max_length=3, default=TicketType.Streaming)
+
+    # 0 means no stocking.
+    maximum_stock = models.IntegerField(default=0, validators=[MinValueValidator(-1)])
+    remaining_stock = models.IntegerField(default=0, validators=[MinValueValidator(0)])
 
 # Event Model
 class Event(models.Model):
@@ -37,10 +50,6 @@ class Event(models.Model):
     primary_media_idx = models.IntegerField(default=0) # Points to an item in the 'media' field - used as a cover photo 
     contributors = models.ManyToManyField(get_user_model(), related_name="event_contributors", blank=True)
     approved = models.BooleanField("Approved", default=False)
-    stream_price = models.DecimalField("Streaming Ticket Price", validators=[MinValueValidator(0), MaxValueValidator(999)], decimal_places=2, max_digits=10, null=True)
-    live_price = models.DecimalField("In-Person Ticket Price", validators=[MinValueValidator(0), MaxValueValidator(999)], decimal_places=2, max_digits=10, null=True)
-
-    live_ticket_stock = models.IntegerField("Remaining Live Ticket Stock", default=0)
 
     # Event
     
@@ -52,6 +61,10 @@ class Event(models.Model):
     
     def short_description(self):
         return self.description[:250]
+    
+    # Tickets
+    def get_tickets(self):
+        return TicketListing.objects.filter(event=self).all()
     
     # Media
 

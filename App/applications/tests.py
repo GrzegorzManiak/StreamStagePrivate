@@ -207,7 +207,7 @@ class ApplicationTests(TestCase):
                 title = "New Event 02",
                 description = "A cool event for tests!",
                 broadcaster = test_broadcaster,
-                stream_price = 3.99
+                # stream_price = 3.99
             )
             test_event.save()
 
