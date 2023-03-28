@@ -1,6 +1,5 @@
 from django.contrib.auth import login as dj_login, logout as dj_logout
-from django.http.response import JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -20,6 +19,8 @@ from accounts.models import Member, LoginHistory, SecurityPreferences
 from accounts.oauth.oauth import format_providers
 from accounts.email.verification import add_key, send_email
 import secrets
+import datetime
+
 
 @api_view(['GET'])
 @not_authenticated()
@@ -105,6 +106,7 @@ def validate_token(request, headers):
     # -- Add to the login history
     Statistics.log('accounts', 'login')
     user[0].ensure()
+    user[0].last_login = datetime.datetime.now()
     LoginHistory.objects.create(
         member=user[0],
         ip=request.META['REMOTE_ADDR'],

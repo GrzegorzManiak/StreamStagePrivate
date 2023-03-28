@@ -1,10 +1,13 @@
-[data-pod='accounts'] .side-panel-pod-icon { background-color: #4de061; }
 [data-pod='server'] .side-panel-pod-icon { background-color: #4de061; }
 [data-pod='cash_flow'] .side-panel-pod-icon { background-color: #4de061; }
 [data-pod='tickets'] .side-panel-pod-icon { background-color: #4de061; }
 [data-pod='reviews'] .side-panel-pod-icon { background-color: #4de061; }
 [data-pod='subscriptions'] .side-panel-pod-icon { background-color: #4de061; }
 [data-pod='viewers'] .side-panel-pod-icon { background-color: #4de061; }
+
+
+[data-pod='accounts'] .side-panel-pod-icon { background-color: #4daae0; }
+[data-pod='users'] .side-panel-pod-icon { background-color: #4daae0; }
 
 
 .graphs {

@@ -17,6 +17,7 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 
 from functools import wraps
+from django.contrib.auth import get_user_model
 
 
 """
@@ -228,5 +229,59 @@ def required_headers(required):
             
             # -- Call the original function with the request object
             return view_func(request, data_object, *args, **kwargs)
+        return wrapper
+    return decorator
+
+
+
+
+"""
+    :name: impersonate
+    :description: This function is used to impersonate a user
+        so that we dont have to create a new set of API's to
+        edit the user.
+
+        To use this function, just have to pass in the ID of
+        the user in the 'impersonate' header and it will
+        automatically impersonate that user for any API calls
+
+        This function will also check if the user is an admin
+        and if they are not, it will do nothing.
+"""
+def impersinate():
+    def decorator(view_func):
+        @wraps(view_func)
+        def wrapper(request, *args, **kwargs):
+
+            # -- Check if the user is an admin
+            if not request.user.is_superuser:
+                request.impersonate = False
+                return view_func(request, *args, **kwargs)
+            
+
+            # -- Check if the user is trying to impersonate
+            if 'impersonate' in request.headers:
+                try:
+                    # -- Save the original user
+                    request.impersonater = request.user
+
+                    # -- Get the user
+                    user = get_user_model().objects.get(id=request.headers['impersonate'])
+
+                    # -- Make sure the uses is not an admin
+                    if user.is_superuser:
+                        return invalid_response('You cannot impersonate an admin')
+                    
+                    # -- Set the impersonate flag to allow us to bypass some
+                    #    security checks
+                    request.user = user
+                    request.impersonate = True
+                    request.user.is_authenticated = True
+
+                except:
+                    return invalid_response('The user you are trying to impersonate does not exist')
+            
+            # -- Call the original function with the request object
+            return view_func(request, *args, **kwargs)
         return wrapper
     return decorator

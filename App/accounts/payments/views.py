@@ -4,7 +4,7 @@
 
 # -- Imports
 from rest_framework.decorators import api_view
-from accounts.com_lib import authenticated, invalid_response, required_data, success_response
+from accounts.com_lib import authenticated, invalid_response, required_data, success_response, impersinate
 from .payments import (
     add_stripe_payment_method,
     get_cards_formatted,
@@ -38,6 +38,7 @@ def add_payment_method(request, data):
 
 
 @api_view(['GET'])
+@impersinate()
 @authenticated()
 def get_payment_methods(request):
     # -- Get the payment methods
@@ -52,6 +53,7 @@ def get_payment_methods(request):
 
 
 @api_view(['POST'])
+@impersinate()
 @authenticated()
 @required_data(['id'])
 def remove_payment_method(request, data):

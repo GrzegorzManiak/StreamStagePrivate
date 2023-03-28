@@ -113,7 +113,7 @@ class Member(AbstractUser):
     access_level = models.SmallIntegerField("Access Level", default=0)
     max_keys = models.SmallIntegerField("Max Devices", default=1)
     is_streamer = models.BooleanField("Streamer Status", default=False)
-
+    last_login = models.DateTimeField(auto_now=True)
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email', 'first_name', 'last_name']
 
