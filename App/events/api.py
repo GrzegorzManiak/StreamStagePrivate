@@ -1,6 +1,6 @@
 from accounts.com_lib import authenticated, invalid_response, error_response, required_data, success_response
 from rest_framework.decorators import api_view
-from .models import TicketListing, Event
+from .models import TicketListing, EventShowing, Event
 
 from .ticketing import create_ticket_listing, TicketType
 
@@ -105,3 +105,39 @@ def del_ticket_listing(request, data):
 
     # -- Return the reviews
     return success_response('Successfully deleted listing')
+
+
+
+
+
+@api_view(['POST'])
+@authenticated()
+@required_data(['event_id'])
+def get_showings(request, data):
+    """
+        This view is used to get ticket listings
+        for a particular event
+    """
+
+    event = Event.objects.filter(event_id=data['event_id']).first()
+
+    if not event:
+        return error_response('Event with given ID not found.')
+
+    showings = EventShowing.objects.filter(
+        event=event
+    )
+
+    encoded_showings = []
+    
+    for showing in showings:
+        encoded_showings.append({
+            'id': showing.id,
+            'detail': listing.ticket_detail,
+            'price': listing.price,
+            'stock': listing.remaining_stock
+        })
+
+    return success_response('Listings retrieved successfully', {
+        'listings': encoded_listings
+    })

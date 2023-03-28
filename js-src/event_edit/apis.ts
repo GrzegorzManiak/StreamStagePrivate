@@ -1,5 +1,5 @@
 import { configuration } from "./index";
-import { DefaultResponse, DefaultResponseData, GetTicketListingsResponse, AddTicketListingResponse, DelTicketListingResponse, TicketListing } from "./index.d";
+import { DefaultResponse, DefaultResponseData, GetTicketListingsResponse, AddTicketListingResponse, TicketListing } from "./index.d";
 
 export async function base_request (
     mehod: string,
@@ -66,7 +66,7 @@ export const add_ticket_listing = async (
 export const del_ticket_listing = async (
     event_id: string,
     lid: number
-): Promise<DelTicketListingResponse> => base_request(
+): Promise<DefaultResponse> => base_request(
     'POST',
     configuration.del_listing,
     { event_id: event_id, listing_id: lid }

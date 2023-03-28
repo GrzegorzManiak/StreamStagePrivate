@@ -1,5 +1,22 @@
-
 import { construct_modal } from "../common";
+
+interface TicketListing {
+    id: number;
+    detail: string;
+    price: number;
+    ticket_type: number;
+    stock: number;
+}
+
+interface Showing {
+    showing_id: string;
+    event_id: string;
+    country: string;
+    city: string;
+    venue: string;
+    time: string;
+}
+
 
 // api stuff (credits to Greg)
 export interface DefaultResponseNoData {
@@ -18,6 +35,9 @@ export interface DefaultResponseData {
 
 export type DefaultResponse = DefaultResponseNoData;
 
+
+// Ticket Section
+
 export type GetTicketListingsSuccess = DefaultResponseData & { data: {
     listings: Array<TicketListing>
 }}
@@ -31,15 +51,4 @@ export type AddTicketListingSuccess = DefaultResponseData & { data: {
 
 export type AddTicketListingResponse = AddTicketListingSuccess | DefaultResponse;
 
-
-export type DelTicketListingSuccess = DefaultResponseData & { data: { }}
-
-export type DelTicketListingResponse = DelTicketListingSuccess | DefaultResponse;
-
-interface TicketListing {
-    id: number;
-    detail: string;
-    price: number;
-    ticket_type: number;
-    stock: number;
-}
+// Showing Section
