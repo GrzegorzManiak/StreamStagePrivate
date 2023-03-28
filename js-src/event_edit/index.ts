@@ -1,14 +1,25 @@
+import { config } from "webpack";
 import { build_configuration, Type } from "../api/config";
 import { construct_modal, create_toast } from "../common";
-import { get_ticket_listings } from "./apis";
-import { GetTicketListingsSuccess, TicketListing } from "./index.d"
+import { add_ticket_listing, del_ticket_listing, get_ticket_listings } from "./apis";
+import { GetTicketListingsSuccess, AddTicketListingSuccess, DelTicketListingSuccess, TicketListing } from "./index.d"
 
 // -- Get the global configuration
 export const configuration = build_configuration<{
+        event_id: string,
+
         get_listings: string,
+        add_listing: string,
+        del_listing: string,
+
         csrf_token: string,
     }>({
+        event_id: new Type('data-event-id', 'string'),
+
         get_listings: new Type('data-get-ticket-listings', 'string'),
+        add_listing: new Type('data-add-ticket-listing', 'string'),
+        del_listing: new Type('data-del-ticket-listing', 'string'),
+
         csrf_token: new Type('data-csrf-token', 'string'),
     });
 
@@ -20,23 +31,27 @@ if (listings_panel) {
 
     if (add_listing_btn)
         manage_add_listing_btn(add_listing_btn);
+        
+    query_listings();
 }
-
 
 function manage_add_listing_btn(
     btn: HTMLElement
 ) {
 
     btn.addEventListener("click", () => {
-        const modal = construct_modal("Add Ticket Listing", "What kind of ticket listing would you like to add?", true, 'success', `
-            STREAMING / IN PERSON?
-        `);
+        const modal = construct_modal("Add Ticket Listing", "What kind of ticket listing would you like to add?", true, 'success', add_stream_ticket_form);
 
         // -- Create a div element
         const modal_wrap = document.createElement('div');
 
         // -- Set the innerHTML of the div to the modal
         modal_wrap.innerHTML = modal;
+
+        // Set up price formatting
+
+        var detail_field = modal_wrap.querySelector("#id_ticket_detail");
+        var price_field = modal_wrap.querySelector("#id_ticket_price");
 
         // -- Get the buttons
         const yes_btn = modal_wrap.querySelector('.yes') as HTMLButtonElement,
@@ -46,6 +61,8 @@ function manage_add_listing_btn(
         yes_btn.addEventListener('click', async() => {
             // -- Call the yes function
             //yes();
+
+            add_listing(detail_field.getAttribute("value"), price_field.getAttribute("value"));
 
             // -- Remove the modal
             modal_wrap.remove();
@@ -65,48 +82,123 @@ function manage_add_listing_btn(
 
 }
 
-query_listings('myevnt');
+// Functions managing physical list of ticket listings.
 
-
-function add_listings(listings: TicketListing[]) {
+function set_listings(listings: TicketListing[]) {
     listings_panel.innerHTML = "";
 
     for (var listing of listings) {
-        listings_panel.innerHTML += ticket_listing_html(listing);
+        append_listing(listing);
     }
 }
 
+function remove_listing(lid: number) {
+    listings_panel.querySelector(".listing-row[data-lid=\"" + lid + "\"]").remove();
+}
 
-async function query_listings(event_id: string) {
+function append_listing(listing: TicketListing) {
+    listings_panel.appendChild(ticket_listing_html(listing));
+
+    console.log(listings_panel.querySelector(`.remove-listing-btn[data-lid="${listing.id}"]`));
+
+    listings_panel.querySelector(`.remove-listing-btn[data-lid="${listing.id}"]`)
+            .addEventListener("click", () => {
+                del_listing(listing.id);
+            });
+    console.log("added event listener for " + listing.id);
+}
+
+// API calls
+
+async function query_listings() {
     // -- Get the reviews
-    const listings = await get_ticket_listings(
-        "myevnt"
-    );
+    const listings = await get_ticket_listings(configuration.event_id);
 
     // -- Check if the request was successful
-    if (listings.code !== 200) return create_toast(
-        'error', 'Oops!', 'There was an error while trying to get ticket listings, please try again later.')
+    if (listings.code !== 200)
+        return create_toast(
+            'error', 'Oops!',
+            'There was an error while trying to get ticket listings, please try again later.'
+        )
 
     const data = (listings as GetTicketListingsSuccess).data
     
-    console.log(data.listings);
+    // console.log(data.listings);
 
-    add_listings(data.listings);
+    set_listings(data.listings);
 
     //renderd_reviews = create_reviews(data.reviews);
 
 }
 
+async function add_listing(
+    detail: string,
+    price: string
+) {
+    const request = await add_ticket_listing(configuration.event_id, 0, parseFloat(price), detail, 0);
+
+    // -- Check if the request was successful
+    if (request.code !== 200)
+        return create_toast(
+            'error', 'Oops!',
+            'There was an error while trying to add ticket listing, please try again later.'
+        )
+
+    const data = (request as AddTicketListingSuccess).data
+
+    append_listing(data.listing);
+}
+
+async function del_listing(lid: number) {
+    const request = await del_ticket_listing(configuration.event_id, lid);
+
+    // -- Check if the request was successful
+    if (request.code !== 200)
+        return create_toast(
+            'error', 'Oops!',
+            'There was an error while trying to remove ticket listing, please try again later.'
+        )
+
+    remove_listing(lid);
+}
+
+
+// HTML generation
 
 function ticket_listing_html(
     listing: TicketListing
-) : string {
-    return `
-    <div class="row border m-1">
+) : HTMLElement {
+    var row = document.createElement('div');
+    row.className = "row border m-1 listing-row";
+    row.setAttribute("data-lid", listing.id.toString());
+
+    row.innerHTML = `
         <div class="col-6">
             <div class="b">${listing.detail}</div>
             <span>€${listing.price}</span>
         </div>
-    </div>
-    `;
+        <div class="remove-listing-btn btn btn-danger" data-lid="${listing.id}">
+            Remove Listing
+        </div>
+    `
+
+    return row;
 }
+
+const add_stream_ticket_form = `
+    <form>
+        <div class="mb-3">
+            <label for="id_ticket_detail" class="form-label requiredField">
+                Ticket Detail<span class="asteriskField">*</span>
+            </label>
+            <input name="detail" maxlength="100" class="textarea form-control" required="" id="id_ticket_detail" value="Streaming Ticket"></input>
+        </div>
+
+        <div class="mb-3">
+            <label for="id_price" class="form-label requiredField">
+                Price<span class="asteriskField">*</span>
+            </label>
+            <input name="price" type="number" min="0" max="100" class="form-control" required="" id="id_ticket_price" value="10.99"></input>
+        </div>
+    </form>
+`;

@@ -91,17 +91,22 @@ def event_create(request):
 
 # Update an event
 def event_update(request, event_id):
-    context = {
-        'api': {
-            'get_ticket_listings': reverse_lazy('get_ticket_listings'),
-        }
-    }
     event = Event.objects.get(event_id=event_id)
 
     if not request.user.is_authenticated or not request.user.is_streamer:
         return redirect('all_events')
     if event == None: # if event id in URL is invalid, redirect
         return redirect('all_events')
+    
+    context = {
+        'event_id': event_id,
+
+        'api': {
+            'get_ticket_listings': reverse_lazy('get_ticket_listings'),
+            'add_ticket_listing': reverse_lazy('add_ticket_listing'),
+            'del_ticket_listing': reverse_lazy('del_ticket_listing')
+        }
+    }
     
     form = EventUpdateForm(instance=event, data=request.POST)
     if form.is_valid():

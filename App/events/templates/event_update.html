@@ -15,22 +15,26 @@ Update Event | StreamStage
 
     data-csrf-token='{{ csrf_token }}'
 
+    data-event-id='{{ event_id }}'
+
     data-get-ticket-listings='{{ api.get_ticket_listings }}'
+    data-add-ticket-listing='{{ api.add_ticket_listing }}'
+    data-del-ticket-listing='{{ api.del_ticket_listing }}'
 ></span>
 
-<div class="row">
+<div class="row m-auto" style="max-width: 1200px">
     <h1 class="page-title">Edit Event</h1>
-    <div class="col-6">
+    <div class="col-8">
         <h1>General</h1>
         <div class="d-flex content_center">
             <form class="form-layout" action="" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
-                {{ form.as_p }}
+                {{ form|crispy }}
                 <input type="submit" value="Update" />
             </form>
         </div>
     </div>
-    <div class="col-6">
+    <div class="col-4">
         <h1>The Stuff</h1>
 
         <div>

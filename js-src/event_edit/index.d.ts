@@ -16,7 +16,7 @@ export interface DefaultResponseData {
     message: string
 }
 
-export type DefaultResponse = DefaultResponseNoData | DefaultResponseNoData;
+export type DefaultResponse = DefaultResponseNoData;
 
 export type GetTicketListingsSuccess = DefaultResponseData & { data: {
     listings: Array<TicketListing>
@@ -24,7 +24,20 @@ export type GetTicketListingsSuccess = DefaultResponseData & { data: {
 
 export type GetTicketListingsResponse = GetTicketListingsSuccess | DefaultResponse;
 
+
+export type AddTicketListingSuccess = DefaultResponseData & { data: {
+    listing: TicketListing
+}}
+
+export type AddTicketListingResponse = AddTicketListingSuccess | DefaultResponse;
+
+
+export type DelTicketListingSuccess = DefaultResponseData & { data: { }}
+
+export type DelTicketListingResponse = DelTicketListingSuccess | DefaultResponse;
+
 interface TicketListing {
+    id: number;
     detail: string;
     price: number;
     ticket_type: number;
