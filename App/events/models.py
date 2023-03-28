@@ -4,7 +4,6 @@ from django.urls import reverse
 from django_countries.fields import CountryField
 from django.core.validators import MaxValueValidator, MinValueValidator
 
-from accounts.models import Broadcaster, Member
 from datetime import datetime, timedelta
 import uuid
 
@@ -26,6 +25,7 @@ class Category(models.Model):
         return Category.objects.all().order_by('name')
 
 class TicketListing(models.Model):
+    listing_id = models.UUIDField(default=uuid.uuid4)
     event = models.ForeignKey(to="events.Event", on_delete=models.CASCADE)
     ticket_detail = models.CharField(max_length=100, blank=True)
 
@@ -43,7 +43,7 @@ class Event(models.Model):
     title = models.TextField("Title", default="New Event")
     description = models.TextField("Description", max_length=3096)
     over_18s = models.BooleanField(default=False)
-    broadcaster = models.ForeignKey(Broadcaster, on_delete=models.CASCADE)
+    broadcaster = models.ForeignKey(to="accounts.Broadcaster", on_delete=models.CASCADE)
     categories = models.ManyToManyField(to=Category)
     primary_media_idx = models.IntegerField(default=0) # Points to an item in the 'media' field - used as a cover photo 
     contributors = models.ManyToManyField(get_user_model(), related_name="event_contributors", blank=True)
@@ -155,7 +155,7 @@ class EventReview(models.Model):
     updated = models.DateTimeField("Updated", auto_now=True)
     likes = models.IntegerField("Review Likes", default=0)
     rating = models.SmallIntegerField("Event Rating", default=10, validators=[MinValueValidator(0), MaxValueValidator(10)])
-    likers = models.ManyToManyField(to=Member)
+    likers = models.ManyToManyField(to="accounts.Member")
 
     class Meta:
         verbose_name = 'Event Review'

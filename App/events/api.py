@@ -26,7 +26,7 @@ def get_ticket_listings(request, data):
     
     for listing in listings:
         encoded_listings.append({
-            'id': listing.id,
+            'id': listing.listing_id,
             'detail': listing.ticket_detail,
             'price': listing.price,
             'stock': listing.remaining_stock
@@ -69,7 +69,7 @@ def add_ticket_listing(request, data):
         return error_response('Unknown error.')
 
     encoded_listing = {
-        'id': listing.id,
+        'id': listing.listing_id,
         'detail': listing.ticket_detail,
         'price': listing.price,
         'stock': listing.remaining_stock
@@ -110,34 +110,34 @@ def del_ticket_listing(request, data):
 
 
 
-@api_view(['POST'])
-@authenticated()
-@required_data(['event_id'])
-def get_showings(request, data):
-    """
-        This view is used to get ticket listings
-        for a particular event
-    """
+# @api_view(['POST'])
+# @authenticated()
+# @required_data(['event_id'])
+# def get_showings(request, data):
+#     """
+#         This view is used to get ticket listings
+#         for a particular event
+#     """
 
-    event = Event.objects.filter(event_id=data['event_id']).first()
+#     event = Event.objects.filter(event_id=data['event_id']).first()
 
-    if not event:
-        return error_response('Event with given ID not found.')
+#     if not event:
+#         return error_response('Event with given ID not found.')
 
-    showings = EventShowing.objects.filter(
-        event=event
-    )
+#     showings = EventShowing.objects.filter(
+#         event=event
+#     )
 
-    encoded_showings = []
+#     encoded_showings = []
     
-    for showing in showings:
-        encoded_showings.append({
-            'id': showing.id,
-            'detail': listing.ticket_detail,
-            'price': listing.price,
-            'stock': listing.remaining_stock
-        })
+#     for showing in showings:
+#         encoded_showings.append({
+#             'id': showing.listing_id,
+#             'detail': listing.ticket_detail,
+#             'price': listing.price,
+#             'stock': listing.remaining_stock
+#         })
 
-    return success_response('Listings retrieved successfully', {
-        'listings': encoded_listings
-    })
+#     return success_response('Listings retrieved successfully', {
+#         'listings': encoded_listings
+#     })
