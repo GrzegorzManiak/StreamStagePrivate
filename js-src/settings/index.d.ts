@@ -1,4 +1,4 @@
-import { PaymentMethod, PaymentIntent } from "../common/index.d";
+import { PaymentIntent } from "../common/index.d";
 
 export type PanelType = 
     'profile' |
@@ -84,17 +84,6 @@ export interface SecurityInfo {
     security_preferences: SecurityPreferences
 }
 
-
-export interface Review {
-    id: string,
-    event: string,
-    event_name: string,
-    rating: number,
-    body: string,
-    title: string,
-    created: number,
-    likes: number,
-}
   
 // 
 // Default Server response structure
@@ -130,15 +119,6 @@ export type SecurityInfoResponse =SecurityInfoSuccess | DefaultResponse;
 
 export type StartSubscriptionSuccess = DefaultResponseData & { data: PaymentIntent }
 export type StartSubscriptionResponse = StartSubscriptionSuccess | DefaultResponse;
-
-export type GetReviewsSuccess = DefaultResponseData & { data: {
-    reviews: Array<Review>,
-    total: number,
-    per_page: number,
-    page: number,
-    pages: number
-}}
-export type GetReviewsResponse = GetReviewsSuccess | DefaultResponse;
 
 export type UpdateProiflePictureSuccess = DefaultResponseData & { data: { image: string } }
 export type UpdateProiflePictureResponse = UpdateProiflePictureSuccess | DefaultResponse;

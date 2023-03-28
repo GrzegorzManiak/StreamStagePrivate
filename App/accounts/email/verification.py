@@ -10,7 +10,7 @@ import requests
 import secrets
 import time
 from StreamStage.mail import send_template_email
-
+from StreamStage.models import Statistics
 
 REMOVE_AFTER = 60 * 60 * 24 * 7
 
@@ -194,7 +194,8 @@ def verify_key(key) -> tuple[bool, str]:
 
     # -- Try to call the callback
     try: key['callback'](key['data'])
-    except Exception:
+    except Exception as e:
+        print(e)
         return (False, 'Failed to call callback')
 
     # -- Remove the key from the store
@@ -243,6 +244,7 @@ def send_email(
     if test: return (True, message)
     else: 
         try: 
+            Statistics.log('accounts', 'mfa_email')
             send_template_email(
                 key['email'],
                 'verification',

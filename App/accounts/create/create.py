@@ -8,6 +8,7 @@
 
 from django.contrib.auth.hashers import make_password
 from StreamStage.mail import send_template_email
+from StreamStage.models import Statistics
 from django.http.response import JsonResponse
 from rest_framework import status
 from django.conf import settings
@@ -138,6 +139,7 @@ def start_email_verification(
 
     # -- Create the callback
     def callback(user):
+
         # -- First, make sure the 
         #    user is not None
         if user is None: return
@@ -149,21 +151,25 @@ def start_email_verification(
             cased_username=username,
             email=temp_users[temp_user_key]['email'].lower(),
             password=make_password(password),
-        )
+        )   
+        member.ensure()
 
+            
         # -- Create the account
         if oauth is not None:
             # -- Get the OAuth Data
             oauth_data = get_oauth_data(oauth)
-            member.add_profile_pic_from_url(oauth_data['data']['picture'])
+            member.add_pic_from_url(oauth_data['data']['picture'], 'pfp')
             link_oauth_account(member, oauth)
 
         # -- Send the welcome email
         send_template_email(member, 'welcome')
+        Statistics.log('accounts', 'created')
 
         # -- Attempt to remove the user from the temp_users
         try: del temp_users[temp_user_key]
         except KeyError: pass
+        print('Deleted temp user')
 
 
     def change_email_callback(user, new_email):

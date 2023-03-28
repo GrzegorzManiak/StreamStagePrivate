@@ -35,13 +35,15 @@ from .payments.views import (
 from .other import (
     get_reviews,
     update_review,
-    delete_review
+    delete_review,
+    submit_report
 )
 from .views import get_token, login, logout, register, validate_token
 
 from django.conf import settings
 from django.conf.urls.static import static
 
+from .site import site_panel, get_statistics
 
 # -- Should probably simplify this into GET/POST/PUT/DELETE instead of having multiple paths
 
@@ -97,4 +99,9 @@ urlpatterns = [
     path('api/other/get_reviews', get_reviews, name='get_reviews'),
     path('api/other/update_review', update_review, name='update_review'),
     path('api/other/delete_review', delete_review, name='delete_review'),
+    path('api/other/submit_report', submit_report, name='submit_report'),
+
+    # -- Admin
+    path('site_panel/', site_panel, name='site_panel'),
+    path('site_panel/get_statistics/', get_statistics, name='get_statistics')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

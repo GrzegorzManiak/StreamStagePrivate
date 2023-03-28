@@ -25,6 +25,7 @@ from .oauth import OAuthTypes
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from .validation import check_unique_broadcaster_handle
+from annoying.fields import AutoOneToOneField
 
 from StreamStage.secrets import STRIPE_SECRET_KEY
 from StreamStage.settings import MEDIA_URL
@@ -56,6 +57,12 @@ class SecurityPreferences(models.Model):
         help_text="Require MFA when you log in")
     require_mfa_on_payment   = models.BooleanField('Require MFA on Payment',   default=False,
         help_text="Require MFA when you make a payment")
+    public_profile           = models.BooleanField('Public Profile',           default=True,
+        help_text="Make your profile public")
+    public_name              = models.BooleanField('Public Name',              default=False,
+        help_text="Makes your full name public on your profile")
+    public_country           = models.BooleanField('Public Country',           default=False,
+        help_text="Makes your country public on your profile")
 
     
     def get_keys(self):
@@ -98,7 +105,7 @@ class Member(AbstractUser):
     profile_banner = models.ImageField("Profile Banner", upload_to='member', blank=True)
     description = models.TextField("Description", blank=True)
     stripe_customer = models.CharField("Stripe Customer ID", max_length=100, blank=True)
-    security_preferences = models.OneToOneField("SecurityPreferences", on_delete=models.CASCADE, default=None, null=True)
+    security_preferences = models.OneToOneField(SecurityPreferences, on_delete=models.CASCADE, null=True, blank=True)
     country = CountryField(default='Ireland')
     time_zone = TimeZoneField(default="Europe/Dublin")
     tfa_secret = models.CharField("tfa_secret", max_length=100, blank=True, null=True)
@@ -327,13 +334,15 @@ class Member(AbstractUser):
 
 
 
-    def save(self, *args, **kwargs):
-        self.is_over_18()
+    def ensure(self, *args, **kwargs):
+        # -- Check if the account has been created
 
-        # -- Check if the user has a security preferences object
-        if self.security_preferences == None:
+        # -- Check if we have a security preferences object
+        if self.security_preferences is None:
             self.security_preferences = SecurityPreferences.objects.create()
-
+            
+        self.is_over_18()
+        
         # -- Make sure we have a cased username
         if self.username != self.cased_username.lower():
             self.cased_username = self.username.lower()
@@ -347,7 +356,7 @@ class Member(AbstractUser):
             self.default_profile_banner()
 
         # -- Save the user
-        super().save(*args, **kwargs)
+        self.save()
 
 
 
@@ -363,7 +372,9 @@ class MembershipStatus(models.Model):
     
 # Broadcaster - entity that controls events/streams
 class Broadcaster(models.Model):
-    handle = models.CharField("Broadcaster Handle", unique=True, primary_key=True, max_length=20, validators=[ check_unique_broadcaster_handle ])
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    handle = models.CharField("Broadcaster Handle", unique=True, max_length=20, validators=[ check_unique_broadcaster_handle ])
+
     # Streamer who creates events/streams and invites contributors to broadcast event
     streamer = models.ForeignKey(
         get_user_model(),
@@ -389,6 +400,15 @@ class Broadcaster(models.Model):
 
     def __str__(self):
         return str("@" + self.handle)
+
+    def change_handle(self, new_handle):
+        """
+            Simply updates the handle of the broadcaster.
+        """
+        self.handle = new_handle.lower()
+        self.save()
+
+        
 
 
 class oAuth2(models.Model):
@@ -425,4 +445,28 @@ class LoginHistory(models.Model):
             "time": self.time,
             "date": self.date,
             "method": self.method,
+        }
+
+
+class Report(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    reporter = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="reporter")
+        
+    r_user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="reported_user", null=True, blank=True)
+    r_broadcaster = models.ForeignKey('accounts.Broadcaster', on_delete=models.CASCADE, related_name="reported_broadcaster", null=True, blank=True)
+    r_review = models.ForeignKey('events.EventReview', on_delete=models.CASCADE, related_name="reported_review", null=True, blank=True)
+    r_event = models.ForeignKey('events.Event', on_delete=models.CASCADE, related_name="reported_event", null=True, blank=True)
+
+    reason = models.CharField("Reason", max_length=4000)
+    time = models.TimeField(auto_now_add=True)
+    date = models.DateField(auto_now_add=True)
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "reporter": self.reporter,
+            "reported": self.reported,
+            "reason": self.reason,
+            "time": self.time,
+            "date": self.date,
         }

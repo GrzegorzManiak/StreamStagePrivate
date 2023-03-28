@@ -5,7 +5,7 @@ module.exports = {
     mode: "production",
     optimization: { minimizer: [new TerserPlugin()] },
     entry: {
-        settings: './settings/index.ts',
+        // settings: './settings/index.ts',
         // api: './api/index.ts',
         // common: './common/index.ts',
         // login: './login/index.ts',
@@ -15,6 +15,9 @@ module.exports = {
         // homepage: './homepage/index.ts',
         // events: './events/index.ts',
         // navbar: './elements/navbar.ts',
+        // profiles: './profiles/index.ts',
+        // broadcaster_profiles: './broadcaster_profiles/index.ts',
+        admin: './admin/index.ts',
     },
     module: {
         rules: [

@@ -7,7 +7,6 @@
     "noImplicitAny": false,
     "removeComments": true,
     "inlineSourceMap": true,
-    "moduleResolution": "node",
-    "downlevelIteration": true,
+    "moduleResolution": "node"
   }
 }

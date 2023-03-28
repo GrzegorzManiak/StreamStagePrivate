@@ -1,4 +1,3 @@
-import { configuration } from '../';
 import { PanelType, Panel, Pod } from '../index.d';
 import { sleep, create_toast } from '../../common';
 import { scrolled } from '../../elements/navbar';
@@ -188,12 +187,6 @@ export function attach_event_listeners() {
 
     // -- Get all admin panel headers
     const admin_opts = document.querySelector('#admin-options');
-
-    // -- Loop through the headers, and disable the 
-    //    'data-pod-status' attribute, if the user
-    //    is an admin
-    if (configuration.admin === true) 
-        admin_opts?.setAttribute('data-pod-status', '');
 
     // -- Loop through the pods
     pod_elms.forEach(pod => {

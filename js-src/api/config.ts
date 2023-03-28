@@ -33,7 +33,7 @@ export class Type {
         switch (this.cast) {
             case 'string': return value;
             case 'number': return Number(value);
-            case 'boolean': return Boolean(value);
+            case 'boolean': return Boolean(value.toLowerCase() === 'true');
             case 'object': return JSON.parse(value);
             case 'function': return value;
             case 'undefined': return undefined;
