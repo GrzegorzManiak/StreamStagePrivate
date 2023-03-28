@@ -11,12 +11,16 @@ Delete Review | StreamStage
 {% endblock title %}
 
 {% block content %}
-<div class="m-4 p-4 content-center">
+<div class="container mx-auto" style="margin-top: var(--header-height)!important">
     <h1 class="page-title">Delete Review</h1>
-    <form class="form-layout" action="" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <p>Are you sure you want to delete this review for {{ event.title }}?</p>
-        <input type="submit" value="Delete" />
-    </form>
+    <div class="d-flex mx-auto">
+        <form class="form-class form-layout" action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <p>Are you sure you want to delete this review for {{ review.event }}?</p>
+            <div class="form-button">
+                <input class="btn btn-danger" type="submit" value="Delete" />
+            </div>
+        </form>
+    </div>
 </div>
 {% endblock %}

@@ -414,11 +414,39 @@ footer {
 
 
 /***** Forms *****/
-form > input {
-    background-color: #ffb25a;
-    color: rgb(32, 38, 46);
-    font-weight: bold;
+.form-class {
+    background-color: var(--theme-secondary-color)!important;
+    padding: 1rem!important;
+    margin: auto!important;
+    border-radius: 15px!important;
 }
+
+.form-button{
+    margin: auto!important;
+    width: 50%!important;
+
+}
+form input:not([type="submit"]) {
+    background-color: var(--theme-backdrop-color)!important;
+    border-radius: .5rem;
+    padding: .5rem;
+}
+form > p, textarea, select{
+    background-color: var(--theme-backdrop-color)!important;
+    color: #FFFFFF!important;
+    border: 1px #FFFFFF!important;
+}
+form > p > label{
+    width:100%;
+}
+form > div > input, form > div > button{
+    width: 100%;
+}
+
+form > div > textarea, form > p > textarea{
+    height: 4rem!important;
+}
+
 
 .button-slim p, .button-slim i {
     font-size: 0.9rem;
@@ -503,7 +531,6 @@ div > a:hover {
     width: 100%;
 }
 .swiper-slide{
-    background-color: #000000;
     width: 100%;
 }
 .swiper-slide img{
@@ -553,7 +580,38 @@ div > a:hover {
     max-width: 100%;
 }
 
+/**** Rating Stars ***/
+/* Display no rating so stars can be used */
+#id_rating{
+    display: none;
+}
 
+.rating-list{
+    background-color: var(--theme-backdrop-color)!important;
+}
+.rating-list btn{
+    border: none;
+
+}
+
+.rating-list li {
+float: right;
+color: #ddd;
+
+}
+
+.rating-list li:hover,
+.rating-list li:hover ~ li {
+color: #ffb25a;
+}
+
+.rating-list {
+display: inline-block;
+list-style: none;
+}
+.checked {
+    color: #ffb25a;
+}
 
 
 /***** Cart Page*****/

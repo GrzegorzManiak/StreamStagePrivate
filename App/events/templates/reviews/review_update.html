@@ -11,12 +11,28 @@ Edit Review | StreamStage
 {% endblock title %}
 
 {% block content %}
-<div class="m-4 p-4 content-center">
+<div class="container mx-auto" style="margin-top: var(--header-height)!important">
     <h1 class="page-title">Edit Review</h1>
-    <form class="form-layout" action="" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Update" />
-    </form>
+    <div class="d-flex mx-auto">
+        <form class="form-class form-layout" action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <ul class="btn btn-light list-inline rating-list">
+                <li onclick="rate(5)">
+                    <i class="fa fa-star {% if review.rating > 4 %} checked {% endif %}" title="Rate 5"></i></li>
+                <li onclick="rate(4)">
+                    <i class="fa fa-star {% if review.rating > 3 %} checked {% endif %}" title="Rate 4"></i></li>
+                <li onclick="rate(3)">
+                    <i class="fa fa-star {% if review.rating > 2 %} checked {% endif %}" title="Rate 3"></i></li>
+                <li onclick="rate(2)">
+                    <i class="fa fa-star {% if review.rating > 1 %} checked {% endif %}" title="Rate 2"></i></li>
+                <li onclick="rate(1)">
+                    <i class="fa fa-star {% if review.rating > 0 %} checked {% endif %}" title="Rate 1"></i></li>
+            </ul>
+            <div>
+                <input class="btn btn-primary" type="submit" value="Update" />
+            </div>
+        </form>
+    </div>
 </div>
 {% endblock %}

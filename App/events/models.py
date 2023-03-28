@@ -1,5 +1,6 @@
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, Avg
+
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django_countries.fields import CountryField
@@ -94,23 +95,35 @@ class Event(models.Model):
     def get_reviews(self):
         return EventReview.objects.filter(event=self).all().order_by('likes')
     
+    def get_medium_reviews(self):
+        reviews = EventReview.objects.filter(event=self).all().order_by('likes')
+        for review in reviews:
+            review.body = review.body[:250]
+        return reviews 
+       
+    def get_short_reviews(self):
+        reviews = EventReview.objects.filter(event=self).all().order_by('likes')
+        for review in reviews:
+            review.body = review.body[:100]
+        return reviews
+    
     def get_review_count(self):
         return EventReview.objects.filter(event=self).all().count()
     
     def get_average_rating(self, reviews_in = None):
-        avg_rating = 0
+        # avg_rating = 0
 
-        reviews = reviews_in or self.get_reviews()
-        count = reviews.count()
+        # reviews = reviews_in or self.get_reviews()
+        # count = reviews.count()
 
-        if count > 0:
-            for review in reviews:
-                avg_rating += review.rating
+        # if count > 0:
+        #     for review in reviews:
+        #         avg_rating += review.rating
             
-            avg_rating /= count
+        #     avg_rating /= count
         
-        return round(avg_rating,1)
-    
+        # return round(avg_rating,1)
+        return EventReview.objects.filter(event=self).aggregate(Avg("rating"))["rating__avg"] or 0
     # Get top review based on likes
     def get_top_review(self, reviews_in = None):
         reviews = reviews_in or self.get_reviews()
@@ -160,7 +173,7 @@ class EventReview(models.Model):
     created = models.DateTimeField("Created", auto_now_add=True)
     updated = models.DateTimeField("Updated", auto_now=True)
     likes = models.IntegerField("Review Likes", default=0)
-    rating = models.SmallIntegerField("Event Rating", default=10, validators=[MinValueValidator(0), MaxValueValidator(10)])
+    rating = models.SmallIntegerField("Event Rating", default=0, validators=[MinValueValidator(0), MaxValueValidator(5)])
     likers = models.ManyToManyField(to=Member)
 
     class Meta:
@@ -168,14 +181,13 @@ class EventReview(models.Model):
         verbose_name_plural = 'Event Reviews'
 
     def __str__(self):
-        return self.body[:100]
-    
-    def short_review(self):
-        self.body = self.body[:50]
-        return self
+        return self.title
     
     def get_review_body_length(self):
         return len(self.body)
+
+    def get_rating(self):
+        return self.rating
 
     def get_review_likes(self):
         return EventReview.objects.filter(event=self).filter(review_id=self.review_id).count()

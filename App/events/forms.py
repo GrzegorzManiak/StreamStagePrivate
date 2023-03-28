@@ -129,7 +129,8 @@ class ReviewUpdateForm(forms.ModelForm):
             'event',
             'created',
             'updated',
-            'likes'
+            'likes',
+            'likers'
         ]
 
 # Deleting an Event Review

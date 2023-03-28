@@ -78,7 +78,13 @@
             </div>
             <!-- Overall Event Rating -->
             <div class="mx-2 my-4">
-                <h4><b>Audience Rating</b> <span class="text-light mt-2">{{ avg_rating }}/10</span></h4>
+                <h4><b>Audience Rating</b>         
+                    <span class="fa fa-star {% if event.get_average_rating > 0 %} checked {% endif %}"></span>
+                    <span class="fa fa-star {% if event.get_average_rating > 1 %} checked {% endif %}"></span>
+                    <span class="fa fa-star {% if event.get_average_rating > 2 %} checked {% endif %}"></span>
+                    <span class="fa fa-star {% if event.get_average_rating > 3 %} checked {% endif %}"></span>
+                    <span class="fa fa-star {% if event.get_average_rating > 4 %} checked {% endif %}"></span>
+                </h4>
             </div>
         </div>
 
@@ -150,7 +156,7 @@
                     {% endif %}
                     <!-- If more reviews, display in carousel -->
                     {% if event.get_review_count > 0 %}
-                    {% for review in event.get_reviews %}
+                    {% for review in event.get_medium_reviews %}
                     <div class="swiper-slide">
                         {% include 'reviews/review.html' %}
                     </div>

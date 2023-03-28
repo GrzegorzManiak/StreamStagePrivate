@@ -61,3 +61,9 @@ const review_settings = {
 };
 
 const long_swiper = new Swiper('.longSwiper', review_settings);
+
+// Rating Stars
+const rate = (rating) => {
+  const rating_input = document.getElementById('id_rating')
+  rating_input.value = rating
+}
