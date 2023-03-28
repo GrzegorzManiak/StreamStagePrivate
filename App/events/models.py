@@ -59,7 +59,7 @@ class Event(models.Model):
         return self.title
     
     def short_description(self):
-        return self.description[:250]
+        return self.description[:500]
     
     # Tickets
     def get_ticket_listings(self):

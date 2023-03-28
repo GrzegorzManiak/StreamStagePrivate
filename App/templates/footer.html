@@ -1,3 +1,4 @@
+{% load tags %}
 <footer class="footer">
     <div class="footer-limiter"> 
         <div class="top"> 
@@ -7,21 +8,22 @@
                 <p>Never miss another live event again.</p>
             </div>
 
+
             <!-- Links column -->
             <div class='links'>
                 <ul class="list-unstyled">
                     <li class='title'>Homepage</li>
-                    <li><a href="#">Home</a></li>
+                    <li><a href="{% cross_app_reverse_tag 'homepage' 'homepage_index' %}">Home</a></li>
                     <li><a href="#">Live</a></li>
-                    <li><a href="#">Upcoming</a></li>
-                    <li><a href="#">Past</a></li>
+                    <li><a href="{% cross_app_reverse_tag 'events' 'upcoming_events' %}">Upcoming</a></li>
+                    <li><a href="{% cross_app_reverse_tag 'events' 'past_events' %}">Past</a></li>
                 </ul>
 
                 <ul class="list-unstyled">
                     <li class='title'>Account</li>
-                    <li><a href="#">Login</a></li>
-                    <li><a href="#">Register</a></li>
-                    <li><a href="#">Profile</a></li>
+                    <li><a href="{% cross_app_reverse_tag 'accounts' 'login' %}">Login</a></li>
+                    <li><a href="{% cross_app_reverse_tag 'accounts' 'register' %}">Register</a></li>
+                    <li><a href="{% cross_app_reverse_tag 'accounts' 'member_profile' %}">Profile</a></li>
                     <li><a href="#">Settings</a></li>
                 </ul>
 

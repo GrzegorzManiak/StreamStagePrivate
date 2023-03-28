@@ -76,7 +76,7 @@ def event_create(request):
     
     form = EventApplyForm(request.POST or None)
     if not request.user.is_authenticated or not request.user.is_streamer:
-        return redirect('all_events')
+        return redirect('upcoming_events')
     if form.is_valid():
         new_event_id = identifiers.generate_event_id()
         form = form.save(commit=False)

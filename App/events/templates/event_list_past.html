@@ -16,15 +16,7 @@ Past Events | StreamStage
 {% endblock %}
 
 {% block content %}
-<div class="event-listings-title" style="height: 100vh;">
-    <div class="row link-page-title page-title">
-        <a href="#" class="col-6">
-            <h1>Past Events</h1>
-        </a>
-        <a href="{% cross_app_reverse_tag 'events' 'upcoming_events' %}" class="col-6">
-            <h1>Upcoming Events</h1>
-        </a>
-    </div>
+<div class="nav-gap">
     
     <!-- Listing Past Events (if has showings and showing dates have passed)-->
     {% for event in events %}

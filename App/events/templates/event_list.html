@@ -4,12 +4,12 @@
 
 {% block content %}
 
-<div class="row my-4">
-    <div class="col-9">
+<div class="row my-2">
+    <div class="col-9 px-4 mx-auto">
         <a href="{% url 'event_view' event.event_id %}">
             <div class="row">
 
-                <div class="col-3">
+                <div class="col-md-3 col-sm-12">
                     <!-- Event Categories -->
                     {% for category in event.categories.all %}
                     <span class="badge bg-primary">{{category.name}}</span>
@@ -18,13 +18,14 @@
                     <h6>@{{ event.broadcaster.handle }}</h6>
                     <!-- Event Cover Picture (if any) -->
                     {% if event.get_media_count == 0 %}
-                    <img class="event-cover col-3" src="{% static 'images/default_event_cover.png' %}"
+                    <img class="event-cover" src="{% static 'images/default_event_cover.png' %}"
                         alt="No Event Cover Photo">
                     {% else %}
-                    <img class="event-cover col-3" src="{{ event.get_cover_picture.picture.url }}">
+                    <img class="event-cover" src="{{ event.get_cover_picture.picture.url }}" 
+                    alt="{{ event.get_cover_picture.description }}">
                     {% endif %}
                 </div>
-                <div class="col-9">
+                <div class="col-md-9 col-sm-12">
                     <!-- Event title & description -->
                     <h4>{{ event.title }}</h4>
                     <p>{{ event.short_description }}...</p>
@@ -50,29 +51,29 @@
             </div>
         </a>
     </div>
-                        <!-- Reviews for Event -->
-                        <div class="col-3">
-                            <div class="m-4">
-                                {% if event.get_review_count > 0 %}
-                                <h6 class="text-center"><b>Reviews</b></h6>
-                                <!-- Review Carousel -->
-                                <div class="swiper mySwiper">
-                                    <div class="swiper-wrapper">
-                                        {% for review in event.get_short_reviews %}
-                                        <div class="swiper-slide">
-                                            {% include 'reviews/review.html' %}
-                                        </div>
-                                        {% endfor %}
-                                    </div>
-                                    <div class="swiper-pagination"></div>
-                                    <div class="s-btn swiper-button-prev"></div>
-                                    <div class="s-btn swiper-button-next"></div>
-                                </div>
-                                {% else %}
-                                <h6 class="text-center"><b>No reviews yet</b></h6>
-                                {% endif %}
-                            </div>
-                        </div>
+    <!-- Reviews for Event -->
+    <div class="col-md-3 col-sm-12 third-page">
+        <div class="my-4 mx-1">
+            {% if event.get_review_count > 0 %}
+            <h6 class="text-center"><b>Reviews</b></h6>
+            <!-- Review Carousel -->
+            <div class="swiper mySwiper">
+                <div class="swiper-wrapper">
+                    {% for review in event.get_short_reviews %}
+                    <div class="swiper-slide">
+                        {% include 'reviews/review.html' %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="swiper-pagination"></div>
+                <div class="s-btn swiper-button-prev"></div>
+                <div class="s-btn swiper-button-next"></div>
+            </div>
+            {% else %}
+            <h6 class="text-center"><b>No reviews yet</b></h6>
+            {% endif %}
+        </div>
+    </div>
 </div>
 <hr />
 {% endblock %}
