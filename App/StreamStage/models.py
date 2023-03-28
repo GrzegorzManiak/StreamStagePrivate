@@ -5,6 +5,7 @@ import uuid
 import time
 import datetime
 
+SECOND = 10
 MINUTE = 60
 HOUR = 3600
 DAY = 86400
@@ -14,8 +15,8 @@ YEAR = 31536000
 
 network_tx = []
 network_rx = []
-cpu = []
-memory = []
+cpu_usage = []
+memory_usage = []
 
 kb = float(1024)
 mb = float(kb ** 2)
@@ -81,21 +82,39 @@ class Statistics(models.Model):
 
         # -- Get the statistics (not system)
         if group == 'system':
+            global network_rx
+            global network_tx
+            global cpu_usage
+            global memory_usage
+
             match statistic:
-                case 'cpu': stats = cpu
-                case 'memory': stats = memory
+                case 'cpu_usage': stats = cpu_usage
+                case 'memory_usage': stats = memory_usage
                 case 'network_tx': stats = network_tx
                 case 'network_rx': stats = network_rx
-
+                
             # -- Process the statistics
             for i in range(dif):
-                # -- Get the data
-                stat = stats[i]
-
                 # -- Add the data 
                 more_than = get_time(frame_type, time_frame[0] - i)
                 less_than = get_time(frame_type, (time_frame[0] - i) - 1)
+                values = []
 
+                for stat in stats: 
+                    if (
+                        stat['created'] > more_than and
+                        stat['created'] < less_than 
+                    ): values.append(stat['value'])
+
+                if len(values) <= 0: data['data'].append(0.0)
+                else: data['data'].append(sum(values) / len(values))
+
+            # -- Interpolate the values
+            for i, n in enumerate(data['data']):
+                if n > 0.5: continue
+                elif i == 0: data['data'][i] = data['data'][1]
+                elif i == len(data['data'])-1: data['data'][i] = data['data'][i-1]
+                else: data['data'][i] = (data['data'][i-1] + data['data'][i+1]) / 2
 
         else: 
             stats = Statistics.objects.filter(
@@ -119,7 +138,6 @@ class Statistics(models.Model):
 
 
         data['labels'].reverse()
-
         return data
 
 
@@ -132,6 +150,7 @@ def get_time(
     frame = int(frame)
 
     match frame_type:
+        case 'seconds': return current_time - int(frame * SECOND)
         case 'minute': return current_time - int(frame * MINUTE)
         case 'hour': return current_time - int(frame * HOUR)
         case 'day': return current_time - int(frame * DAY)
@@ -148,6 +167,7 @@ def generate_lable(
     frame: int,
 ) -> str:
     match frame_type:
+        case 'seconds': return datetime.datetime.fromtimestamp(get_time(frame_type, frame)).strftime('%M:%S')
         case 'minute': return datetime.datetime.fromtimestamp(get_time(frame_type, frame)).strftime('%H:%M')
         case 'hour': return datetime.datetime.fromtimestamp(get_time(frame_type, frame)).strftime('%H:%M')
         case 'day': return datetime.datetime.fromtimestamp(get_time(frame_type, frame)).strftime('%a')
@@ -203,13 +223,17 @@ def get_memory_usage():
 
 
 
-def log_stats():
+def log_stats(
+    network_rx,
+    network_tx,
+    cpu_usage,
+    memory_usage
+):
     """
     Logs the statistics
     """
+
     # -- Get the stats
-    cpu_usage = get_cpu_usage()
-    memory_usage = get_memory_usage()
     network_usage = get_network_usage()
 
     # -- Log the stats
@@ -223,11 +247,11 @@ def log_stats():
     })
     cpu_usage.append({
         'created': time.time(),
-        'value': cpu_usage
+        'value': get_cpu_usage()
     })
     memory_usage.append({
         'created': time.time(),
-        'value': memory_usage
+        'value': get_memory_usage()
     })
 
     # Crimp the data to 1000 points
@@ -235,3 +259,28 @@ def log_stats():
     network_tx = network_tx[-1000:]
     cpu_usage = cpu_usage[-1000:]
     memory_usage = memory_usage[-1000:]
+
+    return [
+        network_rx,
+        network_tx,
+        cpu_usage,
+        memory_usage
+    ]
+
+
+# -- Start the background proccess
+from threading import Thread
+
+def log_thread():
+    global network_rx
+    global network_tx
+    global cpu_usage
+    global memory_usage
+
+    while True:
+        [ network_rx, network_tx, cpu_usage, memory_usage ] = log_stats(
+            network_rx, network_tx, cpu_usage, memory_usage)
+        time.sleep(SECOND)
+
+thread = Thread(daemon=True, target=log_thread, name='log_thread')
+thread.start()

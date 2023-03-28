@@ -30,7 +30,7 @@ export interface Pod {
 }
 
 
-export type Frame = 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';
+export type Frame = 'seconds' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';
 export interface Statistics {
     data: number[],
     labels: string[],

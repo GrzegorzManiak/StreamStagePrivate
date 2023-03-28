@@ -4,6 +4,7 @@ import { get_statistics } from '../api';
 // line chart from chart.js
 import { Chart, LineElement, LineController, LinearScale, CategoryScale, PointElement } from 'chart.js';
 import { attach, create_toast } from '../../common';
+import { add_callback } from './panels';
 Chart.register(LineElement, LineController, LinearScale, CategoryScale, PointElement);
 
 export async function manage_statistical_panels(
@@ -25,9 +26,15 @@ export async function manage_statistical_panels(
         // viewers
     ];
 
-    // -- Build the graphs
-    pods.forEach(async (pod: Pod) => 
-        build_graphs(pod));
+    build_graphs(accounts);
+    pods.forEach(async (pod: Pod) => {
+        let loaded = false;
+        add_callback((panel_type) => {
+            if (loaded) return;
+            if (panel_type === pod.type) loaded = true;
+            build_graphs(pod);
+        });
+    });
 }
 
 
@@ -71,6 +78,7 @@ export async function build_graphs(
                         id="frame" 
                         class="form-select w-100 inp"
                     >   
+                        <option value="seconds">Seconds</option>
                         <option value="minute">Minutes</option>
                         <option value="hour">Hours</option>
                         <option value="day" selected>Days</option>
@@ -294,6 +302,7 @@ export async function export_chart(chart: Chart, name: string) {
  */
 export function get_sleep_interval(frame: Frame): number {
     switch(frame) {
+        case 'seconds': return 1000 * 10; // -- 15 seconds
         case 'minute': return 1000 * 50; // -- 50 seconds
         case 'hour': return 1000 * 60 * 5; // -- 5 minutes
         case 'day': return 1000 * 60 * 15 // -- 15 minutes

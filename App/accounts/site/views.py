@@ -50,7 +50,7 @@ def get_statistics(request, data):
         that is used to render the statistics page
     """
     # -- Make sure the frame is valid
-    if data['frame'] not in ['minute', 'hour', 'day', 'week', 'month', 'year']:
+    if data['frame'] not in ['seconds', 'minute', 'hour', 'day', 'week', 'month', 'year']:
         return invalid_response('Invalid frame')
         
     return success_response(

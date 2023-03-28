@@ -316,13 +316,11 @@
                                         <p class="text-muted">All times are in UTC (+0)</p>
                                         <hr>
 
-                                        <div class='graphs' data-stat-group='server'>
-                                            <div class='data-chart' data-stat-id='cpu'          data-pretty='CPU Usage'        data-description='CPU Usage in the last timeframe'        def-scale='5' def-frame='minute'></div>
-                                            <div class='data-chart' data-stat-id='ram'          data-pretty='RAM Usage'        data-description='RAM Usage in the last timeframe'        def-scale='5' def-frame='minute'></div>
-                                            <div class='data-chart' data-stat-id='network_tx'   data-pretty='Network TX'       data-description='Network TX in the last timeframe'       def-scale='5' def-frame='minute'></div>
-                                            <div class='data-chart' data-stat-id='network_rx'   data-pretty='Network RX'       data-description='Network RX in the last timeframe'       def-scale='5' def-frame='minute'></div>
-                                            <div class='data-chart' data-stat-id='disk_tx'      data-pretty='Disk TX'          data-description='Disk TX in the last timeframe'          def-scale='5' def-frame='minute'></div>
-                                            <div class='data-chart' data-stat-id='disk_rx'      data-pretty='Disk RX'          data-description='Disk RX in the last timeframe'          def-scale='5' def-frame='minute'></div>
+                                        <div class='graphs' data-stat-group='system'>
+                                            <div class='data-chart' data-stat-id='cpu_usage'    data-pretty='CPU Usage'        data-description='CPU Usage in the last timeframe'  def-scale='5' def-frame='minute' seconds></div>
+                                            <div class='data-chart' data-stat-id='memory_usage' data-pretty='RAM Usage'        data-description='RAM Usage in the last timeframe'  def-scale='5' def-frame='minute' seconds></div>
+                                            <div class='data-chart' data-stat-id='network_tx'   data-pretty='Network TX'       data-description='Network TX in the last timeframe' def-scale='5' def-frame='minute' seconds></div>
+                                            <div class='data-chart' data-stat-id='network_rx'   data-pretty='Network RX'       data-description='Network RX in the last timeframe' def-scale='5' def-frame='minute' seconds></div>
                                         </div> 
                                     </div>
                                 </article>
