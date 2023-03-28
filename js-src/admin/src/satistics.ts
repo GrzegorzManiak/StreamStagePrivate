@@ -3,7 +3,7 @@ import { get_statistics } from '../api';
 
 // line chart from chart.js
 import { Chart, LineElement, LineController, LinearScale, CategoryScale, PointElement } from 'chart.js';
-import { create_toast } from '../../common';
+import { attach, create_toast } from '../../common';
 Chart.register(LineElement, LineController, LinearScale, CategoryScale, PointElement);
 
 export async function manage_statistical_panels(
@@ -45,7 +45,9 @@ export async function build_graphs(
 
         const type = stat.getAttribute('data-stat-id'),
             pretty_name = stat.getAttribute('data-pretty'),
-            description = stat.getAttribute('data-description');
+            description = stat.getAttribute('data-description'),
+            def_scale = stat.getAttribute('def-scale'),
+            def_frame = stat.getAttribute('def-frame');
 
         // -- load in the template
         const template = `
@@ -78,14 +80,27 @@ export async function build_graphs(
                     </select>
                 </div>
 
-                <div class='w-50'>
-                    <label class="form-label" for="scale">Scale</label>
+                <div class='w-25'>
+                    <label class="form-label" for="from">From</label>
                     <input
                         type="text"
                         inputmode="numeric"
                         pattern="[0-9]*"
-                        name="scale"
-                        id="scale"
+                        name="from"
+                        id="from"
+                        class="form-control w-100 inp"
+                        value="0"
+                    />
+                </div>
+
+                <div class='w-25'>
+                    <label class="form-label" for="to">to</label>
+                    <input
+                        type="text"
+                        inputmode="numeric"
+                        pattern="[0-9]*"
+                        name="to"
+                        id="to"
                         class="form-control w-100 inp"
                         value="7"
                     />
@@ -94,10 +109,20 @@ export async function build_graphs(
 
 
             <div class="data-chart-container"> </div>
+
+            <button type="submit" id="export-btn" class="btn btn-primary mb-3 btn-slim w-100 info loader-btn mt-2" loader-state="default">   
+                <span>
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </span>
+                <p>Export</p>
+            </button>
         `;
 
         stat.innerHTML = template;
-        const container = stat.querySelector('.data-chart-container');
+        const container = stat.querySelector('.data-chart-container'),
+            export_btn = stat.querySelector('#export-btn');
             
         // -- Create the chart
         const ctx = document.createElement('canvas');
@@ -105,7 +130,7 @@ export async function build_graphs(
 
         // -- Get the statistics
         const statistics = get_statistics(
-            stat_group, type, 7, 0, 'day'
+            stat_group, type, Number(def_scale), 0, def_frame as Frame
         ) as Promise<StatisticsSuccess>;
         
         const chart = new Chart(ctx, {
@@ -146,29 +171,112 @@ export async function build_graphs(
 
 
         // -- Add the event listeners
-        const scale = stat.querySelector('#scale') as HTMLInputElement,
+        const from = stat.querySelector('#from') as HTMLInputElement,
+            to = stat.querySelector('#to') as HTMLInputElement,
             frame = stat.querySelector('#frame') as HTMLSelectElement;
 
-        async function update_graph() {
-            const statistics = get_statistics(
-                stat_group, type, +scale.value, 0, frame.value as Frame
-            ) as Promise<StatisticsSuccess>;
+        // -- Set the default values
+        to.value = def_scale;
+        frame.value = def_frame;
 
-            if ((await statistics).code === 200) {
-                const data = (await statistics).data;
-                chart.data.labels = data.labels;
-                chart.data.datasets[0].data = data.data;
-                chart.update();
-            }
+        from.addEventListener('change', () => update_graph(
+            chart, stat_group, type, Number(to.value), Number(from.value), frame.value as Frame));
 
-            else create_toast('error', 'Error',
-                'There was an error getting the statistics')
-        }
+        to.addEventListener('change', () => update_graph(
+            chart, stat_group, type, Number(to.value), Number(from.value), frame.value as Frame));
+        
+        frame.addEventListener('change', () => update_graph(
+            chart, stat_group, type, Number(to.value), Number(from.value), frame.value as Frame));+
+        
 
-        scale.addEventListener('change', update_graph);
-        frame.addEventListener('change', update_graph);
+        // -- Export the data
+        export_btn.addEventListener('click', () => {
+            const stop = attach(export_btn as HTMLButtonElement);
+            export_chart(chart, pretty_name);
+            stop();
+        });
 
         // -- Update the graph every 5 minutes
-        setInterval(update_graph, 1000 * 60 * 5);
+        setInterval(update_graph, get_sleep_interval(frame.value as Frame));
     });
+}
+
+
+
+/**
+ * @name update_graph
+ * @description Updates the graph
+ * @param {Chart} chart
+ * @param {string} stat_group
+ * @param {string} type
+ * @param {number} scale
+ * @param {number} offset
+ * @param {Frame} frame
+ * @returns {Promise<void>}
+ */
+export async function update_graph(
+    chart: Chart,
+    stat_group: string,
+    type: string,
+    scale: number,
+    offset: number,
+    frame: Frame,
+) {
+    const statistics = get_statistics(
+        stat_group, type, scale, offset, frame
+    ) as Promise<StatisticsSuccess>;
+
+    if ((await statistics).code === 200) {
+        const data = (await statistics).data;
+        chart.data.labels = data.labels;
+        chart.data.datasets[0].data = data.data;
+        chart.update();
+    }
+
+    else create_toast('error', 'Error',
+        'There was an error getting the statistics')
+}
+
+
+
+/**
+ * @name export_chart
+ * @description Exports the chart and saves it as a csv
+ * @param {Chart} chart
+ * @param {string} name
+ * @returns {Promise<void>}
+ */
+export async function export_chart(chart: Chart, name: string) {
+    let csv = 'data:text/csv;charset=utf-8,';
+    csv += chart.data.labels.join(',') + '\n';
+    csv += chart.data.datasets[0].data.join(',');
+
+    const encodedUri = encodeURI(csv),
+        link = document.createElement('a');
+    
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `${name}-${Date.now()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+
+
+/**
+ * @name get_sleep_interval
+ * @description Gets the sleep interval based 
+ * on the frame type
+ * @param {Frame} frame
+ * @returns {number} ms
+ */
+export function get_sleep_interval(frame: Frame): number {
+    switch(frame) {
+        case 'minute': return 1000 * 50; // -- 50 seconds
+        case 'hour': return 1000 * 60 * 5; // -- 5 minutes
+        case 'day': return 1000 * 60 * 15 // -- 15 minutes
+        case 'week': return 1000 * 60 * 60 // -- 1 hour
+        case 'month': return 1000 * 60 * 60 * 2 // -- 2 hours
+        case 'year': return 1000 * 60 * 60 * 6 // -- 6 hours
+    }
 }
