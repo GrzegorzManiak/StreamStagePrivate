@@ -1,7 +1,9 @@
+import { GetReviewsSuccess } from '../../common/index.d';
 import { create_toast } from '../../common';
-import { get_reviews } from '../apis';
+import { get_reviews } from '../../common/api';
 import { create_reviews } from '../elements/review';
-import { GetReviewsSuccess, Pod } from '../index.d';
+import { Pod } from '../index.d';
+import { configuration } from '..';
 
 /**
  * @param pod: Pod - The pod that this panel is attached to
@@ -31,8 +33,8 @@ export function manage_reviews_panel(pod: Pod) {
         // -- Get the reviews
         const reviews = await get_reviews(
             filter.value as 'created' | 'rating' | 'likes',
-            order.value as 'asc' | 'desc',
-            page
+            order.value as 'asc' | 'desc', page,
+            configuration.username.toLowerCase()
         );
 
         // -- Check if the request was successful

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load tags %}
 
 {% block metadescription %}
 Search for an event that suits your tastes & price range
@@ -33,7 +34,7 @@ Search Events | StreamStage
             <div class="m-2 p-2 border border-2 rounded" style="border-color: #ffb25a;">
                 <div class="row">
                     <div class="col-9">
-                        <a href="{% url 'event_view' event.event_id %}">
+                        <a href=''>
                             <div class="row">
 
                                 <div class="col-3">

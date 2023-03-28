@@ -1,0 +1,333 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block metadescription %}
+    {{ user.cased_username }} control panel
+{% endblock %}
+
+{% block title %}
+    {{ user.cased_username }} - Control Panel
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+    <link rel="stylesheet" href="{% static 'css/payments.css' %}">
+    <link rel="stylesheet" href="{% static 'css/cropper.css' %}">
+    <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+{% endblock %}
+
+{% block content %}
+    <span 
+        class='config'
+        data-csrf-token='{{ csrf_token }}'
+        data-statistics='{{ api.get_statistics }}'
+
+        data-send-verification='{{ api.send_verification }}'
+        data-resend-verification='{{ api.resend_verification }}'
+        data-remove-verification='{{ api.remove_verification }}'
+        data-recent-verification='{{ api.recent_verification }}'
+
+    ></span>
+    <div 
+    id = 'main-container'
+    class='
+        main-container
+    '>
+        <!-- 1/4 Of the page-->
+        <div 
+            id='side-panel'
+            class='side-panel text-light'
+            side-panel='hidden'
+        >
+            <div class='width-limiter'>
+                <section id='pod-statistics'>
+                    <!-- 
+                        Header - Statistics
+                    -->
+                    <div class='side-panel-header'>
+                        <p class='side-panel-header-text'>
+                            Statistics
+                        </p>
+                    </div>
+
+                    <div class='pods'>
+                        <!-- 
+                            Pod - Accounts
+                        -->
+                        <div 
+                            data-pod-status='active'
+                            data-pod='accounts'
+                        class='
+                            side-panel-pod
+                            text-light d-flex
+                            align-items-center
+                            justify-content-start
+                        '>
+                            <!-- Icon -->
+                            <div class='side-panel-pod-icon d-flex align-items-center justify-content-center'>
+                                <i class="fa-solid text-justify accordion fa-users"></i>
+                            </div>
+
+                            <!-- Text -->
+                            <div class='side-panel-pod-text'><p class='side-panel-pod-text-text m-0 mb-0'>
+                                Accounts
+                            </p></div>
+                        </div>
+                        <!-- 
+                            End of Pod - Accounts
+                        -->
+
+
+                        <!-- 
+                            Pod - Server
+                        -->
+                        <div 
+                            data-pod-status=''
+                            data-pod='server'
+                        class='
+                            side-panel-pod
+                            text-light d-flex
+                            align-items-center
+                            justify-content-start
+                        '>
+                            <!-- Icon -->
+                            <div class='side-panel-pod-icon d-flex align-items-center justify-content-center'>
+                                <i class="fa-solid text-justify accordion fa-server"></i>
+                            </div>
+
+                            <!-- Text -->
+                            <div class='side-panel-pod-text'><p class='side-panel-pod-text-text m-0 mb-0'>
+                                Server Status
+                            </p></div>
+                        </div>
+                        <!-- 
+                            End of Pod - Server
+                        -->
+                            
+
+                        <!-- 
+                            Pod - Cash Flow
+                        -->
+                        <div 
+                            data-pod-status=''
+                            data-pod='cash_flow'
+                        class='
+                            side-panel-pod
+                            text-light d-flex
+                            align-items-center
+                            justify-content-start
+                        '>
+                            <!-- Icon -->
+                            <div class='side-panel-pod-icon d-flex align-items-center justify-content-center'>
+                                <i class="fa-solid text-justify accordion fa-money-simple-from-bracket"></i>
+                            </div>
+
+                            <!-- Text -->
+                            <div class='side-panel-pod-text'><p class='side-panel-pod-text-text m-0 mb-0'>
+                                Cash Flow
+                            </p></div>
+                        </div>
+                        <!-- 
+                            End of Pod - Cash Flow
+                        -->
+                        
+
+
+                        <!-- 
+                            Pod - Tickets
+                        -->
+                        <div 
+                            data-pod-status=''
+                            data-pod='tickets'
+                        class='
+                            side-panel-pod
+                            text-light d-flex
+                            align-items-center
+                            justify-content-start
+                        '>
+                            <!-- Icon -->
+                            <div class='side-panel-pod-icon d-flex align-items-center justify-content-center'>
+                                <i class="fa-solid text-justify accordion fa-ticket"></i>
+                            </div>
+
+                            <!-- Text -->
+                            <div class='side-panel-pod-text'><p class='side-panel-pod-text-text m-0 mb-0'>
+                                Tickets
+                            </p></div>
+                        </div>
+                        <!-- 
+                            End of Pod - Tickets
+                        -->
+
+
+                        <!-- 
+                            Pod - Reviews
+                        -->
+                        <div 
+                            data-pod-status=''
+                            data-pod='reviews'
+                        class='
+                            side-panel-pod
+                            text-light d-flex
+                            align-items-center
+                            justify-content-start
+                        '>
+                            <!-- Icon -->
+                            <div class='side-panel-pod-icon d-flex align-items-center justify-content-center'>
+                                <i class="fa-solid text-justify accordion fa-star-sharp-half-stroke"></i>
+                            </div>
+
+                            <!-- Text -->
+                            <div class='side-panel-pod-text'><p class='side-panel-pod-text-text m-0 mb-0'>
+                                Reviews
+                            </p></div>
+                        </div>
+                        <!-- 
+                            End of Pod - Reviews
+                        -->
+
+
+                        <!-- 
+                            Pod - Subscriptions
+                        -->
+                        <div 
+                            data-pod-status=''
+                            data-pod='subscriptions'
+                        class='
+                            side-panel-pod
+                            text-light d-flex
+                            align-items-center
+                            justify-content-start
+                        '>
+                            <!-- Icon -->
+                            <div class='side-panel-pod-icon d-flex align-items-center justify-content-center'>
+                                <i class="fa-solid text-justify accordion fa-plus"></i>
+                            </div>
+
+                            <!-- Text -->
+                            <div class='side-panel-pod-text'><p class='side-panel-pod-text-text m-0 mb-0'>
+                                Subscriptions
+                            </p></div>
+                        </div>
+                        <!-- 
+                            End of Pod - Subscriptions
+                        -->
+
+
+                        <!-- 
+                            Pod - Viewrs
+                        -->
+                        <div 
+                            data-pod-status=''
+                            data-pod='viewers'
+                        class='
+                            side-panel-pod
+                            text-light d-flex
+                            align-items-center
+                            justify-content-start
+                        '>
+                            <!-- Icon -->
+                            <div class='side-panel-pod-icon d-flex align-items-center justify-content-center'>
+                                <i class="fa-solid text-justify accordion fa-face-viewfinder"></i>
+                            </div>
+
+                            <!-- Text -->
+                            <div class='side-panel-pod-text'><p class='side-panel-pod-text-text m-0 mb-0'>
+                                Viewers
+                            </p></div>
+                        </div>
+                        <!-- 
+                            End of Pod - Subscriptions
+                        -->
+                    </div>
+                </section>
+
+
+
+
+
+            </div>
+
+        <!-- End of menu -->
+        </div>
+
+        
+        <!-- 3/4 Of the page-->
+        <div class='
+            main-panel
+        '>
+            
+            <div class = '
+                mt-4
+                justify-content-center
+                align-items-center
+            '>
+
+            <div class = '
+                size-limiter
+            '>
+                <div class = '
+                    rounded
+                '>
+                    <div class = '
+                        row 
+                        g-0
+                        main-content
+                    '>
+                        <main>
+                            <!--
+                                p-5 on large screens
+                                p-3 on small screens
+                            -->
+                            <div class = "
+                                card-body 
+                                rounded
+                                p-xxl-5
+                                p-xl-5
+                                p-lg-5
+                                p-md-3
+                                p-sm-3
+                                p-2
+                                text-light
+                                smoother
+                            ">
+                                <!-- Main conten goes here -->
+                                <article class='panel' data-panel-type='accounts' data-panel-status=''>
+                                    <div class="mb-5 justify-content-start">
+                                    <h1 class="fw-bold">Account Statistics</h1>
+
+                                    <hr>
+
+                                    <div class='graphs' data-stat-group='accounts'>
+                                        <div class='data-chart' data-stat-id='created'      data-pretty='Created Accounts' data-description='Accounts created in the last timeframe'></div>
+                                        <div class='data-chart' data-stat-id='login'        data-pretty='Logins'           data-description='Logins in the last timeframe'></div>
+                                        <div class='data-chart' data-stat-id='logout'       data-pretty='Logouts'          data-description='Logouts in the last timeframe'></div>
+                                        <div class='data-chart' data-stat-id='mfa_totp'     data-pretty='TOTP MFA'         data-description='TOTP MFA in the last timeframe'></div>
+                                        <div class='data-chart' data-stat-id='mfa_email'    data-pretty='Email MFA'        data-description='Email MFA in the last timeframe'></div>
+                                        <div class='data-chart' data-stat-id='oauth'        data-pretty='OAuth'            data-description='OAuth in the last timeframe'></div>
+                                        <div class='data-chart' data-stat-id='email_change' data-pretty='Email Changes'    data-description='Email Changes in the last timeframe'></div>
+                                    </div>
+                                </article>
+                                <article class='panel' data-panel-type='server' data-panel-status=''></article>
+                                <article class='panel' data-panel-type='cash_flow' data-panel-status=''></article>
+                                <article class='panel' data-panel-type='tickets' data-panel-status=''></article>
+                                <article class='panel' data-panel-type='reviews' data-panel-status=''></article>
+                                <article class='panel' data-panel-type='subscriptions' data-panel-status=''></article>
+                                <article class='panel' data-panel-type='viewers' data-panel-status=''></article>
+
+
+                            </div>
+                        </main>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- Js -->
+    <script src="{% static 'js/admin_bin.js' %}"></script>
+{% endblock %}

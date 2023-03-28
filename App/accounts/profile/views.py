@@ -8,6 +8,7 @@ from rest_framework.decorators import api_view
 from django_countries.fields import CountryField
 from timezone_field import TimeZoneField
 from StreamStage.mail import send_template_email
+from StreamStage.models import Statistics
 from accounts.com_lib import authenticated, error_response, invalid_response, required_data, success_response
 
 from accounts.oauth.oauth import get_all_oauth_for_member, format_providers
@@ -110,6 +111,7 @@ def send_verification(request):
             'Sorry, but it looks like you have provided an invalid MFA code. Please try again.')
         
         # -- Send it back to the user
+        Statistics.log('accounts', 'mfa_totp')
         return success_response('MFA code is valid', {
             'access_key': generate_pat(request.user),
             'resend_key': '',
@@ -206,6 +208,7 @@ def remove_oauth(request, data):
         send_template_email(request.user, 'oauth_account_removed', serialized)
 
     # -- Return success
+    Statistics.log('accounts', 'oauth')
     return success_response('OAuth removed successfully')
 
 

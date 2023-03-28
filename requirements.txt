@@ -16,3 +16,4 @@ country_converter
 cloudflare
 pyotp
 maturin
+django-annoying

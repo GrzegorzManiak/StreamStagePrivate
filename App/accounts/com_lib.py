@@ -96,6 +96,7 @@ def authenticated():
     def decorator(view_func):
         @wraps(view_func)
         def wrapper(request, *args, **kwargs):
+
             # -- If the method is GET, redirect to the login page
             if request.method == 'GET' and not request.user.is_authenticated:
                 return redirect('login')

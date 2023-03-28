@@ -341,11 +341,14 @@ nav input { font-size: 0.85rem!important; }
     display: none!important;
 }
 
+main {
+    min-height: 100vh;
+}
 
 
 /***** Header *****/
 header > div, header {
-    background-color: var(--theme-secondary-color)!important;
+    background-color: var(--theme-color-secondary);
     color: var(--font-color);
 }
 
@@ -385,17 +388,119 @@ header .accordion:focus {
 
 /***** Footer *****/
 footer {
-    padding: 1rem;
-    background-color: var(--theme-secondary-color)!important;
-    color: var(--font-color);
-
+    background-color: var(--theme-secondary-color);
     width: 100%;
-    height: 2.5rem;
-    margin-top: 5rem;
-
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
+}
+
+footer .footer-limiter {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+footer .top {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin: 0;
+}
+
+footer .links {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 3rem;
+}
+
+footer hr {
+    width: 100%;
+    border: 1px solid var(--theme-color);
+    margin: 0;
+}
+
+.rights {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 1rem;
+    margin: 0;
+}
+
+.rights p {
+    margin: 0;
+    font-size: 0.8rem;
+    width: 100%;
+    color: var(--muted-font-color);
+    text-align: left;
+}
+
+
+.footer-logo {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100%;
+    width: 100%;
+}
+
+.footer-logo h1 {
+    font-size: 2rem;
+    margin: 0;
+    font-family: 'Lust Script';
+    color: var(--accent-color);
+}
+
+
+
+.list-unstyled .title {
+    display: inline-block;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--muted-font-color);
+    font-size: 0.9rem;
+}
+
+
+.list-unstyled a {
+    display: inline-block;
+    margin-bottom: 0.3rem;
+    color: var(--font-color);
+    text-decoration: none;
+}
+
+/* 860 PX min screen width */
+@media only screen and (max-width: 860px) {
+    .footer-logo { display: none; }
+    .links {
+        flex-wrap: wrap;
+        justify-content: center;
+        flex-direction: column;
+        gap: 0.5rem!important;
+        margin: 0;
+    }
+    .links > ul {
+        margin: 0;
+        padding: 0;
+    }
+
 }
 
 /***** Fonts *****/

@@ -31,17 +31,14 @@ DEBUG = True
 # SET THIS TO TRUE IF YOU ARE USING LOCALHOST
 # IF THIS IS TRUE, COOKIES WONT WORK (SESSIONS WONT WORK)
 # AND REVERSE'S WONT WORK
-RUNNING_ON_LOCALHOST = True
+RUNNING_ON_LOCALHOST = False
 
 
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '192.168.0.227',
-    'www.streamstage.co',
-    'me.streamstage.co',
     'streamstage.co',
-    'master.streamstage.co',
     '.streamstage.co',
 ]
 
@@ -72,8 +69,8 @@ ROOT_URLCONF = 'StreamStage.urls'
 
 if RUNNING_ON_LOCALHOST == False:
     SESSION_COOKIE_SECURE = True
-    SESSION_COOKIE_SAMESITE = None
-    CSRF_COOKIE_SAMESITE = None
+    CSRF_COOKIE_DOMAIN = ".streamstage.co"
+    SESSION_COOKIE_DOMAIN = ".streamstage.co"
     SESSION_COOKIE_DOMAIN=".streamstage.co"
 
 elif RUNNING_ON_LOCALHOST == True:
@@ -88,7 +85,14 @@ elif RUNNING_ON_LOCALHOST == True:
 CSRF_TRUSTED_ORIGINS = [
     'https://me.streamstage.co',
     'https://streamstage.co',
-    'https://applications.streamstage.co'
+    'https://applications.streamstage.co',
+    'https://events.streamstage.co',
+    'https://search.streamstage.co',
+    'https://store.streamstage.co',
+    'https://orders.streamstage.co',
+    'https://www.streamstage.co',
+    'https://master.streamstage.co',
+    'https://localhost:8000',
 ]
 X_FRAME_OPTIONS = 'ALLOW-FROM *://*.streamstage.co/*'
 CORS_ALLOWED_ORIGIN_REGEXES = [r"^https://.+$"]
@@ -118,6 +122,7 @@ INSTALLED_APPS = [
     # 3rd Party
     'crispy_forms',
     'corsheaders',
+    'annoying',
     'crispy_bootstrap5',
     'django_countries',
     'rest_framework',
