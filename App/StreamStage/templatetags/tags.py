@@ -34,11 +34,10 @@ def cross_app_reverse(app, view, kwargs=None):
 
 
     if RUNNING_ON_LOCALHOST == True:
-        return f'/{app}{reverse(view, urlconf=conf)}'
+        return f'/{app}{reverse(view, urlconf=conf, kwargs=kwargs)}'
 
     full_domain = f'{subdomain}{DOMAIN_NAME}'
-    reversed = reverse(view, urlconf=conf, kwargs=kwargs)
-    return f'https://{full_domain}{reversed}'
+    return f'https://{full_domain}{reverse(view, urlconf=conf, kwargs=kwargs)}'
 
 # This is the template tag equivalent of cross_app_reverse
 # It is used to reverse urls in templates

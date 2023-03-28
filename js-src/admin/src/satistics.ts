@@ -3,7 +3,7 @@ import { get_statistics } from '../api';
 
 // line chart from chart.js
 import { Chart, LineElement, LineController, LinearScale, CategoryScale, PointElement } from 'chart.js';
-import { create_toast } from '../../common';
+import { attach, create_toast } from '../../common';
 Chart.register(LineElement, LineController, LinearScale, CategoryScale, PointElement);
 
 export async function manage_statistical_panels(
@@ -94,10 +94,20 @@ export async function build_graphs(
 
 
             <div class="data-chart-container"> </div>
+
+            <button type="submit" id="export-btn" class="btn btn-primary mb-3 btn-slim w-100 info loader-btn mt-2" loader-state="default">   
+                <span>
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </span>
+                <p>Export</p>
+            </button>
         `;
 
         stat.innerHTML = template;
-        const container = stat.querySelector('.data-chart-container');
+        const container = stat.querySelector('.data-chart-container'),
+            export_btn = stat.querySelector('#export-btn');
             
         // -- Create the chart
         const ctx = document.createElement('canvas');
@@ -167,6 +177,26 @@ export async function build_graphs(
 
         scale.addEventListener('change', update_graph);
         frame.addEventListener('change', update_graph);
+
+        // -- Export the data
+        export_btn.addEventListener('click', async () => {
+            const stop = attach(export_btn as HTMLButtonElement);
+
+            let csv = 'data:text/csv;charset=utf-8,';
+            csv += chart.data.labels.join(',') + '\n';
+            csv += chart.data.datasets[0].data.join(',');
+
+            const encodedUri = encodeURI(csv),
+                link = document.createElement('a');
+            
+            link.setAttribute('href', encodedUri);
+            link.setAttribute('download', `${pretty_name}-${Date.now()}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            stop();
+        });
 
         // -- Update the graph every 5 minutes
         setInterval(update_graph, 1000 * 60 * 5);
