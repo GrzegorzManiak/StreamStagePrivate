@@ -92,8 +92,9 @@ class Statistics(models.Model):
                 # -- Get the data
                 stat = stats[i]
 
-                # -- Add the data
-                data['data'].append(stat)
+                # -- Add the data 
+                more_than = get_time(frame_type, time_frame[0] - i)
+                less_than = get_time(frame_type, (time_frame[0] - i) - 1)
 
 
         else: 
@@ -109,7 +110,7 @@ class Statistics(models.Model):
                 # -- Get the data
                 stat = stats.filter( 
                     created__gte=get_time(frame_type, time_frame[0] - i),
-                    created__lte=get_time(frame_type, time_frame[1] + i)
+                    created__lte=get_time(frame_type, (time_frame[0] - i) - 1)
                 )
 
                 # -- Add the data
@@ -118,7 +119,6 @@ class Statistics(models.Model):
 
 
         data['labels'].reverse()
-        data['data'].reverse()
 
         return data
 
@@ -148,8 +148,8 @@ def generate_lable(
     frame: int,
 ) -> str:
     match frame_type:
-        case 'minute': return f'{frame}m'
-        case 'hour': return f'{frame}h' if frame > 9 else f'0{frame}:00h'
+        case 'minute': return datetime.datetime.fromtimestamp(get_time(frame_type, frame)).strftime('%H:%M')
+        case 'hour': return datetime.datetime.fromtimestamp(get_time(frame_type, frame)).strftime('%H:%M')
         case 'day': return datetime.datetime.fromtimestamp(get_time(frame_type, frame)).strftime('%a')
         case 'week': return datetime.datetime.fromtimestamp(get_time(frame_type, frame)).strftime('%b %d')
         case 'month': return datetime.datetime.fromtimestamp(get_time(frame_type, frame)).strftime('%b')

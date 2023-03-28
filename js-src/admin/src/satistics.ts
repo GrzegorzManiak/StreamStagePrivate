@@ -110,19 +110,31 @@ export async function build_graphs(
 
             <div class="data-chart-container"> </div>
 
-            <button type="submit" id="export-btn" class="btn btn-primary mb-3 btn-slim w-100 info loader-btn mt-2" loader-state="default">   
-                <span>
-                    <div class="spinner-border" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                </span>
-                <p>Export</p>
-            </button>
+            <div class='w-100 btn-group'>
+                <button type="submit" id="export-btn" class="btn btn-primary mb-3 btn-slim w-100 info loader-btn mt-2" loader-state="default">   
+                    <span>
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </span>
+                    <p>Export</p>
+                </button>
+
+                <button type="submit" id="save-btn" class="btn btn-success mb-3 btn-slim w-100 success loader-btn mt-2" loader-state="default">   
+                    <span>
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </span>
+                    <p>Save Graph</p>
+                </button>
+            </div>
         `;
 
         stat.innerHTML = template;
         const container = stat.querySelector('.data-chart-container'),
-            export_btn = stat.querySelector('#export-btn');
+            export_btn = stat.querySelector('#export-btn'),
+            save_btn = stat.querySelector('#save-btn');
             
         // -- Create the chart
         const ctx = document.createElement('canvas');
@@ -195,6 +207,13 @@ export async function build_graphs(
             export_chart(chart, pretty_name);
             stop();
         });
+
+        save_btn.addEventListener('click', () => {
+            const stop = attach(save_btn as HTMLButtonElement);
+            save_chart(chart, pretty_name);
+            stop();
+        });
+
 
         // -- Update the graph every x time
         setInterval(() => update_graph(
@@ -282,4 +301,22 @@ export function get_sleep_interval(frame: Frame): number {
         case 'month': return 1000 * 60 * 60 * 2 // -- 2 hours
         case 'year': return 1000 * 60 * 60 * 6 // -- 6 hours
     }
+}
+
+
+
+/**
+ * @name save_chart
+ * @description Exports the chart and saves it as a csv
+ * @param {Chart} chart
+ * @param {string} name
+ * @returns {Promise<void>}
+ */
+export async function save_chart(chart: Chart, name: string) {
+    const link = document.createElement('a');    
+    link.setAttribute('href', chart.toBase64Image());
+    link.setAttribute('download', `${name}-${Date.now()}.png`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
