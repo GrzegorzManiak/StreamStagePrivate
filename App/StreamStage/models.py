@@ -176,10 +176,9 @@ def generate_lable(
         case 'year': return datetime.datetime.fromtimestamp(get_time(frame_type, frame)).strftime('%b %d')
 
 
-
 def get_network_usage():
     """
-    Returns the network traffic in Mbps for the past second.
+    Returns the network traffic in bytes per second for the past second.
     """
     net_io_counters1 = psutil.net_io_counters()
     time.sleep(1)
@@ -187,21 +186,20 @@ def get_network_usage():
     
     bytes_sent = net_io_counters2.bytes_sent - net_io_counters1.bytes_sent
     bytes_recv = net_io_counters2.bytes_recv - net_io_counters1.bytes_recv
-    bits_sent = bytes_sent * 8
-    bits_recv = bytes_recv * 8
     
-    mbps_sent = bits_sent / 1000000
-    mbps_recv = bits_recv / 1000000
+    bytes_sent_per_sec = bytes_sent / 1
+    bytes_recv_per_sec = bytes_recv / 1
     
     # Make sure that the values are a bit more than 0
-    if mbps_sent < 0.01: mbps_sent = 0.01
-    if mbps_recv < 0.01: mbps_recv = 0.01
+    if bytes_sent_per_sec < 1: bytes_sent_per_sec = 1
+    if bytes_recv_per_sec < 1: bytes_recv_per_sec = 1
 
-    # Format the values to 2 decimal places
-    mbps_sent = round(mbps_sent, 2)
-    mbps_recv = round(mbps_recv, 2)
+    # Round the values to 2 decimal places
+    bytes_sent_per_sec = round(bytes_sent_per_sec, 2)
+    bytes_recv_per_sec = round(bytes_recv_per_sec, 2)
 
-    return (mbps_sent, mbps_recv)
+    return (bytes_sent_per_sec, bytes_recv_per_sec)
+
 
 
 
