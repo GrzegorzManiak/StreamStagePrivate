@@ -1,0 +1,39 @@
+<!-- Main conten goes here -->
+<article class='panel' data-panel-type='accounts' data-panel-status='hidden'>
+    <div class="mb-5 justify-content-start">
+        <h1 class="fw-bold">User Statistics</h1>
+        <p class="text-muted">All times are in UTC (+0)</p>
+        <hr>
+
+        <div class='graphs' data-stat-group='accounts'>
+            <div class='data-chart' data-stat-id='created'      data-pretty='New Users'     data-description='Users created in the last timeframe'    def-scale='7' def-frame='day'></div>
+            <div class='data-chart' data-stat-id='login'        data-pretty='Logins'        data-description='Logins in the last timeframe'           def-scale='7' def-frame='day'></div>
+            <div class='data-chart' data-stat-id='logout'       data-pretty='Logouts'       data-description='Logouts in the last timeframe'          def-scale='7' def-frame='day'></div>
+            <div class='data-chart' data-stat-id='mfa_totp'     data-pretty='TOTP MFA'      data-description='TOTP MFA in the last timeframe'         def-scale='7' def-frame='day'></div>
+            <div class='data-chart' data-stat-id='mfa_email'    data-pretty='Email MFA'     data-description='Email MFA in the last timeframe'        def-scale='7' def-frame='day'></div>
+            <div class='data-chart' data-stat-id='oauth'        data-pretty='OAuth'         data-description='OAuth in the last timeframe'            def-scale='7' def-frame='day'></div>
+            <div class='data-chart' data-stat-id='email_change' data-pretty='Email Changes' data-description='Email Changes in the last timeframe'    def-scale='7' def-frame='day'></div>
+        </div>
+    </div>
+</article>
+
+<article class='panel' data-panel-type='server' data-panel-status='hidden'>
+    <div class="mb-5 justify-content-start">
+        <h1 class="fw-bold">Server Statistics</h1>
+        <p class="text-muted">All times are in UTC (+0)</p>
+        <hr>
+
+        <div class='graphs' data-stat-group='system'>
+            <div class='data-chart' data-stat-id='cpu_usage'    data-pretty='CPU Usage'        data-description='CPU Usage in the last timeframe'  def-scale='5' def-frame='minute'></div>
+            <div class='data-chart' data-stat-id='memory_usage' data-pretty='RAM Usage'        data-description='RAM Usage in the last timeframe'  def-scale='5' def-frame='minute'></div>
+            <div class='data-chart' data-stat-id='network_tx'   data-pretty='Network TX (Bytes)'       data-description='Network TX in the last timeframe' def-scale='5' def-frame='minute'></div>
+            <div class='data-chart' data-stat-id='network_rx'   data-pretty='Network RX (Bytes)'       data-description='Network RX in the last timeframe' def-scale='5' def-frame='minute'></div>
+        </div> 
+    </div>
+</article>
+
+<article class='panel' data-panel-type='cash_flow' data-panel-status=''></article>
+<article class='panel' data-panel-type='tickets' data-panel-status=''></article>
+<article class='panel' data-panel-type='reviews' data-panel-status=''></article>
+<article class='panel' data-panel-type='subscriptions' data-panel-status=''></article>
+<article class='panel' data-panel-type='viewers' data-panel-status=''></article>

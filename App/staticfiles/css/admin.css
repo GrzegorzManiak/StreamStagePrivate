@@ -81,3 +81,20 @@
     margin: 0!important;
     outline: none;
 }
+
+
+
+/* 
+    #users
+*/
+.users { 
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 0;
+    gap: 2rem;
+    width: 100%;
+    min-height: 5rem;
+    background-color: var(--theme-color);
+    border-radius: 0.5rem;
+}
