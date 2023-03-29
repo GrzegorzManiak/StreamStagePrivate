@@ -2,6 +2,7 @@ import { Configuration } from './index.d';
 import { Type, build_configuration } from '../api/config';
 import { attach_event_listeners, get_pod } from './src/panels';
 import { manage_statistical_panels } from './src/satistics';
+import { manage_users_panel } from './src/users';
 
 // -- Build the configuration
 export const configuration = build_configuration<Configuration>({
@@ -34,3 +35,7 @@ if (
     reviews, subscriptions, 
     viewers
 );
+
+
+const users = get_pod('users');
+if (users) manage_users_panel(users);

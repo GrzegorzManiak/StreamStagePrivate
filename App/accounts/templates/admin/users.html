@@ -97,7 +97,7 @@
             flex-column
             gap-2
         '>
-            
+
         </div>
 
 
@@ -113,6 +113,7 @@
             
             <!-- Prev -->
             <button 
+                id="prev"
                 class="w-100 h-100 btn btn-primary info loader-btn prev"
                 loader-state='default'>   
                 <span> <div class='spinner-border' role='status'> 
@@ -123,18 +124,19 @@
             <!-- Input -->
             <div class="h-100 w-100">
                 <input 
-                    name="review-page" 
-                    id="review-page" 
-                    placeholder="0" 
-                    value="0"
+                    name="page" 
+                    id="page"
+                    placeholder="1" 
+                    value="1"
                 class="form-control inp text-center">
 
                 <!-- Out of -->
-                <p class="text-muted m0 out-of">out of 0</p>
+                <p class="text-muted m0 out-of">out of 1</p>
             </div>
 
             <!-- Next -->
             <button 
+                id="next"
                 class="w-100 h-100 btn btn-primary info loader-btn next"
                 loader-state='default'>   
                 <span> <div class='spinner-border' role='status'> 

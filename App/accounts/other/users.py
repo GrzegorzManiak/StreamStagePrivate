@@ -12,7 +12,7 @@ orders = ['asc', 'desc']
 
 @api_view(['GET', 'POST'])
 @is_admin()
-@required_data(['page', 'sort', 'order', 'position', 'q'])
+@required_data(['page', 'sort', 'order', 'position', 'search'])
 def users(request, data):
     """
         This view returns all users in the database in a formatted list.
@@ -20,7 +20,9 @@ def users(request, data):
     """
 
     # -- Make sure all the data is valid
-    try: page = int(data['page'])
+    try: 
+        page = int(data['page'])
+        if page < 0: return invalid_response('Page must be greater than 0')
     except ValueError: return invalid_response('Page must be an integer')
 
     if data['sort'] not in sorts: return invalid_response('Invalid sort')
@@ -41,7 +43,7 @@ def users(request, data):
     # -- Sort
     match data['sort']:
         case 'updated': sort = 'last_login'
-        case 'created': sort = 'created'
+        case 'created': sort = 'date_joined'
         case 'username': sort = 'username'
         case 'email': sort = 'email'
         case 'position': sort = 'is_staff'
@@ -55,14 +57,14 @@ def users(request, data):
     users = Member.objects.filter(**filter).order_by(sort)
 
     # -- Search
-    if len(data['q']) > 3:
+    if len(data['search']) > 3:
         users = users.filter(
-            Q(username__icontains=data['q']) | 
-            Q(email__icontains=data['q']) |
-            Q(country__icontains=data['q']) |
-            Q(first_name__icontains=data['q']) |
-            Q(last_name__icontains=data['q']) |
-            Q(description__icontains=data['q'])
+            Q(username__icontains=data['search']) | 
+            Q(email__icontains=data['search']) |
+            Q(country__icontains=data['search']) |
+            Q(first_name__icontains=data['search']) |
+            Q(last_name__icontains=data['search']) |
+            Q(description__icontains=data['search'])
         )
 
     # -- Handle pagination
@@ -95,7 +97,7 @@ def users(request, data):
 
     # -- Format the data
     return success_response('Successfully retrieved users', {
-        'reviews': processed_users,
+        'users': processed_users,
         'page': page,
         'per_page': per_page,
         'total': len(processed_users),

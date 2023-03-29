@@ -97,4 +97,85 @@
     min-height: 5rem;
     background-color: var(--theme-color);
     border-radius: 0.5rem;
+    padding: 0.5rem;
+    height: 100%;
+}
+
+.filterd-user {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--theme-backdrop-color);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    gap: 1rem;
+}
+
+.profile-images {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.profile-images img {
+    background-color: var(--theme-color);
+    aspect-ratio: 1/1;
+    height: 5rem;
+    border-radius: 0.5rem;
+}
+
+.profile-info {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.profile-info h3 {
+    margin: 0;
+    color: var(--font-color);
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.bold {
+    font-weight: 600;
+}
+
+.profile-actions {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-end;
+}
+
+/* At 600 we need to start breaking */
+@media (max-width: 600px) {
+    .filterd-user {
+        flex-direction: column;
+    }
+
+    .profile-images {
+        flex-direction: row;
+    }
+
+    .profile-info {
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .profile-actions {
+        flex-direction: row;
+        width: 100%;
+    }
 }

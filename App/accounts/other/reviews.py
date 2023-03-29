@@ -13,7 +13,9 @@ def get_reviews(request, data):
     """
     
     # -- Pagination
-    try: page = int(data['page'])
+    try: 
+        page = int(data['page'])
+        if page < 0: return invalid_response('Page must be greater than 0')
     except ValueError: return invalid_response('Page must be an integer')
 
     valid_sorts = ['created', 'rating', 'likes']

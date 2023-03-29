@@ -1,6 +1,6 @@
 import { configuration } from '.';
 import { base_request } from '../api';
-import { Frame, StatisticsResponse } from './index.d';
+import { FilterOrder, FilterPosition, FilterSort, FilterdUsersResponse, Frame, StatisticsResponse } from './index.d';
 
 /**
  * @name get_statistics
@@ -23,3 +23,25 @@ export const get_statistics = async (
     { group, statistic, from, to, frame },
 );
 
+
+
+/**
+ * @name filter_users
+ * @param {number} page - The page to get
+ * @param {FilterSort} sort - The sort to use (name, email, etc)
+ * @param {FilterOrder} order - The order to use (asc, desc)
+ * @param {FilterPosition} position - The position of the user (admin, user, etc)
+ * @param {string} search - The search query
+ * @returns {Promise<FilterdUsersResponse>}
+ */
+export const filter_users = async (
+    page: number,
+    sort: FilterSort,
+    order: FilterOrder,
+    position: FilterPosition,
+    search: string,
+): Promise<FilterdUsersResponse> => base_request(
+    'GET',
+    configuration.users,
+    { page, sort, order, position, search }
+)
