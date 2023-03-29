@@ -28,8 +28,10 @@
         </div>
 
         {% if request.impersonate %}
-            <div class="alert alert-warning" role="alert">
-                You are currently impersonating '{{ request.user.cased_username }}'
+            <!-- Absolute position -->
+            <div class="alert alert-warning imp-lable" role="alert">
+                You are currently impersonating 
+                <span class='name'>{{ request.user.cased_username }} | {{ request.user.email }}</span>
             </div>
         {% endif %}
 

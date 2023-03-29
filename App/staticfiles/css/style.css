@@ -824,3 +824,21 @@ div > a:hover {
 .identifier {
     color: #8fa3b1;
 }
+
+.imp-lable {
+    position: absolute;
+    border-top-right-radius: 0!important;
+    border-top-left-radius: 0!important;
+    border-bottom-right-radius: 0.5rem!important;
+    border-bottom-left-radius: 0.5rem!important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.imp-lable > .name {
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
