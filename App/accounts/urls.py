@@ -36,7 +36,8 @@ from .other import (
     get_reviews,
     update_review,
     delete_review,
-    submit_report
+    submit_report,
+    users
 )
 from .views import get_token, login, logout, register, validate_token
 
@@ -103,5 +104,6 @@ urlpatterns = [
 
     # -- Admin
     path('site_panel/', site_panel, name='site_panel'),
-    path('site_panel/get_statistics/', get_statistics, name='get_statistics')
+    path('site_panel/get_statistics/', get_statistics, name='get_statistics'),
+    path('site_panel/users/', users, name='users'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -41,5 +41,6 @@ export type StatisticsResponse = StatisticsSuccess | DefaultResponse;
 
 
 export interface Configuration {
-    statistics: string
+    statistics: string,
+    users: string,
 }

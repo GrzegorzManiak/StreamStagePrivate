@@ -6,6 +6,7 @@ import { manage_statistical_panels } from './src/satistics';
 // -- Build the configuration
 export const configuration = build_configuration<Configuration>({
     statistics: new Type('data-statistics', 'string'),
+    users: new Type('data-users', 'string'),
 });
 
 // -- Attach the event listeners
