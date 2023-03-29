@@ -96,7 +96,7 @@ def del_ticket_listing(request, data):
     if request.user != event.broadcaster.streamer:
         return error_response('Permission denied: you do not have permissions to edit provided event.')
     
-    listing = TicketListing.objects.filter(id = data['listing_id']).first()
+    listing = TicketListing.objects.filter(listing_id = data['listing_id']).first()
 
     if listing is None or listing.event != event:
         return error_response('Permission denied: invalid listing id.')

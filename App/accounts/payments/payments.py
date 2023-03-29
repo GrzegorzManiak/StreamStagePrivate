@@ -231,9 +231,11 @@ def create_payment_intent(user: Member, ammount: int, payment_method: str = None
         customer=customer.id,
         payment_method=payment_method,
     )
+
     
 
     # -- Return the payment intent
+
     return payment_intent
 
 
