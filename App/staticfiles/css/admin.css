@@ -158,6 +158,7 @@
     align-items: flex-end;
 }
 
+
 /* At 600 we need to start breaking */
 @media (max-width: 600px) {
     .filterd-user {
@@ -178,4 +179,86 @@
         flex-direction: row;
         width: 100%;
     }
+}
+
+.slider-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    overflow: hidden;
+    box-sizing: border-box;
+    height: 200%;
+}
+
+.slider-grid-item {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.content-loader {
+    width: 100%;
+    height: 100%;
+    border-radius: 0.5rem;
+    position: relative;
+}
+
+
+.dimmer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transition: all 0.5s ease;
+    border-radius: 0.5rem;
+    z-index: 5;
+}
+
+[dimmed='true'] .dimmer { 
+    background-color: #00000067;
+    display: block; 
+}
+[dimmed='false'] .dimmer { 
+    background-color: #00000000;
+    pointer-events: none;
+}
+
+
+.modal-banner {
+    width: 100%;
+    aspect-ratio: 21 / 7;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 0.5rem;
+}
+
+.modal-avatar {
+    box-shadow: 0 0 0.5rem 0.25rem #0000003b;
+    width: 30%;
+    aspect-ratio: 1 / 1;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 0.5rem;
+    transform: translateY(25%);
+    margin-top: -25%;
+}
+
+.modal-logins {
+    width: 100%;
+    flex-grow: 1;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    background-color: var(--theme-backdrop-color);
 }

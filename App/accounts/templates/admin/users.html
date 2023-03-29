@@ -6,144 +6,144 @@
     data-panel-type='users'
     data-panel-status=''
 >
+    {% comment %} {% include 'admin/user_edit.html' %} {% endcomment %}
 
-    <!-- Header -->
-    <div class="
-        mb-5
-        justify-content-start
-    ">
+    <!-- Search -->
+    <div class='slider-grid-item' data-grid-item='search'>
         <!-- Header -->
-        <h1 class="
-            fw-bold 
-        ">Users</h1>
-
-        <!-- Descriptiopn -->
-        <p class="
-            text-muted
-        ">
-            Here you can manage all the users on the site.
-        </p>
-    </div>
-
-
-    <!-- Main content -->
-    <div class="mb-5">
-        <!-- FIlters -->
-        <div class='
-            mb-2
-            d-flex
-            filters
-            gap-2
-        '>  
-            <div class='w-50'>
-                <label class="form-label" for="position">Position</label>
-                <select 
-                    name="position" 
-                    id="position" 
-                    class="form-select w-100 inp"
-                >   
-                    <option value="all" selected>All</option>
-                    <option value="user">User</option>
-                    <option value="admin">Admin</option>
-                    <option value="streamer">Streamer</option>
-                </select>
-            </div>
-
-            <div class='w-50'>
-                <label class="form-label" for="filter">Filter by</label>
-                <select 
-                    name="filter" 
-                    id="filter" 
-                    class="form-select w-100 inp"
-                >   
-                    <option value="updated" selected>Updated</option>
-                    <option value="created">Created</option>
-                    <option value="username">Username</option>
-                    <option value="email">Email</option>
-                    <option value="position">Position</option>
-                    <option value="country">Country</option>
-                </select>
-            </div>
-
-            <div class='w-50'>
-                <label class="form-label" for="order">Order by</label>
-                <select 
-                    name="order" 
-                    id="order" 
-                    class="form-select w-100 inp"
-                >   
-                    <option value="desc" selected>Descending</option>
-                    <option value="asc">Ascending</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="mb-4 w-100">
-            <label class="form-label" for="search">Search</label>
-            <input 
-                name="search" 
-                id="search" 
-                placeholder="Email, Name, Username, Country, etc..." 
-                class="form-control inp">
-        </div>
-
-
-
-        <!-- Users -->
-        <div class='
-            mb-5
-            d-flex
-            users
-            flex-column
-            gap-2
-        '>
-
-        </div>
-
-
-
-        <!-- Pagination -->
         <div class="
-            d-flex 
-            justify-content-between
-            justify-content-center
-            gap-2          
-            text-center  
-        ">   
-            
-            <!-- Prev -->
-            <button 
-                id="prev"
-                class="w-100 h-100 btn btn-primary info loader-btn prev"
-                loader-state='default'>   
-                <span> <div class='spinner-border' role='status'> 
-                <span class='visually-hidden'>Loading...</span> </div> </span>
-                <p><i class="fas fa-chevron-left"></i> Prev</p>
-            </button>
+            mb-5
+            w-100
+            justify-content-start
+        ">
+            <!-- Header -->
+            <h1 class="
+                fw-bold 
+            ">Users</h1>
 
-            <!-- Input -->
-            <div class="h-100 w-100">
-                <input 
-                    name="page" 
-                    id="page"
-                    placeholder="1" 
-                    value="1"
-                class="form-control inp text-center">
+            <!-- Descriptiopn -->
+            <p class="
+                text-muted
+            ">
+                Here you can manage all the users on the site.
+            </p>
+        </div>
 
-                <!-- Out of -->
-                <p class="text-muted m0 out-of">out of 1</p>
+
+        <!-- Main content -->
+        <div class="mb-5 w-100">
+            <!-- FIlters -->
+            <div class='
+                mb-2
+                d-flex
+                filters
+                gap-2
+            '>  
+                <div class='w-50'>
+                    <label class="form-label" for="position">Position</label>
+                    <select 
+                        name="position" 
+                        id="position" 
+                        class="form-select w-100 inp"
+                    >   
+                        <option value="all" selected>All</option>
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                        <option value="streamer">Streamer</option>
+                    </select>
+                </div>
+
+                <div class='w-50'>
+                    <label class="form-label" for="filter">Filter by</label>
+                    <select 
+                        name="filter" 
+                        id="filter" 
+                        class="form-select w-100 inp"
+                    >   
+                        <option value="updated" selected>Updated</option>
+                        <option value="created">Created</option>
+                        <option value="username">Username</option>
+                        <option value="email">Email</option>
+                        <option value="position">Position</option>
+                        <option value="country">Country</option>
+                    </select>
+                </div>
+
+                <div class='w-50'>
+                    <label class="form-label" for="order">Order by</label>
+                    <select 
+                        name="order" 
+                        id="order" 
+                        class="form-select w-100 inp"
+                    >   
+                        <option value="desc" selected>Descending</option>
+                        <option value="asc">Ascending</option>
+                    </select>
+                </div>
             </div>
 
-            <!-- Next -->
-            <button 
-                id="next"
-                class="w-100 h-100 btn btn-primary info loader-btn next"
-                loader-state='default'>   
-                <span> <div class='spinner-border' role='status'> 
-                <span class='visually-hidden'>Loading...</span> </div> </span>
-                <p>Next <i class="fas fa-chevron-right"></i></p>
-            </button>
+            <div class="mb-4 w-100">
+                <label class="form-label" for="search">Search</label>
+                <input 
+                    name="search" 
+                    id="search" 
+                    placeholder="Email, Name, Username, Country, etc..." 
+                    class="form-control inp">
+            </div>
 
+
+
+            <!-- Users -->
+            <div class='content-loader' dimmed='false'>
+                <div class='dimmer'></div>
+                <div class='mb-5 d-flex users flex-column gap-2'></div>
+            </div>
+
+
+
+            <!-- Pagination -->
+            <div class="
+                d-flex 
+                justify-content-between
+                justify-content-center
+                gap-2          
+                text-center  
+            ">   
+                
+                <!-- Prev -->
+                <button 
+                    id="prev"
+                    class="w-100 h-100 btn btn-primary info loader-btn prev"
+                    loader-state='default'>   
+                    <span> <div class='spinner-border' role='status'> 
+                    <span class='visually-hidden'>Loading...</span> </div> </span>
+                    <p><i class="fas fa-chevron-left"></i> Prev</p>
+                </button>
+
+                <!-- Input -->
+                <div class="h-100 w-100">
+                    <input 
+                        name="page" 
+                        id="page"
+                        placeholder="1" 
+                        value="1"
+                    class="form-control inp text-center">
+
+                    <!-- Out of -->
+                    <p class="text-muted m0 out-of">out of 1</p>
+                </div>
+
+                <!-- Next -->
+                <button 
+                    id="next"
+                    class="w-100 h-100 btn btn-primary info loader-btn next"
+                    loader-state='default'>   
+                    <span> <div class='spinner-border' role='status'> 
+                    <span class='visually-hidden'>Loading...</span> </div> </span>
+                    <p>Next <i class="fas fa-chevron-right"></i></p>
+                </button>
+
+            </div>
         </div>
     </div>
 </article>

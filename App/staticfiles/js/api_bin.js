@@ -1,1 +1,1 @@
-(()=>{"use strict";var e={};e.d=(r,t)=>{for(var o in t)e.o(t,o)&&!e.o(r,o)&&Object.defineProperty(r,o,{enumerable:!0,get:t[o]})},e.o=(e,r)=>Object.prototype.hasOwnProperty.call(e,r)})();
+(()=>{"use strict";var e={};e.d=(r,o)=>{for(var t in o)e.o(o,t)&&!e.o(r,t)&&Object.defineProperty(r,t,{enumerable:!0,get:o[t]})},e.o=(e,r)=>Object.prototype.hasOwnProperty.call(e,r);new URL(window.location.href).searchParams.get("impersonate")})();

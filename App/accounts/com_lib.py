@@ -248,7 +248,7 @@ def required_headers(required):
         This function will also check if the user is an admin
         and if they are not, it will do nothing.
 """
-def impersinate():
+def impersonate():
     def decorator(view_func):
         @wraps(view_func)
         def wrapper(request, *args, **kwargs):
@@ -258,28 +258,38 @@ def impersinate():
                 request.impersonate = False
                 return view_func(request, *args, **kwargs)
             
+            user_id = None
 
             # -- Check if the user is trying to impersonate
             if 'impersonate' in request.headers:
-                try:
-                    # -- Save the original user
-                    request.impersonater = request.user
+                user_id = request.headers['impersonate']
 
-                    # -- Get the user
-                    user = get_user_model().objects.get(id=request.headers['impersonate'])
+            if request.method == 'GET' and 'impersonate' in request.GET:
+                user_id = request.GET['impersonate']
 
-                    # -- Make sure the uses is not an admin
-                    if user.is_superuser:
-                        return invalid_response('You cannot impersonate an admin')
-                    
-                    # -- Set the impersonate flag to allow us to bypass some
-                    #    security checks
-                    request.user = user
-                    request.impersonate = True
-                    request.user.is_authenticated = True
+            if user_id is None:
+                request.impersonate = False
+                return view_func(request, *args, **kwargs)
 
-                except:
-                    return invalid_response('The user you are trying to impersonate does not exist')
+            try:
+                # -- Save the original user
+                request.impersonater = request.user
+
+                # -- Get the user
+                user = get_user_model().objects.get(id=user_id)
+
+                # -- Make sure the uses is not an admin
+                if user.is_superuser:
+                    return invalid_response('You cannot impersonate an admin')
+
+                # -- Set the impersonate flag to allow us to bypass some
+                #    security checks
+                request.user = user
+                request.impersonate = True
+
+            except Exception as e:
+                print(e)
+                request.impersonate = False
             
             # -- Call the original function with the request object
             return view_func(request, *args, **kwargs)

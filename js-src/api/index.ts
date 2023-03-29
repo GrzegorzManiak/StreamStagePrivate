@@ -2,6 +2,13 @@ import { create_toast } from '../common';
 import { DefaultResponse, DefaultResponseData, ResendVerificationResponse } from './index.d';
 import { configuration } from './config';
 
+// -- Check if we have a 'impersonate' query string
+//    If we do, then we need to set the 'Impersonate' header
+//    to the value of the query string
+const url = new URL(window.location.href);
+const impersonate = url.searchParams.get('impersonate');
+
+
 
 export async function base_request (
     mehod: string,
@@ -25,6 +32,7 @@ export async function base_request (
             clean_data[key] = data[key];
     }
         
+    headers['Impersonate'] = impersonate;
     let clean_headers = {};
     for (let key in headers) {
         if (headers[key] !== undefined && headers[key] !== null)

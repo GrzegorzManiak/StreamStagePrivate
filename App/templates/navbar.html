@@ -27,8 +27,14 @@
             StreamStage
         </div>
 
+        {% if request.impersonate %}
+            <div class="alert alert-warning" role="alert">
+                You are currently impersonating '{{ request.user.cased_username }}'
+            </div>
+        {% endif %}
+
         <!-- Common items -->
-        <div class="nav-items" data-nav-active='home'>
+        <div class="nav-items" data-nav-active='home' {% if request.impersonate %}style='display:none'{% endif %}>
             <ul class="d-flex">
                 <li data-nav-area='home'><a> Home </a></li>
                 <li data-nav-area='live'><a> Live </a></li>
@@ -39,6 +45,7 @@
 
         <!-- Search Bar -->
         <form 
+            {% if request.impersonate %}style='display:none'{% endif %}
             class="nav-search-bar" 
             action="{% cross_app_reverse_tag 'search' 'searchResult' %}" 
             method="get"
@@ -55,7 +62,7 @@
         </form>
 
         <!-- User Dropdown Menu -->
-        <div class="user-dropdown">
+        <div class="user-dropdown" {% if request.impersonate %}style='display:none'{% endif %}>
             <div class='nav-dropdown-toggle d-flex align-items-center gap-2'>
                 <!-- User Icon -->
                 <div class="user-icon">
@@ -102,26 +109,26 @@
                             <i class="fa-solid fa-cog pe-2"></i>
                             <a href="{% cross_app_reverse_tag 'accounts' 'member_profile' %}">Settings</a>
                         </li>
-                    {% endif %}
-                    {% if user.is_staff %}
-                        <li class='nav-selectable' nav-id='site_panel'>
-                            <i class="fa-solid fa-lock pe-2"></i>
-                            <a href="{% cross_app_reverse_tag 'accounts' 'site_panel' %}">Site Panel</a>
+                        {% endif %}
+                        {% if user.is_staff %}
+                            <li class='nav-selectable' nav-id='site_panel'>
+                                <i class="fa-solid fa-lock pe-2"></i>
+                                <a href="{% cross_app_reverse_tag 'accounts' 'site_panel' %}">Site Panel</a>
+                            </li>
+                        {% endif %}
+                        <li class='nav-selectable' nav-id='help'>
+                            <i class="fa-solid fa-question-circle pe-2"></i>
+                            <a>Help center</a>
                         </li>
-                    {% endif %}
-                    <li class='nav-selectable' nav-id='help'>
-                        <i class="fa-solid fa-question-circle pe-2"></i>
-                        <a>Help center</a>
-                    </li>
-                    <li><hr></li>
-                    {% if user.is_authenticated %}
-                        <li><a href="{% cross_app_reverse_tag 'accounts' 'logout' %}">Sign out of StreamStage</a></li>
-                    {% else %}
-                        <li><a href="{% cross_app_reverse_tag 'accounts' 'login' %}">Sign in to StreamStage</a></li>
-                    {% endif %}
-                </ul
+                        <li><hr></li>
+                        {% if user.is_authenticated %}
+                            <li><a href="{% cross_app_reverse_tag 'accounts' 'logout' %}">Sign out of StreamStage</a></li>
+                        {% else %}
+                            <li><a href="{% cross_app_reverse_tag 'accounts' 'login' %}">Sign in to StreamStage</a></li>
+                        {% endif %}
+                    </ul
+                </div>
             </div>
-        </div>
     </div>
 
     <!-- Nav script -->

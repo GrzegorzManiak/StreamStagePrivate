@@ -13,7 +13,8 @@ export async function manage_users_panel(pod: Pod) {
         prev = panel.querySelector('#prev'),
         next = panel.querySelector('#next'),
         page = panel.querySelector('#page'),
-        out_of = panel.querySelector('.out-of');
+        out_of = panel.querySelector('.out-of'),
+        content = panel.querySelector('.content-loader');
 
 
     // -- Create the functions to get the values
@@ -41,6 +42,7 @@ export async function manage_users_panel(pod: Pod) {
 
     // -- Add the event listeners to the inputs
     const update = async () => {
+        content.setAttribute('dimmed', 'true');
         const res = await filter_users(
             get_page(),
             get_filter(),
@@ -51,6 +53,7 @@ export async function manage_users_panel(pod: Pod) {
         
         // -- Make sure the results are valid
         if (res.code !== 200) {
+            content.setAttribute('dimmed', 'false');
             return create_toast('error', 'Oops! My bad', res.message);
         }
 
@@ -67,6 +70,7 @@ export async function manage_users_panel(pod: Pod) {
 
         // -- Update the max page
         out_of.innerHTML = 'out of ' + (res.data.pages + 1);
+        content.setAttribute('dimmed', 'false');
     };
 
 
@@ -128,12 +132,11 @@ function create_user(element: HTMLElement, user: FilterdUser) {
 
         <div class='profile-info'>
             <h3 class='m-0'>${user.cased_username}</h3>
-            <p class='m-0 text-muted'>@${user.username}</p>
+            <p class='m-0 text-muted'>${user.first_name ? user.first_name : 'N/A'}, ${user.last_name ? user.last_name : 'N/A'}</p>
             <p class='m-0 text-muted'>${user.email}</p>
         </div>
         
         <div class='profile-info flex-wrap'>
-            <p class='m-0 text-muted'>Greg, Maniak</p>
             <p class='m-0 text-muted'><span class='bold'> Joined</span> ${date(user.created)}</p>
             <p class='m-0 text-muted'><span class='bold'> Last seen</span> ${date(user.updated)}</p>
         </div>
@@ -148,7 +151,7 @@ function create_user(element: HTMLElement, user: FilterdUser) {
             <button class="w-100 h-100 btn btn-primary info loader-btn edit" loader-state="default">   
                 <span> <div class="spinner-border" role="status"> 
                 <span class="visually-hidden">Loading...</span> </div> </span>
-                <p>Edit</p>
+                <p>Manage</p>
             </button>
         </div>
     `;
@@ -163,3 +166,4 @@ function create_user(element: HTMLElement, user: FilterdUser) {
     // -- Get the buttons
     const edit = div.querySelector('.edit') as HTMLButtonElement;
 }
+

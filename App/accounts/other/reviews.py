@@ -1,6 +1,6 @@
 # -- Imports
 from rest_framework.decorators import api_view
-from accounts.com_lib import authenticated, invalid_response, required_data, success_response, impersinate
+from accounts.com_lib import authenticated, invalid_response, required_data, success_response, impersonate
 from events.models import EventReview
 from accounts.models import Member
 
@@ -64,7 +64,7 @@ def get_reviews(request, data):
 
 
 @api_view(['POST'])
-@impersinate()
+@impersonate()
 @authenticated()
 @required_data(['id', 'rating', 'title', 'body'])
 def update_review(request, data):
@@ -104,7 +104,7 @@ def update_review(request, data):
 
 
 @api_view(['POST'])
-@impersinate()
+@impersonate()
 @authenticated()
 @required_data(['id'])
 def delete_review(request, data):

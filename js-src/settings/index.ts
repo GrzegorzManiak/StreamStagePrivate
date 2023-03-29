@@ -9,6 +9,7 @@ import { Configuration } from './index.d';
 
 export const configuration = build_configuration<Configuration>({
     admin: new Type('data-admin', 'boolean'),
+    imposter: new Type('data-imposter', 'boolean'),
     username: new Type('data-username', 'string'),
     userid: new Type('data-userid', 'string'),
     useremail: new Type('data-useremail', 'string'),
