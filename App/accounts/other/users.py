@@ -1,4 +1,5 @@
 from rest_framework.decorators import api_view
+from accounts.create.create import email_taken
 from accounts.com_lib import is_admin, invalid_response, required_data, success_response
 from events.models import EventReview
 
@@ -138,3 +139,49 @@ def get_user(request, data):
         'description': user.description,
         'id': user.id,
     })
+
+
+
+@api_view(['POST'])
+@is_admin()
+@required_data(['id', 'email'])
+def update_user_email(r, data):
+    """
+        This view updates a user's email
+        without having to go through the
+        email verification process.
+    """
+
+    # -- Get the user
+    user = Member.objects.filter(id=data['id']).first()
+    if user is None: return invalid_response('User does not exist')
+
+    # -- Make sure the email is valid and not taken
+    if not '@' in data['email']: return invalid_response('Invalid email')
+    if email_taken(data['email']): return invalid_response('Email is already taken')
+
+    # -- Update the email
+    user.email = data['email'].lower()
+    user.save()
+
+    # -- Return the response
+    return success_response('Successfully updated email')
+
+
+
+@api_view(['DELETE'])
+@is_admin()
+@required_data(['id'])
+def delete_user(request, data):
+    """
+        This view deletes a user from the database.
+    """
+    # -- Get the user
+    user = Member.objects.filter(id=data['id']).first()
+    if user is None: return invalid_response('User does not exist')
+
+    # -- Delete the user
+    user.delete()
+
+    # -- Return the response
+    return success_response('Successfully deleted user')

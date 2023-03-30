@@ -1,5 +1,5 @@
-import { attach, construct_modal, create_toast, sleep } from '../../common';
-import { filter_users, get_user } from '../api';
+import { attach, confirmation_modal, construct_modal, create_toast } from '../../common';
+import { delete_user, filter_users, get_user, update_email } from '../api';
 import { FilterOrder, FilterPosition, FilterSort, FilterdUser, FilterdUsersSuccess, Pod, UserSuccess } from '../index.d';
 
 export async function manage_users_panel(pod: Pod) {
@@ -165,7 +165,7 @@ function create_user(element: HTMLElement, user: FilterdUser) {
 
     // -- Get the buttons
     const edit = div.querySelector('.edit') as HTMLButtonElement;
-    edit.addEventListener('click', () => manage_modal(edit, user.id));
+    edit.addEventListener('click', () => manage_modal(edit, div, user.id));
 }
 
 
@@ -174,9 +174,10 @@ function create_user(element: HTMLElement, user: FilterdUser) {
  * @name manage_modal
  * @description Creates and pops up a modal
  * @param {HTMLButtonElement} button The button to open the modal
+ * @param {HTMLElement} entry The entry in the list to update
  * @param {string} id The id of the user this modal is for
  */
-async function manage_modal(button: HTMLButtonElement, id: string) {
+async function manage_modal(button: HTMLButtonElement, entry: HTMLElement, id: string) {
     // -- Attach the spinner and get the user 
     const stop = attach(button);
 
@@ -204,7 +205,7 @@ async function manage_modal(button: HTMLButtonElement, id: string) {
     const email_save = modal_div.querySelector('#save-btn') as HTMLButtonElement,
         email = modal_div.querySelector('#email') as HTMLInputElement,
         reset_password = modal_div.querySelector('#reset-btn') as HTMLButtonElement,
-        delete_user = modal_div.querySelector('#delete-btn') as HTMLButtonElement,
+        delete_btn = modal_div.querySelector('#delete-btn') as HTMLButtonElement,
         impersonate = modal_div.querySelector('#impersonate-btn') as HTMLButtonElement,
         leave = modal_div.querySelector('#exit') as HTMLButtonElement;
 
@@ -214,6 +215,8 @@ async function manage_modal(button: HTMLButtonElement, id: string) {
         modal_div.remove(); stop();
     });
 
+
+    
     // -- On impersonate
     impersonate.addEventListener('click', async () => {
         // -- Open a popup
@@ -226,6 +229,35 @@ async function manage_modal(button: HTMLButtonElement, id: string) {
         if (popup) popup.focus();
         popup?.addEventListener('load', () => stop_impersonate());
     });
+
+
+
+    // -- Email change
+    email_save.addEventListener('click', async () => confirmation_modal(
+        async() => {
+            const res = await update_email(id, email.value) as UserSuccess;
+            if (res.code !== 200) create_toast('error', 'Oops! My bad', res.message);
+            else create_toast('success', 'Success!', 'Email updated!');
+            email.value = res.data.email;
+        },
+        () => {},
+        'Are you sure you want to change the email?',
+    ));
+    
+
+
+    // -- Delete user
+    delete_btn.addEventListener('click', async () => confirmation_modal(
+        async() => {
+            const res = await delete_user(id) as UserSuccess;
+            if (res.code !== 200) create_toast('error', 'Oops! My bad', res.message);
+            else create_toast('success', 'Success!', 'User deleted!');
+            modal_div.remove(); stop();
+            entry.remove();
+        },
+        () => {},
+        'Are you sure you want to delete this user?',
+    ));
 }
 
 

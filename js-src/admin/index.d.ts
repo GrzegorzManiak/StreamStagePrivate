@@ -44,6 +44,8 @@ export interface Configuration {
     statistics: string,
     users: string,
     get_user: string,
+    delete_user: string,
+    update_email: string,
 }
 
 
