@@ -26,7 +26,7 @@ def event_view(request, event_id):
     event = Event.objects.filter(event_id=event_id).first()
 
     if event == None:
-        return redirect('homepage_index')
+        return redirect('upcoming_events')
     
     reviews = event.get_reviews().order_by('-created')
     review_context = inline_reviews.handle(request, event)
@@ -76,7 +76,7 @@ def event_create(request):
     
     form = EventApplyForm(request.POST or None)
     if not request.user.is_authenticated or not request.user.is_streamer:
-        return redirect('homepage_index')
+        return redirect('upcoming_events')
     if form.is_valid():
         new_event_id = identifiers.generate_event_id()
         form = form.save(commit=False)
@@ -123,10 +123,10 @@ def event_delete(request, event_id):
     event = Event.objects.get(event_id=event_id)
     
     if not request.user.is_authenticated or not request.user.is_streamer:
-        return redirect('homepage_index')
+        return redirect('upcoming_events')
     # if event id in URL is invalid or user doesn't own this event, redirect
-    if event == None or not request.user == event.streamer:
-        return redirect('homepage_index')
+    if event == None or request.user != event.broadcaster.streamer:
+        return redirect('upcoming_events')
     
     form = EventDeleteForm(instance=event)
     if request.POST:

@@ -4,11 +4,25 @@
     {% endif %}
 
     <div id="add-review-panel" class="col 3" {% if not new_review_form %}elem-status="hidden"{% endif %}>
-        <h4>Add Review</h4>
-        <form class="form-layout review-form" action="" method="POST" enctype="multipart/form-data">
+        <form class="form-class form-layout review-form" action="" method="POST" enctype="multipart/form-data">
+            <h4>Add Review</h4>
             {% csrf_token %}
             {{ new_review_form.as_p }}
-            <input type="submit" value="Save" />
+            <ul class="btn btn-light list-inline rating-list">
+                <li onclick="rate(5)">
+                    <i class="fa fa-star {% if review.rating > 4 %} checked {% endif %}" title="Rate 5"></i></li>
+                <li onclick="rate(4)">
+                    <i class="fa fa-star {% if review.rating > 3 %} checked {% endif %}" title="Rate 4"></i></li>
+                <li onclick="rate(3)">
+                    <i class="fa fa-star {% if review.rating > 2 %} checked {% endif %}" title="Rate 3"></i></li>
+                <li onclick="rate(2)">
+                    <i class="fa fa-star {% if review.rating > 1 %} checked {% endif %}" title="Rate 2"></i></li>
+                <li onclick="rate(1)">
+                    <i class="fa fa-star {% if review.rating > 0 %} checked {% endif %}" title="Rate 1"></i></li>
+              </ul>
+            <div>
+                <input class="btn btn-primary" type="submit" value="Save" />
+            </div>
         </form>
     </div>
 </div>

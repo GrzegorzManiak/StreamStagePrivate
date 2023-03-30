@@ -2,6 +2,7 @@
 
 import accounts.validation
 from django.conf import settings
+from django.conf import settings
 import django.contrib.auth.models
 from django.db import migrations, models
 import django.db.models.deletion
@@ -16,6 +17,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
+        ('auth', '0012_alter_user_first_name_max_length'),
         ('auth', '0012_alter_user_first_name_max_length'),
     ]
 
@@ -48,6 +50,7 @@ class Migration(migrations.Migration):
                 ('access_level', models.SmallIntegerField(default=0, verbose_name='Access Level')),
                 ('max_keys', models.SmallIntegerField(default=1, verbose_name='Max Devices')),
                 ('is_streamer', models.BooleanField(default=False, verbose_name='Streamer Status')),
+                ('groups', models.ManyToManyField(blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', related_name='user_set', related_query_name='user', to='auth.group', verbose_name='groups')),
                 ('groups', models.ManyToManyField(blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', related_name='user_set', related_query_name='user', to='auth.group', verbose_name='groups')),
             ],
             options={
@@ -131,7 +134,62 @@ class Migration(migrations.Migration):
                 ('approved', models.BooleanField(default=False, verbose_name='Approved')),
                 ('contributors', models.ManyToManyField(blank=True, related_name='stream_broadcasters', to=settings.AUTH_USER_MODEL)),
                 ('streamer', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('r_user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='reported_user', to=settings.AUTH_USER_MODEL)),
+                ('reporter', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='reporter', to=settings.AUTH_USER_MODEL)),
             ],
+        ),
+        migrations.CreateModel(
+            name='oAuth2',
+            fields=[
+                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('oauth_type', models.SmallIntegerField(choices=[(0, 'Google'), (1, 'Discord'), (2, 'Github')], verbose_name='Type')),
+                ('oauth_id', models.CharField(max_length=100, unique=True, verbose_name='OAuth ID')),
+                ('last_used', models.DateTimeField(auto_now=True)),
+                ('added', models.DateTimeField(auto_now_add=True)),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='MembershipStatus',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('expires_on', models.DateTimeField(blank=True, verbose_name='Membership Expiration Date')),
+                ('member', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='LoginHistory',
+            fields=[
+                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('ip', models.GenericIPAddressField(protocol='IPv4', verbose_name='IP Address')),
+                ('time', models.TimeField(auto_now_add=True)),
+                ('date', models.DateField(auto_now_add=True)),
+                ('method', models.CharField(max_length=64, verbose_name='Method')),
+                ('member', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Broadcaster',
+            fields=[
+                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('handle', models.CharField(max_length=20, unique=True, validators=[accounts.validation.check_unique_broadcaster_handle], verbose_name='Broadcaster Handle')),
+                ('name', models.CharField(max_length=32, verbose_name='name')),
+                ('biography', models.TextField(max_length=512, verbose_name='Biography')),
+                ('over_18', models.BooleanField()),
+                ('approved', models.BooleanField(default=False, verbose_name='Approved')),
+                ('contributors', models.ManyToManyField(blank=True, related_name='stream_broadcasters', to=settings.AUTH_USER_MODEL)),
+                ('streamer', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+            ],
+        ),
+        migrations.AddField(
+            model_name='member',
+            name='security_preferences',
+            field=models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='accounts.securitypreferences'),
+        ),
+        migrations.AddField(
+            model_name='member',
+            name='user_permissions',
+            field=models.ManyToManyField(blank=True, help_text='Specific permissions for this user.', related_name='user_set', related_query_name='user', to='auth.permission', verbose_name='user permissions'),
         ),
         migrations.AddField(
             model_name='member',

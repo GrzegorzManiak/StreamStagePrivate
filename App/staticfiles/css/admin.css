@@ -30,6 +30,8 @@
     background-color: var(--theme-color);
     padding: 1rem;
     border-radius: 0.5rem;
+    min-width: 100%;
+    min-height: 100%;
 }
 
 

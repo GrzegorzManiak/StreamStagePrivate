@@ -18,7 +18,7 @@ export async function manage_statistical_panels(
 
     // -- group the pods
     const pods = [
-        accounts
+        accounts, server,
         // , server,
         // cash_flow, tickets,
         // reviews, subscriptions,
@@ -94,7 +94,7 @@ export async function build_graphs(
                 </div>
 
                 <div class='w-25'>
-                    <label class="form-label" for="to">to</label>
+                    <label class="form-label" for="to">To</label>
                     <input
                         type="text"
                         inputmode="numeric"
@@ -186,7 +186,7 @@ export async function build_graphs(
             chart, stat_group, type, Number(to.value), Number(from.value), frame.value as Frame));
         
         frame.addEventListener('change', () => update_graph(
-            chart, stat_group, type, Number(to.value), Number(from.value), frame.value as Frame));+
+            chart, stat_group, type, Number(to.value), Number(from.value), frame.value as Frame));
         
 
         // -- Export the data
@@ -196,8 +196,11 @@ export async function build_graphs(
             stop();
         });
 
-        // -- Update the graph every 5 minutes
-        setInterval(update_graph, get_sleep_interval(frame.value as Frame));
+        // -- Update the graph every x time
+        setInterval(() => update_graph(
+            chart, stat_group, type, Number(to.value), Number(from.value), frame.value as Frame), 
+            get_sleep_interval(frame.value as Frame)
+        );
     });
 }
 

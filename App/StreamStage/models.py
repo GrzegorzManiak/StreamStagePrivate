@@ -1,4 +1,6 @@
+from typing import Union
 from django.db import models
+import psutil
 import uuid
 import time
 import datetime
@@ -9,6 +11,15 @@ DAY = 86400
 WEEK = 604800
 MONTH = 2592000
 YEAR = 31536000
+
+network_tx = []
+network_rx = []
+cpu = []
+memory = []
+
+kb = float(1024)
+mb = float(kb ** 2)
+gb = float(kb ** 3)
 
 class SentEmail(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -50,7 +61,7 @@ class Statistics(models.Model):
     def build_statistic(
         group: str, 
         statistic: str,
-        time_frame: [int, int],
+        time_frame: Union[int, int],
         frame_type: str = 'minute'
     ):
         """
@@ -61,35 +72,50 @@ class Statistics(models.Model):
             }
         """
         time_frame = [ int(time_frame[0]), int(time_frame[1]) ]
-
-        # -- Get the statistics
-        stats = Statistics.objects.filter(
-            group=group,
-            statistic=statistic,
-            created__gte=get_time(frame_type, time_frame[0]),
-            created__lte=get_time(frame_type, time_frame[1])
-        ).order_by('created')
-
-
-        # -- Start building the data
-        data = {
-            'labels': [],
-            'data': []
-        }
+        data = { 'labels': [], 'data': [] }
 
         # -- Create the labels and data
         dif = (time_frame[0] - time_frame[1])
         for i in range(dif):
             data['labels'].append(generate_lable(time_frame, frame_type, i))
 
-            # -- Get the data
-            stat = stats.filter( 
-                created__gte=get_time(frame_type, time_frame[0] - i),
-                created__lte=get_time(frame_type, time_frame[1] + i)
-            )
+        # -- Get the statistics (not system)
+        if group == 'system':
+            match statistic:
+                case 'cpu': stats = cpu
+                case 'memory': stats = memory
+                case 'network_tx': stats = network_tx
+                case 'network_rx': stats = network_rx
 
-            # -- Add the data
-            data['data'].append(stat.count())
+            # -- Process the statistics
+            for i in range(dif):
+                # -- Get the data
+                stat = stats[i]
+
+                # -- Add the data
+                data['data'].append(stat)
+
+
+        else: 
+            stats = Statistics.objects.filter(
+                group=group,
+                statistic=statistic,
+                created__gte=get_time(frame_type, time_frame[0]),
+                created__lte=get_time(frame_type, time_frame[1])
+            ).order_by('created')
+
+
+            for i in range(dif):
+                # -- Get the data
+                stat = stats.filter( 
+                    created__gte=get_time(frame_type, time_frame[0] - i),
+                    created__lte=get_time(frame_type, time_frame[1] + i)
+                )
+
+                # -- Add the data
+                data['data'].append(stat.count())
+
+
 
         data['labels'].reverse()
         data['data'].reverse()
@@ -117,7 +143,7 @@ def get_time(
 
 
 def generate_lable(
-    time_frame: [int, int],
+    time_frame: Union[int, int],
     frame_type: str,
     frame: int,
 ) -> str:
@@ -128,3 +154,84 @@ def generate_lable(
         case 'week': return datetime.datetime.fromtimestamp(get_time(frame_type, frame)).strftime('%b %d')
         case 'month': return datetime.datetime.fromtimestamp(get_time(frame_type, frame)).strftime('%b')
         case 'year': return datetime.datetime.fromtimestamp(get_time(frame_type, frame)).strftime('%b %d')
+
+
+
+def get_network_usage():
+    """
+    Returns the network traffic in Mbps for the past second.
+    """
+    net_io_counters1 = psutil.net_io_counters()
+    time.sleep(1)
+    net_io_counters2 = psutil.net_io_counters()
+    
+    bytes_sent = net_io_counters2.bytes_sent - net_io_counters1.bytes_sent
+    bytes_recv = net_io_counters2.bytes_recv - net_io_counters1.bytes_recv
+    bits_sent = bytes_sent * 8
+    bits_recv = bytes_recv * 8
+    
+    mbps_sent = bits_sent / 1000000
+    mbps_recv = bits_recv / 1000000
+    
+    # Make sure that the values are a bit more than 0
+    if mbps_sent < 0.01: mbps_sent = 0.01
+    if mbps_recv < 0.01: mbps_recv = 0.01
+
+    # Format the values to 2 decimal places
+    mbps_sent = round(mbps_sent, 2)
+    mbps_recv = round(mbps_recv, 2)
+
+    return (mbps_sent, mbps_recv)
+
+
+
+def get_cpu_usage():
+    """
+    Returns the CPU usage in percentage for the past second.
+    """
+    cpu_usage = psutil.cpu_percent(interval=1)
+    return cpu_usage
+
+
+
+def get_memory_usage():
+    """
+    Returns the memory usage in percentage for the past second.
+    """
+    memory_usage = psutil.virtual_memory().percent
+    return memory_usage
+
+
+
+def log_stats():
+    """
+    Logs the statistics
+    """
+    # -- Get the stats
+    cpu_usage = get_cpu_usage()
+    memory_usage = get_memory_usage()
+    network_usage = get_network_usage()
+
+    # -- Log the stats
+    network_rx.append({
+        'created': time.time(),
+        'value': network_usage[1]
+    })
+    network_tx.append({
+        'created': time.time(),
+        'value': network_usage[0]
+    })
+    cpu_usage.append({
+        'created': time.time(),
+        'value': cpu_usage
+    })
+    memory_usage.append({
+        'created': time.time(),
+        'value': memory_usage
+    })
+
+    # Crimp the data to 1000 points
+    network_rx = network_rx[-1000:]
+    network_tx = network_tx[-1000:]
+    cpu_usage = cpu_usage[-1000:]
+    memory_usage = memory_usage[-1000:]
