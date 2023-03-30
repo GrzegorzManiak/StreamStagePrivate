@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load tags %}
 
 {% block metadescription %}
     {{ user.cased_username }} control panel
@@ -33,6 +34,11 @@
         data-delete-user='{{ api.delete_user }}'
         data-update-email='{{ api.update_email }}'
         data-update-streamer-status='{{ api.update_streamer_status }}'
+
+        data-category='{% cross_app_reverse_tag "events" "categorys" use_subdomain=False %}'
+        data-create-category='{% cross_app_reverse_tag "events" "create_category" use_subdomain=False %}'
+        data-update-category='{% cross_app_reverse_tag "events" "update_category" use_subdomain=False %}'
+        data-delete-category='{% cross_app_reverse_tag "events" "delete_category" use_subdomain=False %}'
     ></span>
     <div 
     id = 'main-container'

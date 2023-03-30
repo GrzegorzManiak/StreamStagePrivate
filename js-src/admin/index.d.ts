@@ -47,6 +47,11 @@ export interface Configuration {
     delete_user: string,
     update_email: string,
     update_streamer_status: string,
+
+    category: string,
+    create_category: string,
+    delete_category: string,
+    update_category: string,
 }
 
 
@@ -79,8 +84,31 @@ export interface FilterdUsers {
     pages: number,
 }
 
+
+export type CategorySorts = 'updated' | 'created' | 'name' | 'description' | 'color';
+
+
+export interface Category {
+    id: string,
+    name: string,
+    description: string,
+    created: string,
+    updated: string,
+}
+
+export interface FilterdCategory {
+    users: Array<Category>,
+    page: number,
+    per_page: number,
+    total: number,
+    pages: number,
+}
+
 export type FilterdUsersSuccess = DefaultResponseData & { data: FilterdUsers }
 export type FilterdUsersResponse = FilterdUsersSuccess | DefaultResponse;
 
 export type UserSuccess = DefaultResponseData & { data: FilterdUser }
 export type UserResponse = UserSuccess | DefaultResponse;
+
+export type FilterdCategoriesSuccess = DefaultResponseData & { data: FilterdCategory }
+export type FilterdCategoriesResponse = FilterdCategoriesSuccess | DefaultResponse;

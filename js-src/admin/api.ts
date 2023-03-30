@@ -1,7 +1,7 @@
 import { configuration } from '.';
 import { DefaultResponse } from '../api/index.d';
 import { base_request } from '../api';
-import { FilterOrder, FilterPosition, FilterSort, FilterdUsersResponse, Frame, StatisticsResponse, UserResponse } from './index.d';
+import { CategorySorts, FilterOrder, FilterPosition, FilterSort, FilterdCategoriesResponse, FilterdUsersResponse, Frame, StatisticsResponse, UserResponse } from './index.d';
 
 /**
  * @name get_statistics
@@ -109,4 +109,83 @@ export const update_streamer_status = async (
     'POST',
     configuration.update_streamer_status,
     { id, streamer },
+);
+
+
+
+/**
+ * @name filter_categories
+ * @param {number} page - The page to get
+ * @param {CategorySorts} sort - The sort to use (name, email, etc)
+ * @param {FilterOrder} order - The order to use (asc, desc)
+ * @param {string} search - The search query
+ * @returns {Promise<FilterdCategoriesResponse>}
+ */
+export const filter_categories = async (
+    page: number,
+    sort: CategorySorts,
+    order: FilterOrder,
+    search: string,
+): Promise<FilterdCategoriesResponse> => base_request(
+    'GET',
+    configuration.category,
+    { page, sort, order, search }
+);
+
+
+
+/**
+ * @name create_category
+ * @param {string} name - The name of the category
+ * @param {string} description - The description of the category
+ * @param {string} color - The color of the category
+ * @returns {Promise<DefaultResponse>}
+ * @description Creates a new category
+ */
+export const create_category = async (
+    name: string,
+    description: string,
+    color: string,
+): Promise<DefaultResponse> => base_request(
+    'POST',
+    configuration.create_category,
+    { name, description, color },
+);
+
+
+
+/**
+ * @name update_category
+ * @param {string} id - The id of the category to update
+ * @param {string} name - The name of the category
+ * @param {string} description - The description of the category
+ * @param {string} color - The color of the category
+ * @returns {Promise<DefaultResponse>}
+ * @description Updates a category
+ */
+export const update_category = async (
+    id: string,
+    name: string,
+    description: string,
+    color: string,
+): Promise<DefaultResponse> => base_request(
+    'POST',
+    configuration.update_category,
+    { id, name, description, color },
+);
+
+
+
+/**
+ * @name delete_category
+ * @param {string} id - The id of the category to delete
+ * @returns {Promise<DefaultResponse>}
+ * @description Deletes a category
+ */
+export const delete_category = async (
+    id: string,
+): Promise<DefaultResponse> => base_request(
+    'DELETE',
+    configuration.delete_category,
+    { id },
 );

@@ -12,6 +12,11 @@ export const configuration = build_configuration<Configuration>({
     delete_user: new Type('data-delete-user', 'string'),
     update_email: new Type('data-update-email', 'string'),
     update_streamer_status: new Type('data-update-streamer-status', 'string'),
+
+    category: new Type('data-category', 'string'),
+    create_category: new Type('data-create-category', 'string'),
+    delete_category: new Type('data-delete-category', 'string'),
+    update_category: new Type('data-update-category', 'string'),
 });
 
 // -- Attach the event listeners

@@ -1,7 +1,6 @@
 from rest_framework.decorators import api_view
 from accounts.create.create import email_taken
 from accounts.com_lib import is_admin, invalid_response, required_data, success_response
-from events.models import EventReview
 
 from accounts.models import Member
 from django.db.models import Q

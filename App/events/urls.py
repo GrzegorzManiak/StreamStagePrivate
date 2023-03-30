@@ -20,6 +20,14 @@ from .api import (
     del_ticket_listing
 )
 
+from .admin import (
+    categorys,
+    create_category,
+    update_category,
+    get_category,
+    delete_category
+)
+
 urlpatterns = [
     # Events
     path('', get_upcoming_events, name='upcoming_events'),
@@ -39,4 +47,11 @@ urlpatterns = [
     path('api/get_ticket_listings', get_ticket_listings, name='get_ticket_listings'),
     path('api/add_ticket_listings', add_ticket_listing, name='add_ticket_listing'),
     path('api/del_ticket_listings', del_ticket_listing, name='del_ticket_listing'),
+
+    # Admin
+    path('api/categorys/', categorys, name='categorys'),
+    path('api/categorys/create/', create_category, name='create_category'),
+    path('api/categorys/update/', update_category, name='update_category'),
+    path('api/categorys/get/', get_category, name='get_category'),
+    path('api/categorys/delete/', delete_category, name='delete_category'),
 ]
