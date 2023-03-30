@@ -11,6 +11,7 @@ export const configuration = build_configuration<Configuration>({
     get_user: new Type('data-get-user', 'string'),
     delete_user: new Type('data-delete-user', 'string'),
     update_email: new Type('data-update-email', 'string'),
+    update_streamer_status: new Type('data-update-streamer-status', 'string'),
 });
 
 // -- Attach the event listeners

@@ -32,7 +32,8 @@ from StreamStage.secrets import STRIPE_PUB_KEY
 @authenticated()
 def profile(request):
     # -- Check if we are getting an impersonate request
-
+    request.user.ensure()
+    
     # -- Construct the context
     context = {
         'user': request.user,

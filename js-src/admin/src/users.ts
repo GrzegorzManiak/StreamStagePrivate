@@ -1,5 +1,5 @@
 import { attach, confirmation_modal, construct_modal, create_toast } from '../../common';
-import { delete_user, filter_users, get_user, update_email } from '../api';
+import { delete_user, filter_users, get_user, update_email, update_streamer_status } from '../api';
 import { FilterOrder, FilterPosition, FilterSort, FilterdUser, FilterdUsersSuccess, Pod, UserSuccess } from '../index.d';
 
 export async function manage_users_panel(pod: Pod) {
@@ -206,6 +206,7 @@ async function manage_modal(button: HTMLButtonElement, entry: HTMLElement, id: s
         email = modal_div.querySelector('#email') as HTMLInputElement,
         reset_password = modal_div.querySelector('#reset-btn') as HTMLButtonElement,
         delete_btn = modal_div.querySelector('#delete-btn') as HTMLButtonElement,
+        streamer = modal_div.querySelector('#streamer-status') as HTMLInputElement,
         impersonate = modal_div.querySelector('#impersonate-btn') as HTMLButtonElement,
         leave = modal_div.querySelector('#exit') as HTMLButtonElement;
 
@@ -216,7 +217,7 @@ async function manage_modal(button: HTMLButtonElement, entry: HTMLElement, id: s
     });
 
 
-    
+
     // -- On impersonate
     impersonate.addEventListener('click', async () => {
         // -- Open a popup
@@ -258,6 +259,15 @@ async function manage_modal(button: HTMLButtonElement, entry: HTMLElement, id: s
         () => {},
         'Are you sure you want to delete this user?',
     ));
+
+
+
+    // -- Streamer status
+    streamer.addEventListener('change', async () => {
+        const res = await update_streamer_status(id, streamer.checked) as UserSuccess;
+        if (res.code !== 200) create_toast('error', 'Oops! My bad', res.message);
+        else create_toast('success', 'Success!', 'Streamer status updated!');
+    });
 }
 
 
@@ -293,6 +303,18 @@ const modal_template = (user: FilterdUser) => `
 
     </div>
 
+    <hr>
+
+    <div class="d-flex w-100 justify-content-between flex-column">
+        <div class="w-100 form-check">
+            <!--Streamer Status-->
+            <input 
+                class="form-check-input" 
+                id="streamer-status" 
+                type="checkbox"
+                value="${user.streamer}">
+            <label class="form-check-label" for="streamer-status">Streamer</label>
+        </div>
     <hr>
 
     <div class="d-flex w-100 btn-group">

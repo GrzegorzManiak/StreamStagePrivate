@@ -39,6 +39,7 @@ def site_panel(request):
                 'get_user': reverse_lazy('get_user'),
                 'update_email': reverse_lazy('update_user_email'),
                 'delete_user': reverse_lazy('delete_user'),
+                'update_streamer_status': reverse_lazy('update_streamer_status'),
             }
         }
     )

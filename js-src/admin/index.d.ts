@@ -46,6 +46,7 @@ export interface Configuration {
     get_user: string,
     delete_user: string,
     update_email: string,
+    update_streamer_status: string,
 }
 
 

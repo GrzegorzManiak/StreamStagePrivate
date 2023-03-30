@@ -93,3 +93,20 @@ export const update_email = async (
     configuration.update_email,
     { id, email },
 );
+
+
+
+/**
+ * @name update_streamer_status
+ * @param {string} id - The id of the user to update
+ * @param {boolean} streamer - The new streamer status
+ * @returns {Promise<DefaultResponse>}
+ */
+export const update_streamer_status = async (
+    id: string,
+    streamer: boolean
+): Promise<DefaultResponse> => base_request(
+    'POST',
+    configuration.update_streamer_status,
+    { id, streamer },
+);

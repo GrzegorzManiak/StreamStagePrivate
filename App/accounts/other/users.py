@@ -185,3 +185,26 @@ def delete_user(request, data):
 
     # -- Return the response
     return success_response('Successfully deleted user')
+
+
+
+@api_view(['POST'])
+@is_admin()
+@required_data(['id', 'streamer'])
+def update_user_streamer(request, data):
+    """
+        This view updates a user's streamer status.
+    """
+    # -- Get the user
+    user = Member.objects.filter(id=data['id']).first()
+    if user is None: return invalid_response('User does not exist')
+
+    # --- Make sure the streamer status is valid
+    streamer = data['streamer'] == True
+    
+    # -- Update the user
+    user.is_streamer = streamer
+    user.save()
+
+    # -- Return the response
+    return success_response('Successfully updated streamer status')
