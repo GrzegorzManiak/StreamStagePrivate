@@ -4,6 +4,9 @@
 """
 
 # -- Imports
+from typing import List
+import uuid
+from store.processing import get_item_price
 from StreamStage.mail import send_template_email
 from accounts.models import Member
 from StreamStage.secrets import STRIPE
@@ -11,6 +14,7 @@ import stripe
 
 stripe.api_key = STRIPE['pri']
 
+customer_payment_intents = {}
 
 
 """
@@ -209,36 +213,111 @@ def remove_stripe_payment_method(user: Member, card_id: str):
         print(e)
         return False
     
+"""
+    Including a list of ticket listing ids, in the event that we decide we want
+    the ability to buy more than one item at a time.
 
+    Returns ID
+"""
+def create_cust_payment_intent(user: Member, listing_ids: List[str], payment_method: str = None):
+    price = 0
+
+    for listing_id in listing_ids:
+        item_price = get_item_price(listing_id)
+
+        if item_price == None:
+            return { "error": "Invalid listing ID given." }
+        else:
+            price += item_price
+        
+    # count how many cents are in price (Stripe only accepts integer val)
+    price = int(price*100)
+    
+    stripe_intent = create_stripe_payment_intent(user, price, payment_method)
+
+    if stripe_intent is None:
+        return { "error": "Could not create intent." }
+
+    confirm_payment_intent(stripe_intent.id)
+
+    cust_intent = {
+        "user": user,
+        "items": listing_ids,
+        "stripe_intent": stripe_intent
+    }
+
+    intent_id = str(uuid.uuid4())
+
+    customer_payment_intents[intent_id] = cust_intent
+
+    return { "intent_id": intent_id }
+
+def check_cust_payment_intent(user: Member, intent_id: str):
+    
+    pass
 
 """
-    :name: create_payment_intent
+    :name: create_stripe_payment_intent
     :description: This function creates a payment intent for the user
     :param user: The user object
     :param amount: The amount to charge
     :param payment_method: The payment method id (optional)
     :return: The payment intent
 """
-def create_payment_intent(user: Member, ammount: int, payment_method: str = None): 
+def create_stripe_payment_intent(user: Member, amount: int, payment_method: str = None): 
     # -- Check if the user is valid
     if user is None: return None
     customer = user.get_stripe_customer()
 
     # -- Create the payment intent
     payment_intent = stripe.PaymentIntent.create(
-        amount=ammount,
-        currency='usd',
+        amount=amount,
+        currency='eur',
         customer=customer.id,
-        payment_method=payment_method,
+        payment_method_types=["card"],
+        payment_method = payment_method
     )
-
-    
 
     # -- Return the payment intent
 
     return payment_intent
 
 
+"""
+    Attempts to confirm a stripe payment intent.
+"""
+def confirm_payment_intent(intent_id: str):
+    stripe.PaymentIntent.confirm(
+        intent = intent_id
+    )
+
+"""
+    Checks status of a stripe payment intent
+"""
+def check_stripe_payment_intent(intent: stripe.PaymentIntent):
+    intent : stripe.PaymentIntent = intent["stripe_intent"]
+    intent.refresh()
+
+    status = intent["status"]
+
+    if status == "succeeded":
+        return { "status": "success" }
+    elif status == "requires_action":
+        return { "status": "requires_action" }
+    elif status == "requires_payment_method":
+        return { "status": "requires_payment_method" }
+
+
+def check_cust_payment_intent(intent_id: str):
+    stripe_intent = customer_payment_intents.get(intent_id)
+
+    if stripe_intent is None:
+        print("intent not found")
+        return
+
+    response = check_stripe_payment_intent(stripe_intent)
+
+    return response
 
 """
     :name: start_subscription_saved_payment

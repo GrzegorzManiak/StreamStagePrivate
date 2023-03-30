@@ -7,10 +7,11 @@ from rest_framework.decorators import api_view
 from accounts.com_lib import authenticated, invalid_response, required_data, success_response
 from .payments import (
     add_stripe_payment_method,
+    create_cust_payment_intent,
     get_cards_formatted,
     remove_stripe_payment_method,
-    create_payment_intent,
-    start_subscription_saved_payment
+    start_subscription_saved_payment,
+    check_cust_payment_intent
 )
 
 
@@ -68,17 +69,29 @@ def remove_payment_method(request, data):
 
 @api_view(['POST'])
 @authenticated()
-def create_payment_intent(request):
+@required_data(["ids"])
+def create_payment_intent(request, data):
+    ids = data["ids"]
+
+    cards = get_cards_formatted(request.user)
+
     # -- Create the payment intent
-    payment_intent = create_payment_intent(request.user, 1000, 'pm_1MmVbfKeLSBX93CvGWW77Vgh')
+    response = create_cust_payment_intent(request.user, ids, cards[0]["id"])
 
-    if payment_intent is None:
-        return invalid_response('Could not create payment intent')
-
+    if response.get("error") is not None:
+        return invalid_response(response.get("error"))
+    
+    print(response.get("intent_id") + ", " + cards[0]["id"])
     # -- Return the payment intent
-    return payment_intent
+    return success_response("Intent created.", response)
 
-
+@api_view(['POST'])
+@authenticated()
+@required_data(['intent_id'])
+def check_payment_intent(request, data):
+    response = check_cust_payment_intent(data['intent_id'])
+    
+    return success_response("")
 
 @api_view(['POST'])
 @authenticated()
