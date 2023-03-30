@@ -1,53 +1,21 @@
 {% load tags %}
-
 <div id="refine-search-container">
     <form action="{% cross_app_reverse_tag 'search' 'searchResult' %}" method="get" class="row">
-        <h4 class="text-center m-0 border border-3 rounded border-light">Refine Search</h4>
+        <h4 class="col-md-6 col-sm-12 m-auto text-center">Refine Event Search</h4>
 
-    <!-- New Search -->
-        <div class="mt-1"> 
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="q"
+        
+        <div class="col-md-6 col-sm-12">
+            <button class="btn btn-primary my-3">Apply Filters</button>
+        </div>
+<!-- New Search -->
+        <div class="mt-1 col-md-4 col-sm-12">
+            <b>New Search</b>
+            <input class="form-control me-2" type="search" placeholder="New Search..." aria-label="Search" name="q"
                 value="{% if query %}{{ query }}{% endif %}">
         </div>
 
-    <!-- Sort By Price Asc, Price Desc -->
-        <div class="col-12 my-1">
-            <b>Sort by</b>
-            <label class="d-block">
-                {% if sort_by == 'price-asc' %}
-                <input type="radio" name="s" value="price-asc" checked>
-                {% else %}
-                <input type="radio" name="s" value="price-asc">
-                {% endif %}
-
-                Price, low to high
-            </label>
-            <label class="d-block">
-                {% if sort_by == 'price-desc' %}
-                <input type="radio" name="s" value="price-desc" checked>
-                {% else %}
-                <input type="radio" name="s" value="price-desc">
-                {% endif %}
-
-                Price, high to low
-            </label>
-            <label class="d-block">
-                {% if sort_by == 'none' or not sort_by %}
-                <input type="radio" name="s" value="none" checked>
-                {% else %}
-                <input type="radio" name="s" value="none">
-                {% endif %}
-
-                None
-            </label>
-
-            <!-- {% if query %}
-            <input type="hidden" name="q" value="{{ query }}">
-            {% endif %} -->
-        </div>
-    
-    <!-- Filter By Category -->
-        <div class="col-12 my-1">
+<!-- Filter By Category -->
+        <div class="my-1 col-md-4 col-sm-12">
             <b>Filter by Category</b>
 
             <select class="form-select" name="cat">
@@ -63,117 +31,125 @@
             </select>
         </div>
 
-    <!-- Filter By Broadcaster -->
-        <div class="col-12 my-1">
-            <div class="mt-1"> 
+<!-- Filter By Broadcaster -->
+        <div class="my-1 col-md-4 col-sm-12">
                 <b>Filter by Broadcaster</b>
-                <input class="form-control me-2" type="search" placeholder="Broadcaster" aria-label="Broadcaster" name="b"
-                    value="{% if broadcaster %}{{ broadcaster }}{% endif %}">
-            </div>
+                <input class="form-control me-2" type="search" placeholder="Broadcaster" aria-label="Broadcaster"
+                    name="b" value="{% if broadcaster %}{{ broadcaster }}{% endif %}">
         </div>
 
+<!-- Filter By Price -->
+        <div class="my-1 col-md-4 col-sm-12">
+            <div class="m-auto p-1 border border-2 border-light rounded">
+                <p class="m-0" data-bs-toggle="collapse" href="#pricefilter" role="button">
+                    <b> <i class="fa-solid fa-caret-down"></i> Filter by Price</b>
+                </p>
+                <div class="collapse {% if min_price or max_price %}show{% endif %}" id="pricefilter">
+                    <div id="price-filters">
+            <!-- Filter By Price Range -->
+                        <div>
+                            € <input class="border-light rounded" type="number" name="mip" 
+                            {% if min_price %} value="{{min_price}}" {% endif %}>
+                        </div>
+                        <p class="h5">to</p>
+                        <div>
+                            € <input class="border-light rounded mb-1" type="number me-auto" name="map" 
+                            {% if max_price %} value="{{max_price}}" {% endif %}>
+                        </div>
+                            
+            <!-- Sort By Price Asc, Price Desc -->
+                        <div class="col-12 my-1">
+                            <b>Sort by</b>
+            <!-- Sort By Price Low to High -->
+                            <label class="d-block">
+                                {% if sort_by == 'price-asc' %}
+                                <input type="radio" name="s" value="price-asc" checked>
+                                {% else %}
+                                <input type="radio" name="s" value="price-asc">
+                                {% endif %}
 
-    <!-- Filter By Venue -->
-    <div class="col-12 my-1">
-        <div class="mt-1"> 
-            <b>Filter by Venue</b>
-            <input class="form-control me-2" type="search" placeholder="Venue" aria-label="Venue" name="v"
-                value="{% if venue %}{{ venue }}{% endif %}">
-        </div>
-    </div>
+                                Lowest Priced First
+                            </label>
+            <!-- Sort By Price High to Low -->
+                            <label class="d-block">
+                                {% if sort_by == 'price-desc' %}
+                                <input type="radio" name="s" value="price-desc" checked>
+                                {% else %}
+                                <input type="radio" name="s" value="price-desc">
+                                {% endif %}
 
+                                Highest Priced First
+                            </label>
+            <!-- Sort By Price - "None" option -->
+                            <label class="d-block">
+                                {% if sort_by == 'none' or not sort_by %}
+                                <input type="radio" name="s" value="none" checked>
+                                {% else %}
+                                <input type="radio" name="s" value="none">
+                                {% endif %}
 
-    <!-- Filter By City -->
-    <div class="col-12 my-1">
-        <div class="mt-1"> 
-            <b>Filter by City</b>
-            <input class="form-control me-2" type="search" placeholder="City" aria-label="City" name="c"
-                value="{% if city %}{{ city }}{% endif %}">
-        </div>
-    </div>
-
-
-    <!-- Filter By Country -->
-    <div class="col-12 my-1">
-        <div class="mt-1"> 
-            <b>Filter by Country</b>
-            <input class="form-control me-2" type="search" placeholder="Country" aria-label="Country" name="co"
-                value="{% if country %}{{ country }}{% endif %}">
-        </div>
-    </div>
-
-<!-- 
-            <select class="form-select" name="b">
-                <option value="">None</option>
-                {% for broadcaster in broadasters %}
-                {% if broadcaster == q_broadcaster %}
-                <option value="{{ brand }}" selected="selected">{{ broadcaster }}</option>
-                {% else %}
-                <option value="{{ brand }}">{{ broadcaster }}</option>
-                {% endif %}
-                {% endfor %}
-            </select> -->
-
-
-
-    <!-- Filter By Date / Time? -->
-    <div class="m-auto p-1 border border-2 border-light rounded" style="width:90%">
-        <p class="m-0" data-bs-toggle="collapse" href="#datefilter" role="button">
-            <b>Filter by Date</b>
-        </p>
-        <div class="collapse {% if start_date or end_date %}show{% endif %}" id="datefilter">
-            <div id="date-filters">
-                <div>
-                    Start Date (dd/mm/yyyy) <input class="border-light rounded" type="datetime" name="sd" {% if start_date %}value="{{start_date}}" {% endif %}>
-                </div>
-                <p class="h5">to</p>
-                <div>
-                    End Date (dd/mm/yyyy) <input class="border-light rounded mb-1" type="datetime" name="ed" {% if end_date %}value="{{end_date}}" {% endif %}>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Filter By City / Country -->
-    
-        <!-- ????????? -->
-
-
-
-    <!-- Filter By Price Range -->
-        <div class="m-auto p-1 border border-2 border-light rounded" style="width:90%">
-            <p class="m-0" data-bs-toggle="collapse" href="#pricefilter" role="button">
-                <b>Filter by Price Range</b>
-            </p>
-            <div class="collapse {% if min_price or max_price %}show{% endif %}" id="pricefilter">
-                <div id="price-filters">
-                    <div>
-                        € <input class="border-light rounded" type="number" name="mip" {% if min_price %}value="{{min_price}}" {% endif %}>
-                    </div>
-                    <p class="h5">to</p>
-                    <div>
-                        € <input class="border-light rounded mb-1" type="number me-auto" name="map" {% if max_price %}value="{{max_price}}" {% endif %}>
+                                None
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-    <!-- Filter By Previous Purchases --> 
-        {% if user.is_authenticated %}
-        <div class="col-12 my-1">
-            <label class="d-block mt-3 mb-1">
-                {% if purchased %}
-                <input type="checkbox" name="p" value="y" checked>
-                {% else %}
-                <input type="checkbox" name="p" value="y">
-                {% endif %}
-    
-                Already Purchased
-            </label>
-            {% endif %}
         </div>
         
+<!-- Filter By Location -->
+        <div class="my-1 col-md-4 col-sm-12">
+            <div class="m-auto p-1 border border-2 border-light rounded">
+                <p class="m-0" data-bs-toggle="collapse" href="#locationfilter" role="button">
+                    <b> <i class="fa-solid fa-caret-down"></i> Filter by Location</b>
+                </p>
+                <div class="collapse {% if venue %}show{% endif %} col-12 my-1" id="locationfilter">
+                    <div id="location-filters">
+        <!-- Filter By Venue -->
+                        <div class="mt-1">
+                            Venue
+                            <input class="form-control me-2" type="search" placeholder="Venue" aria-label="Venue" name="v"
+                                value="{% if venue %}{{ venue }}{% endif %}">
+                        </div>
 
-        <button class="btn btn-primary my-3" style="max-width: 50%">Apply</button>
+        <!-- Filter By City -->
+                        <div class="mt-1">
+                            City
+                            <input class="form-control me-2" type="search" placeholder="City" aria-label="City" name="c"
+                                value="{% if city %}{{ city }}{% endif %}">
+                        </div>
+
+        <!-- Filter By Country -->
+                        <div class="mt-1">
+                            Country
+                            <input class="form-control me-2" type="search" placeholder="Country" aria-label="Country" name="co"
+                                value="{% if country %}{{ country }}{% endif %}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<!-- Filter By Date -->
+        <div class="my-1 col-md-4 col-sm-12">
+            <div class="m-auto p-1 border border-2 border-light rounded">
+                <p class="m-0" data-bs-toggle="collapse" href="#datefilter" role="button">
+                    <b> <i class="fa-solid fa-caret-down"></i> Filter by Date</b>
+                </p>
+                <div class="collapse {% if start_date or end_date %}show{% endif %}" id="datefilter">
+                    <div id="date-filters">
+                        <div>
+                            Start Date (dd/mm/yyyy) <input class="border-light rounded" type="datetime" name="sd" 
+                            {% if start_date %} value="{{start_date}}" {% endif %}>
+                        </div>
+                        <p class="h5">to</p>
+                        <div>
+                            End Date (dd/mm/yyyy) <input class="border-light rounded mb-1" type="datetime" name="ed" 
+                            {% if end_date %} value="{{end_date}}" {% endif %}>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </form>
 </div>

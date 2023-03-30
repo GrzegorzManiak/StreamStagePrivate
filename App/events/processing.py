@@ -1,4 +1,8 @@
 from .models import *
+from StreamStage.identifiers import generate_event_id
+
+from .ticketing import create_ticket_listing
+from .ticketing import TicketType
 
 # Viewing an individual Event
 
@@ -72,5 +76,14 @@ def get_media(self):
 def get_media_count(self):
     return get_media().count()
 
+def create_event(data):
+    event = Event(
+        broadcaster = data['broadcaster'],
+        title = data['title'],
+        description = data['description'],
+        over_18s = data['over_18s'],
+        event_id = generate_event_id(),
+        #live_price = data['live_price']
+    )
 
-
+    create_ticket_listing(event, TicketType.Streaming, data['stream_price'], None)

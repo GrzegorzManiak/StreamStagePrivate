@@ -12,7 +12,6 @@ import mimetypes
 import base64
 import io
 from PIL import Image
-from django.core.files.base import ContentFile
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
@@ -25,7 +24,6 @@ from .oauth import OAuthTypes
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from .validation import check_unique_broadcaster_handle
-from annoying.fields import AutoOneToOneField
 
 from StreamStage.secrets import STRIPE_SECRET_KEY
 from StreamStage.settings import MEDIA_URL
@@ -453,9 +451,6 @@ class Report(models.Model):
     reporter = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="reporter")
         
     r_user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="reported_user", null=True, blank=True)
-    r_broadcaster = models.ForeignKey('accounts.Broadcaster', on_delete=models.CASCADE, related_name="reported_broadcaster", null=True, blank=True)
-    r_review = models.ForeignKey('events.EventReview', on_delete=models.CASCADE, related_name="reported_review", null=True, blank=True)
-    r_event = models.ForeignKey('events.Event', on_delete=models.CASCADE, related_name="reported_event", null=True, blank=True)
 
     reason = models.CharField("Reason", max_length=4000)
     time = models.TimeField(auto_now_add=True)

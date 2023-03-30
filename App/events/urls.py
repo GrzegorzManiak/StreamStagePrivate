@@ -11,7 +11,13 @@ from .views import (event_create,
                     review_like,
                     showing_create,
                     showing_update,
-                    showing_delete,
+                    showing_delete
+)
+
+from .api import (
+    get_ticket_listings,
+    add_ticket_listing,
+    del_ticket_listing
 )
 
 urlpatterns = [
@@ -28,4 +34,9 @@ urlpatterns = [
     path('<slug:event_id>/review/<slug:review_id>/update/', review_update, name='review_update'),
     path('<slug:event_id>/review/<slug:review_id>/delete/', review_delete, name='review_delete'),
     path('review/<slug:review_id>/like', review_like),
+
+    # API
+    path('api/get_ticket_listings', get_ticket_listings, name='get_ticket_listings'),
+    path('api/add_ticket_listings', add_ticket_listing, name='add_ticket_listing'),
+    path('api/del_ticket_listings', del_ticket_listing, name='del_ticket_listing'),
 ]

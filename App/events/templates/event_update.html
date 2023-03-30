@@ -10,14 +10,42 @@ Update Event | StreamStage
 {% endblock title %}
 
 {% block content %}
-<div>
+<span 
+    class='config'
+
+    data-csrf-token='{{ csrf_token }}'
+
+    data-event-id='{{ event_id }}'
+
+    data-get-ticket-listings='{{ api.get_ticket_listings }}'
+    data-add-ticket-listing='{{ api.add_ticket_listing }}'
+    data-del-ticket-listing='{{ api.del_ticket_listing }}'
+></span>
+
+<div class="row m-auto" style="max-width: 1200px">
     <h1 class="page-title">Edit Event</h1>
-    <div class="d-flex content_center">
-        <form class="form-layout" action="" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" value="Update" />
-        </form>
+    <div class="col-8">
+        <h1>General</h1>
+        <div class="d-flex content_center">
+            <form class="form-layout" action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <input type="submit" value="Update" />
+            </form>
+        </div>
+    </div>
+    <div class="col-4">
+        <h1>The Stuff</h1>
+
+        <div>
+            <h3>Ticket Listings</h3>
+            <div id="ticket-listings-panel">
+
+            </div>
+            <span id="add-ticket-listing-btn" class="btn btn-success">Add Listing</span>
+        </div>
+
     </div>
 </div>
+<script src="/static/js/event_edit_bin.js"></script>
 {% endblock %}

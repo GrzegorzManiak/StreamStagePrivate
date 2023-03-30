@@ -26,7 +26,7 @@ def event_view(request, event_id):
     event = Event.objects.filter(event_id=event_id).first()
 
     if event == None:
-        return redirect('all_events')
+        return redirect('homepage_index')
     
     reviews = event.get_reviews().order_by('-created')
     review_context = inline_reviews.handle(request, event)
@@ -76,7 +76,7 @@ def event_create(request):
     
     form = EventApplyForm(request.POST or None)
     if not request.user.is_authenticated or not request.user.is_streamer:
-        return redirect('all_events')
+        return redirect('homepage_index')
     if form.is_valid():
         new_event_id = identifiers.generate_event_id()
         form = form.save(commit=False)
@@ -91,13 +91,22 @@ def event_create(request):
 
 # Update an event
 def event_update(request, event_id):
-    context = {}
     event = Event.objects.get(event_id=event_id)
 
     if not request.user.is_authenticated or not request.user.is_streamer:
-        return redirect('all_events')
+        return redirect('homepage_index')
     if event == None: # if event id in URL is invalid, redirect
-        return redirect('all_events')
+        return redirect('homepage_index')
+    
+    context = {
+        'event_id': event_id,
+
+        'api': {
+            'get_ticket_listings': reverse_lazy('get_ticket_listings'),
+            'add_ticket_listing': reverse_lazy('add_ticket_listing'),
+            'del_ticket_listing': reverse_lazy('del_ticket_listing')
+        }
+    }
     
     form = EventUpdateForm(instance=event, data=request.POST)
     if form.is_valid():
@@ -114,10 +123,10 @@ def event_delete(request, event_id):
     event = Event.objects.get(event_id=event_id)
     
     if not request.user.is_authenticated or not request.user.is_streamer:
-        return redirect('all_events')
+        return redirect('homepage_index')
     # if event id in URL is invalid or user doesn't own this event, redirect
     if event == None or not request.user == event.streamer:
-        return redirect('all_events')
+        return redirect('homepage_index')
     
     form = EventDeleteForm(instance=event)
     if request.POST:

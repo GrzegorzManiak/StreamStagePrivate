@@ -14,7 +14,7 @@ def index(request):
 
     context = {
         'is_admin': request.user.is_superuser,
-        'base_url': settings.DOMAIN_NAME,
+        'base_url': settings.DOMAIN_NAME
     }
 
     return render(

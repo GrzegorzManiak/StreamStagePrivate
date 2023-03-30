@@ -150,6 +150,8 @@ class SearchResultsListView(ListView):
         context['venue'] = self.request.GET.get('v')
         context['city'] = self.request.GET.get('c')
         context['country'] = self.request.GET.get('co')
+        
+
         # context['min_price'] = self.request.GET.get('mip')
         # context['max_price'] = self.request.GET.get('map')
 

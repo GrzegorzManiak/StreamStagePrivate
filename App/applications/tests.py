@@ -107,7 +107,8 @@ class ApplicationTests(TestCase):
             "broadcaster": test_broadcaster,
             "title": test_title,
             "description": test_description,
-            "over_18s": test_over_18
+            "over_18s": test_over_18,
+            "stream_price": 3.99
         }
 
         submit_event_application(test_applicant, test_data)
@@ -205,7 +206,8 @@ class ApplicationTests(TestCase):
             test_event = Event(
                 title = "New Event 02",
                 description = "A cool event for tests!",
-                broadcaster = test_broadcaster
+                broadcaster = test_broadcaster,
+                # stream_price = 3.99
             )
             test_event.save()
 

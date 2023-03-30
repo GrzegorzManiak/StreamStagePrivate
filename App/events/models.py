@@ -2,9 +2,8 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django_countries.fields import CountryField
-from django.core.validators import MaxValueValidator, MinValueValidator 
+from django.core.validators import MaxValueValidator, MinValueValidator
 
-from accounts.models import Broadcaster, Member
 from datetime import datetime, timedelta
 import uuid
 
@@ -25,6 +24,18 @@ class Category(models.Model):
     def get_all_categories(self):
         return Category.objects.all().order_by('name')
 
+class TicketListing(models.Model):
+    listing_id = models.UUIDField(default=uuid.uuid4)
+    event = models.ForeignKey(to="events.Event", on_delete=models.CASCADE)
+    ticket_detail = models.CharField(max_length=100, blank=True)
+
+    price = models.DecimalField(max_digits=1000, decimal_places=2, validators=[MinValueValidator(0)])
+
+    ticket_type = models.IntegerField(default=0) # streaming ticket ID
+
+    # 0 means no stocking.
+    maximum_stock = models.IntegerField(default=0, validators=[MinValueValidator(-1)])
+    remaining_stock = models.IntegerField(default=0, validators=[MinValueValidator(0)])
 
 # Event Model
 class Event(models.Model):
@@ -32,15 +43,11 @@ class Event(models.Model):
     title = models.TextField("Title", default="New Event")
     description = models.TextField("Description", max_length=3096)
     over_18s = models.BooleanField(default=False)
-    broadcaster = models.ForeignKey(Broadcaster, on_delete=models.CASCADE)
+    broadcaster = models.ForeignKey(to="accounts.Broadcaster", on_delete=models.CASCADE)
     categories = models.ManyToManyField(to=Category)
     primary_media_idx = models.IntegerField(default=0) # Points to an item in the 'media' field - used as a cover photo 
     contributors = models.ManyToManyField(get_user_model(), related_name="event_contributors", blank=True)
     approved = models.BooleanField("Approved", default=False)
-    stream_price = models.DecimalField("Streaming Ticket Price", validators=[MinValueValidator(0), MaxValueValidator(999)], decimal_places=2, max_digits=10, null=True)
-    live_price = models.DecimalField("In-Person Ticket Price", validators=[MinValueValidator(0), MaxValueValidator(999)], decimal_places=2, max_digits=10, null=True)
-
-    live_ticket_stock = models.IntegerField("Remaining Live Ticket Stock", default=0)
 
     # Event
     
@@ -52,6 +59,13 @@ class Event(models.Model):
     
     def short_description(self):
         return self.description[:250]
+    
+    # Tickets
+    def get_ticket_listings(self):
+        return TicketListing.objects.filter(event=self).all()
+    
+    def has_ticket_listings(self):
+        return self.get_ticket_listings().count > 0
     
     # Media
 
@@ -141,7 +155,7 @@ class EventReview(models.Model):
     updated = models.DateTimeField("Updated", auto_now=True)
     likes = models.IntegerField("Review Likes", default=0)
     rating = models.SmallIntegerField("Event Rating", default=10, validators=[MinValueValidator(0), MaxValueValidator(10)])
-    likers = models.ManyToManyField(to=Member)
+    likers = models.ManyToManyField(to="accounts.Member")
 
     class Meta:
         verbose_name = 'Event Review'
