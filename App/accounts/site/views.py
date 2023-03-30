@@ -36,6 +36,7 @@ def site_panel(request):
                 'remove_verification': reverse_lazy('remove_key'),
                 'recent_verification': reverse_lazy('recent_key'),
                 'users': reverse_lazy('users'),
+                'get_user': reverse_lazy('get_user'),
             }
         }
     )

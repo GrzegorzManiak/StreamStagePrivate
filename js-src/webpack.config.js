@@ -5,7 +5,7 @@ module.exports = {
     mode: "production",
     optimization: { minimizer: [new TerserPlugin()] },
     entry: {
-        settings: './settings/index.ts',
+        // settings: './settings/index.ts',
         // api: './api/index.ts',
         // common: './common/index.ts',
         // login: './login/index.ts',

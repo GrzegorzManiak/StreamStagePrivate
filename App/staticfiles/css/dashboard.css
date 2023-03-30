@@ -53,6 +53,7 @@
 [data-pod='streamstageplus'] .side-panel-pod-icon { background-color: #88d464; }
 
 /* Security */
+[data-pod='exit'] .side-panel-pod-icon { background-color: #ff6a6a; }
 [data-pod='security'] .side-panel-pod-icon { background-color: #ff6a6a; }
 [data-pod='security-preferences'] .side-panel-pod-icon { background-color: #ff6a6a; }
 [data-pod='security-mfa'] .side-panel-pod-icon { background-color: #ff6a6a; }

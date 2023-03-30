@@ -103,3 +103,38 @@ def users(request, data):
         'total': len(processed_users),
         'pages': total_pages,
     })
+
+
+
+@api_view(['GET'])
+@is_admin()
+@required_data(['id'])
+def get_user(request, data):
+    """
+        This view returns a single user in the database in a formatted list.
+        Some data is truncated to save performance.
+    """
+    # -- Get the user
+    user = Member.objects.filter(id=data['id']).first()
+    if user is None: return invalid_response('User does not exist')
+
+    # -- Format the data
+    return success_response('Successfully retrieved user', {
+        'username': user.username,
+        'cased_username': user.cased_username,
+
+        'email': user.email,
+        'streamer': user.is_streamer,
+        'over_18': user.over_18,
+        'is_staff': user.is_staff,
+
+        'profile_picture': user.get_profile_pic(),
+        'profile_banner': user.get_profile_banner(),
+
+        'updated': user.last_login,
+        'created': user.date_joined,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+        'description': user.description,
+        'id': user.id,
+    })

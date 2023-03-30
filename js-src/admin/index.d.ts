@@ -43,6 +43,7 @@ export type StatisticsResponse = StatisticsSuccess | DefaultResponse;
 export interface Configuration {
     statistics: string,
     users: string,
+    get_user: string,
 }
 
 
@@ -77,3 +78,6 @@ export interface FilterdUsers {
 
 export type FilterdUsersSuccess = DefaultResponseData & { data: FilterdUsers }
 export type FilterdUsersResponse = FilterdUsersSuccess | DefaultResponse;
+
+export type UserSuccess = DefaultResponseData & { data: FilterdUser }
+export type UserResponse = UserSuccess | DefaultResponse;

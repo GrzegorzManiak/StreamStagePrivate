@@ -73,8 +73,61 @@
             id='side-panel'
             class='side-panel text-light'
             side-panel='hidden'
-        >
+        >   
+            {% comment %} if (window.opener && window.opener !== window) {
+                window.opener.postMessage({ type: 'close' }, '*');
+            } {% endcomment %}
             <div class='width-limiter'>
+
+                {% if request.impersonate %}
+                    <section id='pod-impersonate'>
+                        <div class='side-panel-header'>
+                            <p class='side-panel-header-text'>
+                                Impersonate
+                            </p>
+                        </div>
+
+                        <div class='pods'>
+                            <div 
+                                data-pod-status=''
+                                data-pod='exit'
+                            class='
+                                side-panel-pod
+                                text-light d-flex
+                                align-items-center
+                                justify-content-start
+                            '>
+                                <!-- Icon -->
+                                <div 
+                                    class='
+                                        side-panel-pod-icon
+                                        d-flex
+                                        align-items-center
+                                        justify-content-center
+                                    '
+                                >
+                                    <i class="fa-solid text-justify accordion
+                                        fa-person-from-portal
+                                    "></i>
+                                </div>
+
+                                <!-- Text -->
+                                <div class='side-panel-pod-text'>
+                                    <p class='side-panel-pod-text-text m-0 mb-0'>
+                                        Exit Impersonation
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <script>
+                        const exitImpersonation = document.querySelector('[data-pod="exit"]');
+                        exitImpersonation.addEventListener('click', () => window.close());
+                    </script>
+                {% endif %}
+
+
                 <section id='pod-general'>
                     <!-- 
                         Header - General

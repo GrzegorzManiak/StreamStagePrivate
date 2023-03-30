@@ -1,6 +1,6 @@
-import { create_toast, sleep } from '../../common';
-import { filter_users } from '../api';
-import { FilterOrder, FilterPosition, FilterSort, FilterdUser, FilterdUsersSuccess, Pod } from '../index.d';
+import { attach, construct_modal, create_toast, sleep } from '../../common';
+import { filter_users, get_user } from '../api';
+import { FilterOrder, FilterPosition, FilterSort, FilterdUser, FilterdUsersSuccess, Pod, UserSuccess } from '../index.d';
 
 export async function manage_users_panel(pod: Pod) {
     // -- Gather all the inputs
@@ -165,5 +165,129 @@ function create_user(element: HTMLElement, user: FilterdUser) {
 
     // -- Get the buttons
     const edit = div.querySelector('.edit') as HTMLButtonElement;
+    edit.addEventListener('click', () => manage_modal(edit, user.id));
 }
 
+
+
+/**
+ * @name manage_modal
+ * @description Creates and pops up a modal
+ * @param {HTMLButtonElement} button The button to open the modal
+ * @param {string} id The id of the user this modal is for
+ */
+async function manage_modal(button: HTMLButtonElement, id: string) {
+    // -- Attach the spinner and get the user 
+    const stop = attach(button);
+
+    // -- Get the user
+    const res = await get_user(id) as UserSuccess;
+    if (res.code !== 200) {
+        create_toast('error', 'Oops! My bad', res.message);
+        return stop();
+    }
+
+    // -- Create the modal
+    const modal = construct_modal(
+        'Manage User',
+        'Delete, Impersonate, and more!',
+        false, 'success',
+        modal_template(res.data),
+    );
+
+    // -- Add the modal to the page
+    const modal_div = document.createElement('div');
+    modal_div.innerHTML = modal;
+    document.body.appendChild(modal_div);
+
+    // -- Get the buttons and inputs
+    const email_save = modal_div.querySelector('#save-btn') as HTMLButtonElement,
+        email = modal_div.querySelector('#email') as HTMLInputElement,
+        reset_password = modal_div.querySelector('#reset-btn') as HTMLButtonElement,
+        delete_user = modal_div.querySelector('#delete-btn') as HTMLButtonElement,
+        impersonate = modal_div.querySelector('#impersonate-btn') as HTMLButtonElement,
+        leave = modal_div.querySelector('#exit') as HTMLButtonElement;
+
+
+    // -- On leave destroy the modal
+    leave.addEventListener('click', () => {
+        modal_div.remove(); stop();
+    });
+
+    // -- On impersonate
+    impersonate.addEventListener('click', async () => {
+        // -- Open a popup
+        const stop_impersonate = attach(impersonate);
+        const popup = window.open(
+            '/?impersonate=' + id, 
+            'popUpWindow',
+            '_blank, width=900, height=700, left=10, top=10, resizable=yes, scrollbars=yes, toolbar=yes, menubar=no, location=no, directories=no, status=yes'
+        );
+        if (popup) popup.focus();
+        popup?.addEventListener('load', () => stop_impersonate());
+    });
+}
+
+
+
+/**
+ * @name modal_template
+ * @description The template for the modal
+ * @param {FilterdUser} user The user to display
+ * @returns {string} The template
+ */
+const modal_template = (user: FilterdUser) => `
+    <div class="d-flex w-100 justify-content-between flex-column">
+        <!--Email Change-->
+        <label class="form-label" for="email">New Email</label>
+        
+        <div 
+            class='w-100 btn-group'
+            style='background-color: var(--theme-backdrop-color)'
+        >
+            <input 
+                name="email" 
+                id="email" 
+                placeholder="Sick@email.com" 
+                value="${user.email}"
+            class="form-control form-control-lg inp">
+            
+            <!-- Confirm Email Change -->
+            <button type="submit" id="save-btn" class="btn btn-primary info loader-btn" loader-state='default'>   
+                <span><div class='spinner-border' role='status'><span class='visually-hidden'>Loading...</span></div>
+                </span><p>Save</p>
+            </button>
+        </div>
+
+    </div>
+
+    <hr>
+
+    <div class="d-flex w-100 btn-group">
+        <!--Send reset password email-->
+        <button type="submit" id="reset-btn" class="btn btn-slim btn-warn warning loader-btn" loader-state='default'>
+            <span><div class='spinner-border' role='status'><span class='visually-hidden'>Loading...</span></div>
+            </span><p>Reset Password</p>
+        </button>
+
+        <!--Impersonate-->
+        <button type="submit" id="impersonate-btn" class="btn btn-slim btn-primary info loader-btn" loader-state='default'>
+            <span><div class='spinner-border' role='status'><span class='visually-hidden'>Loading...</span></div>
+            </span><p>Impersonate</p>
+        </button>
+
+        <!--Delete-->
+        <button type="submit" id="delete-btn" class="btn btn-slim btn-danger error loader-btn" loader-state='default'>
+            <span><div class='spinner-border' role='status'><span class='visually-hidden'>Loading...</span></div>
+            </span><p>Delete</p>
+        </button>
+    </div>
+
+    <hr>
+
+    <!--Exit Button-->
+    <button type="submit" id="exit"
+        class="btn btn-lg btn-success success w-100 loader-btn" loader-state='default'>
+        <p>Leave</p>
+    </button>
+`;

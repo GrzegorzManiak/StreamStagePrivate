@@ -8,6 +8,7 @@ import { manage_users_panel } from './src/users';
 export const configuration = build_configuration<Configuration>({
     statistics: new Type('data-statistics', 'string'),
     users: new Type('data-users', 'string'),
+    get_user: new Type('data-get-user', 'string'),
 });
 
 // -- Attach the event listeners

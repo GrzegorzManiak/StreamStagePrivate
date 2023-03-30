@@ -30,8 +30,8 @@
         {% if request.impersonate %}
             <!-- Absolute position -->
             <div class="alert alert-warning imp-lable" role="alert">
-                You are currently impersonating 
-                <span class='name'>{{ request.user.cased_username }} | {{ request.user.email }}</span>
+                <p class='m-0'>You are currently impersonating</p>
+                <p class='name m-0'>{{ request.user.cased_username }} | {{ request.user.email }}</p>
             </div>
         {% endif %}
 
