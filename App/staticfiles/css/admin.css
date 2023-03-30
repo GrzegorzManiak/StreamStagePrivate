@@ -1,13 +1,19 @@
 [data-pod='server'] .side-panel-pod-icon { background-color: #4de061; }
 [data-pod='cash_flow'] .side-panel-pod-icon { background-color: #4de061; }
 [data-pod='tickets'] .side-panel-pod-icon { background-color: #4de061; }
-[data-pod='reviews'] .side-panel-pod-icon { background-color: #4de061; }
 [data-pod='subscriptions'] .side-panel-pod-icon { background-color: #4de061; }
 [data-pod='viewers'] .side-panel-pod-icon { background-color: #4de061; }
 
-
 [data-pod='accounts'] .side-panel-pod-icon { background-color: #4daae0; }
 [data-pod='users'] .side-panel-pod-icon { background-color: #4daae0; }
+
+[data-pod='categories'] .side-panel-pod-icon { background-color: #634de0; }
+[data-pod='venues'] .side-panel-pod-icon { background-color: #634de0; }
+[data-pod='broadcasters'] .side-panel-pod-icon { background-color: #634de0; }
+[data-pod='events'] .side-panel-pod-icon { background-color: #634de0; }
+[data-pod='reviews'] .side-panel-pod-icon { background-color: #634de0; }
+[data-pod='review_statistics'] .side-panel-pod-icon { background-color: #634de0; }
+
 
 
 .graphs {
