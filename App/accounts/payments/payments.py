@@ -294,7 +294,7 @@ def confirm_payment_intent(intent_id: str):
 """
     Checks status of a stripe payment intent
 """
-def check_stripe_payment_intent(intent: stripe.PaymentIntent):
+def check_stripe_payment_intent_status(intent: stripe.PaymentIntent):
     intent : stripe.PaymentIntent = intent["stripe_intent"]
     intent.refresh()
 
@@ -302,10 +302,24 @@ def check_stripe_payment_intent(intent: stripe.PaymentIntent):
 
     if status == "succeeded":
         return { "status": "success" }
+    elif status == "requires_confirmation":
+        pass
+    elif status == "canceled":
+        return { "status": "canceled" }
     elif status == "requires_action":
-        return { "status": "requires_action" }
+
+        response = { "status": "requires_action" }
+        next_action = intent["next_action"]
+
+        if next_action["type"] == "redirect_to_url":
+            response["next_action"] = next_action["redirect_to_url"]["url"]
+        elif next_action["type"] == "use_stripe_sdk":
+            response["next_action"] = next_action["use_stripe_sdk"]["stripe_js"]
+
+        return response
     elif status == "requires_payment_method":
         return { "status": "requires_payment_method" }
+        
 
 
 def check_cust_payment_intent(intent_id: str):
@@ -315,7 +329,7 @@ def check_cust_payment_intent(intent_id: str):
         print("intent not found")
         return
 
-    response = check_stripe_payment_intent(stripe_intent)
+    response = check_stripe_payment_intent_status(stripe_intent)
 
     return response
 

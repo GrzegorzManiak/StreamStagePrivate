@@ -13,9 +13,11 @@
 </span>
 
 <span 
-    id='config'
+    class='config'
 
     data-csrf-token='{{ csrf_token }}'
+
+    data-event-id='{{event.event_id}}'
 
     data-send-verification='{{ api.send_verification }}'
     data-resend-verification='{{ api.resend_verification }}'
@@ -24,7 +26,10 @@
 
     data-add-payment='{{ api.add_payment }}'
     data-get-payments='{{ api.get_payments }}'
-    data-remove-payment='{{ api.remove_payment }}'
+    data-remove-payment='{{ api.remove_payment }}',
+    
+    data-create-payment='{{ api.create_payment }}'
+    data-check-payment='{{ api.check_payment }}'
 
     data-get-reviews='{{ api.get_reviews }}'
     data-update-review='{{ api.update_review }}'
@@ -108,7 +113,7 @@
                                 <div>€{{ ticket.price }}</div>
                             </div>
                             <div class="col-6">
-                                <span id="buy-streaming-ticket" class="btn btn-success m-auto" name="purchase-stream">Buy Tickets</span>
+                                <span class="btn btn-success m-auto purchase-ticket" name="purchase-stream" data-ticket-id="{{ ticket.listing_id }}" data-item-name="{{ ticket.ticket_detail }}" data-item-price="{{ ticket.price }}">Buy</span>
                             </div>
                         </div>
                         {% endfor %}

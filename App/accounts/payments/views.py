@@ -4,7 +4,7 @@
 
 # -- Imports
 from rest_framework.decorators import api_view
-from accounts.com_lib import authenticated, invalid_response, required_data, success_response
+from accounts.com_lib import authenticated, invalid_response, required_data, success_response, error_response
 from .payments import (
     add_stripe_payment_method,
     create_cust_payment_intent,
@@ -65,8 +65,6 @@ def remove_payment_method(request, data):
     # -- Return the payment method
     return success_response('Payment method removed successfully', payment_method)
 
-
-
 @api_view(['POST'])
 @authenticated()
 @required_data(["ids"])
@@ -91,7 +89,18 @@ def create_payment_intent(request, data):
 def check_payment_intent(request, data):
     response = check_cust_payment_intent(data['intent_id'])
     
-    return success_response("")
+    status = response["status"]
+    
+    if status == "success":
+        return success_response("Purchase completed!")
+    elif status == "requires_action":
+        data = { "next_action": response["next_action"] }
+
+        return success_response("Additional action required.", data)
+    elif status == "canceled":
+        return error_response("Payment cancelled")
+    
+    return error_response("Error in checking status of payment")
 
 @api_view(['POST'])
 @authenticated()
