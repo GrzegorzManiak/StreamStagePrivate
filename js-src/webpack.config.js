@@ -14,11 +14,11 @@ module.exports = {
         // srr_visualizer: './srr_visualizer/index.ts',
         // homepage: './homepage/index.ts',
          events: './events/index.ts',
-         event_edit: './event_edit/index.ts',
+        // event_edit: './event_edit/index.ts',
         // navbar: './elements/navbar.ts',
         // profiles: './profiles/index.ts',
         // broadcaster_profiles: './broadcaster_profiles/index.ts',
-        admin: './admin/index.ts',
+        //admin: './admin/index.ts',
     },
     module: {
         rules: [
