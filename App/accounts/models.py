@@ -166,11 +166,11 @@ class Member(AbstractUser):
             img_tmp.flush()   
             
             if type == 'pfp':
-                img = File(img_tmp, name=f'profile_pictures/{self.id}{image_ext}')
+                img = File(img_tmp, name=f'profile/pfp/{self.id}{image_ext}')
                 self.profile_pic = img
 
             elif type == 'banner':
-                img = File(img_tmp, name=f'profile_banners/{self.id}{image_ext}')
+                img = File(img_tmp, name=f'profile/banners/{self.id}{image_ext}')
                 self.profile_banner = img
 
             self.save()
@@ -197,11 +197,11 @@ class Member(AbstractUser):
             img_tmp.flush()
 
             if type == 'pfp':
-                img = File(img_tmp, name=f'profile_pictures/{uuid.uuid4()}.webp')
+                img = File(img_tmp, name=f'profile/pfp/{uuid.uuid4()}.webp')
                 self.profile_pic = img
 
             elif type == 'banner':
-                img = File(img_tmp, name=f'profile_banners/{uuid.uuid4()}.webp')
+                img = File(img_tmp, name=f'profile/banners/{uuid.uuid4()}.webp')
                 self.profile_banner = img
 
             self.save()
@@ -368,6 +368,8 @@ class MembershipStatus(models.Model):
     def get_remaining_time(self):
         return (self.expires_on.astimezone(timezone.utc) - datetime.datetime.now(tz=timezone.utc))
     
+
+
 # Broadcaster - entity that controls events/streams
 class Broadcaster(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -392,9 +394,16 @@ class Broadcaster(models.Model):
 
     # whether the application for this broadcaster has been approved
     approved = models.BooleanField("Approved", default=False)
+
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+    banner = models.ImageField("Banner", upload_to="broadcaster", blank=True, null=True)
+    profile_pic = models.ImageField("Profile Picture", upload_to="broadcaster", blank=True, null=True)
+    
     
     USERNAME_FIELD = 'streamer'
     REQUIRED_FIELDS = ['category']
+    
 
     def __str__(self):
         return str("@" + self.handle)
@@ -406,6 +415,66 @@ class Broadcaster(models.Model):
         self.handle = new_handle.lower()
         self.save()
 
+
+
+    def get_picture(self, type: str):
+        """
+            Returns the a picture url based on the type
+            - banner
+            - profile_pic
+        """
+        if type == "banner":
+            if self.banner is None or self.banner == "": 
+                return None
+
+            if self.banner is not None:
+                return f'/{MEDIA_URL}{self.banner}'
+
+        if type == "profile_pic":
+            if self.profile_pic is None or self.profile_pic == "": 
+                return None
+
+            if self.profile_pic is not None:
+                return f'/{MEDIA_URL}{self.profile_pic}'
+            
+        return None
+
+
+
+    def set_picture_b64(self, type: str, base64_data: str):
+        """
+            Sets the picture based on a base64 string
+            and of a certain type
+            - banner
+            - profile_pic
+        """
+        try:
+            img_tmp = NamedTemporaryFile(delete=True)
+            image_data = base64.b64decode(base64_data.split(',')[1])
+            image = Image.open(io.BytesIO(image_data))
+
+            # -- Compress the image
+            image = image.save(img_tmp, 'webp', quality=75)
+
+            # -- Save the image to the media folder
+            img_tmp.write(image_data)
+            img_tmp.flush()
+
+            # -- Set the image
+            if type == "banner":
+                img = File(img_tmp, name=f'broadcaster/banners/{uuid.uuid4()}.webp')
+                self.banner = img
+
+            elif type == "profile_pic":
+                img = File(img_tmp, name=f'broadcaster/pfp/{uuid.uuid4()}.webp')
+                self.profile_pic = img
+
+            self.save()
+            return True
+        
+        except Exception as e:
+            print(e)
+            return False
         
 
 

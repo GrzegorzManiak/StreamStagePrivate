@@ -20,7 +20,7 @@ from .api import (
     del_ticket_listing
 )
 
-from .admin import (
+from .ext_api import (
     categorys,
     create_category,
     update_category,

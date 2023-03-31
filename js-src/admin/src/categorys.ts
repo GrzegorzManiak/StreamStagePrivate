@@ -140,6 +140,10 @@ export function create_category_modal(
 
 /**
  * @name create_category_panel
+ * @param {() => void} refresh_categories
+ * @param {string} image - The image url
+ * @param {string} id - The id of the category
+ * @returns {Promise<void>}
  */
 export async function create_category_panel(
     refresh_categories: () => void,
