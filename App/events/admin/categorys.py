@@ -44,7 +44,7 @@ def categorys(request, data):
         case 'created': sort = 'created'
         case 'name': sort = 'name'
         case 'description': sort = 'description'
-        case 'color': sort = 'color'
+        case 'color': sort = 'hex_color'
 
     # -- Order
     if data['order'] == 'desc': sort = '-' + sort
@@ -58,33 +58,41 @@ def categorys(request, data):
         categorys = categorys.filter(
             Q(name__icontains=data['search']) |
             Q(description__icontains=data['search']) |
-            Q(color__icontains=data['search'])
+            Q(hex_color__icontains=data['search'])
         )
 
     # -- Pagination
-    categorys = categorys[page*10:page*10+10]
+    per_page = 10
+    total_pages = int(len(categorys) / per_page)
+    processed_categorys = []
+    categorys = categorys[page * per_page: (page + 1) * per_page]
 
     # -- Format the data
-    categorys = [{
+    processed_categorys = [{
         'id': category.id,
         'name': category.name,
         'description': category.description,
-        'color': category.color,
+        'color': category.hex_color,
         'created': category.created,
-        'updated': category.updated
+        'updated': category.updated,
+        'image': category.get_splash_photo()
     } for category in categorys]
 
 
     return success_response(
-        'Successfully retrieved categorys', 
-        categorys
-    )
+        'Successfully retrieved categorys', {
+            'categorys': processed_categorys,
+            'page': page,
+            'per_page': per_page,
+            'total': len(processed_categorys),
+            'pages': total_pages,
+        })
 
 
 
 @api_view(['POST'])
 @is_admin()
-@required_data(['name', 'description', 'color'])
+@required_data(['name', 'description', 'color', 'image'])
 def create_category(request, data):
     """
         This view creates a new category.
@@ -98,8 +106,10 @@ def create_category(request, data):
     category = Category.objects.create(
         name=data['name'],
         description=data['description'],
-        color=data['color']
+        hex_color=data['color']
     )
+    category.save()
+    category.add_pic_from_base64(data['image'])
 
     return success_response(
         'Successfully created category',
@@ -107,9 +117,10 @@ def create_category(request, data):
             'id': category.id,
             'name': category.name,
             'description': category.description,
-            'color': category.color,
+            'color': category.hex_color,
             'created': category.created,
-            'updated': category.updated
+            'updated': category.updated,
+            'image': category.get_splash_photo()
         }
     )
 
@@ -130,18 +141,20 @@ def update_category(request, data):
     # -- Update the category
     category.name = data['name']
     category.description = data['description']
-    category.color = data['color']
+    category.hex_color = data['color']
     category.save()
 
+    print(data)
     return success_response(
         'Successfully updated category',
         {
             'id': category.id,
             'name': category.name,
             'description': category.description,
-            'color': category.color,
+            'color': category.hex_color,
             'created': category.created,
-            'updated': category.updated
+            'updated': category.updated,
+            'image': category.get_splash_photo()
         }
     )
 
@@ -165,9 +178,10 @@ def get_category(request, data):
             'id': category.id,
             'name': category.name,
             'description': category.description,
-            'color': category.color,
+            'color': category.hex_color,
             'created': category.created,
-            'updated': category.updated
+            'updated': category.updated,
+            'image': category.get_splash_photo()
         }
     )
 
@@ -189,3 +203,23 @@ def delete_category(request, data):
     category.delete()
 
     return success_response('Successfully deleted category')
+
+
+
+@api_view(['POST'])
+@is_admin()
+@required_data(['id', 'image'])
+def upload_category_image(request, data):
+    """
+        This view uploads a category image.
+    """
+
+    # -- Get the category
+    try: category = Category.objects.get(id=data['id'])
+    except Category.DoesNotExist: return invalid_response('Category does not exist')
+
+    # -- Upload the image
+    res = category.add_pic_from_base64(data['image'])
+
+    if res == False: return invalid_response('Invalid image')
+    else: return success_response('Successfully uploaded category image')

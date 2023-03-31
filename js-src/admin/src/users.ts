@@ -95,7 +95,7 @@ export async function manage_users_panel(pod: Pod) {
  * @param {(search: string) => void} callback The callback to call when the search is ready
  * @param {number} delay The delay in milliseconds (default: 500)
  */
-function manage_search(
+export function manage_search(
     search: HTMLInputElement, 
     callback: (search: string) => void,
     delay: number = 500

@@ -1,4 +1,4 @@
-from django.urls import  path
+from django.urls import path, include
 
 from .email.views import (
     check_if_verified_recently_view,
@@ -114,4 +114,6 @@ urlpatterns = [
     path('site_panel/delete_user/', delete_user, name='delete_user'),
     path('site_panel/update_user_email/', update_user_email, name='update_user_email'),
     path('site_panel/update_streamer_status/', update_user_streamer, name='update_streamer_status'),
+
+    path('events/', include('events.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

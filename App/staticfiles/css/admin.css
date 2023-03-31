@@ -167,7 +167,7 @@
 
 /* At 600 we need to start breaking */
 @media (max-width: 600px) {
-    .filterd-user {
+    .filterd-user, .category {
         flex-direction: column;
     }
 
@@ -184,6 +184,20 @@
     .profile-actions {
         flex-direction: row;
         width: 100%;
+    }
+
+    .cat-desc {
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .cat-info {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+    
+    .modal-banner {
+        width: 100%!important;
     }
 }
 
@@ -243,6 +257,8 @@
     border-radius: 0.5rem;
 }
 
+
+
 .modal-avatar {
     box-shadow: 0 0 0.5rem 0.25rem #0000003b;
     width: 30%;
@@ -267,4 +283,9 @@
     padding: 0.5rem;
     border-radius: 0.5rem;
     background-color: var(--theme-backdrop-color);
+}
+
+.cat-container {
+    background-color: var(--theme-backdrop-color);
+    border-radius: 0.5rem;
 }

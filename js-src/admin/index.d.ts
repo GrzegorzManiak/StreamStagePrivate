@@ -49,9 +49,11 @@ export interface Configuration {
     update_streamer_status: string,
 
     category: string,
+    get_category: string,
     create_category: string,
     delete_category: string,
     update_category: string,
+    set_category_image: string,
 }
 
 
@@ -94,10 +96,12 @@ export interface Category {
     description: string,
     created: string,
     updated: string,
+    image: string,
+    color: string,
 }
 
 export interface FilterdCategory {
-    users: Array<Category>,
+    categorys: Array<Category>,
     page: number,
     per_page: number,
     total: number,
@@ -112,3 +116,6 @@ export type UserResponse = UserSuccess | DefaultResponse;
 
 export type FilterdCategoriesSuccess = DefaultResponseData & { data: FilterdCategory }
 export type FilterdCategoriesResponse = FilterdCategoriesSuccess | DefaultResponse;
+
+export type CategorySuccess = DefaultResponseData & { data: Category }
+export type CategoryResponse = CategorySuccess | DefaultResponse;

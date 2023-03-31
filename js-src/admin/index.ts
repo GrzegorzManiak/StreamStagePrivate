@@ -3,6 +3,7 @@ import { Type, build_configuration } from '../api/config';
 import { attach_event_listeners, get_pod } from './src/panels';
 import { manage_statistical_panels } from './src/satistics';
 import { manage_users_panel } from './src/users';
+import { manage_category_panel } from './src/categorys';
 
 // -- Build the configuration
 export const configuration = build_configuration<Configuration>({
@@ -14,9 +15,11 @@ export const configuration = build_configuration<Configuration>({
     update_streamer_status: new Type('data-update-streamer-status', 'string'),
 
     category: new Type('data-category', 'string'),
+    get_category: new Type('data-get-category', 'string'),
     create_category: new Type('data-create-category', 'string'),
     delete_category: new Type('data-delete-category', 'string'),
     update_category: new Type('data-update-category', 'string'),
+    set_category_image: new Type('data-set-category-image', 'string'),
 });
 
 // -- Attach the event listeners
@@ -48,3 +51,6 @@ if (
 
 const users = get_pod('users');
 if (users) manage_users_panel(users);
+
+const categories = get_pod('categories');
+if (categories) manage_category_panel(categories);

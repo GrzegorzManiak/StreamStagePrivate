@@ -1,7 +1,7 @@
 import { configuration } from '.';
 import { DefaultResponse } from '../api/index.d';
 import { base_request } from '../api';
-import { CategorySorts, FilterOrder, FilterPosition, FilterSort, FilterdCategoriesResponse, FilterdUsersResponse, Frame, StatisticsResponse, UserResponse } from './index.d';
+import { CategoryResponse, CategorySorts, FilterOrder, FilterPosition, FilterSort, FilterdCategoriesResponse, FilterdUsersResponse, Frame, StatisticsResponse, UserResponse } from './index.d';
 
 /**
  * @name get_statistics
@@ -139,6 +139,7 @@ export const filter_categories = async (
  * @param {string} name - The name of the category
  * @param {string} description - The description of the category
  * @param {string} color - The color of the category
+ * @param {string} image - The image of the category
  * @returns {Promise<DefaultResponse>}
  * @description Creates a new category
  */
@@ -146,10 +147,11 @@ export const create_category = async (
     name: string,
     description: string,
     color: string,
+    image: string,
 ): Promise<DefaultResponse> => base_request(
     'POST',
     configuration.create_category,
-    { name, description, color },
+    { name, description, color, image },
 );
 
 
@@ -188,4 +190,38 @@ export const delete_category = async (
     'DELETE',
     configuration.delete_category,
     { id },
+);
+
+
+
+/**
+ * @name get_category
+ * @param {string} id - The id of the category to get
+ * @returns {Promise<CategoryResponse>}
+ * @description Gets a category
+ */
+export const get_category = async (
+    id: string,
+): Promise<CategoryResponse> => base_request(
+    'GET',
+    configuration.get_category,
+    { id },
+);
+
+
+
+/**
+ * @name set_category_image
+ * @param {string} id - The id of the category to update
+ * @param {string} image - The image to set (base64)
+ * @returns {Promise<DefaultResponse>}
+ * @description Sets the image of a category
+ */
+export const set_category_image = async (
+    id: string,
+    image: string,
+): Promise<DefaultResponse> => base_request(
+    'POST',
+    configuration.set_category_image,
+    { id, image },
 );

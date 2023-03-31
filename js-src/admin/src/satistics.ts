@@ -26,7 +26,6 @@ export async function manage_statistical_panels(
         // viewers
     ];
 
-    build_graphs(accounts);
     pods.forEach(async (pod: Pod) => {
         let loaded = false;
         add_callback((panel_type) => {

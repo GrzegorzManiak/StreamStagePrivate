@@ -36,9 +36,11 @@
         data-update-streamer-status='{{ api.update_streamer_status }}'
 
         data-category='{% cross_app_reverse_tag "events" "categorys" use_subdomain=False %}'
+        data-get-category='{% cross_app_reverse_tag "events" "get_category" use_subdomain=False %}'
         data-create-category='{% cross_app_reverse_tag "events" "create_category" use_subdomain=False %}'
         data-update-category='{% cross_app_reverse_tag "events" "update_category" use_subdomain=False %}'
         data-delete-category='{% cross_app_reverse_tag "events" "delete_category" use_subdomain=False %}'
+        data-set-category-image='{% cross_app_reverse_tag "events" "upload_category_image" use_subdomain=False %}'
     ></span>
     <div 
     id = 'main-container'
@@ -406,6 +408,7 @@
                             ">
                                 {% include 'admin/statistics.html' %}
                                 {% include 'admin/users.html' %}
+                                {% include 'admin/categorys.html' %}
                             </div>
                         </main>
                     </div>

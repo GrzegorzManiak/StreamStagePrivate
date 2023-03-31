@@ -25,7 +25,8 @@ from .admin import (
     create_category,
     update_category,
     get_category,
-    delete_category
+    delete_category, 
+    upload_category_image
 )
 
 urlpatterns = [
@@ -54,4 +55,5 @@ urlpatterns = [
     path('api/categorys/update/', update_category, name='update_category'),
     path('api/categorys/get/', get_category, name='get_category'),
     path('api/categorys/delete/', delete_category, name='delete_category'),
+    path('api/categorys/upload_image/', upload_category_image, name='upload_category_image'),
 ]

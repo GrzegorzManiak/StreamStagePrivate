@@ -432,3 +432,24 @@ select {
     /* dropshadown */
     box-shadow: 0 0 0.5rem 0.5rem #0000001a;
 }
+
+.fc-dark {
+    background-color: var(--theme-color) !important
+}
+
+.color-parent {
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+[type="color"] {
+    width: 100%;
+    height: 2rem;
+    border-radius: 0.5rem;
+    border: none;
+    outline: none;
+    padding: 0.5rem;
+    margin: 0;
+    border: none!important;
+    transform: scale(1.5);
+}
