@@ -15,7 +15,7 @@ from accounts.com_lib import (
 from accounts.models import Broadcaster
 from django.db.models import Q
 
-sorts = ['updated', 'created', 'handle', 'over_18', 'approved']
+sorts = ['updated', 'created', 'handle', 'name', 'biography', 'over_18', 'approved']
 orders = ['asc', 'desc']
 
 @api_view(['GET', 'POST'])
@@ -42,6 +42,8 @@ def broadcasters(request, data):
         case 'handle': sort = 'handle'
         case 'over_18': sort = 'over_18'
         case 'approved': sort = 'approved'
+        case 'name': sort = 'name'
+        case 'biography': sort = 'biography'
 
     # -- Order
     if data['order'] == 'desc': sort = '-' + sort
@@ -55,7 +57,10 @@ def broadcasters(request, data):
         broadcasters = broadcasters.filter(
             Q(handle__icontains=data['search']) |
             Q(over_18__icontains=data['search']) |
-            Q(approved__icontains=data['search'])
+            Q(approved__icontains=data['search']) |
+            Q(biography__icontains=data['search']) |
+            Q(name__icontains=data['search']) |
+            Q(biography__icontains=data['search'])
         )
 
     # -- Paginate
@@ -72,5 +77,19 @@ def broadcasters(request, data):
             'over_18': broadcaster.over_18,
             'approved': broadcaster.approved,
             'created': broadcaster.created,
-            'updated': broadcaster.updated
+            'updated': broadcaster.updated,
+            'name': broadcaster.name,
+            'biography': broadcaster.biography,
+            'streamer': broadcaster.streamer.id,
+            'profile_picture': broadcaster.get_picture('profile_pic'),
+            'profile_banner': broadcaster.get_picture('banner')
         })
+
+    # -- Return the response
+    return success_response('Successfully retrieved broadcasters', {
+        'broadcasters': processed,
+        'page': page,
+        'per_page': per_page,
+        'total': len(processed),
+        'pages': total_pages
+    })

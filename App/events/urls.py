@@ -26,7 +26,8 @@ from .ext_api import (
     update_category,
     get_category,
     delete_category, 
-    upload_category_image
+    upload_category_image,
+    broadcasters
 )
 
 urlpatterns = [
@@ -56,4 +57,6 @@ urlpatterns = [
     path('api/categorys/get/', get_category, name='get_category'),
     path('api/categorys/delete/', delete_category, name='delete_category'),
     path('api/categorys/upload_image/', upload_category_image, name='upload_category_image'),
+
+    path('api/broadcasters/', broadcasters, name='broadcasters'),
 ]

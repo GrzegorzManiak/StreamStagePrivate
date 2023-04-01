@@ -4,6 +4,7 @@ import { attach_event_listeners, get_pod } from './src/panels';
 import { manage_statistical_panels } from './src/satistics';
 import { manage_users_panel } from './src/users';
 import { manage_category_panel } from './src/categorys';
+import { manage_broadcaster_panel } from './src/broadcaster';
 
 // -- Build the configuration
 export const configuration = build_configuration<Configuration>({
@@ -20,6 +21,8 @@ export const configuration = build_configuration<Configuration>({
     delete_category: new Type('data-delete-category', 'string'),
     update_category: new Type('data-update-category', 'string'),
     set_category_image: new Type('data-set-category-image', 'string'),
+
+    broadcaster: new Type('data-broadcaster', 'string'),
 });
 
 // -- Attach the event listeners
@@ -54,3 +57,6 @@ if (users) manage_users_panel(users);
 
 const categories = get_pod('categories');
 if (categories) manage_category_panel(categories);
+
+const broadcasters = get_pod('broadcasters');
+if (broadcasters) manage_broadcaster_panel(broadcasters);

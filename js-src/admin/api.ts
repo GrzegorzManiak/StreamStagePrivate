@@ -1,7 +1,7 @@
 import { configuration } from '.';
 import { DefaultResponse } from '../api/index.d';
 import { base_request } from '../api';
-import { CategoryResponse, CategorySorts, FilterOrder, FilterPosition, FilterSort, FilterdCategoriesResponse, FilterdUsersResponse, Frame, StatisticsResponse, UserResponse } from './index.d';
+import { BroadcasterSorts, CategoryResponse, CategorySorts, FilterOrder, FilterPosition, FilterSort, FilterdBroadcastersResponse, FilterdCategoriesResponse, FilterdUsersResponse, Frame, StatisticsResponse, UserResponse } from './index.d';
 
 /**
  * @name get_statistics
@@ -224,4 +224,25 @@ export const set_category_image = async (
     'POST',
     configuration.set_category_image,
     { id, image },
+);
+
+
+
+/**
+ * @name filter_broadcasters
+ * @param {number} page - The page to get
+ * @param {BroadcasterSorts} sort - The sort to use (name, email, etc)
+ * @param {FilterOrder} order - The order to use (asc, desc)
+ * @param {string} search - The search query
+ * @returns {Promise<FilterdBroadcastersResponse>}
+ */
+export const filter_broadcasters = async (
+    page: number,
+    sort: BroadcasterSorts,
+    order: FilterOrder,
+    search: string,
+): Promise<FilterdBroadcastersResponse> => base_request(
+    'GET',
+    configuration.broadcaster,
+    { page, sort, order, search }
 );

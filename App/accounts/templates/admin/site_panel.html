@@ -41,6 +41,8 @@
         data-update-category='{% cross_app_reverse_tag "events" "update_category" use_subdomain=False %}'
         data-delete-category='{% cross_app_reverse_tag "events" "delete_category" use_subdomain=False %}'
         data-set-category-image='{% cross_app_reverse_tag "events" "upload_category_image" use_subdomain=False %}'
+    
+        data-broadcaster='{% cross_app_reverse_tag "events" "broadcasters" use_subdomain=False %}'
     ></span>
     <div 
     id = 'main-container'
@@ -409,6 +411,8 @@
                                 {% include 'admin/statistics.html' %}
                                 {% include 'admin/users.html' %}
                                 {% include 'admin/categorys.html' %}
+                                {% include 'admin/broadcaster.html' %}
+
                             </div>
                         </main>
                     </div>

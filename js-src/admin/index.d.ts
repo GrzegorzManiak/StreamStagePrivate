@@ -54,6 +54,8 @@ export interface Configuration {
     delete_category: string,
     update_category: string,
     set_category_image: string,
+
+    broadcaster: string,
 }
 
 
@@ -88,8 +90,6 @@ export interface FilterdUsers {
 
 
 export type CategorySorts = 'updated' | 'created' | 'name' | 'description' | 'color';
-
-
 export interface Category {
     id: string,
     name: string,
@@ -108,6 +108,30 @@ export interface FilterdCategory {
     pages: number,
 }
 
+
+export type BroadcasterSorts = 'updated' | 'created' | 'handle' | 'over_18' | 'approved';
+export interface Broadcaster {
+    id: string,
+    handle: string,
+    over_18: boolean,
+    approved: boolean,
+    created: string,
+    updated: string,
+    name: string,
+    profile_picture: string,
+    profile_banner: string,
+    streamer: string,
+}
+
+export interface FilterdBroadcaster {
+    broadcasters: Array<Broadcaster>,
+    page: number,
+    per_page: number,
+    total: number,
+    pages: number,
+}
+
+
 export type FilterdUsersSuccess = DefaultResponseData & { data: FilterdUsers }
 export type FilterdUsersResponse = FilterdUsersSuccess | DefaultResponse;
 
@@ -119,3 +143,6 @@ export type FilterdCategoriesResponse = FilterdCategoriesSuccess | DefaultRespon
 
 export type CategorySuccess = DefaultResponseData & { data: Category }
 export type CategoryResponse = CategorySuccess | DefaultResponse;
+
+export type FilterdBroadcastersSuccess = DefaultResponseData & { data: FilterdBroadcaster }
+export type FilterdBroadcastersResponse = FilterdBroadcastersSuccess | DefaultResponse;

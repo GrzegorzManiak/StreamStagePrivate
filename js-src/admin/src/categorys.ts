@@ -242,8 +242,8 @@ export async function create_category_panel(
     const div = document.createElement('div');
     document.body.appendChild(div);
     div.innerHTML = construct_modal(
-        'Create Category',
-        'Creates a new category',
+        id === null ? 'Create Category' : 'Update Category',
+        id === null ? 'Create a new category' : 'Update the category',
         false, 'success',
         template
     );
