@@ -56,7 +56,6 @@ module.exports = {
             terserOptions: {
             compress: {
                 defaults: true,
-                
             },
             mangle: true,
         }})],
@@ -68,7 +67,10 @@ module.exports = {
             cacheGroups: {
                 vendor: {
                     test: /[\\/]node_modules[\\/]/,
-                    name: 'vendor',
+                    name(module) {
+                        const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
+                        return `npm.${packageName.replace('@', '')}`;
+                    },
                     chunks: 'all',
                     enforce: true,
                 },
