@@ -1,4 +1,3 @@
-import { BorderRadius } from 'chart.js';
 import { create_toast } from '../../common';
 import { filter_broadcasters } from '../api';
 import { Broadcaster, BroadcasterSorts, FilterOrder, FilterdBroadcastersSuccess, Pod } from '../index.d';

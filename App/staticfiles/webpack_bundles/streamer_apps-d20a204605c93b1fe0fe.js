@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk=self.webpackChunk||[]).push([[350],{78:(e,s,c)=>{var n=document.getElementById("config");console.log(n)}},e=>{var s;s=78,e(e.s=s)}]);

@@ -23,7 +23,7 @@ export const configuration = build_configuration<Configuration>({
     set_category_image: new Type('data-set-category-image', 'string'),
 
     broadcaster: new Type('data-broadcaster', 'string'),
-});
+}); 
 
 // -- Attach the event listeners
 attach_event_listeners();

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load render_bundle from webpack_loader %}
 
 {% load crispy_forms_tags %}
 
@@ -28,5 +29,5 @@
 </div>
 
 <!-- Js -->
-<script src="{% static 'js/settings/settings_bin.js' %}"></script>
+{% render_bundle 'settings' %}
 {% endblock %}

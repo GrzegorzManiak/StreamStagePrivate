@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load render_bundle from webpack_loader %}
 
 {% block metadescription %}
     
@@ -44,5 +45,5 @@
     </main>
 
     <!-- Js -->
-    <script src="{% static 'js/homepage/homepage_bin.js' %}"></script>
+    {% render_bundle 'homepage' %}
 {% endblock %}

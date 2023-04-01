@@ -17,3 +17,4 @@ cloudflare
 pyotp
 maturin
 django-annoying
+django-webpack-loader

@@ -1,5 +1,6 @@
 {% load static %}
 {% load tags %}
+{% load render_bundle from webpack_loader %}
 
 <nav id='nav'>
     <span class='config'
@@ -134,5 +135,5 @@
     </div>
 
     <!-- Nav script -->
-    <script src="{% static 'js/navbar/navbar_bin.js' %}"></script>
+    {% render_bundle 'navbar' %}
 </nav>

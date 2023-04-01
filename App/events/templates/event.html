@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load render_bundle from webpack_loader %}
 
 {% block title %}Event{% endblock title %}
 
@@ -157,6 +158,6 @@
 
 </div>
 <script src="/static/js/events.js"></script>
-<script src="/static/js/events/events_bin.js"></script>
+{% render_bundle 'events' %}
 
 {% endblock content %}

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load render_bundle from webpack_loader %}
 
 {% block metadescription %}
     {{ user.cased_username }} control panel
@@ -709,5 +710,5 @@
     </div>
 
     <!-- Js -->
-    <script src="{% static 'js/settings/settings_bin.js' %}"></script>
+    {% render_bundle 'settings' %}
 {% endblock %}

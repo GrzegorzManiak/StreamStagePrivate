@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 import CloudFlare
 from .secrets import DJANGO_SECRET_KEY, SENDGIRD_TOKEN, CLOUDFLARE_TOKEN
 
@@ -119,6 +120,7 @@ INSTALLED_APPS = [
 
     # 3rd Party
     'crispy_forms',
+    'webpack_loader',
     'corsheaders',
     'annoying',
     'crispy_bootstrap5',
@@ -127,6 +129,15 @@ INSTALLED_APPS = [
     'django_hosts',
     'stripe',
 ]
+
+WEBPACK_LOADER = {
+  'DEFAULT': {
+    'CACHE': not DEBUG,
+    'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
+    'POLL_INTERVAL': 0.1,
+    'IGNORE': [r'.+\.hot-update.js', r'.+\.map'],
+  }
+}
 
 MIDDLEWARE = [
     'django_hosts.middleware.HostsRequestMiddleware',

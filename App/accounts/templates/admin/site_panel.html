@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load render_bundle from webpack_loader %}
 {% load static %}
 {% load tags %}
 
@@ -425,9 +426,5 @@
     </div>
 
     <!-- Js -->
-    <script src="{% static 'js/129/129_bin.js' %}"></script>
-    <script src="{% static 'js/449/449_bin.js' %}"></script>
-    <script src="{% static 'js/888/888_bin.js' %}"></script>
-    <script src="{% static 'js/738/738_bin.js' %}"></script>
-    <script src="{% static 'js/admin/admin_bin.js' %}"></script>
+    {% render_bundle 'admin' %}
 {% endblock %}

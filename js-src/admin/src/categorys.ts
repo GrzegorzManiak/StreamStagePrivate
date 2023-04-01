@@ -258,7 +258,7 @@ export async function create_category_panel(
         delete_btn = div.querySelector('#delete') as HTMLButtonElement;
 
 
-    let b64_image = null;
+    let b64_image: string | null = null;
     banner.addEventListener('click', () => picture_upload_modal(
         image, 21 / 7,
         'Banner Picture',
@@ -312,7 +312,7 @@ export async function create_category_panel(
                 name.value,
                 description.value,
                 color.value,
-                b64_image
+                b64_image ?? ''
             );
 
             // -- Check if the category was created
