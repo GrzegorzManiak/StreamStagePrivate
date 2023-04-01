@@ -1,7 +1,7 @@
 import { configuration } from '.';
 import { DefaultResponse } from '../api/index.d';
 import { base_request } from '../api';
-import { BroadcasterSorts, CategoryResponse, CategorySorts, FilterOrder, FilterPosition, FilterSort, FilterdBroadcastersResponse, FilterdCategoriesResponse, FilterdUsersResponse, Frame, StatisticsResponse, UserResponse } from './index.d';
+import { BroadcasterResponse, BroadcasterSorts, CategoryResponse, CategorySorts, FilterOrder, FilterPosition, FilterSort, FilterdBroadcastersResponse, FilterdCategoriesResponse, FilterdUsersResponse, Frame, StatisticsResponse, UserResponse } from './index.d';
 
 /**
  * @name get_statistics
@@ -245,4 +245,62 @@ export const filter_broadcasters = async (
     'GET',
     configuration.broadcaster,
     { page, sort, order, search }
+);
+
+
+
+/**
+ * @name get_broadcaster
+ * @param {string} id - The id of the broadcaster to get
+ * @returns {Promise<BroadcasterResponse>}
+ * @description Gets a broadcaster
+ */
+export const get_broadcaster = async (
+    id: string,
+): Promise<BroadcasterResponse> => base_request(
+    'GET',
+    configuration.get_broadcaster,
+    { id },
+);
+
+
+
+/**
+ * @name update_broadcaster
+ * @param {string} id - The id of the broadcaster to update
+ * @param {string} name - The name of the broadcaster
+ * @param {string} handle - Broadcasters handle
+ * @param {boolean} over_18 - If the broadcaster is over 18 only
+ * @param {boolean} approved - If the broadcaster is approved
+ * @param {string} biography - The biography of the broadcaster
+ * @param {string} streamer - Bastically the owner of the broadcaster
+ */
+export const update_broadcaster = async (
+    id: string,
+    name: string,
+    handle: string,
+    over_18: boolean,
+    approved: boolean,
+    biography: string,
+    owner: string,
+): Promise<DefaultResponse> => base_request(
+    'POST',
+    configuration.update_broadcaster,
+    { id, name, over_18, approved, biography, handle, owner },
+);
+
+
+
+/**
+ * @name delete_broadcaster
+ * @param {string} id - The id of the broadcaster to delete
+ * @returns {Promise<DefaultResponse>}
+ * @description Deletes a broadcaster
+ */
+export const delete_broadcaster = async (
+    id: string,
+): Promise<DefaultResponse> => base_request(
+    'DELETE',
+    configuration.delete_broadcaster,
+    { id },
 );

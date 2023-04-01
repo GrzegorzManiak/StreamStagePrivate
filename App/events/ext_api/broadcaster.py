@@ -12,7 +12,7 @@ from accounts.com_lib import (
     authenticated
 )
 
-from accounts.models import Broadcaster
+from accounts.models import Broadcaster, Member
 from django.db.models import Q
 
 sorts = ['updated', 'created', 'handle', 'name', 'biography', 'over_18', 'approved']
@@ -93,3 +93,98 @@ def broadcasters(request, data):
         'total': len(processed),
         'pages': total_pages
     })
+
+
+
+@api_view(['GET'])
+@is_admin()
+@required_data(['id'])
+def get_broadcaster(request, data):
+    """
+        Simply returns the broadcaster with the given id.
+    """
+    try:broadcaster = Broadcaster.objects.get(id=data['id'])
+    except Broadcaster.DoesNotExist:
+        return invalid_response('Broadcaster does not exist')
+
+    return success_response('Successfully retrieved broadcaster', {
+        'id': broadcaster.id,
+        'handle': broadcaster.handle,
+        'over_18': broadcaster.over_18,
+        'approved': broadcaster.approved,
+        'created': broadcaster.created,
+        'updated': broadcaster.updated,
+        'name': broadcaster.name,
+        'biography': broadcaster.biography,
+        'streamer': broadcaster.streamer.id,
+        'profile_picture': broadcaster.get_picture('profile_pic'),
+        'profile_banner': broadcaster.get_picture('banner')
+    })
+
+
+
+@api_view(['POST'])
+@is_admin()
+@required_data(['id', 'handle', 'over_18', 'approved', 'name', 'biography', 'owner'])
+def update_broadcaster(request, data):
+    """
+        Updates the broadcaster with the given id.
+    """
+    try:broadcaster = Broadcaster.objects.get(id=data['id'])
+    except Broadcaster.DoesNotExist:
+        return invalid_response('Broadcaster does not exist')
+    
+    # -- try and find the streamer (either by id or handle)
+    if data['owner'].count('@') > 0:
+        username  = data['owner'].replace('@', '').lower()
+
+        try:streamer = Member.objects.get(username=username)
+        except Member.DoesNotExist:
+            return invalid_response('Streamer does not exist')
+        
+    else:
+        try:streamer = Member.objects.get(id=data['owner'])
+        except Member.DoesNotExist:
+            return invalid_response('Streamer does not exist')
+        
+    # -- Make sure the streamer is a streamer
+    if not streamer.is_streamer:
+        return invalid_response('Selected user is not a streamer')
+
+    broadcaster.handle = data['handle']
+    broadcaster.over_18 = data['over_18']
+    broadcaster.approved = data['approved']
+    broadcaster.name = data['name']
+    broadcaster.biography = data['biography']
+    broadcaster.streamer = streamer
+    broadcaster.save()
+
+    return success_response('Successfully updated broadcaster', {
+        'id': broadcaster.id,
+        'handle': broadcaster.handle,
+        'over_18': broadcaster.over_18,
+        'approved': broadcaster.approved,
+        'created': broadcaster.created,
+        'updated': broadcaster.updated,
+        'name': broadcaster.name,
+        'biography': broadcaster.biography,
+        'streamer': broadcaster.streamer.id,
+        'profile_picture': broadcaster.get_picture('profile_pic'),
+        'profile_banner': broadcaster.get_picture('banner')
+    })
+
+
+
+@api_view(['DELETE'])
+@is_admin()
+@required_data(['id'])
+def delete_broadcaster(request, data):
+    """
+        Deletes the broadcaster with the given id.
+    """
+    try:broadcaster = Broadcaster.objects.get(id=data['id'])
+    except Broadcaster.DoesNotExist:
+        return invalid_response('Broadcaster does not exist')
+
+    broadcaster.delete()
+    return success_response('Successfully deleted broadcaster', {})

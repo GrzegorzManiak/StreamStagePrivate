@@ -56,6 +56,9 @@ export interface Configuration {
     set_category_image: string,
 
     broadcaster: string,
+    get_broadcaster: string,
+    update_broadcaster: string,
+    delete_broadcaster: string,
 }
 
 
@@ -121,6 +124,7 @@ export interface Broadcaster {
     profile_picture: string,
     profile_banner: string,
     streamer: string,
+    biography: string,
 }
 
 export interface FilterdBroadcaster {
@@ -146,3 +150,6 @@ export type CategoryResponse = CategorySuccess | DefaultResponse;
 
 export type FilterdBroadcastersSuccess = DefaultResponseData & { data: FilterdBroadcaster }
 export type FilterdBroadcastersResponse = FilterdBroadcastersSuccess | DefaultResponse;
+
+export type BroadcasterSuccess = DefaultResponseData & { data: Broadcaster }
+export type BroadcasterResponse = BroadcasterSuccess | DefaultResponse;

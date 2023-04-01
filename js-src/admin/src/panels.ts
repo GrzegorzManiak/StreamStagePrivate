@@ -116,8 +116,15 @@ export function attach_to_sidepanel() {
 
     const anim_lenght = 500;
 
-    // -- Attach the event listener
-    sidepanel_button.addEventListener('change', async() => {
+    const manage_panel = (
+        action: 'open' | 'close' | 'toggle' = 'toggle'
+    ) => {
+        // -- Check if the action is toggle
+        let checked = sidepanel_button.checked;
+        
+        if (action === 'open' && checked) return;
+        if (action === 'close' && !checked) return;
+
         // -- Check the status of the checkbox
         switch(sidepanel_button.checked === true) {
             case true: 
@@ -141,7 +148,11 @@ export function attach_to_sidepanel() {
                 case false: sidepanel.setAttribute('side-panel', 'hidden'); break;
             }
         });
-    });
+    }
+
+    // -- Attach the event listener
+    sidepanel_button.addEventListener('change', async() => manage_panel());
+    sidepanel_button.addEventListener('close', async() => manage_panel('close'));
 }
 
 

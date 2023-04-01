@@ -8,5 +8,8 @@ from .categorys import (
 )
 
 from .broadcaster import (
-    broadcasters
+    broadcasters,
+    get_broadcaster,
+    update_broadcaster,
+    delete_broadcaster
 )

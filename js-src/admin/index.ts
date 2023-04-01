@@ -23,6 +23,9 @@ export const configuration = build_configuration<Configuration>({
     set_category_image: new Type('data-set-category-image', 'string'),
 
     broadcaster: new Type('data-broadcaster', 'string'),
+    get_broadcaster: new Type('data-get-broadcaster', 'string'),
+    update_broadcaster: new Type('data-update-broadcaster', 'string'),
+    delete_broadcaster: new Type('data-delete-broadcaster', 'string'),
 }); 
 
 // -- Attach the event listeners
