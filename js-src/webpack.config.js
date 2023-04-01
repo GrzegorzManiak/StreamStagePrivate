@@ -4,6 +4,9 @@ const HappyPack = require('happypack');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const BundleTracker = require('webpack-bundle-tracker');
 const happyThreadPool = HappyPack.ThreadPool({ size: 6 });
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const randomWords = require('random-words');
+
 
 module.exports = {
     mode: 'production',
@@ -88,10 +91,22 @@ module.exports = {
         }),
         new BundleAnalyzerPlugin(),
         new BundleTracker({filename: '../App/webpack-stats.json'}),
+        new CleanWebpackPlugin(),
     ],
     target: 'web',
     output: {
-        filename: '[name]-[fullhash].js',
+        filename: ({ chunk: { name } }) => {
+            // -- Generate the random string
+            const randomString = randomWords({ 
+                exactly: 3, 
+                minLength: 4,
+                join: '-',
+                seed: name
+            });
+
+            // -- Return the filename
+            return `${randomString}.js`;
+        },
         path: path.resolve(__dirname, '../App/staticfiles/webpack_bundles'),
     },
 };

@@ -1,10 +1,17 @@
 import { PanelType, Panel, Pod } from '../index.d';
 import { sleep, create_toast } from '../../common';
-import { scrolled } from '../../elements/navbar';
 
 let panels: Array<Panel> = [];
 export let pods: Array<Pod> = [];
 
+const navbar = document.getElementById('nav'),
+    toggle_at = 50;
+
+export const scrolled = () => {
+    const scroll = window.scrollY;
+    if (scroll > toggle_at) navbar.classList.add('scrolled');
+    else navbar.classList.remove('scrolled');
+}
 
 /**
  * @name locate_panels
@@ -111,11 +118,8 @@ export function attach_to_sidepanel() {
 
     // -- Attach the event listener
     sidepanel_button.addEventListener('change', async() => {
-        // -- Disable the button
-        sidepanel_button.disabled = true;
-        
         // -- Check the status of the checkbox
-        switch(sidepanel_button.checked) {
+        switch(sidepanel_button.checked === true) {
             case true: 
                 sidepanel.setAttribute('side-panel', 'in'); 
                 nav_bar.classList.add('scrolled');
@@ -136,9 +140,6 @@ export function attach_to_sidepanel() {
                 case true: sidepanel.setAttribute('side-panel', 'visible'); break;
                 case false: sidepanel.setAttribute('side-panel', 'hidden'); break;
             }
-
-            // -- Enable the button
-            sidepanel_button.disabled = false;
         });
     });
 }

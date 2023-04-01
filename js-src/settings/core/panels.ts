@@ -1,6 +1,14 @@
 import { PanelType, Panel, Pod } from '../index.d';
 import { sleep, create_toast } from '../../common';
-import { scrolled } from '../../elements/navbar';
+
+const navbar = document.getElementById('nav'),
+    toggle_at = 50;
+
+export const scrolled = () => {
+    const scroll = window.scrollY;
+    if (scroll > toggle_at) navbar.classList.add('scrolled');
+    else navbar.classList.remove('scrolled');
+}
 
 let panels: Array<Panel> = [];
 export let pods: Array<Pod> = [];
