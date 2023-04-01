@@ -13,8 +13,8 @@ module.exports = {
         // streamer_apps: './streamer_apps/index.ts',
         // srr_visualizer: './srr_visualizer/index.ts',
         // homepage: './homepage/index.ts',
-         events: './events/index.ts',
-         event_edit: './event_edit/index.ts',
+        // events: './events/index.ts',
+        // event_edit: './event_edit/index.ts',
         // navbar: './elements/navbar.ts',
         // profiles: './profiles/index.ts',
         // broadcaster_profiles: './broadcaster_profiles/index.ts',
@@ -45,7 +45,12 @@ module.exports = {
     },
     target: "web",
     output: {
-        filename: '[name]_bin.js',
+        filename: '[name]/[name]_bin.js',
         path: path.resolve(__dirname, '../App/staticfiles/js'),
-    }
+    },
+    optimization: {
+        splitChunks: {
+            chunks: 'all',
+        },
+    },
 };
