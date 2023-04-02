@@ -325,11 +325,11 @@ def check_cust_payment_intent(intent_id: str):
     if cust_intent is None:
         print("intent not found")
         return { "error": "Intent not found" }
-
-    response = check_stripe_payment_intent_status(cust_intent)
+    
+    response = check_stripe_payment_intent_status(cust_intent["stripe_intent"])
 
     if response["status"] == "success":
-        on_intent_success(cust_intent["stripe_intent"])
+        on_intent_success(cust_intent)
 
     return response
 

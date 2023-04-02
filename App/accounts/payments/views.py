@@ -89,6 +89,9 @@ def create_payment_intent(request, data):
 def check_payment_intent(request, data):
     response = check_cust_payment_intent(data['intent_id'])
     
+    if response.get("error"):
+        return error_response(response["error"])
+    
     status = response["status"]
     
     if status == "success":
