@@ -1,5 +1,5 @@
 from django import forms
-from .models import Event, EventReview, Category, EventShowing
+from .models import Event, EventReview, Category, EventShowing, EventMedia, EventTrailer
 from StreamStage.utilities import CategoryMC
 
                                         # ***************
@@ -140,3 +140,23 @@ class ReviewDeleteForm(forms.ModelForm):
         model = EventReview
 
         fields = []
+
+                                        # ***************
+                                        # **** Media ****                                        # ***************
+                                        # ***************
+
+# Creating Media
+class MediaCreateForm(forms.ModelForm):
+    class Meta:
+        model= EventMedia
+        exclude = ['event']
+
+                                        # **************
+                                        # ** Trailers **                                        # ***************
+                                        # **************
+
+# Creating Trailer
+class TrailerCreateForm(forms.ModelForm):
+    class Meta:
+        model= EventTrailer
+        exclude = ['event']

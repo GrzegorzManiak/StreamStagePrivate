@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Q, Avg
+from django.db.models import Q, Avg, Max, Min
 
 from django.contrib.auth import get_user_model
 from django.urls import reverse
@@ -68,6 +68,24 @@ class Event(models.Model):
     def has_ticket_listings(self):
         return self.get_ticket_listings().count()
     
+    def get_max_price_ticket(self):
+        max_price_ticket = self.get_ticket_listings().aggregate(Max('price'))
+
+        tickets = self.get_ticket_listings().all()
+        max_price = tickets.aggregate(Max('price'))
+        for ticket in tickets:
+            if ticket.price > max_price:
+                max_price = ticket.price
+        return max_price_ticket
+    
+    def get_min_ticket_price(self):
+        tickets = self.get_ticket_listings().all()
+        min_price = 9999
+        for ticket in tickets:
+            if ticket.price < min_price:
+                min_price = ticket.price
+        return TicketListing.objects.filter(price=min_price).first()
+
     # Media
 
     def get_cover_picture(self):
@@ -223,7 +241,19 @@ class EventMedia(models.Model):
     def __str__(self):
         return self.description[:30]
 
+# Event Trailer Model
+class EventTrailer(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    videofile= models.FileField(upload_to='videos/', verbose_name="")
+    description = models.TextField("Photograph Description", max_length=300, blank=True, null=False)
+    
+    class Meta:
+        verbose_name = 'Event Trailer'
+        verbose_name_plural = 'Event Trailer'
 
+    def __str__(self):
+        return self.description[:30]
+    
 # Event Showing Model
 class EventShowing(models.Model):
     showing_id = (models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False))

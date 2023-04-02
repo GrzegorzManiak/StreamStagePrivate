@@ -17,7 +17,7 @@ Search Events | StreamStage
 
 {% block content %}
 
-<div class="event-listings-title container mx-auto">
+<div class="nav-gap container mx-auto">
     <div class="m-2">
 
         {% if query %}
@@ -93,7 +93,7 @@ Search Events | StreamStage
                             <!-- Review Carousel -->
                             <div class="swiper mySwiper">
                                 <div class="swiper-wrapper">
-                                    {% for review in event.get_reviews %}
+                                    {% for review in event.get_short_reviews %}
                                     <div class="swiper-slide">
                                         {% include 'reviews/review.html' %}
                                     </div>

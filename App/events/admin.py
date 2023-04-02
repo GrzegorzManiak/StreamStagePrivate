@@ -12,8 +12,9 @@ class EventAdmin(admin.ModelAdmin):
 
 @admin.register(TicketListing)
 class TicketListing(admin.ModelAdmin):
-    list_display = [ 'event', 'ticket_detail', 'ticket_type', 'maximum_stock', 'remaining_stock' ]
-    list_editable = []
+    list_display = [ 'event', 'price', 'ticket_detail', 'ticket_type', 'maximum_stock', 'remaining_stock' ]
+    list_editable = [ 'price', 'ticket_detail', 'ticket_type', 'maximum_stock', 'remaining_stock']
+    list_display_links = []
 
 @admin.register(EventMedia)
 class EventMediaAdmin(admin.ModelAdmin):
