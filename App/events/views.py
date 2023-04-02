@@ -3,8 +3,7 @@ from django.http import HttpResponse
 from django.urls import reverse_lazy
 
 from .models import Event, EventReview, EventShowing
-from .forms import (EventApplyForm, 
-                    EventUpdateForm, 
+from .forms import (EventUpdateForm, 
                     EventDeleteForm, 
                     ReviewCreateForm, 
                     ReviewUpdateForm, 
@@ -70,24 +69,6 @@ def get_upcoming_events(request):
     context["events"] = Event.objects.all()
 
     return render(request, "event_list_upcoming.html", context)
-
-def event_create(request):
-    context = {}
-    
-    form = EventApplyForm(request.POST or None)
-    if not request.user.is_authenticated or not request.user.is_streamer:
-        return redirect('upcoming_events')
-    if form.is_valid():
-        new_event_id = identifiers.generate_event_id()
-        form = form.save(commit=False)
-        form.streamer = request.user
-        form.event_id = new_event_id
-        form.save()
-
-        return redirect('event_view', new_event_id)
-
-    context['form']= form
-    return render(request, "event_new.html", context)
 
 # Update an event
 def event_update(request, event_id):

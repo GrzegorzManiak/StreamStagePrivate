@@ -1,43 +1,14 @@
 from django import forms
-from .models import Event, EventReview, Category, EventShowing, EventMedia, EventTrailer
-from StreamStage.utilities import CategoryMC
-
+from .models import Event, EventReview, EventShowing, EventMedia, EventTrailer
                                         # ***************
                                         # *** Events  ***                                        # ***************
                                         # *************** 
-# Applying for an Event
-
-# class MediaMC(forms.ModelMultipleChoiceField):
-#     def label_from_instance(self, media):
-#         return media.picture
-
-class EventApplyForm(forms.ModelForm):
-
-    class Meta:
-        model = Event
- 
-        fields = [
-            'title', 
-            'description',
-            'broadcaster',
-            'over_18s',  
-            'categories']
-
-    categories = CategoryMC(
-        queryset=Category.objects.all(),
-        widget=forms.CheckboxSelectMultiple
-    )
-    # media = MediaMC(
-    #     queryset=EventMedia.objects.all(),
-    #     widget=forms.CheckboxSelectMultiple
-    # )
 
 # Updating an Event
 class EventUpdateForm(forms.ModelForm):
  
     class Meta:
         model = Event
-    
         exclude = [
             "event_id",
             "broadcaster",
@@ -51,7 +22,6 @@ class EventDeleteForm(forms.ModelForm):
  
     class Meta:
         model = Event
-
         fields = []
 
 
@@ -64,7 +34,6 @@ class ShowingCreateForm(forms.ModelForm):
     
     class Meta:
         model = EventShowing
- 
         fields = [
             'time', 
             'venue', 
@@ -84,7 +53,6 @@ class ShowingUpdateForm(forms.ModelForm):
     
     class Meta:
         model = EventShowing
- 
         fields = [
             'time', 
             'venue', 
@@ -96,7 +64,6 @@ class ShowingDeleteForm(forms.ModelForm):
     
     class Meta:
         model = EventShowing
-
         fields = []
 
 
@@ -109,7 +76,6 @@ class ReviewCreateForm(forms.ModelForm):
  
     class Meta:
         model = EventReview
- 
         fields = [
             'title', 
             'body', 
@@ -121,7 +87,6 @@ class ReviewUpdateForm(forms.ModelForm):
  
     class Meta:
         model = EventReview
- 
         exclude = [
             'event',
             'review_id',
@@ -138,7 +103,6 @@ class ReviewDeleteForm(forms.ModelForm):
  
     class Meta:
         model = EventReview
-
         fields = []
 
                                         # ***************
@@ -151,6 +115,19 @@ class MediaCreateForm(forms.ModelForm):
         model= EventMedia
         exclude = ['event']
 
+# Updating Media
+class MediaUpdateForm(forms.ModelForm):
+    class Meta:
+        model= EventMedia
+        exclude = ['event']
+
+# Deleting Event Media
+class MediaDeleteForm(forms.ModelForm):
+ 
+    class Meta:
+        model = EventMedia
+        fields = []
+
                                         # **************
                                         # ** Trailers **                                        # ***************
                                         # **************
@@ -160,3 +137,16 @@ class TrailerCreateForm(forms.ModelForm):
     class Meta:
         model= EventTrailer
         exclude = ['event']
+
+# Updating Trailer
+class TrailerUpdateForm(forms.ModelForm):
+    class Meta:
+        model= EventTrailer
+        exclude = ['event']
+
+# Deleting Trailer
+class TrailerDeleteForm(forms.ModelForm):
+ 
+    class Meta:
+        model = EventTrailer
+        fields = []

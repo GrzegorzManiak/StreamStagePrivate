@@ -1,7 +1,7 @@
 from events.models import Category, Event, EventShowing, TicketListing
 from django.views.generic import ListView
 from django.db.models import Q
-from datetime import datetime
+from datetime import datetime, timedelta
 # from django.core.paginator import Paginator, EmptyPage, InvalidPage
 
 
@@ -25,6 +25,7 @@ class SearchResultsListView(ListView):
         country = self.request.GET.get('co')
         min_price = self.request.GET.get('mip')
         max_price = self.request.GET.get('map')
+        upcoming = self.request.GET.get('u')
         
         # Null Protection
         results = Event.objects.all()
@@ -36,7 +37,7 @@ class SearchResultsListView(ListView):
         
         # Filter by Category
         if category:
-            results = results.filter(Q(categories__name=category))
+            results = results.filter(Q(categories__name=category)).distinct()
         
         # Filter by Broadcaster
         if broadcaster:
@@ -56,7 +57,7 @@ class SearchResultsListView(ListView):
             for event in events:
                 event_ids.append(event.event_id)
 
-            results = results.filter(event_id__in=event_ids)
+            results = results.filter(event_id__in=event_ids).distinct()
 
         # Filter by City
         if city:
@@ -72,7 +73,7 @@ class SearchResultsListView(ListView):
             for event in events:
                 event_ids.append(event.event_id)
 
-            results = results.filter(event_id__in=event_ids)
+            results = results.filter(event_id__in=event_ids).distinct()
 
         # Filter by Country
         if country:
@@ -88,7 +89,7 @@ class SearchResultsListView(ListView):
             for event in events:
                 event_ids.append(event.event_id)
 
-            results = results.filter(event_id__in=event_ids)
+            results = results.filter(event_id__in=event_ids).distinct()
 
 
         # Filter by Date
@@ -111,7 +112,7 @@ class SearchResultsListView(ListView):
             for event in events:
                 event_ids.append(event.event_id)
 
-            results = results.filter(event_id__in=event_ids)
+            results = results.filter(event_id__in=event_ids).distinct()
 
         # Filter by Price
 
@@ -130,76 +131,61 @@ class SearchResultsListView(ListView):
             # Making list of events using ticket prices
             for ticket in sorted_prices:
                 events.append(ticket[1])
-            # Isolating event ID
-            event_ids = []
-            for event in events:
-                event_ids.append(event)
 
             results = events
 
         # Descending
         elif sort == 'price-desc':
-            min_price_tickets = []
+            min_price_tickets = {}
             events = []
             for event in results:
                 # Get cheapest priced ticket for event
                 min_price_ticket = event.get_min_ticket_price()
+                print(min_price_ticket)
                 # Add to list of cheapest priced tickets
-                min_price_tickets.append(min_price_ticket)
+                min_price_tickets.update({min_price_ticket.price : min_price_ticket.event})
+                print(min_price_tickets)
             # Order list by price
-            min_price_tickets.order_by('price')
+            sorted_prices = sorted(min_price_tickets.items(), key=lambda x:x[0])
             # Making list of events using ticket prices
-            for ticket in min_price_tickets:
-                events.append(ticket.event)
-    
+            for ticket in sorted_prices:
+                events.append(ticket[1])
+
+            results = events
+            results.reverse()
+
+
+        if min_price and max_price:
+            min_price = int(min_price)
+            max_price = int(max_price)
+
+            if min_price == 0:
+                max_price = 99999
+
+            results = [ result for result in results if max_price >= result.get_min_ticket_price().price >= min_price 
+                   and max_price >= result.get_max_price_ticket().price >= min_price ]
+
+
+        # Show upcoming events only
+        if upcoming == 'y':
+            today = datetime.now().date()
+            end_date = today + timedelta(365)
+            # Getting Showings between dates
+            showings = EventShowing.objects.filter(time__range=(today, end_date))
+            # Matching Events to Showings
+            events = []
+            for showing in showings:
+                events.append(showing.event)
+
             # Isolating event ID
             event_ids = []
             for event in events:
                 event_ids.append(event.event_id)
 
-            results = results.filter(event_id__in=event_ids)
-            results = results.reverse()
+            results = results.filter(event_id__in=event_ids).distinct()
 
-        # min_price = 99999
-        # max_price = 0
-        # min_prices = []
-        # tickets = []
-        # for event in results:
-        #     min_price = event.get_min_ticket_price()
-        #     tickets += 
-        #     min_prices
-        #     tickets = TicketListing.objects.filter(event=event).all()
-        #     for ticket in tickets:
-        #         if ticket.ticket_type == 0:
-        #             min_price = ticket.price
-        #             max_price = ticket.price
-
-        #         else:
-        #             if ticket.price > max_price:
-        #                 max_price = ticket.price
-
-        #         min_prices.append(min_price)
-        #         max_prices.append(max_price)
-        #         results
-
-        # Ascending
-        # if sort == 'price-asc':
-        #     results = results.order_by('price')
-        # # Descending
-        # elif sort == 'price-desc':
-        #     results = results.order_by('-price')
-        
-        # if min_price and max_price:
-        #     min_price = int(min_price)
-        #     max_price = int(max_price)
-
-        #     if min_price == 0:
-        #         max_price = 99999
-            
-        #     results = results.filter(price__range=(min_price, max_price))
-
-        # Once filtering complete, return results  (with distinct individual events)
-        return results.distinct()
+        # Once filtering complete, return results
+        return results
     
     # If second search, keep original values
     def get_context_data(self, **kwargs):
@@ -219,6 +205,8 @@ class SearchResultsListView(ListView):
         context['country'] = self.request.GET.get('co')
         context['min_price'] = self.request.GET.get('mip')
         context['max_price'] = self.request.GET.get('map')
+        context['upcoming'] = self.request.GET.get('u')
+
 
         return context
 

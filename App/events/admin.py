@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import TicketListing, Event, EventMedia, Category, EventShowing, EventReview
+from .models import TicketListing, Event, EventMedia, Category, EventShowing, EventReview, EventTrailer
 
 # Register your models here.
 
@@ -40,3 +40,8 @@ class EventReviewAdmin(admin.ModelAdmin):
     list_editable = [ 'author', 'title', 'body', 'likes', 'rating' ]
     list_display_links = []
 
+@admin.register(EventTrailer)
+class EventReviewAdmin(admin.ModelAdmin):
+    list_display = [ 'event', 'videofile', 'description' ]
+    list_editable = [ 'videofile', 'description' ]
+    list_display_links = []

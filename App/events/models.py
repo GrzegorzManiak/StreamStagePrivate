@@ -69,14 +69,12 @@ class Event(models.Model):
         return self.get_ticket_listings().count()
     
     def get_max_price_ticket(self):
-        max_price_ticket = self.get_ticket_listings().aggregate(Max('price'))
-
         tickets = self.get_ticket_listings().all()
-        max_price = tickets.aggregate(Max('price'))
+        max_price = 0
         for ticket in tickets:
             if ticket.price > max_price:
                 max_price = ticket.price
-        return max_price_ticket
+        return TicketListing.objects.filter(price=max_price).first()
     
     def get_min_ticket_price(self):
         tickets = self.get_ticket_listings().all()
