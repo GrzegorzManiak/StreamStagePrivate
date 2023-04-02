@@ -6,6 +6,7 @@
 # -- Imports
 from typing import List
 import uuid
+from store.processing import on_intent_success
 from store.processing import get_item_price
 from StreamStage.mail import send_template_email
 from accounts.models import Member
@@ -252,10 +253,6 @@ def create_cust_payment_intent(user: Member, listing_ids: List[str], payment_met
 
     return { "intent_id": intent_id }
 
-def check_cust_payment_intent(user: Member, intent_id: str):
-    
-    pass
-
 """
     :name: create_stripe_payment_intent
     :description: This function creates a payment intent for the user
@@ -292,10 +289,10 @@ def confirm_payment_intent(intent_id: str):
     )
 
 """
-    Checks status of a stripe payment intent
+    Checks status of a stripe payment intent.
+    TODO: check user intents when they go to their orders page.
 """
 def check_stripe_payment_intent_status(intent: stripe.PaymentIntent):
-    intent : stripe.PaymentIntent = intent["stripe_intent"]
     intent.refresh()
 
     status = intent["status"]
@@ -323,13 +320,16 @@ def check_stripe_payment_intent_status(intent: stripe.PaymentIntent):
 
 
 def check_cust_payment_intent(intent_id: str):
-    stripe_intent = customer_payment_intents.get(intent_id)
+    cust_intent = customer_payment_intents.get(intent_id)
 
-    if stripe_intent is None:
+    if cust_intent is None:
         print("intent not found")
-        return
+        return { "error": "Intent not found" }
 
-    response = check_stripe_payment_intent_status(stripe_intent)
+    response = check_stripe_payment_intent_status(cust_intent)
+
+    if response["status"] == "success":
+        on_intent_success(cust_intent["stripe_intent"])
 
     return response
 
