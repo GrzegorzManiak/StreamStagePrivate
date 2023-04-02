@@ -58,9 +58,6 @@ class Event(models.Model):
     def __str__(self):
         return self.title
     
-    def short_description(self):
-        return self.description[:500]
-    
     # Tickets
     def get_ticket_listings(self):
         return TicketListing.objects.filter(event=self).all()
@@ -105,7 +102,11 @@ class Event(models.Model):
     
     def get_media_count(self):
         return EventMedia.objects.filter(event=self).all().count()
-
+    
+    # Trailer 
+    def get_trailer(self): 
+        return EventTrailer.objects.filter(event=self).all()
+    
     # Reviews
 
     def get_reviews(self):
@@ -178,6 +179,8 @@ class Event(models.Model):
     
     def get_showings_count(self):
         return EventShowing.objects.filter(event=self).all().count()
+    
+
 
 # Event Review Model
 class EventReview(models.Model):
@@ -243,11 +246,11 @@ class EventMedia(models.Model):
 class EventTrailer(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     videofile= models.FileField(upload_to='videos/', verbose_name="")
-    description = models.TextField("Photograph Description", max_length=300, blank=True, null=False)
+    description = models.TextField("Trailer Description", max_length=300, blank=True, null=False)
     
     class Meta:
         verbose_name = 'Event Trailer'
-        verbose_name_plural = 'Event Trailer'
+        verbose_name_plural = 'Event Trailers'
 
     def __str__(self):
         return self.description[:30]

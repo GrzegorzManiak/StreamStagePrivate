@@ -28,7 +28,7 @@
                 <div class="col-md-9 col-sm-12">
                     <!-- Event title & description -->
                     <h4>{{ event.title }}</h4>
-                    <p>{{ event.short_description }}...</p>
+                    <p>{{ event.description | slice:':250'}}...</p>
 
                     <!-- Displaying next showing (if any) -->
                     <div class="row">

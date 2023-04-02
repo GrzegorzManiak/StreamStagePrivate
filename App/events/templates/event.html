@@ -94,7 +94,7 @@
             </div>
             <!-- Event Description -->
             <div class="mx-2 my-4">
-                <p>{{ event.short_description }}...</p>
+                <p>{{ event.description | slice:':400' }}...</p>
             </div>
             <!-- Tickets -->
             <div class="mx-2 my-4">
@@ -136,8 +136,17 @@
             {% endfor %}
         </div>
     </div>
-
-    <!-- Media for Event -->
+    <div class="row">
+        <!-- Event Reviews -->
+        <div class="col-12">
+            {% for trailer in event.get_trailer %}
+            <div class="my-2 video">
+                <video class="mx-auto" controls width="1000" height="500" src="{{ trailer.videofile.url }}" alt="Event Trailer Video"></video>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <!-- Reviews for Event -->
     <div class="row">
         <!-- Event Reviews -->
         <div class="col-12">
