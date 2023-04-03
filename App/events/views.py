@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 
+from StreamStage.templatetags.tags import cross_app_reverse
+
 from .models import Event, EventReview, EventShowing
 from .forms import (EventApplyForm, 
                     EventUpdateForm, 
@@ -41,21 +43,21 @@ def event_view(request, event_id):
         
         'user': request.user,
         'api': {
-            'send_verification': 'send_verification',
-            'resend_verification': 'resend_key',
-            'remove_verification': 'remove_key',
-            'recent_verification': 'recent_key',
+            'send_verification': cross_app_reverse('accounts', 'send_verification', use_subdomain=False),
+            'resend_verification': cross_app_reverse('accounts', 'resend_key', use_subdomain=False),
+            'remove_verification': cross_app_reverse('accounts', 'remove_key', use_subdomain=False),
+            'recent_verification': cross_app_reverse('accounts', 'recent_key', use_subdomain=False),
 
-            'add_payment': 'add_payment',
-            'get_payments': 'get_payments',
-            'remove_payment': 'remove_payment',
+            'add_payment': cross_app_reverse('accounts', 'add_payments', use_subdomain=False),
+            'get_payments': cross_app_reverse('accounts', 'get_payments', use_subdomain=False),
+            'remove_payment': cross_app_reverse('accounts', 'remove_payment', use_subdomain=False),
 
-            'create_payment': 'create_payment',
-            'check_payment': 'check_payment',
+            'create_payment': cross_app_reverse('accounts', 'create_payment', use_subdomain=False),
+            'check_payment': cross_app_reverse('accounts', 'check_payment', use_subdomain=False),
 
-            'get_reviews': 'get_reviews',
-            'update_review': 'update_review',
-            'delete_review': 'delete_review',
+            'get_reviews': cross_app_reverse('accounts', 'get_reviews', use_subdomain=False),
+            'update_review': cross_app_reverse('accounts', 'update_review', use_subdomain=False),
+            'delete_review': cross_app_reverse('accounts', 'delete_review', use_subdomain=False),
         },
         'stripe_key': secrets.STRIPE_PUB_KEY,
     }

@@ -1,17 +1,19 @@
-from django.urls import path
-from .views import (event_create,
-                    event_view,
-                    get_past_events,
-                    get_upcoming_events,
-                    event_update,
-                    event_delete,
-                    review_create,
-                    review_update,
-                    review_delete,
-                    review_like,
-                    showing_create,
-                    showing_update,
-                    showing_delete
+from django.urls import path, include
+
+from .views import (
+    event_create,
+    event_view,
+    get_past_events,
+    get_upcoming_events,
+    event_update,
+    event_delete,
+    review_create,
+    review_update,
+    review_delete,
+    review_like,
+    showing_create,
+    showing_update,
+    showing_delete
 )
 
 from .api import (
@@ -74,4 +76,6 @@ urlpatterns = [
     path('api/events/get/', get_event, name='get_event'),
     path('api/events/delete/', delete_event, name='delete_event'),
     path('api/events/update/', update_event, name='update_event'),
+
+    path('accounts/', include('accounts.urls')),
 ]
