@@ -30,7 +30,11 @@ from .ext_api import (
     broadcasters,
     get_broadcaster,
     update_broadcaster,
-    delete_broadcaster
+    delete_broadcaster,
+    events,
+    get_event,
+    delete_event,
+    update_event
 )
 
 urlpatterns = [
@@ -65,4 +69,9 @@ urlpatterns = [
     path('api/broadcasters/get/', get_broadcaster, name='get_broadcaster'),
     path('api/broadcasters/update/', update_broadcaster, name='update_broadcaster'),
     path('api/broadcasters/delete/', delete_broadcaster, name='delete_broadcaster'),
+
+    path('api/events/', events, name='events'),
+    path('api/events/get/', get_event, name='get_event'),
+    path('api/events/delete/', delete_event, name='delete_event'),
+    path('api/events/update/', update_event, name='update_event'),
 ]

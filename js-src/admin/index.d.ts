@@ -59,6 +59,12 @@ export interface Configuration {
     get_broadcaster: string,
     update_broadcaster: string,
     delete_broadcaster: string,
+
+    event: string,
+    get_event: string,
+    create_event: string,
+    delete_event: string,
+    update_event: string,
 }
 
 
@@ -136,6 +142,40 @@ export interface FilterdBroadcaster {
 }
 
 
+export type EventSorts = 'updated' | 'created' | 'title' | 'description' | 'over_18' | 'categories' | 'approved';
+export interface Event {
+    id: string,
+    title: string,
+    description: string,
+    over_18: boolean,
+    categories: Array<{
+        id: string,
+        name: string,
+    }>,
+    broadcaster: {
+        id: string,
+        handle: string,
+    },
+    created: string,
+    updated: string,
+    contributors: Array<{
+        id: string,
+        handle: string,
+    }>,
+    approved: boolean,
+    showings: Array<{
+        id: string,
+    }>,
+}
+
+export interface FilterdEvent {
+    events: Array<Event>,
+    page: number,
+    per_page: number,
+    total: number,
+    pages: number,
+}
+
 export type FilterdUsersSuccess = DefaultResponseData & { data: FilterdUsers }
 export type FilterdUsersResponse = FilterdUsersSuccess | DefaultResponse;
 
@@ -153,3 +193,6 @@ export type FilterdBroadcastersResponse = FilterdBroadcastersSuccess | DefaultRe
 
 export type BroadcasterSuccess = DefaultResponseData & { data: Broadcaster }
 export type BroadcasterResponse = BroadcasterSuccess | DefaultResponse;
+
+export type FilterdEventsSuccess = DefaultResponseData & { data: FilterdEvent }
+export type FilterdEventsResponse = FilterdEventsSuccess | DefaultResponse;

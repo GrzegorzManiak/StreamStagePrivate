@@ -1,7 +1,7 @@
 import { configuration } from '.';
 import { DefaultResponse } from '../api/index.d';
 import { base_request } from '../api';
-import { BroadcasterResponse, BroadcasterSorts, CategoryResponse, CategorySorts, FilterOrder, FilterPosition, FilterSort, FilterdBroadcastersResponse, FilterdCategoriesResponse, FilterdUsersResponse, Frame, StatisticsResponse, UserResponse } from './index.d';
+import { BroadcasterResponse, BroadcasterSorts, CategoryResponse, CategorySorts, EventSorts, FilterOrder, FilterPosition, FilterSort, FilterdBroadcastersResponse, FilterdCategoriesResponse, FilterdEventsResponse, FilterdUsersResponse, Frame, StatisticsResponse, UserResponse } from './index.d';
 
 /**
  * @name get_statistics
@@ -303,4 +303,25 @@ export const delete_broadcaster = async (
     'DELETE',
     configuration.delete_broadcaster,
     { id },
+);
+
+
+
+/**
+ * @name filter_events
+ * @param {number} page - The page to get
+ * @param {EventSorts} sort - The sort to use (name, email, etc)
+ * @param {FilterOrder} order - The order to use (asc, desc)
+ * @param {string} search - The search query
+ * @returns {Promise<FilterdEventsResponse>}
+ */
+export const filter_events = async (
+    page: number,
+    sort: EventSorts,
+    order: FilterOrder,
+    search: string,
+): Promise<FilterdEventsResponse> => base_request(
+    'GET',
+    configuration.event,
+    { page, sort, order, search }
 );

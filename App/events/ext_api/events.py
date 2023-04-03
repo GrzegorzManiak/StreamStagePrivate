@@ -5,7 +5,8 @@ from accounts.com_lib import (
     authenticated
 )
 
-from events.models import Event
+from events.models import Event, EventShowing
+from accounts.models import Broadcaster
 from django.db.models import Q
 
 sorts = ['updated', 'created', 'title', 'description', 'over_18s', 'categories', 'approved']
@@ -54,7 +55,8 @@ def events(request, data):
             Q(description__icontains=data['search']) |
             Q(over_18s__icontains=data['search']) |
             Q(categories__icontains=data['search']) |
-            Q(approved__icontains=data['search'])
+            Q(approved__icontains=data['search']) |
+            Q(broadcaster__handle__icontains=data['search'])
         )
 
     # -- Get the page
@@ -69,11 +71,25 @@ def events(request, data):
             'title': event.title,
             'description': event.description,
             'over_18s': event.over_18s,
-            'categories': event.categories,
-            'broadcaster': event.broadcaster.handle,
-            'broadcaster_id': event.broadcaster.id,
+            'categories': [{
+                'id': category.id,
+                'name': category.name,
+            } for category in event.categories.all()],
+            'broadcaster': {
+                'id': event.broadcaster.id,
+                'handle': event.broadcaster.handle,
+            },
             'created': event.created,
             'updated': event.updated,
+            'contributors': [{
+                'id': contributor.id,
+                'handle': contributor.username,
+            } for contributor in event.contributors.all()],
+            'approved': event.approved,
+            'id': event.event_id,
+            'showings': [{
+                'id': showing.showing_id,
+            } for showing in EventShowing.objects.filter(event=event).all()],
         })
 
     # -- Return the response
@@ -84,3 +100,66 @@ def events(request, data):
         'total': len(processed_events),
         'pages': total_pages,
     })
+
+
+
+@api_view(['GET', 'POST'])
+@is_admin()
+@required_data(['id'])
+def get_event(request, data):
+    # -- Get the event
+    try: event = Event.objects.get(id=data['id'])
+    except Event.DoesNotExist: return invalid_response('Event does not exist')
+
+    # -- Return the response
+    return success_response('Event retrieved successfully', {
+        'title': event.title,
+        'description': event.description,
+        'over_18s': event.over_18s,
+        'categories': event.categories,
+        'broadcaster': event.broadcaster.handle,
+        'broadcaster_id': event.broadcaster.id,
+        'created': event.created,
+        'updated': event.updated,
+    })
+
+
+
+@api_view(['DELETE'])
+@is_admin()
+@required_data(['id'])
+def delete_event(request, data):
+    # -- Get the event
+    try: event = Event.objects.get(id=data['id'])
+    except Event.DoesNotExist: return invalid_response('Event does not exist')
+
+    # -- Delete the event
+    event.delete()
+
+    # -- Return the response
+    return success_response('Event deleted successfully', {})
+
+
+
+@api_view(['POST'])
+@is_admin()
+@required_data(['id', 'title', 'description', 'over_18s', 'categories', 'broadcaster_id'])
+def update_event(request, data):
+    # -- Get the event
+    try: event = Event.objects.get(id=data['id'])
+    except Event.DoesNotExist: return invalid_response('Event does not exist')
+
+    # -- Get the broadcaster
+    try: broadcaster = Broadcaster.objects.get(id=data['broadcaster_id'])
+    except Broadcaster.DoesNotExist: return invalid_response('Broadcaster does not exist')
+
+    # -- Update the event
+    event.title = data['title']
+    event.description = data['description']
+    event.over_18s = data['over_18s']
+    event.categories = data['categories']
+    event.broadcaster = broadcaster
+    event.save()
+
+    # -- Return the response
+    return success_response('Event updated successfully', {})

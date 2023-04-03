@@ -1,7 +1,7 @@
-<article class='panel' data-panel-type='categories' data-panel-status='hidden'>
+<article class='panel' data-panel-type='events' data-panel-status=''>
     <div class="mb-5 justify-content-start">
-        <h1 class="fw-bold">Categories</h1>
-        <p class="text-muted">Browse, create, edit and delete categories.</p>
+        <h1 class="fw-bold">Events</h1>
+        <p class="text-muted">Browse, create, edit and delete events.</p>
 
         <!-- Main content -->
         <div class="mb-5 w-100">
@@ -21,9 +21,11 @@
                     >   
                         <option value="updated" selected>Updated</option>
                         <option value="created">Created</option>
-                        <option value="name">Name</option>
+                        <option value="title">Title</option>
                         <option value="description">Description</option>
-                        <option value="color">Color</option>
+                        <option value="over_18s">Over 18's</option>
+                        <option value="category">Category</option>
+                        <option value="approved">Approved</option>
                     </select>
                 </div>
 
@@ -45,7 +47,7 @@
                 <input 
                     name="search" 
                     id="search" 
-                    placeholder="Color, Category, Description, etc..."
+                    placeholder="Title, Description, Over 18's, Categorys, Broadcaster, etc."
                     class="form-control inp">
             </div>
 
@@ -102,22 +104,6 @@
                 </button>
 
             </div>
-        </div>
-
-        <hr>
-        
-        <!-- Or Create a new category -->   
-        <p class="text-muted text-center">Or you can create a new category.</p>
-
-        <div  class='w-100'>
-            <button 
-                id="create"
-                class="w-100 h-100 btn btn-success success loader-btn"
-                loader-state='default'>   
-                <span> <div class='spinner-border' role='status'> 
-                <span class='visually-hidden'>Loading...</span> </div> </span>
-                <p>Create</p>
-            </button>
         </div>
     </div>
 </article>

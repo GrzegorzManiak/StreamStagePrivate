@@ -47,6 +47,11 @@
         data-get-broadcaster='{% cross_app_reverse_tag "events" "get_broadcaster" use_subdomain=False %}'
         data-update-broadcaster='{% cross_app_reverse_tag "events" "update_broadcaster" use_subdomain=False %}'
         data-delete-broadcaster='{% cross_app_reverse_tag "events" "delete_broadcaster" use_subdomain=False %}'
+    
+        data-event='{% cross_app_reverse_tag "events" "events" use_subdomain=False %}'
+        data-get-event='{% cross_app_reverse_tag "events" "get_event" use_subdomain=False %}'
+        data-update-event='{% cross_app_reverse_tag "events" "update_event" use_subdomain=False %}'
+        data-delete-event='{% cross_app_reverse_tag "events" "delete_event" use_subdomain=False %}'
     ></span>
     <div 
     id = 'main-container'
@@ -416,7 +421,7 @@
                                 {% include 'admin/users.html' %}
                                 {% include 'admin/categorys.html' %}
                                 {% include 'admin/broadcaster.html' %}
-
+                                {% include 'admin/events.html' %}
                             </div>
                         </main>
                     </div>

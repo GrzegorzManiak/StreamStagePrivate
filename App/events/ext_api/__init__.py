@@ -13,3 +13,10 @@ from .broadcaster import (
     update_broadcaster,
     delete_broadcaster
 )
+
+from .events import (
+    events,
+    get_event,
+    delete_event,
+    update_event
+)
