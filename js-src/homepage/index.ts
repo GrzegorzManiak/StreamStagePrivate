@@ -1,3 +1,4 @@
+import { sleep } from '../common';
 import { attach_to_showcases } from './featured';
 import { Event, Streamer } from './index.d';
 import { create_carousel } from './thumbnail';
@@ -220,9 +221,9 @@ function set_splash_state(
 }
 
 // -- Start the splash animation
-// set_splash_state('loading');
-// sleep(1000).then(() => {
-//     set_splash_state('finising');
-//     sleep(1500).then(() => set_splash_state('finished'));
-// });
+set_splash_state('loading');
+sleep(1000).then(() => {
+    set_splash_state('finising');
+    sleep(1500).then(() => set_splash_state('finished'));
+});
 attach_to_showcases();

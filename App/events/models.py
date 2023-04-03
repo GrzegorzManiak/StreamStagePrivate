@@ -100,6 +100,9 @@ class Event(models.Model):
     contributors = models.ManyToManyField(get_user_model(), related_name="event_contributors", blank=True)
     approved = models.BooleanField("Approved", default=False)
 
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    
     # Event
     
     def get_absolute_url(self):
@@ -212,6 +215,7 @@ class Event(models.Model):
     
     def get_showings_count(self):
         return EventShowing.objects.filter(event=self).all().count()
+
 
 # Event Review Model
 class EventReview(models.Model):

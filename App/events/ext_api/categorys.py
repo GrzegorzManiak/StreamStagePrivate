@@ -18,7 +18,7 @@ orders = ['asc', 'desc']
 
 
 @api_view(['GET', 'POST'])
-@authenticated()
+@is_admin()
 @required_data(['page', 'sort', 'order', 'search'])
 def categorys(request, data):
     """

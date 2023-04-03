@@ -41,21 +41,21 @@ def event_view(request, event_id):
         
         'user': request.user,
         'api': {
-            'send_verification': reverse_lazy('send_verification'),
-            'resend_verification': reverse_lazy('resend_key'),
-            'remove_verification': reverse_lazy('remove_key'),
-            'recent_verification': reverse_lazy('recent_key'),
+            'send_verification': 'send_verification',
+            'resend_verification': 'resend_key',
+            'remove_verification': 'remove_key',
+            'recent_verification': 'recent_key',
 
-            'add_payment': reverse_lazy('add_payment'),
-            'get_payments': reverse_lazy('get_payments'),
-            'remove_payment': reverse_lazy('remove_payment'),
+            'add_payment': 'add_payment',
+            'get_payments': 'get_payments',
+            'remove_payment': 'remove_payment',
 
-            'create_payment': reverse_lazy('create_payment'),
-            'check_payment': reverse_lazy('check_payment'),
+            'create_payment': 'create_payment',
+            'check_payment': 'check_payment',
 
-            'get_reviews': reverse_lazy('get_reviews'),
-            'update_review': reverse_lazy('update_review'),
-            'delete_review': reverse_lazy('delete_review'),
+            'get_reviews': 'get_reviews',
+            'update_review': 'update_review',
+            'delete_review': 'delete_review',
         },
         'stripe_key': secrets.STRIPE_PUB_KEY,
     }

@@ -71,7 +71,7 @@ export async function register_handler() {
     check_inputs();
 
     // -- Add the event listener to the button
-    submit_button.addEventListener('click', async () => handle_click(
+    submit_button.addEventListener('click', () => handle_click(
         submit_button,
         name_input,
         email_input,
