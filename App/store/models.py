@@ -17,7 +17,7 @@ class FlexibleTicket(models.Model):
     # this field is null until member chooses a showing to watch
     showing = models.ForeignKey(EventShowing, null=True, on_delete=models.DO_NOTHING)
 
-    ticket_price = models.DecimalField("Price", decimal_places=2, max_digits=10)
+    #ticket_price = models.DecimalField("Price", decimal_places=2, max_digits=10)
 
     def getOwner(self):
         return self.purchase.purchaser

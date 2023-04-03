@@ -13,10 +13,12 @@ Delete Event | StreamStage
 <div>
     <h1 class="page-title">Delete Event</h1>
     <div class="d-flex content_center">
-        <form class="form-layout" action="" method="POST" enctype="multipart/form-data">
+        <form class="form-class form-layout" action="" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <p>Are you sure you want to delete {{event.title}}?</p> 
-            <input type="submit" value="Delete" />
+            <div>
+                <input class="btn btn-primary" type="submit" value="Delete" />
+            </div>
         </form>
     </div>
 </div>

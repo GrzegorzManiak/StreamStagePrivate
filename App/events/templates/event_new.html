@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-{% load crispy_forms_tags%}
+{% load crispy_forms_tags %}
 
 {% block metadescription %}
 Adding an Event
@@ -11,14 +11,14 @@ Add Event | StreamStage
 
 
 {% block content %}
-<div class="container">
+<div class="container mx-auto" style="margin-top: var(--header-height)!important">
     <h1 class="page-title">Add Event</h1>
-    <div class="d-flex content_center">
-        <form class="form-layout" action="" method="POST" enctype="multipart/form-data">
+    <div class="d-flex mx-auto">
+        <form class="form-class form-layout" action="" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-            {{ form.as_p }}
-            <div class="d-flex content_center my-4">
-                <button class="btn btn-success ml-2" type="submit"><i class="fa fa-plus"></i>&emsp;Add Event</button>
+            {{ form|crispy }}
+            <div class="d-flex">
+                <button class="btn btn-primary" type="submit">Add Event</button>
             </div>
         </form>
     </div>

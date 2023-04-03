@@ -39,10 +39,10 @@
         <!-- Common items -->
         <div class="nav-items" data-nav-active='home' {% if request.impersonate %}style='display:none'{% endif %}>
             <ul class="d-flex">
-                <li data-nav-area='home'><a> Home </a></li>
+                <li data-nav-area='home'><a href="{% cross_app_reverse_tag 'homepage' 'homepage_index' %}"> Home </a></li>
                 <li data-nav-area='live'><a> Live </a></li>
-                <li data-nav-area='upcoming'><a> Upcoming </a></li>
-                <li data-nav-area='past'><a> Past </a></li>
+                <li data-nav-area='upcoming'><a href="{% cross_app_reverse_tag 'events' 'upcoming_events' %}"> Upcoming </a></li>
+                <li data-nav-area='past'><a href="{% cross_app_reverse_tag 'events' 'past_events' %}"> Past </a></li>
             </ul>
         </div>
 

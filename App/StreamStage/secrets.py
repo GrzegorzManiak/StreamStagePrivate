@@ -2,8 +2,8 @@ DJANGO_SECRET_KEY = 'django-insecure-69z7g4z57r(g_rd4ott1mca#)^hykt681ig5znx!ra1
 SENDGIRD_TOKEN = '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'
 NODE_ANNOUNCE_KEY = 'DB917464A48CEDE87A22225ED67BEF95A97E45A3A389C9DE5D8A78E779'
 CLOUDFLARE_TOKEN = 'WVviIoo2j-eDgSzyno5llaF_EHNqnGp7F9RUP_iD'
-STRIPE_PUB_KEY = 'pk_test_51MluK8KeLSBX93CvBxGhDGotysXopqoTvL4E7HYvmi4lrGFId5Ik4N7FvPo65JdrfHghzaLoxEhNhQuIADiCW8uq00BUFyzq9P'
-STRIPE_SECRET_KEY = 'sk_test_51MluK8KeLSBX93CvdELL57Uvj6z3vI8Yhk9xw7I35wDDTOhN8vDEdahTnSX8sqADnA9iwDsWKDzI6p4LrmLEsiRQ00JcaN5yQG'
+STRIPE_PUB_KEY = 'pk_test_51M6y9CHEyDrsSJvelnXxEtxn277Z3hfbVVIk9xK9mHGaRWkL0HFefAf1ng4hHzAaKc11wlq2cfudpiccZzFEL29s00dz15pnGu'
+STRIPE_SECRET_KEY = 'sk_test_51M6y9CHEyDrsSJvexuyA5aeupHqHNGzEy2YwSNnUHla9Y3fW0pBUIxkdknMWWoGhYdluWth8UMJyi3kMKdxdRHFO00ZtBDaTqT'
 
 STRIPE_SUBSCRIPTIONS = {
     'SSP': 'price_1Mn8TfKeLSBX93CvYi3x6RLu'
@@ -20,8 +20,8 @@ STRIPE_MODES = {
     },
 
     'test': {
-        'pub': 'pk_test_51MluK8KeLSBX93CvBxGhDGotysXopqoTvL4E7HYvmi4lrGFId5Ik4N7FvPo65JdrfHghzaLoxEhNhQuIADiCW8uq00BUFyzq9P',
-        'pri': 'sk_test_51MluK8KeLSBX93CvdELL57Uvj6z3vI8Yhk9xw7I35wDDTOhN8vDEdahTnSX8sqADnA9iwDsWKDzI6p4LrmLEsiRQ00JcaN5yQG',
+        'pub': 'pk_test_51M6y9CHEyDrsSJvelnXxEtxn277Z3hfbVVIk9xK9mHGaRWkL0HFefAf1ng4hHzAaKc11wlq2cfudpiccZzFEL29s00dz15pnGu',
+        'pri': 'sk_test_51M6y9CHEyDrsSJvexuyA5aeupHqHNGzEy2YwSNnUHla9Y3fW0pBUIxkdknMWWoGhYdluWth8UMJyi3kMKdxdRHFO00ZtBDaTqT',
 
         'prices': {
             'SSP': 'price_1MmcXIKeLSBX93CvwgTOkru0'

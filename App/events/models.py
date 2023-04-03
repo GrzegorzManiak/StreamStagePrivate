@@ -1,5 +1,7 @@
 from tempfile import NamedTemporaryFile
 from django.db import models
+from django.db.models import Q, Avg
+
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django_countries.fields import CountryField
@@ -78,9 +80,8 @@ class TicketListing(models.Model):
     listing_id = models.UUIDField(default=uuid.uuid4)
     event = models.ForeignKey(to="events.Event", on_delete=models.CASCADE)
     ticket_detail = models.CharField(max_length=100, blank=True)
-
     price = models.DecimalField(max_digits=1000, decimal_places=2, validators=[MinValueValidator(0)])
-
+    # seat = models.CharField(max_length=25, blank=True)
     ticket_type = models.IntegerField(default=0) # streaming ticket ID
 
     # 0 means no stocking.
@@ -108,14 +109,14 @@ class Event(models.Model):
         return self.title
     
     def short_description(self):
-        return self.description[:250]
+        return self.description[:500]
     
     # Tickets
     def get_ticket_listings(self):
         return TicketListing.objects.filter(event=self).all()
     
     def has_ticket_listings(self):
-        return self.get_ticket_listings().count > 0
+        return self.get_ticket_listings().count()
     
     # Media
 
@@ -128,7 +129,13 @@ class Event(models.Model):
             return media[self.primary_media_idx]
 
     def get_media(self):
-        return EventMedia.objects.filter(event=self).all()
+        cover_pic = self.get_cover_picture()
+        other_media = EventMedia.objects.filter(event=self).filter(~Q(id=cover_pic.id)).all()
+        media = []
+        media.append(cover_pic)
+        media += other_media
+
+        return media
     
     def get_media_count(self):
         return EventMedia.objects.filter(event=self).all().count()
@@ -136,25 +143,37 @@ class Event(models.Model):
     # Reviews
 
     def get_reviews(self):
-        return EventReview.objects.filter(event=self).all()
+        return EventReview.objects.filter(event=self).all().order_by('likes')
+    
+    def get_medium_reviews(self):
+        reviews = EventReview.objects.filter(event=self).all().order_by('likes')
+        for review in reviews:
+            review.body = review.body[:250]
+        return reviews 
+       
+    def get_short_reviews(self):
+        reviews = EventReview.objects.filter(event=self).all().order_by('likes')
+        for review in reviews:
+            review.body = review.body[:100]
+        return reviews
     
     def get_review_count(self):
         return EventReview.objects.filter(event=self).all().count()
     
     def get_average_rating(self, reviews_in = None):
-        avg_rating = 0
+        # avg_rating = 0
 
-        reviews = reviews_in or self.get_reviews()
-        count = reviews.count()
+        # reviews = reviews_in or self.get_reviews()
+        # count = reviews.count()
 
-        if count > 0:
-            for review in reviews:
-                avg_rating += review.rating
+        # if count > 0:
+        #     for review in reviews:
+        #         avg_rating += review.rating
             
-            avg_rating /= count
+        #     avg_rating /= count
         
-        return round(avg_rating,1)
-    
+        # return round(avg_rating,1)
+        return EventReview.objects.filter(event=self).aggregate(Avg("rating"))["rating__avg"] or 0
     # Get top review based on likes
     def get_top_review(self, reviews_in = None):
         reviews = reviews_in or self.get_reviews()
@@ -180,7 +199,7 @@ class Event(models.Model):
 
     def get_next_showing(self):
         return self.get_showings().first()
-               
+
     def get_last_showing(self):
         return self.get_showings().last()
     
@@ -212,14 +231,13 @@ class EventReview(models.Model):
         verbose_name_plural = 'Event Reviews'
 
     def __str__(self):
-        return self.body[:100]
-    
-    def short_review(self):
-        self.body = self.body[:50]
-        return self
+        return self.title
     
     def get_review_body_length(self):
         return len(self.body)
+
+    def get_rating(self):
+        return self.rating
 
     def get_review_likes(self):
         return EventReview.objects.filter(event=self).filter(review_id=self.review_id).count()

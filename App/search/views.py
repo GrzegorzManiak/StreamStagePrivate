@@ -1,5 +1,4 @@
-from events.models import Category, Event, EventShowing
-from accounts.models import Broadcaster
+from events.models import Category, Event, EventShowing, TicketListing
 from django.views.generic import ListView
 from django.db.models import Q
 from datetime import datetime
@@ -24,8 +23,8 @@ class SearchResultsListView(ListView):
         venue = self.request.GET.get('v')        
         city = self.request.GET.get('c')
         country = self.request.GET.get('co')
-        # min_price = self.request.GET.get('mip')
-        # max_price = self.request.GET.get('map')
+        min_price = self.request.GET.get('mip')
+        max_price = self.request.GET.get('map')
         
         # Null Protection
         results = Event.objects.all()
@@ -45,7 +44,7 @@ class SearchResultsListView(ListView):
 
         # Filter by Venue
         if venue:
-            # Getting City from showings
+            # Getting Venue from showings
             showings = EventShowing.objects.filter(venue=venue)
             # Matching Events to Showings
             events = []
@@ -114,7 +113,26 @@ class SearchResultsListView(ListView):
 
             results = results.filter(event_id__in=event_ids)
 
-        # # Filter by Price
+        # Filter by Price
+        # min_price = 99999
+        # max_price = 0
+        # min_prices = []
+        # max_prices = []
+        # for event in results:
+        #     tickets = TicketListing.objects.filter(event=event).all()
+        #     for ticket in tickets:
+        #         if ticket.ticket_type == 0:
+        #             min_price = ticket.price
+        #             max_price = ticket.price
+
+        #         else:
+        #             if ticket.price > max_price:
+        #                 max_price = ticket.price
+
+        #         min_prices.append(min_price)
+        #         max_prices.append(max_price)
+        #         results
+
         # # Ascending
         # if sort == 'price-asc':
         #     results = results.order_by('price')
@@ -126,7 +144,7 @@ class SearchResultsListView(ListView):
         #     min_price = int(min_price)
         #     max_price = int(max_price)
 
-        #     if max_price == 0:
+        #     if min_price == 0:
         #         max_price = 99999
             
         #     results = results.filter(price__range=(min_price, max_price))
@@ -150,10 +168,8 @@ class SearchResultsListView(ListView):
         context['venue'] = self.request.GET.get('v')
         context['city'] = self.request.GET.get('c')
         context['country'] = self.request.GET.get('co')
-        
-
-        # context['min_price'] = self.request.GET.get('mip')
-        # context['max_price'] = self.request.GET.get('map')
+        context['min_price'] = self.request.GET.get('mip')
+        context['max_price'] = self.request.GET.get('map')
 
         return context
 

@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Event{% endblock title %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/payments.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
+{% endblock %}
+
+{% block content %}
+<span id='toasts'>
+</span>
+
+<span 
+    id='config'
+
+    data-csrf-token='{{ csrf_token }}'
+
+    data-send-verification='{{ api.send_verification }}'
+    data-resend-verification='{{ api.resend_verification }}'
+    data-remove-verification='{{ api.remove_verification }}'
+    data-recent-verification='{{ api.recent_verification }}'
+
+    data-add-payment='{{ api.add_payment }}'
+    data-get-payments='{{ api.get_payments }}'
+    data-remove-payment='{{ api.remove_payment }}'
+
+    data-get-reviews='{{ api.get_reviews }}'
+    data-update-review='{{ api.update_review }}'
+    data-delete-review='{{ api.delete_review }}'
+
+    data-stripe-pub='{{ stripe_key }}'
+    data-stripe-customer='{{ stripe }}' 
+></span>
+
+<div class="event-listings-title container">
+
+    <!-- Main Details -->
+    <div class="row text-light">
+
+        <div class="col-3 mx-auto">
+
+            <!-- Category -->
+            <div class="mx-2 my-4">
+                {% for category in event.categories.all %}
+                <span class="badge bg-primary">{{category.name}}</span>
+                {% endfor %}
+            </div>
+
+            <!-- Event Poster -->
+            <div class="d-flex flex-row mx-2 my-4">
+                <!-- If No Media, Use Default Event Cover Image -->
+                {% if event.get_media_count == 0 %}
+                <img class="event-cover" src="{% static 'images/default_event_cover.png' %}" alt="No Event Cover Photo">
+                {% else %}
+                <!-- Media Carousel -->
+                    <div class="swiper mySwiper">
+                        <div class="swiper-wrapper">
+                            {% for media in event.get_media %}
+                            <div class="swiper-slide">
+                                <img src="{{ media.picture.url }}" alt="Event Media Photo">
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="swiper-pagination"></div>
+                        <div class="s-btn swiper-button-prev"></div>
+                        <div class="s-btn swiper-button-next"></div>
+                    </div>
+                {% endif %}
+            </div>
+
+
+
+            <!-- Streamer Name -->
+            <div class="mx-2 my-4">
+                <h4><b>Streamer</b></h4>
+                <a href="">
+                    <p>@{{ event.broadcaster.handle }}</p>
+                </a>
+            </div>
+            <!-- Tickets -->
+            <div>
+                <h4 class="mx-2 my-4"><b>Tickets</b></h4>
+                <div>
+                    {% if event.stream_price != None %}
+                        <div class="row border m-1">
+                            <div class="col-6">
+                                <div class="b">Flexible Streaming Ticket</div>
+                                <span>€{{event.stream_price}}</span>
+                            </div>
+                            <div class="col-6">
+                                <span id="buy-streaming-ticket" class="btn btn-success m-auto" name="purchase-stream">Purchase</span>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 mx-auto p-2">
+            <!-- Event Title -->
+            <h2 class="page-title">{{ event.title }}</h2>
+
+            <!-- Event Description -->
+            <div class="m-4">
+                <p>{{ event.description }}</p>
+
+                <!-- Showings -->
+                <div class="row">
+                    <h4 class="my-2"><b>Showings</b></h4>
+                    <div class="row">
+                        <h6 class="col-6 sub-title"><b>When?</b></h6>
+                        <h6 class="col-6 sub-title"><b>Where?</b></h6>
+                    </div>
+
+                    <div class="row">
+                        {% for showing in event.get_showings %}
+                        <div class="col-6">
+                            <p>{{showing.time }}</p>
+                        </div>
+                        <div class="col-6">
+                            <p>
+                                {% if showing.venue and showing.city %}
+                                {{ showing.venue }} - {{ showing.city }}
+                                {% elif showing.city %}
+                                {{ showing.city }}
+                                {% endif %}
+                            </p>
+                            <p>{{showing.country.name}}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Event Reviews -->
+        <div class="col-3 text-start mx-auto p-2">
+            <!-- Overall Event Rating -->
+            <div class="mx-2 my-4">
+                <h4><b>Audience Rating</b> <span class="text-light mt-2">{{ avg_rating }}/10</span></h4>
+            </div>
+            <div>
+                <h4 class="mx-2 my-2"><b>Reviews</b></h4>
+                <div>
+                    <!-- Allow users to review -->
+                    {% if user.is_authenticated %}
+                        <!-- Need to add code for authenticating that user has seen event -->
+                        {% include 'reviews/review_new.html' %}
+                    {% endif %}
+                    
+                    <!-- Display Reviews -->
+                    {% for review in reviews %}
+                    {% include 'reviews/review.html' with review=review %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Media for Event -->
+    <div class="row text-light">
+        <!-- Media Carousel-->
+        <div class="col-9 content-center">
+            <!-- {% for media in event.media.all %}
+            <div class="event-media">
+                <img src="{{ event.media }}">
+                <p>{{ media.description }}</p>
+            </div>
+            {% endfor %} -->
+        </div>
+    </div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+<script src="/static/js/events.js"></script>
+<script src="/static/js/events_bin.js"></script>
+
+{% endblock content %}

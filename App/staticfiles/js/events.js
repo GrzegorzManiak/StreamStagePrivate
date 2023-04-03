@@ -27,3 +27,43 @@ like_buttons.forEach(button => {
   button.addEventListener('click', likeClick);
 })
 
+
+// Function for Media Carousel
+const media_settings = {
+  slidesPerView: 1,
+  loop: true,
+  pagination: {
+    el: '.swiper-pagination',
+    type: 'bullets',
+    clickable: 'true',
+  },
+  navigation: {
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
+  },
+};
+
+const swiper = new Swiper('.mySwiper', media_settings);
+
+// Function for Event Page Review Carousel
+const review_settings = {
+  loop: true,
+  slidesPerView: 2,
+  pagination: {
+    el: '.swiper-pagination',
+    type: 'bullets',
+    clickable: 'true',
+  },
+  navigation: {
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
+  },
+};
+
+const long_swiper = new Swiper('.longSwiper', review_settings);
+
+// Rating Stars
+const rate = (rating) => {
+  const rating_input = document.getElementById('id_rating')
+  rating_input.value = rating
+}
