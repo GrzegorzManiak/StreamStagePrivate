@@ -7,7 +7,7 @@ from django_countries.fields import CountryField
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 from accounts.models import Broadcaster, Member
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 import uuid
 
 # Event/Broadcaster Category Model
@@ -141,6 +141,7 @@ class Event(models.Model):
         
         # return round(avg_rating,1)
         return EventReview.objects.filter(event=self).aggregate(Avg("rating"))["rating__avg"] or 0
+    
     # Get top review based on likes
     def get_top_review(self, reviews_in = None):
         reviews = reviews_in or self.get_reviews()
@@ -179,7 +180,15 @@ class Event(models.Model):
     
     def get_showings_count(self):
         return EventShowing.objects.filter(event=self).all().count()
-    
+
+    def is_event_live(self):
+        showings = []
+        for showing in self.get_showings():
+            time_left = datetime.now(tz = showing.time.tzinfo) - showing.time
+            if time_left < timedelta(minutes=showing.max_duration) and time_left > 0:
+                showings.append(showing)
+        if len(showings) > 0:        
+            return True 
 
 
 # Event Review Model
@@ -259,10 +268,11 @@ class EventTrailer(models.Model):
 class EventShowing(models.Model):
     showing_id = (models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False))
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    country = CountryField()
-    city = models.CharField(max_length=25, blank=True)
-    venue = models.CharField(max_length=50, blank=True)
+    country = CountryField("Country")
+    city = models.CharField("City", max_length=25, blank=True)
+    venue = models.CharField("Venue", max_length=50, blank=True)
     time = models.DateTimeField()
+    max_duration = models.SmallIntegerField("Max Duration (in minutes)")
 
     class Meta:
         verbose_name = 'Event Showing'

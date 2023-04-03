@@ -143,8 +143,8 @@ Search Events | StreamStage
         <hr>
         <div class="text-center">
             {% for pg in paginator.page_range %}
-            <a href="?q={{query}}&cat={{cat.id}}&b={{broadcaster}}&s={{sort_by}}^mip={{min_price}}&map={{max_price}}&page={{pg}}" class="btn btn-light btn-sm 
-                {% if products.number == pg %}active{% endif %}">{{pg}}
+            <a href="?q={{query}}&cat={{category.name}}&b={{broadcaster}}&sd={{start_date}}&ed={{end_date}}&v={{venue}}&c={{city}}&co={{country}}&u={{upcoming}}&ip={{in_person}}&s={{sort_by}}&mip={{min_price}}&map={{max_price}}&page={{pg}}" class="btn btn-light btn-sm 
+                {% if events.number == pg %}active{% endif %}">{{pg}}
             </a>
             {% endfor %}
         </div>

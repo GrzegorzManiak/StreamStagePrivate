@@ -103,7 +103,7 @@
                 <p class="m-0" data-bs-toggle="collapse" href="#locationfilter" role="button">
                     <b> <i class="fa-solid fa-caret-down"></i> Filter by Location</b>
                 </p>
-                <div class="collapse {% if venue %}show{% endif %} col-12 my-1" id="locationfilter">
+                <div class="collapse {% if venue or city or country %}show{% endif %} col-12 my-1" id="locationfilter">
                     <div id="location-filters">
         <!-- Filter By Venue -->
                         <div class="mt-1">
@@ -142,37 +142,37 @@
                             Start Date (dd/mm/yyyy) <input class="border-light rounded" type="datetime" name="sd" 
                             {% if start_date %} value="{{start_date}}" {% endif %}>
                         </div>
-                        <p>to</p>
+                        <p class="my-0">to</p>
                         <div>
                             End Date (dd/mm/yyyy) <input class="border-light rounded mb-1" type="datetime" name="ed" 
                             {% if end_date %} value="{{end_date}}" {% endif %}>
                         </div>
                     </div>
-                </div>
-                <!-- Upcoming Events only -->
-                <div class="collapse" id="datefilter">
-                    <label class="d-block">
-                        {% if upcoming %}
-                        <input type="checkbox" name="u" value="y" checked>
-                        {% else %}
-                        <input type="checkbox" name="u" value="y">
-                        {% endif %}
-        
-                        Upcoming Events Only
-                    </label>
-                </div>
-                <!-- Events with in-person tickets only -->
-                <div class="collapse" id="datefilter">
-                    <label class="d-block">
-                        {% if in_person %}
-                        <input type="checkbox" name="ip" value="y" checked>
-                        {% else %}
-                        <input type="checkbox" name="ip" value="y">
-                        {% endif %}
-        
-                        In-Person Tickets Available
-                    </label>
-                </div>
+                    <!-- Upcoming Events only -->
+                    <div class="collapse mt-1" id="datefilter">
+                        <label class="d-block">
+                            {% if upcoming %}
+                            <input type="checkbox" name="u" value="y" checked>
+                            {% else %}
+                            <input type="checkbox" name="u" value="y">
+                            {% endif %}
+            
+                            Upcoming Events Only
+                        </label>
+                    </div>
+                    <!-- Events with in-person tickets only -->
+                    <div class="collapse mt-1" id="datefilter">
+                        <label class="d-block">
+                            {% if in_person %}
+                            <input type="checkbox" name="ip" value="y" checked>
+                            {% else %}
+                            <input type="checkbox" name="ip" value="y">
+                            {% endif %}
+            
+                            In-Person Tickets Available
+                        </label>
+                    </div>
+                </div>                
             </div>
         </div>
 

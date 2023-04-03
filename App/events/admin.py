@@ -30,8 +30,8 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(EventShowing)
 class EventShowingAdmin(admin.ModelAdmin):
-    list_display = [ 'showing_id', 'event', 'country', 'city', 'venue', 'time' ]
-    list_editable = [ 'event', 'country', 'city', 'venue', 'time' ]
+    list_display = [ 'showing_id', 'event', 'country', 'city', 'venue', 'time', 'max_duration' ]
+    list_editable = [ 'event', 'country', 'city', 'venue', 'time', 'max_duration']
     list_displaylinks = []
 
 @admin.register(EventReview)

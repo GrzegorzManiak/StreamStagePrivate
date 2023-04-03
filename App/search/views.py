@@ -9,8 +9,9 @@ class SearchResultsListView(ListView):
     model = Event
     context_object_name = 'events_list'
     template_name = 'search.html'
-    # paginate_by = 8
+    # paginate_by = 10
 
+    # Searching the events and returning results based on filters
     def get_queryset(self):
         user = self.request.user
 
@@ -34,7 +35,7 @@ class SearchResultsListView(ListView):
     # Regular Search (User Input)
         if query:
             results = results.filter(Q(title__icontains=query) | Q(description__icontains=query) | 
-                                     Q(broadcaster__handle__icontains=query) | Q(categories__name__icontains=query))
+                                     Q(broadcaster__handle__icontains=query) | Q(categories__name__icontains=query)).distinct()
         
     # Filter by Category
         if category:
@@ -42,7 +43,7 @@ class SearchResultsListView(ListView):
         
     # Filter by Broadcaster
         if broadcaster:
-            results = results.filter(Q(broadcaster__handle__icontains=broadcaster))
+            results = results.filter(Q(broadcaster__handle__icontains=broadcaster)).distinct()
 
     # Filter by Venue
         if venue:
