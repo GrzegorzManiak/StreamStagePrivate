@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view
 from accounts.com_lib import (
     is_admin, invalid_response, 
     required_data, success_response,
-    authenticated
+    paginate
 )
 
 from events.models import Category
@@ -19,72 +19,19 @@ orders = ['asc', 'desc']
 
 @api_view(['GET', 'POST'])
 @is_admin()
-@required_data(['page', 'sort', 'order', 'search'])
-def categorys(request, data):
-    """
-        This view returns all categorys in the database in a formatted list.
-        Some data is truncated to save performance.
-    """
-
-    # -- Make sure all the data is valid
-    try: 
-        page = int(data['page'])
-        if page < 0: return invalid_response('Page must be greater than 0')
-    except ValueError: return invalid_response('Page must be an integer')
-
-    if data['sort'] not in sorts: return invalid_response('Invalid sort')
-    if data['order'] not in orders: return invalid_response('Invalid order')
-
-    # -- Get the categorys
-    filter = {}
-
-    # -- Sort
-    match data['sort']:
-        case 'updated': sort = 'updated'
-        case 'created': sort = 'created'
-        case 'name': sort = 'name'
-        case 'description': sort = 'description'
-        case 'color': sort = 'hex_color'
-
-    # -- Order
-    if data['order'] == 'desc': sort = '-' + sort
-    else: sort = sort
-
-    # -- Get the categorys
-    categorys = Category.objects.filter(**filter).order_by(sort)
-
-    # -- Search
-    if len(data['search']) > 3:
-        categorys = categorys.filter(
-            Q(name__icontains=data['search']) |
-            Q(description__icontains=data['search']) |
-            Q(hex_color__icontains=data['search'])
-        )
-
-    # -- Pagination
-    per_page = 10
-    total_pages = int(len(categorys) / per_page)
-    processed_categorys = []
-    categorys = categorys[page * per_page: (page + 1) * per_page]
-
-    # -- Format the data
-    processed_categorys = [{
-        'id': category.id,
-        'name': category.name,
-        'description': category.description,
-        'color': category.hex_color,
-        'created': category.created,
-        'updated': category.updated,
-        'image': category.get_splash_photo()
-    } for category in categorys]
-
-
+@paginate(
+    page_size=10,
+    search_fields=['name', 'description', 'hex_color'],
+    order_fields=['updated', 'created', 'name', 'description', 'hex_color'],
+    model=Category
+)
+def categorys(request, models, total_pages, page):
     return success_response(
         'Successfully retrieved categorys', {
-            'categorys': processed_categorys,
+            'categorys': [category.serialize() for category in models],
             'page': page,
-            'per_page': per_page,
-            'total': len(processed_categorys),
+            'per_page': 10,
+            'total': len(models),
             'pages': total_pages,
         })
 
@@ -113,15 +60,7 @@ def create_category(request, data):
 
     return success_response(
         'Successfully created category',
-        {
-            'id': category.id,
-            'name': category.name,
-            'description': category.description,
-            'color': category.hex_color,
-            'created': category.created,
-            'updated': category.updated,
-            'image': category.get_splash_photo()
-        }
+        category.serialize()
     )
 
 
@@ -147,15 +86,7 @@ def update_category(request, data):
     print(data)
     return success_response(
         'Successfully updated category',
-        {
-            'id': category.id,
-            'name': category.name,
-            'description': category.description,
-            'color': category.hex_color,
-            'created': category.created,
-            'updated': category.updated,
-            'image': category.get_splash_photo()
-        }
+        category.serialize()
     )
 
 
@@ -174,15 +105,7 @@ def get_category(request, data):
 
     return success_response(
         'Successfully retrieved category',
-        {
-            'id': category.id,
-            'name': category.name,
-            'description': category.description,
-            'color': category.hex_color,
-            'created': category.created,
-            'updated': category.updated,
-            'image': category.get_splash_photo()
-        }
+        category.serialize()
     )
 
 

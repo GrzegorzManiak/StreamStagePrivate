@@ -22,6 +22,93 @@ kb = float(1024)
 mb = float(kb ** 2)
 gb = float(kb ** 3)
 
+
+class Terms(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=100)
+    content = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+    
+    def latest():
+        return Terms.objects.order_by('-created')[0]
+    
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'content': self.content,
+            'created': self.created
+        }
+    
+    
+
+class Privacy(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=100)
+    content = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+    
+    def latest():
+        return Privacy.objects.order_by('-created').first()
+    
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'content': self.content,
+            'created': self.created
+        }
+    
+
+
+class FAQ(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    question = models.CharField(max_length=100)
+    answer = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.question
+    
+    def serialize(self):
+        return {
+            'id': self.id,
+            'question': self.question,
+            'answer': self.answer,
+            'created': self.created
+        }
+    
+
+
+class Contact(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    subject = models.CharField(max_length=100)
+    message = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+    
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'email': self.email,
+            'subject': self.subject,
+            'message': self.message,
+            'created': self.created
+        }
+
+
+
 class SentEmail(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 

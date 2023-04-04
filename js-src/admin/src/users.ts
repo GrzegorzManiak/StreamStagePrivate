@@ -1,6 +1,7 @@
+import { FilterOrder } from '../../common/index.d';
 import { attach, confirmation_modal, construct_modal, create_toast } from '../../common';
 import { delete_user, filter_users, get_user, update_email, update_streamer_status } from '../api';
-import { FilterOrder, FilterPosition, FilterSort, FilterdUser, FilterdUsersSuccess, Pod, UserSuccess } from '../index.d';
+import { FilterPosition, FilterSort, FilterdUser, FilterdUsersSuccess, Pod, UserSuccess } from '../index.d';
 
 export async function manage_users_panel(pod: Pod) {
     // -- Gather all the inputs

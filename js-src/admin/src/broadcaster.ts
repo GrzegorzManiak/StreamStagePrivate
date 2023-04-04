@@ -1,87 +1,32 @@
 import { attach, confirmation_modal, construct_modal, create_toast } from '../../common';
 import { delete_broadcaster, filter_broadcasters, get_broadcaster, update_broadcaster } from '../api';
-import { Broadcaster, BroadcasterSorts, BroadcasterSuccess, FilterOrder, FilterdBroadcastersSuccess, Pod } from '../index.d';
-import { manage_search } from './users';
+import { Broadcaster, BroadcasterSorts, BroadcasterSuccess, FilterdBroadcastersSuccess, Pod } from '../index.d';
+import { manage_search_panel } from '../../common/search';
 
 export async function manage_broadcaster_panel(pod: Pod) {
     // -- Gather all the inputs
     const panel = pod.panel.element;
 
-    const filter = panel.querySelector('#filter'),
-        order = panel.querySelector('#order'),
-        search = panel.querySelector('#search'),
-        prev = panel.querySelector('#prev'),
-        next = panel.querySelector('#next'),
-        page = panel.querySelector('#page'),
-        out_of = panel.querySelector('.out-of'),
-        content = panel.querySelector('.content-loader'),
-        create = panel.querySelector('#create');
+    manage_search_panel<BroadcasterSorts, Broadcaster>(
+        panel, (data, parent, refresh) => create_broadcaster(refresh, parent, data),
+        async(page, sorts, order, search) => {
+            const res = await filter_broadcasters(page, sorts, order, search
+            ) as FilterdBroadcastersSuccess;
 
-    // -- Create the functions to get the values
-    //    of the inputs
-    const get_filter = () => (filter as HTMLInputElement).value as BroadcasterSorts,
-        get_order = () => (order as HTMLInputElement).value as FilterOrder,
-        get_search = () => (search as HTMLInputElement).value,
-        get_page = () => parseInt((page as HTMLInputElement).value, 10) - 1;
+            if (res.code !== 200) {
+                create_toast('error', 'Oops! My bad', res.message);
+                return;
+            }
 
-
-    let page_num = 1;
-    prev.addEventListener('click', () => { page_num = page_num - 1;
-        (page as HTMLInputElement).value = page_num.toString();
-    })
-
-    next.addEventListener('click', () => { page_num = page_num + 1;
-        (page as HTMLInputElement).value = page_num.toString();
-    });
-
-    // -- Gather the elements that will display the results
-    const results = panel.querySelector('.users') as HTMLElement;
-
-
-    // -- Add the event listeners to the inputs
-    const update = async () => {
-        content.setAttribute('dimmed', 'true');
-        const res = await filter_broadcasters(
-            get_page(),
-            get_filter(),
-            get_order(),
-            get_search()
-        ) as FilterdBroadcastersSuccess;
-        
-        // -- Make sure the results are valid
-        if (res.code !== 200) {
-            content.setAttribute('dimmed', 'false');
-            return create_toast('error', 'Oops! My bad', res.message);
-        }
-
-        // -- Clear the results
-        results.innerHTML = '';
-        res.data.broadcasters.forEach(user => create_broadcaster(
-            update, 
-            results, 
-            user
-        ));
-
-        // -- Ensure that the buttons are enabled/disabled correctly
-        if (res.data.page === 0) prev.setAttribute('disabled', 'true');
-        else prev.removeAttribute('disabled');
-
-        if (res.data.page === res.data.pages) next.setAttribute('disabled', 'true');
-        else next.removeAttribute('disabled');
-
-        // -- Update the max page
-        out_of.innerHTML = 'out of ' + (res.data.pages + 1);
-        content.setAttribute('dimmed', 'false');
-    };
-
-    filter.addEventListener('change', update);
-    order.addEventListener('change', update);
-    page.addEventListener('change', update);
-    prev.addEventListener('click', update);
-    next.addEventListener('click', update);
-
-    manage_search(search as HTMLInputElement, () => update());
-    update();
+            return {
+                data: res.data.broadcasters,
+                message: res.message,
+                code: res.code,
+                page: res.data.page,
+                pages: res.data.pages,
+            }
+        },
+    );
 }
 
 

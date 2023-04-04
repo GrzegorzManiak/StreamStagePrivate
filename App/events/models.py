@@ -75,6 +75,20 @@ class Category(models.Model):
         else: return "/static/img/placeholder.png"
 
 
+    def serialize(self):
+        """
+            Returns a serialized version of the category
+        """
+        return {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'color': self.hex_color,
+            'created': self.created,
+            'updated': self.updated,
+            'image': self.get_splash_photo()
+        }
+
 
 class TicketListing(models.Model):
     listing_id = models.UUIDField(default=uuid.uuid4)
@@ -215,6 +229,33 @@ class Event(models.Model):
     
     def get_showings_count(self):
         return EventShowing.objects.filter(event=self).all().count()
+    
+
+    def serialize(self):
+        return {
+            'title': self.title,
+            'description': self.description,
+            'over_18s': self.over_18s,
+            'categories': [{
+                'id': category.id,
+                'name': category.name,
+            } for category in self.categories.all()],
+            'broadcaster': {
+                'id': self.broadcaster.id,
+                'handle': self.broadcaster.handle,
+            },
+            'created': self.created,
+            'updated': self.updated,
+            'contributors': [{
+                'id': contributor.id,
+                'handle': contributor.username,
+            } for contributor in self.contributors.all()],
+            'approved': self.approved,
+            'id': self.event_id,
+            'showings': [{
+                'id': showing.showing_id,
+            } for showing in EventShowing.objects.filter(event=self).all()],
+        }
 
 
 # Event Review Model

@@ -2,102 +2,33 @@ from rest_framework.decorators import api_view
 from accounts.com_lib import (
     is_admin, invalid_response, 
     required_data, success_response,
-    authenticated
+    paginate
 )
 
-from events.models import Event, EventShowing
+from events.models import Event
 from accounts.models import Broadcaster
-from django.db.models import Q
-
-sorts = ['updated', 'created', 'title', 'description', 'over_18s', 'categories', 'approved']
-orders = ['asc', 'desc']
-
 
 
 @api_view(['GET', 'POST'])
 @is_admin()
-@required_data(['page', 'sort', 'order', 'search'])
-def events(request, data):
-
-    # -- Make sure all the data is valid
-    try: 
-        page = int(data['page'])
-        if page < 0: return invalid_response('Page must be greater than 0')
-    except ValueError: return invalid_response('Page must be an integer')
-
-    if data['sort'] not in sorts: return invalid_response('Invalid sort')
-    if data['order'] not in orders: return invalid_response('Invalid order')
-
-    # -- Get the categorys
-    filter = {}
-
-    # -- Sort
-    match data['sort']:
-        case 'updated': sort = 'updated'
-        case 'created': sort = 'created'
-        case 'title': sort = 'title'
-        case 'description': sort = 'description'
-        case 'over_18s': sort = 'over_18s'
-        case 'categories': sort = 'categories'
-        case 'approved': sort = 'approved'
-
-    # -- Order
-    if data['order'] == 'desc': sort = '-' + sort
-    else: sort = sort
-
-    # -- Get the events
-    events = Event.objects.filter(**filter).order_by(sort)
-
-    # -- Search
-    if len(data['search']) > 3:
-        events = events.filter(
-            Q(title__icontains=data['search']) |
-            Q(description__icontains=data['search']) |
-            Q(over_18s__icontains=data['search']) |
-            Q(categories__icontains=data['search']) |
-            Q(approved__icontains=data['search']) |
-            Q(broadcaster__handle__icontains=data['search'])
-        )
-
-    # -- Get the page
-    per_page = 5
-    total_pages = int(events.count() / per_page)
-    processed_events = []
-    events = events[page * per_page:page * per_page + per_page]
-
-    # -- Process the events
-    for event in events:
-        processed_events.append({
-            'title': event.title,
-            'description': event.description,
-            'over_18s': event.over_18s,
-            'categories': [{
-                'id': category.id,
-                'name': category.name,
-            } for category in event.categories.all()],
-            'broadcaster': {
-                'id': event.broadcaster.id,
-                'handle': event.broadcaster.handle,
-            },
-            'created': event.created,
-            'updated': event.updated,
-            'contributors': [{
-                'id': contributor.id,
-                'handle': contributor.username,
-            } for contributor in event.contributors.all()],
-            'approved': event.approved,
-            'id': event.event_id,
-            'showings': [{
-                'id': showing.showing_id,
-            } for showing in EventShowing.objects.filter(event=event).all()],
-        })
+@paginate(
+    page_size=10,
+    search_fields=['title', 'description', 'over_18s', 'categories__name', 
+                   'categories__description', 'approved', 'broadcaster__handle'],
+    order_fields=['updated', 'created', 'title', 'description', 'over_18s', 'categories', 'approved'],
+    model=Event
+)
+def events(request, models, total_pages, page):
+    """
+        Gets all events
+    """
 
     # -- Return the response
     return success_response('Events retrieved successfully', {
-        'events': processed_events,
+        'events': [event.serialize() for event in models],
         'page': page,
-        'per_page': per_page,
-        'total': len(processed_events),
+        'per_page': 10,
+        'total': len(models),
         'pages': total_pages,
     })
 
@@ -112,16 +43,7 @@ def get_event(request, data):
     except Event.DoesNotExist: return invalid_response('Event does not exist')
 
     # -- Return the response
-    return success_response('Event retrieved successfully', {
-        'title': event.title,
-        'description': event.description,
-        'over_18s': event.over_18s,
-        'categories': event.categories,
-        'broadcaster': event.broadcaster.handle,
-        'broadcaster_id': event.broadcaster.id,
-        'created': event.created,
-        'updated': event.updated,
-    })
+    return success_response('Event retrieved successfully', event.serialize())
 
 
 

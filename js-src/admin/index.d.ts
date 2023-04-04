@@ -65,12 +65,19 @@ export interface Configuration {
     create_event: string,
     delete_event: string,
     update_event: string,
+
+    latest_privacy: string,
+    create_privacy: string,
+    filter_privacy: string,
+
+    latest_terms: string,
+    create_terms: string,
+    filter_terms: string,
 }
 
 
 export type FilterPosition = 'all' | 'user' | 'admin' | 'streamer';
 export type FilterSort = 'updated' | 'created' | 'username' | 'email' | 'position' | 'country';
-export type FilterOrder = 'asc' | 'desc';
 
 export interface FilterdUser {
     username: string,
@@ -176,6 +183,33 @@ export interface FilterdEvent {
     pages: number,
 }
 
+
+export type TermsPrivacySorts = 'updated' | 'created' | 'name' | 'content';
+export type Filterd = {
+    page: number,
+    per_page: number,
+    total: number,
+    pages: number,
+}
+
+export interface Terms {
+    id: string,
+    name: string,
+    content: string,
+    created: string,
+}
+
+export interface Privacy {
+    id: string,
+    name: string,
+    content: string,
+    created: string,
+}
+
+export type FilterdTerms = Filterd & { terms: Array<Terms> }
+export type FilterdPrivacy = Filterd & { privacy: Array<Privacy> }
+
+
 export type FilterdUsersSuccess = DefaultResponseData & { data: FilterdUsers }
 export type FilterdUsersResponse = FilterdUsersSuccess | DefaultResponse;
 
@@ -196,3 +230,15 @@ export type BroadcasterResponse = BroadcasterSuccess | DefaultResponse;
 
 export type FilterdEventsSuccess = DefaultResponseData & { data: FilterdEvent }
 export type FilterdEventsResponse = FilterdEventsSuccess | DefaultResponse;
+
+export type FilterdTermsSuccess = DefaultResponseData & { data: FilterdTerms }
+export type FilterdTermsResponse = FilterdTermsSuccess | DefaultResponse;
+
+export type FilterdPrivacySuccess = DefaultResponseData & { data: FilterdPrivacy }
+export type FilterdPrivacyResponse = FilterdPrivacySuccess | DefaultResponse;
+
+export type TermsSuccess = DefaultResponseData & { data: Terms }
+export type TermsResponse = TermsSuccess | DefaultResponse;
+
+export type PrivacySuccess = DefaultResponseData & { data: Privacy }
+export type PrivacyResponse = PrivacySuccess | DefaultResponse;

@@ -1,7 +1,8 @@
 import { configuration } from '.';
 import { DefaultResponse } from '../api/index.d';
 import { base_request } from '../api';
-import { BroadcasterResponse, BroadcasterSorts, CategoryResponse, CategorySorts, EventSorts, FilterOrder, FilterPosition, FilterSort, FilterdBroadcastersResponse, FilterdCategoriesResponse, FilterdEventsResponse, FilterdUsersResponse, Frame, StatisticsResponse, UserResponse } from './index.d';
+import { BroadcasterResponse, BroadcasterSorts, CategoryResponse, CategorySorts, EventSorts, FilterPosition, FilterSort, FilterdBroadcastersResponse, FilterdCategoriesResponse, FilterdEventsResponse, FilterdPrivacyResponse, FilterdTermsResponse, FilterdUsersResponse, Frame, PrivacyResponse, StatisticsResponse, TermsPrivacySorts, TermsResponse, UserResponse } from './index.d';
+import { FilterOrder } from '../common/index.d';
 
 /**
  * @name get_statistics
@@ -324,4 +325,105 @@ export const filter_events = async (
     'GET',
     configuration.event,
     { page, sort, order, search }
+);
+
+
+
+/**
+ * @name latest_privacy
+ * @returns {Promise<PrivacyResponse>}
+ * @description Gets the latest privacy policy
+ */
+export const latest_privacy = async (): Promise<PrivacyResponse> => base_request(
+    'GET',
+    configuration.latest_privacy,
+);
+
+
+
+/**
+ * @name latest_terms
+ * @returns {Promise<TermsResponse>}
+ * @description Gets the latest terms of service
+ */
+export const latest_terms = async (): Promise<TermsResponse> => base_request(
+    'GET',
+    configuration.latest_terms,
+);
+
+
+
+/**
+ * @name filter_privacy
+ * @param {number} page - The page to get
+ * @param {TermsPrivacySorts} sort - The sort to use (name, email, etc)
+ * @param {FilterOrder} order - The order to use (asc, desc)
+ * @param {string} search - The search query
+ */
+export const filter_privacy = async (
+    page: number,
+    sort: TermsPrivacySorts,
+    order: FilterOrder,
+    search: string,
+): Promise<FilterdPrivacyResponse> => base_request(
+    'GET',
+    configuration.filter_privacy,
+    { page, sort, order, search }
+);
+
+
+
+/**
+ * @name filter_terms
+ * @param {number} page - The page to get
+ * @param {TermsPrivacySorts} sort - The sort to use (name, email, etc)
+ * @param {FilterOrder} order - The order to use (asc, desc)
+ * @param {string} search - The search query
+ * @returns {Promise<FilterdTermsResponse>}
+*/
+export const filter_terms = async (
+    page: number,
+    sort: TermsPrivacySorts,
+    order: FilterOrder,
+    search: string,
+): Promise<FilterdTermsResponse> => base_request(
+    'GET',
+    configuration.filter_terms,
+    { page, sort, order, search }
+);
+
+
+
+/**
+ * @name create_terms
+ * @param {string} title - The title of the terms
+ * @param {string} content - The content of the terms
+ * @returns {Promise<DefaultResponse>}
+ * @description Creates a new terms of service
+ */
+export const create_terms = async (
+    title: string,
+    content: string,
+): Promise<DefaultResponse> => base_request(
+    'POST',
+    configuration.create_terms,
+    { title, content },
+);
+
+
+
+/**
+ * @name create_privacy
+ * @param {string} title - The title of the privacy
+ * @param {string} content - The content of the privacy
+ * @returns {Promise<DefaultResponse>}
+ * @description Creates a new privacy policy
+ */
+export const create_privacy = async (
+    title: string,
+    content: string,
+): Promise<DefaultResponse> => base_request(
+    'POST',
+    configuration.create_privacy,
+    { title, content },
 );

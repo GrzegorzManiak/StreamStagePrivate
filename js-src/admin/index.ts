@@ -32,6 +32,14 @@ export const configuration = build_configuration<Configuration>({
     get_event: new Type('data-get-event', 'string'),
     delete_event: new Type('data-delete-event', 'string'),
     update_event: new Type('data-update-event', 'string'),
+
+    latest_privacy: new Type('data-latest-privacy', 'string'),
+    create_privacy: new Type('data-create-privacy', 'string'),
+    filter_privacy: new Type('data-filter-privacy', 'string'),
+
+    latest_terms: new Type('data-latest-terms', 'string'),
+    create_terms: new Type('data-create-terms', 'string'),
+    filter_terms: new Type('data-filter-terms', 'string'),
 }); 
 
 // -- Attach the event listeners

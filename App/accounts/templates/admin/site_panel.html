@@ -52,6 +52,14 @@
         data-get-event='{% cross_app_reverse_tag "events" "get_event" use_subdomain=False %}'
         data-update-event='{% cross_app_reverse_tag "events" "update_event" use_subdomain=False %}'
         data-delete-event='{% cross_app_reverse_tag "events" "delete_event" use_subdomain=False %}'
+
+        data-latest-privacy='{% cross_app_reverse_tag "StreamStage" "get_latest_privacy" %}'
+        data-create-privacy='{% cross_app_reverse_tag "StreamStage" "create_privacy" %}'
+        data-filter-privacy='{% cross_app_reverse_tag "StreamStage" "filter_privacy" %}'
+
+        data-latest-terms='{% cross_app_reverse_tag "StreamStage" "get_latest_terms" %}'
+        data-create-terms='{% cross_app_reverse_tag "StreamStage" "create_terms" %}'
+        data-filter-terms='{% cross_app_reverse_tag "StreamStage" "filter_terms" %}'
     ></span>
     <div 
     id = 'main-container'
@@ -370,6 +378,62 @@
                         <!-- 
                             End of Pod - Reviews
                         -->
+                    </div>
+                </section>
+
+
+
+                <section id='pod-misc'>
+                    <div class='side-panel-header'>
+                        <p class='side-panel-header-text'>
+                            Misc
+                        </p>
+                    </div>
+
+                    <div class='pods'>
+     
+                        <div data-pod-status='' data-pod='reports'
+                        class='side-panel-pod text-light d-flex align-items-center justify-content-start'>
+                            <div class='side-panel-pod-icon d-flex align-items-center justify-content-center'>
+                                <i class="fa-solid text-justify accordion fa-flag"></i></div>
+
+                            <div class='side-panel-pod-text'><p class='side-panel-pod-text-text m-0 mb-0'>
+                                Reports
+                            </p></div>
+                        </div>
+
+
+                        <div data-pod-status='' data-pod='privacy'
+                        class='side-panel-pod text-light d-flex align-items-center justify-content-start'>
+                            <div class='side-panel-pod-icon d-flex align-items-center justify-content-center'>
+                                <i class="fa-solid text-justify accordion fa-blinds-raised"></i></div>
+
+                            <div class='side-panel-pod-text'><p class='side-panel-pod-text-text m-0 mb-0'>
+                                Privacy Policy
+                            </p></div>
+                        </div>
+
+
+                        <div data-pod-status='' data-pod='terms'
+                        class='side-panel-pod text-light d-flex align-items-center justify-content-start'>
+                            <div class='side-panel-pod-icon d-flex align-items-center justify-content-center'>
+                                <i class="fa-solid text-justify accordion fa-file-contract"></i></div>
+
+                            <div class='side-panel-pod-text'><p class='side-panel-pod-text-text m-0 mb-0'>
+                                Terms & Conditions
+                            </p></div>
+                        </div>
+
+
+                        <div data-pod-status='' data-pod='faq'
+                        class='side-panel-pod text-light d-flex align-items-center justify-content-start'>
+                            <div class='side-panel-pod-icon d-flex align-items-center justify-content-center'>
+                                <i class="fa-solid text-justify accordion fa-question"></i></div>
+
+                            <div class='side-panel-pod-text'><p class='side-panel-pod-text-text m-0 mb-0'>
+                                FAQ
+                            </p></div>
+                        </div>
                     </div>
                 </section>
             </div>
