@@ -76,6 +76,4 @@ urlpatterns = [
     path('api/events/get/', get_event, name='get_event'),
     path('api/events/delete/', delete_event, name='delete_event'),
     path('api/events/update/', update_event, name='update_event'),
-
-    path('accounts/', include('accounts.urls')),
 ]

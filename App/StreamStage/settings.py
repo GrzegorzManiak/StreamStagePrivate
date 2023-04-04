@@ -72,7 +72,7 @@ if RUNNING_ON_LOCALHOST == False:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_DOMAIN = ".streamstage.co"
     SESSION_COOKIE_DOMAIN = ".streamstage.co"
-    SESSION_COOKIE_DOMAIN=".streamstage.co"
+    CSRF_COOKIE_SAMESITE = 'None'
 
 elif RUNNING_ON_LOCALHOST == True:
     SESSION_COOKIE_SECURE = False

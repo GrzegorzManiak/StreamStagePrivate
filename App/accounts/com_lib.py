@@ -18,6 +18,7 @@ from rest_framework import status
 
 from functools import wraps
 from django.contrib.auth import get_user_model
+import secrets
 
 
 """
@@ -105,7 +106,7 @@ def authenticated():
             # -- Check if user is authenticated
             if not request.user.is_authenticated:
                 return error_response('You are not logged in')
-            
+                        
             # -- Call the original function with the request object
             return view_func(request, *args, **kwargs)
         return wrapper

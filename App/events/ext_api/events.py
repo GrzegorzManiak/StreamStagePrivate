@@ -60,7 +60,7 @@ def events(request, data):
         )
 
     # -- Get the page
-    per_page = 10
+    per_page = 5
     total_pages = int(events.count() / per_page)
     processed_events = []
     events = events[page * per_page:page * per_page + per_page]

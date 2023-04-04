@@ -1,7 +1,7 @@
 import { attach, construct_modal, create_toast } from '../../common';
 import { picture_upload_modal } from '../../common/picture';
 import { create_category, delete_category, filter_events, get_category, set_category_image, update_category } from '../api';
-import { Category, CategorySorts, CategorySuccess, EventSorts, FilterOrder, FilterdEventsResponse, FilterdEventsSuccess, Pod } from '../index.d';
+import { Event, CategorySuccess, EventSorts, FilterOrder, FilterdEventsSuccess, Pod } from '../index.d';
 import { manage_search } from './users';
 
 export async function manage_event_panel(pod: Pod) {
@@ -55,12 +55,9 @@ export async function manage_event_panel(pod: Pod) {
 
         // -- Clear the results
         results.innerHTML = '';
-        // res.data.categorys.forEach(user => create_category_modal(
-        //     update, 
-        //     results, 
-        //     user
-        // ));
-        console.log(res.data.events);
+        res.data.events.forEach(event => create_event_modal(
+            update, results, event
+        ));
 
         // -- Ensure that the buttons are enabled/disabled correctly
         if (res.data.page === 0) prev.setAttribute('disabled', 'true');
@@ -92,47 +89,87 @@ export async function manage_event_panel(pod: Pod) {
 
 
 /**
- * @name create_category
+ * @name create_event_modal
  * @param {() => void} refresh_categories
  * @param {HTMLElement} parent
- * @param {Category} category
+ * @param {Event} event
  */
-export function create_category_modal(
-    refresh_categories: () => void,
+export function create_event_modal(
+    refresh_events: () => void,
     parent: HTMLElement, 
-    category: Category
+    event: Event
 ) {
-    const template = `        
-    <div class='profile-info cat-info p-2'>
-        <h3 class='m-0'>${category.name}</h3>
-        <p class='m-0 text-muted' style='color: ${category.color}!important'>${category.color}</p>
-        <p class='m-0 text-muted cat-desc' style='overflow: none'>${category.description}</p>
+    // -- Date or null
+    const date = (date: string) => {
+        if (date === null) return 'Never';
+        return new Date(date).toLocaleDateString()
+    }
+
+
+    const template = ` 
+    <div class='w-100 d-flex justify-content-between align-items-center p-2'>
+        <div class='profile-info flex-wrap'>
+            <p class='m-0 text-muted'><span class='bold'> Created:</span> ${date(event.created)}</p>
+            <p class='m-0 text-muted'><span class='bold'> Updated:</span> ${date(event.updated)}</p>
+        </div>
+
+        <div class='profile-info flex-wrap'>
+            <p class='m-0 text-muted'>Over 18's: ${event.over_18 ? '<span class="text-success">Yes</span>' : '<span class="text-danger">No</span>'}</p>
+            <p class='m-0 text-muted'>Approved: ${event.approved ? '<span class="text-success">Yes</span>' : '<span class="text-danger">No</span>'}</p>
+        </div>
+
+        <div class='profile-info flex-wrap'>
+            <p class='m-0 text-muted'><span class='bold'> Showings:</span> ${event.showings.length}</p>
+            <p class='m-0 text-muted'><span class='bold'> Contributors:</span> ${event.contributors.length}</p>
+        </div>
+
+        <div class='profile-actions p-2'>
+            <button class="w-100 h-100 btn btn-primary info loader-btn edit" loader-state="default">   
+                <span> 
+                    <div class="spinner-border" role="status"> 
+                        <span class="visually-hidden">Loading...</span>  
+                    </div>
+                </span>
+
+                <p>Manage</p>
+            </button>
+        </div>
     </div>
 
-    <div class='profile-actions p-2'>
-        <button class="w-100 h-100 btn btn-primary info loader-btn edit" loader-state="default">   
-            <span> <div class="spinner-border" role="status"> 
-            <span class="visually-hidden">Loading...</span> </div> </span>
-            <p>Manage</p>
-        </button>
+    <div class='w-100 d-flex justify-content-between align-items-center p-2'>
+        <div class='profile-info cat-info'>
+            <div class='m-0 text-muted d-flex justify-content-between w-100'>
+                <h3 class='m-0 w-25'>Broadcaster</h3>
+                <span class='w-25'>${event.broadcaster.handle}</span>
+                <span class='w-50'>ID: ${event.broadcaster.id}</span>
+            </div>
+
+            <div class='m-0 text-muted d-flex justify-content-between w-100'>
+                <h3 class='m-0 w-25'>Title</h3>
+                <span class='w-25'>${event.title}</span>
+                <span class='w-50'>ID: ${event.id}</span>
+            </div>
+
+            <h3 class='m-0'>Description: <span class='m-0 text-muted'>${event.description}</span></h3>
+        </div>
     </div>
     `;
 
     // -- Create the element
     const div = document.createElement('div');
     div.innerHTML = template;
-    div.classList.add('d-flex', 'justify-content-between', 'align-items-center', 'gap-2', 'category', 'cat-container');
+    div.classList.add('category', 'cat-container');
     parent.appendChild(div);
 
     // -- Add the event listeners
     const edit = div.querySelector('.edit') as HTMLButtonElement;
     edit.addEventListener('click', async() => {
         const stop = attach(edit);
-        await create_category_panel(
-            refresh_categories,
-            category.image,
-            category.id,
-        )
+        // await create_category_panel(
+        //     refresh_categories,
+        //     category.image,
+        //     category.id,
+        // )
         stop();
     });
 }
