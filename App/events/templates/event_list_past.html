@@ -20,9 +20,13 @@ Past Events | StreamStage
     
     <!-- Listing Past Events (if has showings and showing dates have passed)-->
     {% for event in events %}
-    {% if event.get_showings_count > 0 and event.get_num_upcoming_showings == 0 %}
-    {% include 'event_list.html' with event=event %}
-    {% endif %}
+        {% if event.get_showings_count > 0 and event.get_num_upcoming_showings == 0 %}
+            {% include 'event_list.html' with event=event %}
+        {% endif %}
+    {% empty %}
+    <div class="row mx-auto">
+        <h4 class="text-center">No Past Events Available</h4>
+    </div>
     {% endfor %}
 </div>
 

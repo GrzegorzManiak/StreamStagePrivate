@@ -121,7 +121,7 @@ class Event(models.Model):
     def get_short_reviews(self):
         reviews = EventReview.objects.filter(event=self).all().order_by('likes')
         for review in reviews:
-            review.body = review.body[:100]
+            review.body = review.body[:50]
         return reviews
     
     def get_review_count(self):

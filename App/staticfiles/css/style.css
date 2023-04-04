@@ -60,13 +60,6 @@ main {
     color: #ffb25a;
 }
 
-.link-page-title a:hover,
-a:active {
-    background-color: #ffb25a;
-    color: #000000;
-    text-align: center;
-}
-
 .sub-title {
     color: #ffb25a;
 }
@@ -127,7 +120,7 @@ form>p>input {
 form>div>input,
 form>div>button {
     margin: auto !important;
-    width: 100%;
+    width: 100% !important;
 }
 
 form>div>textarea,
@@ -590,7 +583,6 @@ footer hr {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    align-items: flex-start;
     gap: 1rem;
     margin: 0;
 }
