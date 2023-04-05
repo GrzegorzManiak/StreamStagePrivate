@@ -6,6 +6,7 @@ import { manage_users_panel } from './src/users';
 import { manage_category_panel } from './src/categorys';
 import { manage_broadcaster_panel } from './src/broadcaster';
 import { manage_event_panel } from './src/events';
+import { manage_terms_panel } from './src/terms';
 
 // -- Build the configuration
 export const configuration = build_configuration<Configuration>({
@@ -36,10 +37,12 @@ export const configuration = build_configuration<Configuration>({
     latest_privacy: new Type('data-latest-privacy', 'string'),
     create_privacy: new Type('data-create-privacy', 'string'),
     filter_privacy: new Type('data-filter-privacy', 'string'),
+    render_privacy: new Type('data-render-privacy', 'string'),
 
     latest_terms: new Type('data-latest-terms', 'string'),
     create_terms: new Type('data-create-terms', 'string'),
     filter_terms: new Type('data-filter-terms', 'string'),
+    render_terms: new Type('data-render-terms', 'string'),
 }); 
 
 // -- Attach the event listeners
@@ -80,3 +83,6 @@ if (broadcasters) manage_broadcaster_panel(broadcasters);
 
 const events = get_pod('events');
 if (events) manage_event_panel(events);
+
+const terms = get_pod('terms');
+if (terms) manage_terms_panel(terms);

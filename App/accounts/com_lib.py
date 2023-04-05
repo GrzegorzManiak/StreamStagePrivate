@@ -92,6 +92,76 @@ def invalid_response(message, s = 400):
 
 
 """
+    :name: api_session_helper
+    :description: This decorator is used here in this file 
+    internally, it is used to allow authenticated cross subdomain 
+    requests to the api, when the user logs in, we assign them a
+    token, this token is passed to us even if the session is not
+"""
+def api_session_helper():
+    def decorator(view_func):
+        @wraps(view_func)
+        def wrapper(request, *args, **kwargs):
+
+            # -- Check if the user is logged in 
+            if request.user.is_authenticated:
+                
+                # -- Check if they passed a 'StreamStage-Token' header
+                if 'streamstage-token' in request.headers:
+                    # -- Check if it matches the token in the database
+                    if request.headers['streamstage-token'] != request.user.token:
+                        request.user.token = secrets.token_urlsafe(32)
+                        request.user.save()
+
+                # -- Check if they have a token
+                elif request.user.token is None or request.user.token == '':
+                    # -- Generate a token
+                    request.user.token = secrets.token_urlsafe(32)
+                    request.user.save()
+                    
+
+            # -- Check if we have a token and set the user
+            if 'streamstage-token' in request.headers:
+                # -- Get the user
+                user = get_user_model().objects.filter(token=request.headers['streamstage-token']).first()
+
+                # -- Check if we have a user
+                if user is not None:
+                    # -- Set the user
+                    request.user = user
+            
+            # -- Call the original function with the request object
+            return view_func(request, *args, **kwargs)
+        return wrapper
+    return decorator
+
+
+
+"""
+    :name: api_session_middleware
+    :description: This middleware is used to set the 
+    StreamStage-Token header on all requests, this is used
+    to allow authenticated cross subdomain requests to the api,
+"""
+def api_session_middleware(get_response):
+    
+    def middleware(request):
+        response = get_response(request)
+
+        # -- Check for the 'StreamStage-Token' header
+        if request.user.is_authenticated:
+            # -- Add the header and cookie
+            response.headers['streamstage-token'] = request.user.token
+            response.set_cookie('streamstage-token', request.user.token)
+
+        # -- Return the response
+        return response
+
+    return middleware
+
+
+                
+"""
     :name: authenticated
     :description: This function is used to check if the user is
                   authenticated, if they are not, it will return
@@ -100,6 +170,7 @@ def invalid_response(message, s = 400):
 def authenticated():
     def decorator(view_func):
         @wraps(view_func)
+        @api_session_helper()
         def wrapper(request, *args, **kwargs):
 
             # -- If the method is GET, redirect to the login page
@@ -147,6 +218,7 @@ def not_authenticated():
 def is_admin():
     def decorator(view_func):
         @wraps(view_func)
+        @api_session_helper()
         def wrapper(request, *args, **kwargs):
             # If it is a GET request, Render a error page
             if request.method == 'GET' and not request.user.is_superuser:
@@ -338,7 +410,7 @@ def paginate(
             # -- Check if we are searching
             filter
             search = data['search'].strip().lower()
-            query_list = [Q(**{f'{field}__icontains': data['search']}) for field in search_fields]
+            query_list = [Q(**{f'{field}__icontains': search}) for field in search_fields]
 
             # -- Get the data
             models = model.objects.filter(reduce(or_, query_list))

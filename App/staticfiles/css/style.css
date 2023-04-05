@@ -88,6 +88,31 @@ div>a:hover {
 /*****************/
 /*     Forms     */
 /*****************/
+
+.terms-privacy h1 {
+    font-size: 2rem;
+    margin-top: 2rem!important;
+    margin-bottom: 1.5rem!important;
+    font-weight: 700!important;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+
+    border-bottom: 1px solid #ffb25a;
+}
+
+.terms-privacy h2 {
+    font-size: 1.5rem;
+    margin-top: 2rem!important;
+    margin-bottom: .5rem!important;
+    font-weight: 600!important;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+
+    border-bottom: 1px solid #505050;
+}
+
 /* Review, Event, Showing Forms */
 .form-class {
     background-color: var(--theme-secondary-color) !important;

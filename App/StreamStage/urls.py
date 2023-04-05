@@ -18,8 +18,8 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-from .api.terms import get_latest_terms, create_terms, filter_terms
-from .api.privacy import get_latest_privacy, create_privacy, filter_privacy
+from .api.terms import get_latest_terms, create_terms, filter_terms, render_terms, render_terms_specific
+from .api.privacy import get_latest_privacy, create_privacy, filter_privacy, render_privacy, render_privacy_specific
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -35,9 +35,13 @@ urlpatterns = [
     path('api/terms/latest', get_latest_terms, name='get_latest_terms'),
     path('api/terms/create', create_terms, name='create_terms'),
     path('api/terms/filter', filter_terms, name='filter_terms'),
+    path('terms', render_terms, name='render_terms'),
+    path('terms_specific', render_terms_specific, name='render_terms_specific'),
 
     path('api/privacy/latest', get_latest_privacy, name='get_latest_privacy'),
     path('api/privacy/create', create_privacy, name='create_privacy'),
     path('api/privacy/filter', filter_privacy, name='filter_privacy'),
+    path('privacy', render_privacy, name='render_privacy'),
+    path('privacy_specific', render_privacy_specific, name='render_privacy_specific'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

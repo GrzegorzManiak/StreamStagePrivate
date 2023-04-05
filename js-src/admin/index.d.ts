@@ -16,6 +16,8 @@ export type PanelType =
     'venues' |
     'categories' |
     'events' |
+    'terms' |
+    'privacy' |
     'reviews';
 
 export interface Panel {
@@ -69,10 +71,12 @@ export interface Configuration {
     latest_privacy: string,
     create_privacy: string,
     filter_privacy: string,
+    render_privacy: string,
 
     latest_terms: string,
     create_terms: string,
     filter_terms: string,
+    render_terms: string,
 }
 
 

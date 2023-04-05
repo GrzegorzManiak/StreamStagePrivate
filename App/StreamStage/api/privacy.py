@@ -1,4 +1,5 @@
 from rest_framework.decorators import api_view
+from django.shortcuts import render
 from ..models import Privacy
 from accounts.com_lib import (
     is_admin,
@@ -7,6 +8,52 @@ from accounts.com_lib import (
     required_data,
     paginate
 )
+
+
+
+@api_view(['GET'])
+def render_privacy(request):
+    """
+        Renders the privacy and conditions
+    """
+    # -- Get the privacy
+    try: privacy = Privacy.latest()
+    except Privacy.DoesNotExist:
+        privacy = {
+            'name': 'Privacy and Conditions',
+            'content': 'No privacy and conditions found',
+            'created': 'N/A'
+        }
+
+    # -- Return the response
+    return render(
+        request, 'privacy.html',
+        { 'privacy': privacy }
+    )
+
+
+
+@api_view(['GET'])
+@required_data(['id'])
+def render_privacy_specific(request, data):
+    """
+        Renders the privacy and conditions
+    """
+    # -- Get the privacy
+    try: privacy = Privacy.objects.get(id=data['id'])
+    except Privacy.DoesNotExist:
+        privacy = {
+            'name': 'Privacy and Conditions',
+            'content': 'No privacy and conditions found',
+            'created': 'N/A'
+        }
+
+    # -- Return the response
+    return render(
+        request, 'privacy.html',
+        { 'privacy': privacy }
+    )
+
 
 
 @api_view(['GET'])
@@ -33,7 +80,7 @@ def create_privacy(request, data):
         update previous privacy and conditions)
     """
     # -- Create the privacy
-    try: privacy = Privacy.create(title=data['title'], content=data['content'])
+    try: privacy = Privacy.objects.create(name=data['title'], content=data['content'])
     except Exception as e: return invalid_response(str(e))
     return success_response('privacy and conditions', privacy.serialize())
 

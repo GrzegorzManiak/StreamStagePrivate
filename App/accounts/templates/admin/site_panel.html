@@ -17,6 +17,8 @@
     <link rel="stylesheet" href="{% static 'css/payments.css' %}">
     <link rel="stylesheet" href="{% static 'css/cropper.css' %}">
     <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
 {% endblock %}
 
 {% block content %}
@@ -56,10 +58,12 @@
         data-latest-privacy='{% cross_app_reverse_tag "StreamStage" "get_latest_privacy" %}'
         data-create-privacy='{% cross_app_reverse_tag "StreamStage" "create_privacy" %}'
         data-filter-privacy='{% cross_app_reverse_tag "StreamStage" "filter_privacy" %}'
+        data-render-privacy='{% cross_app_reverse_tag "StreamStage" "render_privacy_specific" %}'
 
         data-latest-terms='{% cross_app_reverse_tag "StreamStage" "get_latest_terms" %}'
         data-create-terms='{% cross_app_reverse_tag "StreamStage" "create_terms" %}'
         data-filter-terms='{% cross_app_reverse_tag "StreamStage" "filter_terms" %}'
+        data-render-terms='{% cross_app_reverse_tag "StreamStage" "render_terms_specific" %}'
     ></span>
     <div 
     id = 'main-container'
@@ -486,6 +490,8 @@
                                 {% include 'admin/categorys.html' %}
                                 {% include 'admin/broadcaster.html' %}
                                 {% include 'admin/events.html' %}
+                                {% include 'admin/terms_privacy.html' %}
+    
                             </div>
                         </main>
                     </div>
@@ -499,4 +505,5 @@
 
     <!-- Js -->
     {% render_bundle 'admin' %}
+    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
 {% endblock %}

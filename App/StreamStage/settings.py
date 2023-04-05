@@ -96,6 +96,18 @@ CSRF_TRUSTED_ORIGINS = [
 X_FRAME_OPTIONS = 'ALLOW-FROM *://*.streamstage.co/*'
 CORS_ALLOWED_ORIGIN_REGEXES = [r"^https://.+$"]
 CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_HEADERS = [
+    'streamstage-token',
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
 
 #
 # Application definition
@@ -143,7 +155,6 @@ MIDDLEWARE = [
     'django_hosts.middleware.HostsRequestMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -152,6 +163,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django_hosts.middleware.HostsResponseMiddleware',
+    'accounts.com_lib.api_session_middleware',
 ]
 
 
