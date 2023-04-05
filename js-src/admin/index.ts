@@ -7,6 +7,7 @@ import { manage_category_panel } from './src/categorys';
 import { manage_broadcaster_panel } from './src/broadcaster';
 import { manage_event_panel } from './src/events';
 import { manage_terms_panel } from './src/terms';
+import { manage_privacy_panel } from './src/privacy';
 
 // -- Build the configuration
 export const configuration = build_configuration<Configuration>({
@@ -86,3 +87,6 @@ if (events) manage_event_panel(events);
 
 const terms = get_pod('terms');
 if (terms) manage_terms_panel(terms);
+
+const privacy = get_pod('privacy');
+if (privacy) manage_privacy_panel(privacy);

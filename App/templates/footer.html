@@ -24,15 +24,15 @@
                     <li><a href="{% cross_app_reverse_tag 'accounts' 'login' %}">Login</a></li>
                     <li><a href="{% cross_app_reverse_tag 'accounts' 'register' %}">Register</a></li>
                     <li><a href="{% cross_app_reverse_tag 'accounts' 'member_profile' %}">Profile</a></li>
-                    <li><a href="#">Settings</a></li>
+                    <li><a href="{% cross_app_reverse_tag 'accounts' 'login' %}">Settings</a></li>
                 </ul>
 
                 <ul class="list-unstyled">
                     <li class='title'>Support</li>
                     <li><a href="#">Contact</a></li>
                     <li><a href="#">FAQ</a></li>
-                    <li><a href="#">Terms</a></li>
-                    <li><a href="#">Privacy</a></li>
+                    <li><a href="{% cross_app_reverse_tag 'StreamStage' 'render_terms' %}">Terms</a></li>
+                    <li><a href="{% cross_app_reverse_tag 'StreamStage' 'render_privacy' %}">Privacy</a></li>
                 </ul>
 
                 <ul class="list-unstyled">

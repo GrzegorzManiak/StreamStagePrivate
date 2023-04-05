@@ -113,6 +113,19 @@ div>a:hover {
     border-bottom: 1px solid #505050;
 }
 
+.terms-privacy h3 {
+    font-size: 1.25rem;
+    margin-top: 1.5rem!important;
+    margin-bottom: .5rem!important;
+    font-weight: 600!important;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+
+    border-bottom: 1px solid #505050;
+}
+
+
 /* Review, Event, Showing Forms */
 .form-class {
     background-color: var(--theme-secondary-color) !important;
