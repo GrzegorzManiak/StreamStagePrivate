@@ -16,6 +16,7 @@ export type PanelType =
     'venues' |
     'categories' |
     'events' |
+    'faq' |
     'terms' |
     'privacy' |
     'reviews';
@@ -215,9 +216,19 @@ export interface Privacy {
     created: string,
 }
 
+export type FaqSorts = 'updated' | 'created' | 'question' | 'answer' | 'section';
+export interface Faq {
+    id: string,
+    question: string,
+    answer: string,
+    section: string,
+    created: string,
+    updated: string,
+}
+
+export type FilterdFaqs = Filterd & { faq: Array<Faq> }
 export type FilterdTerms = Filterd & { terms: Array<Terms> }
 export type FilterdPrivacy = Filterd & { privacy: Array<Privacy> }
-
 
 export type FilterdUsersSuccess = DefaultResponseData & { data: FilterdUsers }
 export type FilterdUsersResponse = FilterdUsersSuccess | DefaultResponse;
@@ -251,3 +262,6 @@ export type TermsResponse = TermsSuccess | DefaultResponse;
 
 export type PrivacySuccess = DefaultResponseData & { data: Privacy }
 export type PrivacyResponse = PrivacySuccess | DefaultResponse;
+
+export type FilterdFaqsSuccess = DefaultResponseData & { data: FilterdFaqs }
+export type FilterdFaqsResponse = FilterdFaqsSuccess | DefaultResponse;

@@ -9,27 +9,38 @@ from accounts.com_lib import (
     paginate
 )
 
-#     question = models.CharField(max_length=100)
-#     answer = models.TextField()
-#     created = models.DateTimeField(auto_now_add=True)
-#     section 
+
+
 @api_view(['GET'])
 def render_faq(request):
     # -- Get all FAQ's
     faq = FAQ.objects.all()
 
     # -- Filter them down into their sections
-    sections = {}
+    sections = []
     for f in faq:
-        if f.section not in sections: sections[f.section.lower()] = []
-        sections[f.section.lower()].append(f.serialize())
+        found = False
+        for s in sections:
+            if s['section_l'] == f.section.lower():
+                s['faq'].append(f.serialize())
+                found = True
+                break
+        if not found:
+            sections.append({
+                'section_l': f.section.lower(),
+                'section': f.section,
+                'faq': [f.serialize()]
+            })
 
+    print(sections)
     # -- Render the page
     return render(
         request, 'faq.html',
         { 'sections': sections }
     )
     
+
+
 @api_view(['POST'])
 @is_admin()
 @required_data(['answer', 'question', 'section'])
@@ -37,7 +48,7 @@ def create_faq(request, data):
     # -- Create the faq
     try: faq = FAQ.objects.create(answer=data['answer'], question=data['question'], section=data['section'])
     except Exception as e: return invalid_response(str(e))
-    return success_response('faq', faq.serialize())
+    return success_response('Successfully created FAQ', faq.serialize())
 
 
 
@@ -63,24 +74,25 @@ def filter_faq(request, models, total_pages, page):
 
 
 @api_view(['DELETE'])
+@required_data(['id'])
 @is_admin()
-def delete_faq(request, faq_id):
+def delete_faq(request, data):
     # -- Get the faq
-    try: faq = FAQ.objects.get(id=faq_id)
+    try: faq = FAQ.objects.get(id=data['id'])
     except FAQ.DoesNotExist: return invalid_response('FAQ not found', status=404)
 
     # -- Delete the faq
     faq.delete()
-    return success_response('faq', faq.serialize())
+    return success_response('Successfully deleted FAQ')
 
 
 
-@api_view(['PUT'])
+@api_view(['POST'])
 @is_admin()
-@required_data(['answer', 'question', 'section'])
-def update_faq(request, data, faq_id):
+@required_data(['answer', 'question', 'section', 'id'])
+def update_faq(request, data):
     # -- Get the faq
-    try: faq = FAQ.objects.get(id=faq_id)
+    try: faq = FAQ.objects.get(id=data['id'])
     except FAQ.DoesNotExist: return invalid_response('FAQ not found', status=404)
 
     # -- Update the faq
@@ -88,4 +100,4 @@ def update_faq(request, data, faq_id):
     faq.question = data['question']
     faq.section = data['section']
     faq.save()
-    return success_response('faq', faq.serialize())
+    return success_response('Successfully updated FAQ', faq.serialize())

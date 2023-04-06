@@ -84,6 +84,7 @@ class FAQ(models.Model):
             'question': self.question,
             'answer': self.answer,
             'created': self.created,
+            'updated': self.updated,
             'section': self.section
         }
     

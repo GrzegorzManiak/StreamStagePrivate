@@ -1,7 +1,7 @@
 import { configuration } from '.';
 import { DefaultResponse } from '../api/index.d';
 import { base_request } from '../api';
-import { BroadcasterResponse, BroadcasterSorts, CategoryResponse, CategorySorts, EventSorts, FilterPosition, FilterSort, FilterdBroadcastersResponse, FilterdCategoriesResponse, FilterdEventsResponse, FilterdPrivacyResponse, FilterdTermsResponse, FilterdUsersResponse, Frame, PrivacyResponse, StatisticsResponse, TermsPrivacySorts, TermsResponse, UserResponse } from './index.d';
+import { BroadcasterResponse, BroadcasterSorts, CategoryResponse, CategorySorts, EventSorts, FaqSorts, FilterPosition, FilterSort, FilterdBroadcastersResponse, FilterdCategoriesResponse, FilterdEventsResponse, FilterdFaqsResponse, FilterdPrivacyResponse, FilterdTermsResponse, FilterdUsersResponse, Frame, PrivacyResponse, StatisticsResponse, TermsPrivacySorts, TermsResponse, UserResponse } from './index.d';
 import { FilterOrder } from '../common/index.d';
 
 /**
@@ -426,4 +426,80 @@ export const create_privacy = async (
     'POST',
     configuration.create_privacy,
     { title, content },
+);
+
+
+
+/**
+ * @name filter_faq
+ * @param {number} page - The page to get
+ * @param {FaqSorts} sort - The sort to use (name, email, etc)
+ * @param {FilterOrder} order - The order to use (asc, desc)
+ * @param {string} search - The search query
+ * @returns {Promise<FilterdFaqsResponse>}
+ */
+export const filter_faq = async (
+    page: number,
+    sort: FaqSorts,
+    order: FilterOrder,
+    search: string,
+): Promise<FilterdFaqsResponse> => base_request(
+    'GET',
+    configuration.faq_filter,
+    { page, sort, order, search }
+);
+
+
+
+/**
+ * @name create_faq
+ * @param {string} question - The question of the faq
+ * @param {string} answer - The answer of the faq
+ * @param {string} section - The section of the faq
+ * @returns {Promise<DefaultResponse>}
+ */
+export const create_faq = async (
+    question: string,
+    answer: string,
+    section: string,
+): Promise<DefaultResponse> => base_request(
+    'POST',
+    configuration.faq_create,
+    { question, answer, section },
+);
+
+
+
+/**
+ * @name update_faq
+ * @param {string} id - The id of the faq to update
+ * @param {string} question - The question of the faq
+ * @param {string} answer - The answer of the faq
+ * @param {string} section - The section of the faq
+ * @returns {Promise<DefaultResponse>}
+ */
+export const update_faq = async (
+    id: string,
+    question: string,
+    answer: string,
+    section: string,
+): Promise<DefaultResponse> => base_request(
+    'POST',
+    configuration.faq_update,
+    { id, question, answer, section },
+);
+
+
+
+/**
+ * @name delete_faq
+ * @param {string} id - The id of the faq to delete
+ * @returns {Promise<DefaultResponse>}
+ */
+export const delete_faq = async (
+    id: string,
+): Promise<DefaultResponse> => base_request(
+    'DELETE',
+    configuration.faq_delete,
+    { id },
 );

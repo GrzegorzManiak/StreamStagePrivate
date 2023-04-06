@@ -68,6 +68,7 @@
 
                                 <hr>
 
+                                <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
                                 <article class='panel' data-panel-type='email-wait'>
                                     <div class="
                                         w-100
@@ -79,29 +80,40 @@
                                             mb-4
                                         '>
                                             {% for section in sections %}
-                                                <h2 class='
-                                                    fw-bold
-                                                '>
-                                                    {{ section.title }}
-                                                </h2>
+                                                <div class='mb-2'>
+                                                    <h2 class='
+                                                        fw-bold
+                                                        m-0
+                                                        qna-header
+                                                    '>
+                                                        {{ section.section }}
+                                                    </h2>
 
-                                                <p class='
-                                                    text-muted
-                                                '>
-                                                    {% for question in section %}
-                                                        <h3 class='
-                                                            fw-bold
-                                                        '>
-                                                            {{ question.question }}
-                                                        </h3>
+                                                    <p class='
+                                                        text-muted
+                                                    '>
+                                                        {% for qna in section.faq %}
+                                                            <h4 class='
+                                                                fw-bold
+                                                                qna-question
+                                                                m-0
+                                                            '>
+                                                                Q: {{ qna.question }}
+                                                            </h4>
 
-                                                        <p class='
-                                                            text-muted
-                                                        '>
-                                                            {{ question.answer }}
-                                                        </p>
-                                                    {% endfor %}
-                                                </p>
+                                                            <p 
+                                                            id='{{ qna.id }}'
+                                                            class='
+                                                                text-muted
+                                                                m-0
+                                                                ps-3
+                                                            '></p>
+                                                            <script>
+                                                                document.getElementById('{{ qna.id }}').innerHTML = marked.parse(`A: {{ qna.answer }}`);
+                                                            </script>
+                                                        {% endfor %}
+                                                    </p>
+                                                </div>
                                             {% endfor %}
                                         </p>
                                     </div>

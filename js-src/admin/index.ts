@@ -8,6 +8,7 @@ import { manage_broadcaster_panel } from './src/broadcaster';
 import { manage_event_panel } from './src/events';
 import { manage_terms_panel } from './src/terms';
 import { manage_privacy_panel } from './src/privacy';
+import { manage_faq_panel } from './src/faq';
 
 // -- Build the configuration
 export const configuration = build_configuration<Configuration>({
@@ -44,6 +45,11 @@ export const configuration = build_configuration<Configuration>({
     create_terms: new Type('data-create-terms', 'string'),
     filter_terms: new Type('data-filter-terms', 'string'),
     render_terms: new Type('data-render-terms', 'string'),
+
+    faq_create: new Type('data-faq-create', 'string'),
+    faq_filter: new Type('data-faq-filter', 'string'),
+    faq_delete: new Type('data-faq-delete', 'string'),
+    faq_update: new Type('data-faq-update', 'string'),
 }); 
 
 // -- Attach the event listeners
@@ -90,3 +96,6 @@ if (terms) manage_terms_panel(terms);
 
 const privacy = get_pod('privacy');
 if (privacy) manage_privacy_panel(privacy);
+
+const faq = get_pod('faq');
+if (faq) manage_faq_panel(faq);

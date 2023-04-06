@@ -118,6 +118,18 @@ div>a:hover {
     margin-top: 1.5rem!important;
     margin-bottom: .5rem!important;
     font-weight: 600!important;
+    margin: 0;
+    padding: 0;
+
+    border-bottom: 1px solid #505050;
+}
+
+
+.qna-header {
+    font-size: 1.5rem;
+    margin-top: 1.5rem!important;
+    margin-bottom: .5rem!important;
+    font-weight: 600!important;
     width: 100%;
     margin: 0;
     padding: 0;
@@ -125,6 +137,15 @@ div>a:hover {
     border-bottom: 1px solid #505050;
 }
 
+.qna-question {
+    font-size: 1.25rem;
+    margin-top: 1.5rem!important;
+    margin-bottom: .5rem!important;
+    font-weight: 600!important;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
 
 /* Review, Event, Showing Forms */
 .form-class {
