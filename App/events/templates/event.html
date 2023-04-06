@@ -128,7 +128,7 @@
             </div>
             {% for showing in event.get_showings %}
             <div class="mx-2 my-4">
-                <p class="m-0">{{showing.time }}</p>
+                <p class="m-0">{{ showing.time }}</p>
                 <p class="m-0">
                     {% if showing.venue and showing.city %}
                     {{ showing.venue }} - {{ showing.city }}

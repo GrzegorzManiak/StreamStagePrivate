@@ -17,7 +17,15 @@ from .views import (event_create,
 from .api import (
     get_ticket_listings,
     add_ticket_listing,
-    del_ticket_listing
+    del_ticket_listing,
+
+    get_showings,
+    add_showing,
+    del_showing,
+
+    get_media,
+    add_media,
+    del_media
 )
 
 urlpatterns = [
@@ -39,4 +47,12 @@ urlpatterns = [
     path('api/get_ticket_listings', get_ticket_listings, name='get_ticket_listings'),
     path('api/add_ticket_listings', add_ticket_listing, name='add_ticket_listing'),
     path('api/del_ticket_listings', del_ticket_listing, name='del_ticket_listing'),
+
+    path('api/get_showings', get_showings, name='get_showings'),
+    path('api/add_showings', add_showing, name='add_showing'),
+    path('api/del_showings', del_showing, name='del_showing'),
+
+    path('api/get_media', get_media, name='get_media'),
+    path('api/add_media', add_media, name='add_media'),
+    path('api/del_media', del_media, name='del_media'),
 ]

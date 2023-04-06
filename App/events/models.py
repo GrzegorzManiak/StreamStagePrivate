@@ -1,3 +1,10 @@
+import base64
+import io
+
+from django.core.files import File
+from django.core.files.temp import NamedTemporaryFile
+from PIL import Image
+
 from django.db import models
 from django.db.models import Q, Avg
 
@@ -212,6 +219,7 @@ class EventReview(models.Model):
 
 # Event Media Model
 class EventMedia(models.Model):
+    media_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     picture = models.ImageField("Photograph", upload_to="events", null=True, editable=True)
     description = models.TextField("Photograph Description", max_length=300, blank=True, null=False)
@@ -223,6 +231,33 @@ class EventMedia(models.Model):
     def __str__(self):
         return self.description[:30]
 
+    def load_from_base64(self, base64_data: str):
+        """
+            Saves a picture file to the media folder
+            and then associates this event media object
+            with that file. 
+        """
+        try:
+            img_tmp = NamedTemporaryFile()
+            image_data = base64.b64decode(base64_data.split(',')[1])
+            image = Image.open(io.BytesIO(image_data))
+
+            # -- Compress the image
+            image = image.save(img_tmp, 'webp', quality=75)
+
+            # -- Save the image to the media folder
+            img_tmp.write(image_data)
+            img_tmp.flush()
+
+            self.picture = File(img_tmp, name=f'{uuid.uuid4()}.webp')
+
+            self.save()
+
+            return True
+        except Exception as e:
+            print("ERROR")
+            print(e)
+            return False
 
 # Event Showing Model
 class EventShowing(models.Model):

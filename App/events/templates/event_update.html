@@ -20,13 +20,21 @@ Update Event | StreamStage
     data-get-ticket-listings='{{ api.get_ticket_listings }}'
     data-add-ticket-listing='{{ api.add_ticket_listing }}'
     data-del-ticket-listing='{{ api.del_ticket_listing }}'
+
+    data-get-showings='{{ api.get_showings }}'
+    data-add-showing='{{ api.add_showing }}'
+    data-del-showing='{{ api.del_showing }}'
+
+    data-get-media='{{ api.get_media }}'
+    data-add-media='{{ api.add_media }}'
+    data-del-media='{{ api.del_media }}'
 ></span>
 
 <div class="row m-auto" style="max-width: 1200px">
     <h1 class="page-title">Edit Event</h1>
     <div class="col-8">
-        <h1>General</h1>
-        <div class="d-flex content_center">
+        <h1>Basic Details</h1>
+        <div><!-- class="d-flex content_center"> -->
             <form class="form-class form-layout" action="" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form|crispy }}
@@ -37,16 +45,34 @@ Update Event | StreamStage
         </div>
     </div>
     <div class="col-4">
-        <h1>The Stuff</h1>
+        <h1>Advanced Details</h1>
 
-        <div>
+        <div class="mt-2 form-class">
             <h3>Ticket Listings</h3>
             <div id="ticket-listings-panel">
 
             </div>
             <span id="add-ticket-listing-btn" class="btn btn-success">Add Listing</span>
         </div>
+        <div class="mt-4">
+            <h3>Showings</h3>
+            <div id="showings-panel">
 
+            </div>
+            <span id="add-showing-btn" class="btn btn-success">Add Showing</span>
+        </div>
+    </div>
+</div>
+<div class="row m-auto mt-3" style="max-width: 1200px">
+    <div class="col-8">
+        <h1>Event Pictures</h1>
+
+        <div class="mt-2 form-class">
+            <div id="media-panel">
+
+            </div>
+            <span id="add-media-btn" class="btn btn-success">Add Picture</span>
+        </div>
     </div>
 </div>
 <script src="/static/js/event_edit_bin.js"></script>

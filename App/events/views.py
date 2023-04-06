@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 
+from StreamStage.templatetags.tags import cross_app_reverse
+
 from .models import Event, EventReview, EventShowing
 from .forms import (EventApplyForm, 
                     EventUpdateForm, 
@@ -107,9 +109,17 @@ def event_update(request, event_id):
         'event_id': event_id,
 
         'api': {
-            'get_ticket_listings': reverse_lazy('get_ticket_listings'),
-            'add_ticket_listing': reverse_lazy('add_ticket_listing'),
-            'del_ticket_listing': reverse_lazy('del_ticket_listing')
+            'get_ticket_listings': cross_app_reverse('events', 'get_ticket_listings'),
+            'add_ticket_listing': cross_app_reverse('events', 'add_ticket_listing'),
+            'del_ticket_listing': cross_app_reverse('events', 'del_ticket_listing'),
+
+            'get_showings': cross_app_reverse('events', 'get_showings'),
+            'add_showing': cross_app_reverse('events', 'add_showing'),
+            'del_showing': cross_app_reverse('events', 'del_showing'),
+
+            'get_media': cross_app_reverse('events', 'get_media'),
+            'add_media': cross_app_reverse('events', 'add_media'),
+            'del_media': cross_app_reverse('events', 'del_media')
         }
     }
     
