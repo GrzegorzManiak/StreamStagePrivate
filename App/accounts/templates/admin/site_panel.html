@@ -64,6 +64,11 @@
         data-create-terms='{% cross_app_reverse_tag "StreamStage" "create_terms" %}'
         data-filter-terms='{% cross_app_reverse_tag "StreamStage" "filter_terms" %}'
         data-render-terms='{% cross_app_reverse_tag "StreamStage" "render_terms_specific" %}'
+
+        data-faq-create='{% cross_app_reverse_tag "StreamStage" "create_faq" %}'
+        data-faq-filter='{% cross_app_reverse_tag "StreamStage" "filter_faq" %}'
+        data-faq-delete='{% cross_app_reverse_tag "StreamStage" "delete_faq" %}'
+        data-faq-update='{% cross_app_reverse_tag "StreamStage" "update_faq" %}'
     ></span>
     <div 
     id = 'main-container'
@@ -491,7 +496,8 @@
                                 {% include 'admin/broadcaster.html' %}
                                 {% include 'admin/events.html' %}
                                 {% include 'admin/terms_privacy.html' %}
-    
+                                {% include 'admin/faq.html' %}
+                
                             </div>
                         </main>
                     </div>

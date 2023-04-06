@@ -71,7 +71,9 @@ class FAQ(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     question = models.CharField(max_length=100)
     answer = models.TextField()
+    updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
+    section = models.CharField(max_length=100)
 
     def __str__(self):
         return self.question
@@ -81,7 +83,8 @@ class FAQ(models.Model):
             'id': self.id,
             'question': self.question,
             'answer': self.answer,
-            'created': self.created
+            'created': self.created,
+            'section': self.section
         }
     
 

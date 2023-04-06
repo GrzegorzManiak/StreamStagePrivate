@@ -77,6 +77,11 @@ export interface Configuration {
     create_terms: string,
     filter_terms: string,
     render_terms: string,
+
+    faq_create: string,
+    faq_delete: string,
+    faq_update: string,
+    faq_filter: string,
 }
 
 
