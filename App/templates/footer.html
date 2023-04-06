@@ -30,7 +30,7 @@
                 <ul class="list-unstyled">
                     <li class='title'>Support</li>
                     <li><a href="#">Contact</a></li>
-                    <li><a href="#">FAQ</a></li>
+                    <li><a href="{% cross_app_reverse_tag 'StreamStage' 'render_faq' %}">FAQ</a></li>
                     <li><a href="{% cross_app_reverse_tag 'StreamStage' 'render_terms' %}">Terms</a></li>
                     <li><a href="{% cross_app_reverse_tag 'StreamStage' 'render_privacy' %}">Privacy</a></li>
                 </ul>

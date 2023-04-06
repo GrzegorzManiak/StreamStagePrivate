@@ -219,4 +219,10 @@ def logout(request):
     dj_logout(request._request)
     Statistics.log('accounts', 'logout')
 
-    return success_response('Successfully logged out')
+    return render(
+        request,
+        'verify.html',
+        context={
+            'message': 'You have been logged out',
+        }   
+    )
