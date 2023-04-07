@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.urls import reverse_lazy
+from accounts.com_lib import authenticated
+from .authentication import can_edit_event
 
 from StreamStage.templatetags.tags import cross_app_reverse
 
@@ -78,33 +80,11 @@ def get_upcoming_events(request):
 
     return render(request, "event_list_upcoming.html", context)
 
-def event_create(request):
-    context = {}
-    
-    form = EventApplyForm(request.POST or None)
-    if not request.user.is_authenticated or not request.user.is_streamer:
-        return redirect('upcoming_events')
-    if form.is_valid():
-        new_event_id = identifiers.generate_event_id()
-        form = form.save(commit=False)
-        form.streamer = request.user
-        form.event_id = new_event_id
-        form.save()
-
-        return redirect('event_view', new_event_id)
-
-    context['form']= form
-    return render(request, "event_new.html", context)
-
 # Update an event
-def event_update(request, event_id):
-    event = Event.objects.get(event_id=event_id)
+@authenticated()
+@can_edit_event()
+def event_update(request, event, event_id):
 
-    if not request.user.is_authenticated or not request.user.is_streamer:
-        return redirect('homepage_index')
-    if event == None: # if event id in URL is invalid, redirect
-        return redirect('homepage_index')
-    
     context = {
         'event_id': event_id,
 

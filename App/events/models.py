@@ -87,7 +87,7 @@ class Event(models.Model):
 
     def get_media(self):
         cover_pic = self.get_cover_picture()
-        other_media = EventMedia.objects.filter(event=self).filter(~Q(id=cover_pic.id)).all()
+        other_media = EventMedia.objects.filter(event=self).filter(~Q(media_id=cover_pic.media_id)).all()
         media = []
         media.append(cover_pic)
         media += other_media

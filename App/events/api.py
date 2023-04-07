@@ -1,4 +1,5 @@
 import datetime
+from .authentication import can_edit_event
 from accounts.com_lib import authenticated, invalid_response, error_response, required_data, success_response
 from rest_framework.decorators import api_view
 from .models import TicketListing, EventShowing, Event, EventMedia
@@ -40,21 +41,9 @@ def get_ticket_listings(request, data):
     })
 
 @api_view(['POST'])
-@authenticated()
 @required_data(['event_id', 'ticket_type', 'detail', 'price', 'stock'])
-def add_ticket_listing(request, data):
-    if not request.user.is_streamer:
-        return error_response('Permission denied: you are not a streamer.')
-
-    event = Event.objects.filter(event_id=data['event_id']).first()
-
-    if not event:
-        return error_response('Event with given ID not found.')
-    
-    # TODO: contributors check
-    if request.user != event.broadcaster.streamer:
-        return error_response('Permission denied: you do not have permissions to edit provided event.')
-
+@can_edit_event()
+def add_ticket_listing(request, event, data):
     ticket_type = data['ticket_type']
     price = data['price']
     stock = data['stock']
