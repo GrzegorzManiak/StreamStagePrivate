@@ -32,6 +32,17 @@ body {
     min-height: 100vh;
 }
 
+.bk-theme { background-color: var(--theme-color); }
+.bk-theme-semi-transparent { background-color: var(--theme-semi-transparent-color); }
+.bk-theme-secondary { background-color: var(--theme-secondary-color); }
+.bk-theme-backdrop { background-color: var(--theme-backdrop-color); }
+.bk-accent { background-color: var(--accent-color); }
+
+
+.slim-btn, .slim-btn button {
+    padding: 0rem!important;
+}
+
 /******************/
 /*    General     */
 /******************/

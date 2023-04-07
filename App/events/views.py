@@ -48,7 +48,7 @@ def event_view(request, event_id):
             'remove_verification': cross_app_reverse('accounts', 'remove_key'),
             'recent_verification': cross_app_reverse('accounts', 'recent_key'),
 
-            'add_payment': cross_app_reverse('accounts', 'add_payments'),
+            'add_payment': cross_app_reverse('accounts', 'add_payment'),
             'get_payments': cross_app_reverse('accounts', 'get_payments'),
             'remove_payment': cross_app_reverse('accounts', 'remove_payment'),
 
