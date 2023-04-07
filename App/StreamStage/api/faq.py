@@ -32,7 +32,6 @@ def render_faq(request):
                 'faq': [f.serialize()]
             })
 
-    print(sections)
     # -- Render the page
     return render(
         request, 'faq.html',
