@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from accounts.com_lib import authenticated
-from .authentication import can_edit_event
+from .api_auth import can_edit_event
 
 from StreamStage.templatetags.tags import cross_app_reverse
 

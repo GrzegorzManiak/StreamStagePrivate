@@ -1,5 +1,5 @@
 import datetime
-from .authentication import can_edit_event
+from .api_auth import can_edit_event
 from accounts.com_lib import authenticated, invalid_response, error_response, required_data, success_response
 from rest_framework.decorators import api_view
 from .models import TicketListing, EventShowing, Event, EventMedia

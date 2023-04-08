@@ -18,7 +18,6 @@ def can_edit_event():
             if not event_id:
                 event_id = kwargs.get("event_id")
 
-
             if request.method == 'POST':
                 if not event_id:
                     return error_response("You must specify an event id for this resource.")
