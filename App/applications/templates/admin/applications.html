@@ -1,11 +1,17 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load render_bundle from webpack_loader %}
 
 {% load crispy_forms_tags %}
 
 {% block title %}Apply for Streamer{% endblock title %}
 
 {% block content %}
+<span 
+    class='config'
+
+    data-csrf-token='{{ csrf_token }}'
+></span>
 <div id="application-container" class="m-4">
 <b>Pending User Applications:</b>
 
@@ -74,4 +80,5 @@
 
 
 </div>
+{% render_bundle 'applications' %}>
 {% endblock %}

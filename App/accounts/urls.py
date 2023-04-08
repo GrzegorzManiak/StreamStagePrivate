@@ -108,6 +108,8 @@ urlpatterns = [
     path('api/other/delete_review', delete_review, name='delete_review'),
     path('api/other/submit_report', submit_report, name='submit_report'),
 
+    # -- Broadcaster
+
     # -- Admin
     path('site_panel/', site_panel, name='site_panel'),
     path('site_panel/get_statistics/', get_statistics, name='get_statistics'),

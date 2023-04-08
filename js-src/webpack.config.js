@@ -21,6 +21,7 @@ module.exports = {
         homepage: './homepage/index.ts',
         events: './events/index.ts',
         event_edit: './event_edit/index.ts',
+        applications: './applications/index.ts',
         navbar: './elements/navbar.ts',
         profiles: './profiles/index.ts',
         broadcaster_profiles: './broadcaster_profiles/index.ts',

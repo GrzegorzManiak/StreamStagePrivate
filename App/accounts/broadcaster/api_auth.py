@@ -16,12 +16,14 @@ def can_edit_broadcaster():
 
             if not broadcaster_id:
                 broadcaster_id = kwargs.get("id")
+            
+            try: broadcaster = Broadcaster.objects.get(id=broadcaster_id)
+            except Broadcaster.DoesNotExist:
+                broadcaster = None
 
             if request.method == 'POST':
-                if not broadcaster_id:
-                    return error_response("You must specify an event id for this resource.")
-
-                broadcaster = Broadcaster.objects.filter(id = broadcaster_id).first()
+                if not broadcaster:
+                    return error_response("Broadcaster not found.")
 
                 if not broadcaster:
                     return error_response("Invalid event ID specified.")
@@ -29,11 +31,6 @@ def can_edit_broadcaster():
                 if not request.user.is_authenticated:
                     return error_response("You do not have the permission to access this resource.")
             else:
-                if not broadcaster_id:
-                    return redirect('homepage_index')
-
-                broadcaster = Broadcaster.objects.filter(id = broadcaster_id).first()
-
                 if not broadcaster:
                     return redirect('homepage_index')
                 
