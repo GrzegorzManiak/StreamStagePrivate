@@ -130,11 +130,11 @@ def review_broadcaster_application(request, id):
         return redirect('review_applications')
 
     if request.POST.get("reject") is not None:
-        reject_streamer_application(application, user)
+        reject_broadcaster_application(application, user)
         return redirect('review_applications')
         
     elif request.POST.get("approve") is not None:
-        approve_streamer_application(application, user)
+        approve_broadcaster_application(application, user)
         return redirect('review_applications')
 
     return render(request, "admin/review_broadcaster.html", { 'app' : application })
