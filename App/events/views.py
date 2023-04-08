@@ -6,8 +6,6 @@ from .authentication import can_edit_event
 
 from StreamStage.templatetags.tags import cross_app_reverse
 
-from StreamStage.templatetags.tags import cross_app_reverse
-
 from .models import Event, EventReview, EventShowing
 from .forms import (EventApplyForm, 
                     EventUpdateForm, 
