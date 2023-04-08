@@ -233,9 +233,20 @@ class Member(AbstractUser):
             return customer
         
         # -- If the user has a stripe customer id, return the customer
-        customer = stripe.Customer.retrieve(self.stripe_customer)
-        if customer: return customer
-        return None
+        try:
+            customer = stripe.Customer.retrieve(self.stripe_customer)
+            if customer: return customer
+            return None
+        
+        except Exception as e:
+            customer = stripe.Customer.create(
+                email=self.email,
+                name=self.username,
+                description=self.id
+            )
+            self.stripe_customer = customer['id']
+            self.save()
+            return customer
 
 
 

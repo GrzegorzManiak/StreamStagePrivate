@@ -108,6 +108,44 @@ def add_stripe_payment_method(
             # Split on the first colon and return the second half
             str(e).split(':', 1)[1].strip()
         ]
+    
+
+
+def get_id_from_card(
+    card: str,
+    exp_month: int,
+    exp_year: int,
+    cvc: str,
+    name: str,
+) -> str:
+    """
+        :name: get_id_from_card
+        :description: This function gets the payment method id from the card information
+            Unlike the add_stripe_payment_method function, this function does not add the
+            payment method to the user's stripe account
+        :param card: The card number
+        :param exp_month: The expiration month
+        :param exp_year: The expiration year
+        :param cvc: The cvc code
+        :return: The payment method id
+    """
+    # -- Create the payment method
+    try: 
+        payment_method = stripe.PaymentMethod.create(
+            type='card',
+            card={
+                'number': card,
+                'exp_month': exp_month,
+                'exp_year': exp_year,
+                'cvc': cvc,
+            },
+        )
+
+        return payment_method.id
+
+    except Exception as e:
+        print(e)
+        return None
 
 
 
@@ -215,47 +253,6 @@ def remove_stripe_payment_method(user: Member, card_id: str):
     
 
 
-def create_cust_payment_intent(user: Member, listing_ids: List[str], payment_method: str = None):
-    """
-        Including a list of ticket listing ids, in the event that we decide we want
-        the ability to buy more than one item at a time.
-
-        Returns ID
-    """
-    price = 0
-
-    for listing_id in listing_ids:
-        item_price = get_item_price(listing_id)
-
-        if item_price == None:
-            return { "error": "Invalid listing ID given." }
-        else:
-            price += item_price
-        
-    # count how many cents are in price (Stripe only accepts integer val)
-    price = int(price*100)
-    
-    stripe_intent = create_stripe_payment_intent(user, price, payment_method)
-
-    if stripe_intent is None:
-        return { "error": "Could not create intent." }
-
-    confirm_payment_intent(stripe_intent.id)
-
-    cust_intent = {
-        "user": user,
-        "items": listing_ids,
-        "stripe_intent": stripe_intent
-    }
-
-    intent_id = str(uuid.uuid4())
-
-    customer_payment_intents[intent_id] = cust_intent
-
-    return { "intent_id": intent_id }
-
-
-
 def create_stripe_payment_intent(user: Member, amount: int, payment_method: str = None): 
     """
         :name: create_stripe_payment_intent
@@ -279,8 +276,52 @@ def create_stripe_payment_intent(user: Member, amount: int, payment_method: str 
     )
 
     # -- Return the payment intent
-
     return payment_intent
+
+
+
+def create_cust_payment_intent(user: Member, listing_ids: List[str], payment_method: str or dict):
+    """
+        Including a list of ticket listing ids, in the event that we decide we want
+        the ability to buy more than one item at a time.
+
+        Returns ID
+    """
+    price = 0
+
+
+    # -- Get all the previous payment intents for the user
+    for intent in customer_payment_intents.values():
+        # -- Remove the intent 
+        if intent["user"] == user:
+            del customer_payment_intents[intent["intent_id"]]
+
+
+    # -- Get the price of each item
+    for listing_id in listing_ids:
+        item_price = get_item_price(listing_id)
+
+        if item_price == None: return { "error": "Invalid listing ID given." }
+        else: price += item_price
+
+        
+    # -- count how many cents are in price (Stripe only accepts integer val)
+    try: stripe_intent = create_stripe_payment_intent(user, int(price * 100), payment_method)
+    except Exception as e: return { "error": "Could not create intent, " + str(e) }
+    
+    # -- Try to instantly confirm the intent
+    confirm_payment_intent(stripe_intent.id)
+
+    # -- Store the stripe intent masked behind our own id
+    intent_id = str(uuid.uuid4())
+    customer_payment_intents[intent_id] = {
+        "user": user,
+        "items": listing_ids,
+        "stripe_intent": stripe_intent
+    }
+
+    # -- Return the external intent id
+    return { "intent_id": intent_id }
 
 
 
@@ -295,32 +336,44 @@ def confirm_payment_intent(intent_id: str):
 def check_stripe_payment_intent_status(intent: stripe.PaymentIntent):
     """
         Checks status of a stripe payment intent.
-        TODO: check user intents when they go to their orders page.
     """
     intent.refresh()
+    match intent["status"]:
+        case "succeeded": 
+            # -- Locate the payment intent
+            for cust_intent in customer_payment_intents.values():
+                if cust_intent["stripe_intent"].id == intent.id:
+                    # -- Delete the payment intent
+                    del customer_payment_intents[cust_intent["intent_id"]]
+                    break
 
-    status = intent["status"]
-
-    if status == "succeeded":
-        return { "status": "success" }
-    elif status == "requires_confirmation":
-        pass
-    elif status == "canceled":
-        return { "status": "canceled" }
-    elif status == "requires_action":
-
-        response = { "status": "requires_action" }
-        next_action = intent["next_action"]
-
-        if next_action["type"] == "redirect_to_url":
-            response["next_action"] = next_action["redirect_to_url"]["url"]
-        elif next_action["type"] == "use_stripe_sdk":
-            response["next_action"] = next_action["use_stripe_sdk"]["stripe_js"]
-
-        return response
-    elif status == "requires_payment_method":
-        return { "status": "requires_payment_method" }
+            return { "status": "success" }
         
+        case "canceled": 
+            # -- Locate the payment intent
+            for cust_intent in customer_payment_intents.values():
+                if cust_intent["stripe_intent"].id == intent.id:
+                    # -- Delete the payment intent
+                    del customer_payment_intents[cust_intent["intent_id"]]
+                    break
+                
+            return { "status": "canceled" }
+        
+
+        case "requires_payment_method": return { "status": "requires_payment_method" }
+        case "requires_confirmation": pass
+        case "requires_action":
+            response = { "status": "requires_action" }
+            next_action = intent["next_action"]
+
+            if next_action["type"] == "redirect_to_url":
+                response["next_action"] = next_action["redirect_to_url"]["url"]
+            
+            elif next_action["type"] == "use_stripe_sdk":
+                response["next_action"] = next_action["use_stripe_sdk"]["stripe_js"]
+
+            return response
+
 
 
 def check_cust_payment_intent(intent_id: str):

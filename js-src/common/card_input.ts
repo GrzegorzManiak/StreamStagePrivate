@@ -150,7 +150,7 @@ export function saved_payments_dropdown(
 
 
 
-export function instant_paynow(
+export async function instant_paynow(
     price_id: string,
     title: string = 'Pay Now',
     description: string = 'You will be charged $9.99 USD / month',
@@ -177,8 +177,8 @@ export function instant_paynow(
         selected_card = card;
         saved_payment = card;
         yes.disabled = false;
-    }), read_card = read_card_modal(modal),
-        save_card = modal.querySelector('.save-card') as HTMLInputElement;
+    }), read_card = read_card_modal(modal);
+    const save_card = modal.querySelector('.save-card') as HTMLInputElement;
     reload_saved();
 
 

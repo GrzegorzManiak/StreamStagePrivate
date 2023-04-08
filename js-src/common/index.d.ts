@@ -1,6 +1,34 @@
 import { DefaultResponse, DefaultResponseData } from '../api/index.d';
-export type ToastType = 'error' | 'success' | 'warning' | 'info';
 
+export type ToastType = 'error' | 'success' | 'warning' | 'info';
+export type report_type = 'event' | 'review' | 'user' | 'broadcaster';
+
+export interface Review {
+    id: string,
+    event: string,
+    event_name: string,
+    rating: number,
+    body: string,
+    title: string,
+    created: number,
+    likes: number,
+    username: string,
+}
+
+export type GetReviewsSuccess = DefaultResponseData & { data: {
+    reviews: Array<Review>,
+    total: number,
+    per_page: number,
+    page: number,
+    pages: number
+}}
+export type GetReviewsResponse = GetReviewsSuccess | DefaultResponse;
+
+
+
+// 
+// Payments
+// 
 export interface Card {
     card: string,
     exp_month: number,
@@ -41,26 +69,3 @@ export type AddCardResponse = AddCardSuccess | DefaultResponse;
 
 export type GetCardsSuccess = DefaultResponseData & { data: Array<PaymentMethod> }
 export type GetCardsResponse = GetCardsSuccess | DefaultResponse;
-
-export type report_type = 'event' | 'review' | 'user' | 'broadcaster';
-
-export interface Review {
-    id: string,
-    event: string,
-    event_name: string,
-    rating: number,
-    body: string,
-    title: string,
-    created: number,
-    likes: number,
-    username: string,
-}
-
-export type GetReviewsSuccess = DefaultResponseData & { data: {
-    reviews: Array<Review>,
-    total: number,
-    per_page: number,
-    page: number,
-    pages: number
-}}
-export type GetReviewsResponse = GetReviewsSuccess | DefaultResponse;
