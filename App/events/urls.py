@@ -3,6 +3,7 @@ from django.urls import path, include
 from .views import (
     event_view,
     get_past_events,
+    get_live_events,
     get_upcoming_events,
     event_update,
     event_delete,
@@ -67,6 +68,7 @@ urlpatterns = [
     # Events
     path('', get_upcoming_events, name='upcoming_events'),
     path('past/', get_past_events, name='past_events'),
+    path('live/', get_live_events, name='live_events'),
     path('<slug:event_id>/', event_view, name='event_view'),
     path('<slug:event_id>/update/', event_update, name='event_update'),
     path('<slug:event_id>/delete/', event_delete, name='event_delete'),

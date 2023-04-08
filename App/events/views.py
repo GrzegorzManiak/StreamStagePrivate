@@ -7,8 +7,7 @@ from .authentication import can_edit_event
 from StreamStage.templatetags.tags import cross_app_reverse
 
 from .models import Event, EventReview, EventShowing
-from .forms import (EventApplyForm, 
-                    EventUpdateForm, 
+from .forms import (EventUpdateForm, 
                     EventDeleteForm, 
                     ReviewCreateForm, 
                     ReviewUpdateForm, 
@@ -72,6 +71,13 @@ def get_past_events(request):
     context["events"] = Event.objects.all()
 
     return render(request, "event_list_past.html", context)
+
+# Display Live Events
+def get_live_events(request):
+    context = {}
+    context["events"] = Event.objects.all()
+
+    return render(request, "event_list_live.html", context)
 
 # Display Upcoming Events
 def get_upcoming_events(request):

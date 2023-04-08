@@ -1,12 +1,20 @@
 {% load tags %}
-<div id="refine-search-container">
+
+<div class="mx-auto">
     <form action="{% cross_app_reverse_tag 'search' 'searchResult' %}" method="get" class="row">
         <h4 class="col-md-6 col-sm-12 m-auto text-center">Refine Event Search</h4>
 
-        
-        <div class="col-md-6 col-sm-12">
+    <!-- Apply Filters -->
+        <div class="col-md-3 col-sm-12">
             <button class="btn btn-primary my-3">Apply Filters</button>
         </div>
+    <!-- Clear Filters -->
+    <a class="col-md-3 col-sm-12" href="?">
+        <div >
+            <button class="btn btn-danger my-3 w-100">Reset Search</button>
+        </div>
+    </a>
+
 <!-- New Search -->
         <div class="mt-1 col-md-4 col-sm-12">
             <b>New Search</b>
@@ -51,7 +59,7 @@
                             € <input class="border-light rounded" type="number" name="mip" 
                             {% if min_price %} value="{{min_price}}" {% endif %}>
                         </div>
-                        <p class="h5">to</p>
+                        <p class="my-0">to</p>
                         <div>
                             € <input class="border-light rounded mb-1" type="number me-auto" name="map" 
                             {% if max_price %} value="{{max_price}}" {% endif %}>
@@ -102,7 +110,7 @@
                 <p class="m-0" data-bs-toggle="collapse" href="#locationfilter" role="button">
                     <b> <i class="fa-solid fa-caret-down"></i> Filter by Location</b>
                 </p>
-                <div class="collapse {% if venue %}show{% endif %} col-12 my-1" id="locationfilter">
+                <div class="collapse {% if venue or city or country %}show{% endif %} col-12 my-1" id="locationfilter">
                     <div id="location-filters">
         <!-- Filter By Venue -->
                         <div class="mt-1">
@@ -141,13 +149,37 @@
                             Start Date (dd/mm/yyyy) <input class="border-light rounded" type="datetime" name="sd" 
                             {% if start_date %} value="{{start_date}}" {% endif %}>
                         </div>
-                        <p class="h5">to</p>
+                        <p class="my-0">to</p>
                         <div>
                             End Date (dd/mm/yyyy) <input class="border-light rounded mb-1" type="datetime" name="ed" 
                             {% if end_date %} value="{{end_date}}" {% endif %}>
                         </div>
                     </div>
-                </div>
+                    <!-- Upcoming Events only -->
+                    <div class="collapse mt-1" id="datefilter">
+                        <label class="d-block">
+                            {% if upcoming %}
+                            <input type="checkbox" name="u" value="y" checked>
+                            {% else %}
+                            <input type="checkbox" name="u" value="y">
+                            {% endif %}
+            
+                            Upcoming Events Only
+                        </label>
+                    </div>
+                    <!-- Events with in-person tickets only -->
+                    <div class="collapse mt-1" id="datefilter">
+                        <label class="d-block">
+                            {% if in_person %}
+                            <input type="checkbox" name="ip" value="y" checked>
+                            {% else %}
+                            <input type="checkbox" name="ip" value="y">
+                            {% endif %}
+            
+                            In-Person Tickets Available
+                        </label>
+                    </div>
+                </div>                
             </div>
         </div>
 

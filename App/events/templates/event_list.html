@@ -4,55 +4,64 @@
 
 {% block content %}
 
-<div class="row my-2">
-    <div class="col-9 px-4 mx-auto">
-        <a href="{% url 'event_view' event.event_id %}">
-            <div class="row">
-
-                <div class="col-md-3 col-sm-12">
-                    <!-- Event Categories -->
-                    {% for category in event.categories.all %}
-                    <span class="badge bg-primary">{{category.name}}</span>
-                    {% endfor %}
-                    <!-- Event Broadcaster -->
-                    <h6>@{{ event.broadcaster.handle }}</h6>
-                    <!-- Event Cover Picture (if any) -->
-                    {% if event.get_media_count == 0 %}
-                    <img class="event-cover" src="{% static 'images/default_event_cover.png' %}"
-                        alt="No Event Cover Photo">
-                    {% else %}
-                    <img class="event-cover" src="{{ event.get_cover_picture.picture.url }}" 
-                    alt="{{ event.get_cover_picture.description }}">
-                    {% endif %}
-                </div>
-                <div class="col-md-9 col-sm-12">
-                    <!-- Event title & description -->
-                    <h4>{{ event.title }}</h4>
-                    <p>{{ event.short_description }}...</p>
-
-                    <!-- Displaying next showing (if any) -->
-                    <div class="row">
-                        {% if event.get_showings_count > 0 %}
-                        <div class="col-6">
-                            <h6 class="sub-title"><b>Next Showing</b></h6>
-                            <p>{{ event.get_next_showing }}</p>
-                        </div>
-                        <div class="col-6">
-                            <h6 class="sub-title"><b>Where</b></h6>
-                            <p>{{ event.get_next_showing.city }} - {{ event.get_next_showing.country.name }}</p>
-                        </div>
-                        {% else %}
-                        <div class="col-12">
-                            <h6><b>No upcoming showings</b></h6>
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </a>
+<div class="row my-2 px-4 mx-auto">
+    <div class="col-md-3 col-sm-12">
+        <!-- Event Categories -->
+        {% for category in event.categories.all %}
+        <span class="badge bg-primary">{{category.name}}</span>
+        {% endfor %}
+        <!-- Event Broadcaster -->
+        <h6 class="my-2">@{{ event.broadcaster.handle }}</h6>
+        <!-- Event Cover Picture (if any) -->
+        {% if event.get_media_count == 0 %}
+        <img class="event-cover" src="{% static 'images/default_event_cover.png' %}" alt="No Event Cover Photo">
+        {% else %}
+        <img class="event-cover" src="{{ event.get_cover_picture.picture.url }}"
+            alt="{{ event.get_cover_picture.description }}">
+        {% endif %}
     </div>
+    <a class="col-md-6 col-sm-12" href="{% url 'event_view' event.event_id %}">
+        <!-- Event title & description -->
+        <h4 class="sub-title">{{ event.title }}</h4>
+        <p>{{ event.description | slice:':250'}}...</p>
+
+        <!-- Displaying next showing (if any) -->
+        <div class="row">
+            {% if event.get_showings_count > 0 %}
+            <div class="col-6">
+                <h6 class="sub-title"><b>Next Showing</b></h6>
+                <p>{{ event.get_next_showing }}</p>
+            </div>
+            <div class="col-6">
+                <h6 class="sub-title"><b>Where</b></h6>
+                <p>{{ event.get_next_showing.venue }} - {{ event.get_next_showing.city }}</p>
+            </div>
+            {% else %}
+            <div class="col-12">
+                <h6><b>No upcoming showings</b></h6>
+            </div>
+            {% endif %}
+        </div>
+        <div class="row">
+            {% if event.get_showings_count > 0 and event.has_ticket_listings > 0 %}
+            <div class="col-6">
+                <h6 class="sub-title"><b>Tickets From</b></h6>
+            </div>
+            <div class="col-6">
+                <p>€{{ event.get_min_ticket_price.price }}</p>
+            </div>
+            <div class="col-12">
+                <p>See event page for more details</p>
+            </div>
+            {% else %}
+            <div class="col-12">
+                <h6><b>No tickets available</b></h6>
+            </div>
+            {% endif %}
+        </div>
+    </a>
     <!-- Reviews for Event -->
-    <div class="col-md-3 col-sm-12 third-page">
+    <div class="col-md-3 col-sm-12">
         <div class="my-4 mx-1">
             {% if event.get_review_count > 0 %}
             <h6 class="text-center"><b>Reviews</b></h6>

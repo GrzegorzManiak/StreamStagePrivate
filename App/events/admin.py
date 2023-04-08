@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import TicketListing, Event, EventMedia, Category, EventShowing, EventReview
+from .models import TicketListing, Event, EventMedia, Category, EventShowing, EventReview, EventTrailer
 
 # Register your models here.
 
@@ -12,8 +12,9 @@ class EventAdmin(admin.ModelAdmin):
 
 @admin.register(TicketListing)
 class TicketListing(admin.ModelAdmin):
-    list_display = [ 'event', 'ticket_detail', 'ticket_type', 'maximum_stock', 'remaining_stock' ]
-    list_editable = []
+    list_display = [ 'event', 'price', 'ticket_detail', 'ticket_type', 'maximum_stock', 'remaining_stock' ]
+    list_editable = [ 'price', 'ticket_detail', 'ticket_type', 'maximum_stock', 'remaining_stock']
+    list_display_links = []
 
 @admin.register(EventMedia)
 class EventMediaAdmin(admin.ModelAdmin):
@@ -29,8 +30,8 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(EventShowing)
 class EventShowingAdmin(admin.ModelAdmin):
-    list_display = [ 'showing_id', 'event', 'country', 'city', 'venue', 'time' ]
-    list_editable = [ 'event', 'country', 'city', 'venue', 'time' ]
+    list_display = [ 'showing_id', 'event', 'country', 'city', 'venue', 'time', 'max_duration' ]
+    list_editable = [ 'event', 'country', 'city', 'venue', 'time', 'max_duration']
     list_displaylinks = []
 
 @admin.register(EventReview)
@@ -39,3 +40,8 @@ class EventReviewAdmin(admin.ModelAdmin):
     list_editable = [ 'author', 'title', 'body', 'likes', 'rating' ]
     list_display_links = []
 
+@admin.register(EventTrailer)
+class EventReviewAdmin(admin.ModelAdmin):
+    list_display = [ 'event', 'videofile', 'description' ]
+    list_editable = [ 'videofile', 'description' ]
+    list_display_links = []

@@ -5,7 +5,7 @@
     </div>
     
     <p class="card-text">
-        {% if review.get_review_body_length > 50 %}
+        {% if review.get_review_body_length > 49 %}
         {{ review.body }}. . .
         {% else %}
         {{ review.body }}

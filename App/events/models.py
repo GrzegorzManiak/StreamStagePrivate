@@ -6,7 +6,7 @@ from django.core.files.temp import NamedTemporaryFile
 from PIL import Image
 
 from django.db import models
-from django.db.models import Q, Avg
+from django.db.models import Q, Avg, Max, Min
 
 from django.contrib.auth import get_user_model
 from django.urls import reverse
@@ -14,7 +14,7 @@ from django_countries.fields import CountryField
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 from StreamStage.settings import MEDIA_URL
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from django.core.files import File
 from PIL import Image
 import uuid
@@ -131,9 +131,6 @@ class Event(models.Model):
     def __str__(self):
         return self.title
     
-    def short_description(self):
-        return self.description[:500]
-    
     # Tickets
     def get_ticket_listings(self):
         return TicketListing.objects.filter(event=self).all()
@@ -141,6 +138,22 @@ class Event(models.Model):
     def has_ticket_listings(self):
         return self.get_ticket_listings().count()
     
+    def get_max_price_ticket(self):
+        tickets = self.get_ticket_listings().all()
+        max_price = 0
+        for ticket in tickets:
+            if ticket.price > max_price:
+                max_price = ticket.price
+        return TicketListing.objects.filter(price=max_price).first()
+    
+    def get_min_ticket_price(self):
+        tickets = self.get_ticket_listings().all()
+        min_price = 9999
+        for ticket in tickets:
+            if ticket.price < min_price:
+                min_price = ticket.price
+        return TicketListing.objects.filter(price=min_price).first()
+
     # Media
 
     def get_cover_picture(self):
@@ -162,7 +175,11 @@ class Event(models.Model):
     
     def get_media_count(self):
         return EventMedia.objects.filter(event=self).all().count()
-
+    
+    # Trailer 
+    def get_trailer(self): 
+        return EventTrailer.objects.filter(event=self).all()
+    
     # Reviews
 
     def get_reviews(self):
@@ -177,7 +194,7 @@ class Event(models.Model):
     def get_short_reviews(self):
         reviews = EventReview.objects.filter(event=self).all().order_by('likes')
         for review in reviews:
-            review.body = review.body[:100]
+            review.body = review.body[:50]
         return reviews
     
     def get_review_count(self):
@@ -197,6 +214,7 @@ class Event(models.Model):
         
         # return round(avg_rating,1)
         return EventReview.objects.filter(event=self).aggregate(Avg("rating"))["rating__avg"] or 0
+    
     # Get top review based on likes
     def get_top_review(self, reviews_in = None):
         reviews = reviews_in or self.get_reviews()
@@ -236,6 +254,16 @@ class Event(models.Model):
     def get_showings_count(self):
         return EventShowing.objects.filter(event=self).all().count()
     
+    def is_event_live(self):
+        showings = []
+        for showing in self.get_showings():
+            time_left = datetime.now(tz = showing.time.tzinfo) - showing.time
+            if time_left < timedelta(minutes=showing.max_duration) and time_left > 0:
+                showings.append(showing)
+        if len(showings) > 0:        
+            return True 
+
+
 
     def serialize(self):
         return {
@@ -352,15 +380,28 @@ class EventMedia(models.Model):
             print("ERROR")
             print(e)
             return False
+# Event Trailer Model
+class EventTrailer(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    videofile= models.FileField(upload_to='videos/', verbose_name="")
+    description = models.TextField("Trailer Description", max_length=300, blank=True, null=False)
+    
+    class Meta:
+        verbose_name = 'Event Trailer'
+        verbose_name_plural = 'Event Trailers'
 
+    def __str__(self):
+        return self.description[:30]
+    
 # Event Showing Model
 class EventShowing(models.Model):
     showing_id = (models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False))
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    country = CountryField()
-    city = models.CharField(max_length=25, blank=True)
-    venue = models.CharField(max_length=50, blank=True)
+    country = CountryField("Country")
+    city = models.CharField("City", max_length=25, blank=True)
+    venue = models.CharField("Venue", max_length=50, blank=True)
     time = models.DateTimeField()
+    max_duration = models.SmallIntegerField("Max Duration (in minutes)")
 
     class Meta:
         verbose_name = 'Event Showing'
