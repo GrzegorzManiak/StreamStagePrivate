@@ -158,49 +158,48 @@ export async function instant_paynow(
     item_price: string = '$9.99 USD / month',
     stop: () => void = () => {},
 ) {
+    // -- Create the modal and append it to the document body
     const modal = document.createElement('div');
-    let selected_card: PaymentIntentMethod,
-        saved_payment: PaymentIntentMethod;
     modal.innerHTML = pay_now(title, description, item_name, item_price);
     document.body.appendChild(modal);
 
-    // -- yes / no buttons
-    const yes = modal.querySelector('.yes') as HTMLButtonElement,
-        no = modal.querySelector('.no') as HTMLButtonElement,
-        back = modal.querySelector('.go-back') as HTMLButtonElement;
+    // -- Initialize payment method and payment confirmation variables
+    let selected_card: PaymentIntentMethod;
+    let saved_payment: PaymentIntentMethod;
 
+    // -- Initialize modal elements
+    const payment_select = modal.querySelector('.payment-select'),
+        main_elm = modal.querySelector('.pay-now-modal'),
+        pay_now_slider = payment_select.querySelector('.pay-now-slider'),
+        new_card = pay_now_slider.querySelector('.new-card'),
+        saved_card = pay_now_slider.querySelector('.saved-card'),
+        card = modal.querySelector('.final-card'),
+        yes = modal.querySelector('.yes') as HTMLButtonElement,
+        no = modal.querySelector('.no') as HTMLButtonElement,
+        back = modal.querySelector('.go-back') as HTMLButtonElement,
+        save_card = modal.querySelector('.save-card') as HTMLInputElement;
+
+    // -- Hide the back button and disable the yes button
     back.style.display = 'none';
     yes.disabled = true;
 
-    // -- Saved payments list and new card form readers and the 'save-card' checkbox
-    const reload_saved = saved_payments_dropdown(modal, async(card: PaymentMethod) => {
+    // -- Helper function to reload the saved payments dropdown
+    const reload_saved = saved_payments_dropdown(modal, async (card: PaymentMethod) => {
         selected_card = card;
         saved_payment = card;
         yes.disabled = false;
-    }), read_card = read_card_modal(modal);
-    const save_card = modal.querySelector('.save-card') as HTMLInputElement;
+    });
     reload_saved();
 
-
-    // -- Grab the main elements .payment-select
-    const payment_select = modal.querySelector('.payment-select'),
-        main_elm = modal.querySelector('.pay-now-modal'),
-        confirm = modal.querySelector('.pay-confirm');
-
-    // -- Grab the payment mode buttons, .pay-now-slider
-    const pay_now_slider = payment_select.querySelector('.pay-now-slider'),
-        new_card = pay_now_slider.querySelector('.new-card'),
-        saved_card = pay_now_slider.querySelector('.saved-card'),
-        card = modal.querySelector('.final-card');
-    
-
-    // -- Add the event listener to the new card button
+    // Helper function to show the new card form and set payment mode
+    const read_card = read_card_modal(modal);
     new_card.addEventListener('click', () => {
         payment_select.setAttribute('data-mode', 'new');
         yes.disabled = true;
         read_card();
     });
 
+    // Helper function to show the saved payments and set payment mode
     saved_card.addEventListener('click', () => {
         payment_select.setAttribute('data-mode', 'saved');
         selected_card = saved_payment;
@@ -213,15 +212,15 @@ export async function instant_paynow(
     let stage = 0;
     yes.addEventListener('click', async() => {
         switch (stage) {
-            case 0: 
-                // -- Check the mode of the payment
-                let mode = payment_select.getAttribute('data-mode');
+            case 0:
+                // -- Check the payment mode and update the modal
+                const mode = payment_select.getAttribute('data-mode');
                 if (mode === 'new') selected_card = read_card();
                 main_elm.setAttribute('data-mode', 'confirm');
                 back.style.display = 'block';
                 no.disabled = false;
 
-                // -- Add the card to the confirm modal
+                // -- Add the selected payment method to the confirm modal
                 const elm = create_new_card(fit_card(selected_card), false);
                 card.innerHTML = elm.card.innerHTML;
                 stage = 1;
@@ -234,14 +233,13 @@ export async function instant_paynow(
                 back.style.display = 'none';
 
                 const data = Object.keys(selected_card).includes('id') ? (
-                    selected_card as PaymentMethod
-                ).id : { 
-                    ...selected_card, save: save_card.checked 
+                selected_card as PaymentMethod).id : {
+                    ...selected_card,
+                    save: save_card.checked
                 } as Card & { save: boolean };
 
                 // -- Create the payment intent
-                const intent = await create_intent(
-                    price_id, data) as NewPaymentIntentSuccess;
+                const intent = await create_intent(price_id, data) as NewPaymentIntentSuccess;
 
                 // -- Check for a 200
                 if (intent.code !== 200) {
@@ -255,11 +253,10 @@ export async function instant_paynow(
                 create_toast('success', 'Success!', 'Payment successful! Checking for verification...');
                 let threeds = false;
 
-                while(true) {
+                while (true) {
                     // -- Check the intent
-                    const check = await check_intent(intent.data.intent_id
-                    ) as CheckPaymentIntentSuccess;
-                    
+                    const check = await check_intent(intent.data.intent_id) as CheckPaymentIntentSuccess;
+
                     if (check.code !== 200) {
                         create_toast('error', 'Oops!', check.message);
                         stop();
@@ -277,12 +274,9 @@ export async function instant_paynow(
                         stop();
                         return;
                     }
-                    
+
                     // -- Intent requires action
-                    else if (
-                        status === 'requires_action' &&
-                        threeds === false
-                    ) {
+                    else if (status === 'requires_action' && threeds === false) {
                         threeds = true;
                         const action = check.data.next_action;
 
@@ -294,11 +288,7 @@ export async function instant_paynow(
                         await sleep(5000);
                     }
 
-                    if ([
-                        'success',
-                        'requires_action', 
-                        'requires_confirmation'
-                    ].includes(status) === false) {
+                    if (['success', 'requires_action', 'requires_confirmation'].includes(status) === false) {
                         console.log(status);
                         create_toast('error', 'Oops!', 'Payment failed!');
                         stop();
@@ -311,20 +301,30 @@ export async function instant_paynow(
                     // -- Sleep for 5 seconds
                     await sleep(5000);
                 }
-
-                break;
         }
     });
 
+
+    // -- Event listener for the no button
+    no.addEventListener('click', () => {
+        if (stage === 0) return stop();
+        
+        // -- If user clicked no at the second stage, go back to the previous stage
+        main_elm.setAttribute('data-mode', 'select');
+        back.style.display = 'none';
+        no.disabled = true;
+        yes.disabled = true;
+        stage = 0;
+    });
+    
+
+    // -- Event listener for the back button
     back.addEventListener('click', () => {
         main_elm.setAttribute('data-mode', 'select');
         back.style.display = 'none';
+        no.disabled = true;
+        yes.disabled = true;
         stage = 0;
-    });
-
-    // -- 'no' event listner
-    no.addEventListener('click', () => {
-        stop()
     });
 }
 
