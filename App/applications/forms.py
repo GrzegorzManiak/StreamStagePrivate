@@ -55,7 +55,7 @@ class EventAppForm(forms.ModelForm):
 
         self.fields['broadcaster'] = forms.ModelChoiceField(queryset=user_broadcasters, initial=most_recent_broadcaster)
         
-        self.fields['categories'] = CategoryMC(
-             queryset=Category.objects.all(),
-             widget=forms.CheckboxSelectMultiple
-         )
+        # self.fields['categories'] = CategoryMC(
+        #      queryset=Category.objects.all(),
+        #      widget=forms.CheckboxSelectMultiple
+        #  )

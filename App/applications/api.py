@@ -1,37 +1,70 @@
-from accounts.com_lib import required_data, success_response, error_response, authenticated
+from accounts.com_lib import required_data, success_response, error_response, authenticated, is_admin
 from rest_framework.decorators import api_view
 from .processing import (
     submit_broadcaster_application,
     submit_event_application,
     submit_streamer_application,
 
+    approve_streamer_application,
+    approve_broadcaster_application,
+    approve_event_application,
+    reject_broadcaster_application,
+    reject_event_application,
+    reject_streamer_application,
+
     get_broadcaster_applications,
     get_event_applications,
     get_streamer_applications,
 )
 
-from .models import ( STATUS_APPROVED, STATUS_REJECTED, STATUS_WAITING )
+from .models import (
+    EventApplication,
+    StreamerApplication,
+    BroadcasterApplication,
+
+    STATUS_APPROVED,
+    STATUS_REJECTED,
+    STATUS_WAITING,
+    STATUSES
+)
 
 
 @api_view(['POST'])
 @required_data(['submission_statement'])
+@authenticated()
 def submit_streamer_app(request, data):
 
-    submit_streamer_application(data)
+    if get_streamer_applications(request.user).count() > 0:
+        return error_response("You can not submit an event application with another pending.")
+    
+    submit_streamer_application(request.user, data)
 
     return success_response("Successfully submitted streamer application.")
 
 @api_view(['POST'])
-@required_data(['app_id'])
+@required_data(['handle', 'name', 'biography'])
+@authenticated()
 def submit_broadcaster_app(request, data):
 
+    if not request.user.is_streamer and get_streamer_applications(request.user).count() == 0:
+        return error_response("You can not submit a broadcaster application application without submitting a streamer application first.")
+
+    submit_broadcaster_application(request.user, data)
 
     pass
 
 @api_view(['POST'])
-@required_data(['app_id'])
+@required_data(['broadcaster', 'title', 'description', 'categories', 'over_18s'])
 def submit_event_app(request, data):
 
+    if not request.user.is_streamer and get_streamer_applications(request.user).count() == 0:
+        return error_response("You can not submit an event application before submitting a streamer application.")
+
+    if get_broadcaster_applications(request.user, [ STATUS_WAITING, STATUS_APPROVED ]).count() == 0:
+        return error_response("You can not submit an event application without a pending or accepted broadcaster application.")
+
+
+    submit_event_application(request.user, data)
 
     pass
 
@@ -82,3 +115,49 @@ def get_user_applications(request):
         applications["broadcaster"].append(serialized)
 
     return success_response("Successfully retrieved applications. ", { "applications": applications })
+
+
+@api_view(['POST'])
+@required_data(['type', 'application_id', 'status'])
+@is_admin
+def update_application_status(request, data):
+    type = data['type']
+    status = data['status']
+
+    if not status in [ STATUS_APPROVED, STATUS_REJECTED ]:
+        return error_response("Invalid status given.")
+    
+
+    if type == 'streamer':
+        try:
+            app = StreamerApplication.objects.get(application_id=data['application_id'])
+
+            if status == STATUS_APPROVED:
+                approve_streamer_application(app, request.user)
+            else:
+                reject_streamer_application(app, request.user)
+        except StreamerApplication.DoesNotExist:
+            return error_response('Invalid application ID provided.')
+    elif type == 'broadcaster':
+        try:
+            app = BroadcasterApplication.objects.get(application_id=data['application_id'])
+
+            if status == STATUS_APPROVED:
+                approve_broadcaster_application(app, request.user)
+            else:
+                reject_broadcaster_application(app, request.user)
+        except BroadcasterApplication.DoesNotExist:
+            return error_response('Invalid application ID provided.')
+    elif type == 'event':
+        try:
+            app = EventApplication.objects.get(application_id=data['application_id'])
+
+            if status == STATUS_APPROVED:
+                approve_event_application(app, request.user)
+            else:
+                reject_event_application(app, request.user)
+        except EventApplication.DoesNotExist:
+            return error_response('Invalid application ID provided.')
+
+    return error_response("An unknown error has occured. Please try again later.") 
+        

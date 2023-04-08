@@ -36,6 +36,7 @@ def event_view(request, event_id):
     avg_rating = round(event.get_average_rating(reviews), 1)
 
     context = {
+        'can_edit': event.is_authorized(request.user),
         'event': event,
         'cover_pic': event.get_cover_picture(),
         'reviews' : reviews,

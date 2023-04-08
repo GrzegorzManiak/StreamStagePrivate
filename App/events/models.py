@@ -290,6 +290,14 @@ class Event(models.Model):
                 'id': showing.showing_id,
             } for showing in EventShowing.objects.filter(event=self).all()],
         }
+    
+    def is_authorized(self, user):
+        return (
+            user.is_staff
+            or  self.broadcaster.streamer == user
+            or  self.broadcaster.contributors.filter(id=user.id).exists()
+        )
+
 
 
 # Event Review Model

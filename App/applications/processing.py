@@ -3,6 +3,7 @@ from .models import *
 from StreamStage import identifiers
 
 from .models import STATUS_APPROVED, STATUS_REJECTED
+from events.models import Category
 
 # Submitting + Amending / User Functionality
 
@@ -46,11 +47,9 @@ def submit_event_application(user, data):
         event_id = identifiers.generate_event_id(),
         #live_price = data['live_price']
     )
-        # stream_price = data['stream_price'],
-
-    #print(data['categories'])
-    #for category in data['categories']:
-    #    event.categories.add(category)
+    
+    for category in data['categories']:
+       event.categories.add(Category.objects.get(id=category))
 
     event.save()
 

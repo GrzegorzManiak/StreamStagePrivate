@@ -27,24 +27,10 @@ from .api import (
 
     get_media,
     add_media,
-    del_media
-)
+    del_media,
 
-from .ext_api import (
-    categorys,
-    create_category,
-    update_category,
-    get_category,
-    delete_category, 
-    upload_category_image,
-    broadcasters,
-    get_broadcaster,
-    update_broadcaster,
-    delete_broadcaster,
-    events,
-    get_event,
-    delete_event,
-    update_event
+    # get_event_details,
+    # update_event_details
 )
 
 from .ext_api import (
@@ -91,6 +77,9 @@ urlpatterns = [
     path('api/get_media', get_media, name='get_media'),
     path('api/add_media', add_media, name='add_media'),
     path('api/del_media', del_media, name='del_media'),
+
+    # path('api/get_details', get_event_details, name='get_event_details'),
+    # path('api/update_details', update_event_details, name='update_event_details'),
 
     # Admin
     path('api/categorys/', categorys, name='categorys'),

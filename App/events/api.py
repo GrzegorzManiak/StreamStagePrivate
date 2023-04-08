@@ -294,3 +294,27 @@ def del_media(request, data):
     return success_response('Successfully deleted event media.')
 
 
+# @api_view(['POST'])
+# @required_data(['event_id', 'title', 'description', 'categories', 'primary_media_idx'])
+# @can_edit_event()
+# def update_event_details(request, event:Event, data):
+    
+#     event.title = data['title']
+#     event.description = data['description']
+#     event.primary_media_idx = data['primary_media_idx']
+#     event.over_18s = data['over_18s']
+
+#     #categories
+
+#     return success_response('Successfully updated event details.')
+
+# @api_view(['GET'])
+# @required_data(['event_id'])
+# @can_edit_event()
+# def get_event_details(request, event:Event, data):
+#     """
+#         Returns the event with the given id.
+#     """
+    
+#     return success_response('Successfully retrieved event', {
+#     })

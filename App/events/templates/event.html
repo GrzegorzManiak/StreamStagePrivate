@@ -45,6 +45,11 @@
 
                 <div class="col-md-3 col-sm-12 mx-auto p-2 third-page">
 
+                    <!-- Update Event Button -->
+                    {% if can_edit %}
+                    <a href="update/" class="text-muted">Edit Event</a>
+                    {% endif %}
+
                     <!-- Category -->
                     <div class="mx-2 my-4">
                         {% for category in event.categories.all %}
