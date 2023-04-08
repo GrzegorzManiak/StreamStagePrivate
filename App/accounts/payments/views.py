@@ -92,13 +92,32 @@ def create_payment_intent(request, data):
     # -- If the payment method is a dict, it's a new card
     #    otherwise it's a saved card
     if isinstance(data['payment_method'], dict):
-        valid_entrys = ['card', 'exp_month', 'exp_year', 'cvc', 'name']
+        valid_entrys = ['card', 'exp_month', 'exp_year', 'cvc', 'name', 'save']
         for entry in valid_entrys:
             if entry not in data['payment_method']:
                 return invalid_response("Invalid payment method, missing " + entry)
             
         # -- Add the payment method
-        payment_method = get_id_from_card(
+        if data['payment_method']['save'] is True:
+            payment_method = add_stripe_payment_method(
+                request.user,
+                data['payment_method']['card'],
+                data['payment_method']['exp_month'],
+                data['payment_method']['exp_year'],
+                data['payment_method']['cvc'],
+                data['payment_method']['name'],
+            )
+
+            # -- Check if the payment method is valid
+            if payment_method[0] is None:
+                return invalid_response(payment_method[1])
+            
+            payment_method = payment_method[0]["id"]
+
+
+        # -- We are not saving the card, so we can just create
+        #    a temporary payment method not linked to the user
+        else: payment_method = get_id_from_card(
             data['payment_method']['card'],
             data['payment_method']['exp_month'],
             data['payment_method']['exp_year'],
@@ -142,10 +161,16 @@ def check_payment_intent(request, data):
         return error_response(response["error"])
     
     match response["status"]:
-        case "success": return success_response("Purchase completed!")
-        case "cancelled": return error_response("Payment cancelled")
+        case "success": return success_response("Purchase completed!", {
+            "status": "success"
+        })
+        case "cancelled": return error_response("Payment cancelled", {
+            "status": "cancelled"
+        })
         case "requires_action": return success_response("Additional action required.", {
-            "next_action": response["next_action"]})
+            "next_action": response["next_action"],
+            "status": "requires_action"
+        })
     
     return error_response("Error in checking status of payment")
 

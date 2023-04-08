@@ -290,13 +290,6 @@ def create_cust_payment_intent(user: Member, listing_ids: List[str], payment_met
     price = 0
 
 
-    # -- Get all the previous payment intents for the user
-    for intent in customer_payment_intents.values():
-        # -- Remove the intent 
-        if intent["user"] == user:
-            del customer_payment_intents[intent["intent_id"]]
-
-
     # -- Get the price of each item
     for listing_id in listing_ids:
         item_price = get_item_price(listing_id)
@@ -340,23 +333,9 @@ def check_stripe_payment_intent_status(intent: stripe.PaymentIntent):
     intent.refresh()
     match intent["status"]:
         case "succeeded": 
-            # -- Locate the payment intent
-            for cust_intent in customer_payment_intents.values():
-                if cust_intent["stripe_intent"].id == intent.id:
-                    # -- Delete the payment intent
-                    del customer_payment_intents[cust_intent["intent_id"]]
-                    break
-
             return { "status": "success" }
         
         case "canceled": 
-            # -- Locate the payment intent
-            for cust_intent in customer_payment_intents.values():
-                if cust_intent["stripe_intent"].id == intent.id:
-                    # -- Delete the payment intent
-                    del customer_payment_intents[cust_intent["intent_id"]]
-                    break
-                
             return { "status": "canceled" }
         
 
@@ -371,7 +350,7 @@ def check_stripe_payment_intent_status(intent: stripe.PaymentIntent):
             
             elif next_action["type"] == "use_stripe_sdk":
                 response["next_action"] = next_action["use_stripe_sdk"]["stripe_js"]
-
+            
             return response
 
 

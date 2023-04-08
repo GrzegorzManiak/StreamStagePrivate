@@ -64,8 +64,18 @@ interface PaymentIntent {
     }
 }
 
+export interface CheckIntent {
+    next_action?: string,
+}
+
 export type AddCardSuccess = DefaultResponseData & { data: PaymentMethod }
 export type AddCardResponse = AddCardSuccess | DefaultResponse;
 
 export type GetCardsSuccess = DefaultResponseData & { data: Array<PaymentMethod> }
 export type GetCardsResponse = GetCardsSuccess | DefaultResponse;
+
+export type NewPaymentIntentSuccess = DefaultResponseData & { data: { intent_id: string }}
+export type NewPaymentIntentResponse = NewPaymentIntentSuccess | DefaultResponse;
+
+export type CheckPaymentIntentSuccess = DefaultResponseData & { data: CheckIntent }
+export type CheckPaymentIntentResponse = CheckPaymentIntentSuccess | DefaultResponse;

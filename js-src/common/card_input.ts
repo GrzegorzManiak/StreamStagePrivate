@@ -1,7 +1,7 @@
-import { Card, GetCardsSuccess, PaymentIntentMethod, PaymentMethod } from './index.d';
+import { Card, CheckPaymentIntentSuccess, GetCardsSuccess, NewPaymentIntentSuccess, PaymentIntentMethod, PaymentMethod } from './index.d';
 import { card_type, card_type_to_fontawesome, create_new_card, fit_card, pay_now } from "./card";
-import { attach, confirmation_modal, create_toast } from '.';
-import { get_cards, remove_card } from './api';
+import { attach, confirmation_modal, create_toast, sleep } from '.';
+import { check_intent, create_intent, get_cards, remove_card } from './api';
 
 
 export function read_card_modal(
@@ -114,7 +114,7 @@ export function saved_payments_dropdown(
                 active = card.getAttribute('card-id');
 
                 // -- Call the callback
-                callback({ 
+                callback({
                     id: card.getAttribute('card-id'),
                     exp_month: Number(card.getAttribute('card-exp-month')),
                     exp_year: Number(card.getAttribute('card-exp-year')),
@@ -219,16 +219,99 @@ export async function instant_paynow(
                 if (mode === 'new') selected_card = read_card();
                 main_elm.setAttribute('data-mode', 'confirm');
                 back.style.display = 'block';
+                no.disabled = false;
 
                 // -- Add the card to the confirm modal
                 const elm = create_new_card(fit_card(selected_card), false);
                 card.innerHTML = elm.card.innerHTML;
-
+                stage = 1;
                 break;
 
             case 1:
                 // -- Ask the user to confirm the payment
-                
+                const stop = attach(yes);
+                no.disabled = true;
+                back.style.display = 'none';
+
+                const data = Object.keys(selected_card).includes('id') ? (
+                    selected_card as PaymentMethod
+                ).id : { 
+                    ...selected_card, save: save_card.checked 
+                } as Card & { save: boolean };
+
+                // -- Create the payment intent
+                const intent = await create_intent(
+                    price_id, data) as NewPaymentIntentSuccess;
+
+                // -- Check for a 200
+                if (intent.code !== 200) {
+                    create_toast('error', 'Oops!', intent.message);
+                    stop();
+                    no.disabled = false;
+                    back.style.display = 'block';
+                    return;
+                }
+
+                create_toast('success', 'Success!', 'Payment successful! Checking for verification...');
+                let threeds = false;
+
+                while(true) {
+                    // -- Check the intent
+                    const check = await check_intent(intent.data.intent_id
+                    ) as CheckPaymentIntentSuccess;
+                    
+                    if (check.code !== 200) {
+                        create_toast('error', 'Oops!', check.message);
+                        stop();
+                        no.disabled = false;
+                        back.style.display = 'block';
+                        threeds = false;
+                        return;
+                    }
+
+                    // -- Check if the intent is verified
+                    const status = check.data.status;
+                    if (status === 'success') {
+                        create_toast('success', 'Success!', 'Payment verified!');
+                        modal.remove();
+                        stop();
+                        return;
+                    }
+                    
+                    // -- Intent requires action
+                    else if (
+                        status === 'requires_action' &&
+                        threeds === false
+                    ) {
+                        threeds = true;
+                        const action = check.data.next_action;
+
+                        // -- Open the 3DS modal
+                        const win = window.open(action, '_blank', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=600,height=700');
+                        if (win) win.focus();
+
+                        // -- Sleep for 5 seconds
+                        await sleep(5000);
+                    }
+
+                    if ([
+                        'success',
+                        'requires_action', 
+                        'requires_confirmation'
+                    ].includes(status) === false) {
+                        console.log(status);
+                        create_toast('error', 'Oops!', 'Payment failed!');
+                        stop();
+                        no.disabled = false;
+                        threeds = false;
+                        back.style.display = 'block';
+                        return;
+                    }
+
+                    // -- Sleep for 5 seconds
+                    await sleep(5000);
+                }
+
                 break;
         }
     });
@@ -244,6 +327,8 @@ export async function instant_paynow(
         stop()
     });
 }
+
+
 
 
 
