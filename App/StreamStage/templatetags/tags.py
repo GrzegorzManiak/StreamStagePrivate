@@ -2,8 +2,7 @@ from django.urls import reverse, reverse_lazy
 from django import template
 from StreamStage.settings import RUNNING_ON_LOCALHOST, DOMAIN_NAME
 
-def cross_app_reverse(app, view, kwargs=None):
-    from ..urls import urlpatterns
+def cross_app_reverse(app, view, kwargs=None, use_subdomain=True):
     """
         This function is used to reverse urls
         that are in other apps
@@ -32,8 +31,12 @@ def cross_app_reverse(app, view, kwargs=None):
             subdomain = ''
             conf = 'homepage.urls'
 
+        case 'StreamStage':
+            subdomain = ''
+            conf = 'StreamStage.urls'
 
-    if RUNNING_ON_LOCALHOST == True:
+
+    if RUNNING_ON_LOCALHOST == True or use_subdomain == False:
         return f'/{app}{reverse(view, urlconf=conf, kwargs=kwargs)}'
 
     full_domain = f'{subdomain}{DOMAIN_NAME}'
@@ -44,5 +47,14 @@ def cross_app_reverse(app, view, kwargs=None):
 register = template.Library()
 
 @register.simple_tag
-def cross_app_reverse_tag(app, view, **kwargs):
-    return cross_app_reverse(app, view, kwargs)
+def cross_app_reverse_tag(
+    app, 
+    view, 
+    use_subdomain=True,
+    **kwargs,
+):
+    return cross_app_reverse(
+        app, view, 
+        kwargs=kwargs,
+        use_subdomain=use_subdomain
+    )

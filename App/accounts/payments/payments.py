@@ -14,17 +14,17 @@ from StreamStage.secrets import STRIPE
 import stripe
 
 stripe.api_key = STRIPE['pri']
-
 customer_payment_intents = {}
 
 
-"""
-    :name: clear_stripe_customer
-    :description: This function clears any incomplete payments for the user
-    :param user: The user object
-    :return: None
-"""
+
 def clear_stripe_customer(user: Member):
+    """
+        :name: clear_stripe_customer
+        :description: This function clears any incomplete payments for the user
+        :param user: The user object
+        :return: None
+    """
     # -- Check if the user is valid
     if user is None: return None
 
@@ -47,18 +47,6 @@ def clear_stripe_customer(user: Member):
 
     
 
-
-"""
-    :name: add_stripe_payment_method
-    :description: This function adds a payment method to the user's stripe account
-    :param user: The user object
-    :param card: The card number
-    :param exp_month: The expiration month
-    :param exp_year: The expiration year
-    :param cvc: The cvc code
-    :return: a list, the first item being the payment method id, the second being
-        a string dictating the error if there is one
-"""
 def add_stripe_payment_method(
     user: Member,
     card: str,
@@ -67,6 +55,17 @@ def add_stripe_payment_method(
     cvc: str,
     name: str,
 ) -> list:
+    """
+        :name: add_stripe_payment_method
+        :description: This function adds a payment method to the user's stripe account
+        :param user: The user object
+        :param card: The card number
+        :param exp_month: The expiration month
+        :param exp_year: The expiration year
+        :param cvc: The cvc code
+        :return: a list, the first item being the payment method id, the second being
+            a string dictating the error if there is one
+    """
     # -- Check if the user is valid
     if user is None: return None
 
@@ -112,13 +111,13 @@ def add_stripe_payment_method(
 
 
 
-"""
-    :name: get_stripe_payment_methods
-    :description: This function gets all the payment methods for the user
-    :param user: The user object
-    :return: The payment methods
-"""
 def get_stripe_payment_methods(user: Member):
+    """
+        :name: get_stripe_payment_methods
+        :description: This function gets all the payment methods for the user
+        :param user: The user object
+        :return: The payment methods
+    """
     # -- Check if the user is valid
     if user is None: return None
 
@@ -138,13 +137,13 @@ def get_stripe_payment_methods(user: Member):
 
 
 
-"""
-    :name: format_payment_method
-    :description: This function formats the payment method into a dictionary
-    :param payment_method: The payment method object
-    :return: The formatted payment method
-"""
 def format_payment_method(payment_method):
+    """
+        :name: format_payment_method
+        :description: This function formats the payment method into a dictionary
+        :param payment_method: The payment method object
+        :return: The formatted payment method
+    """
     # -- Check if the payment method is valid
     if payment_method is None: return None
 
@@ -162,13 +161,13 @@ def format_payment_method(payment_method):
 
 
 
-"""
-    :name: get_cards_formatted
-    :description: This function formats the payment methods into a list of cards
-        with a limited amount of information
-    :param user: The user object
-"""
 def get_cards_formatted(user: Member):
+    """
+        :name: get_cards_formatted
+        :description: This function formats the payment methods into a list of cards
+            with a limited amount of information
+        :param user: The user object
+    """
     # -- Get the payment methods
     payment_methods = get_stripe_payment_methods(user)
     if payment_methods is None: return None
@@ -178,14 +177,14 @@ def get_cards_formatted(user: Member):
 
 
 
-"""
-    :name: remove_stripe_payment_method
-    :description: This function removes a payment method from the user's stripe account
-    :param user: The user object
-    :param card_id: The payment method id
-    :return: True if the payment method was removed, False otherwise
-"""
 def remove_stripe_payment_method(user: Member, card_id: str):
+    """
+        :name: remove_stripe_payment_method
+        :description: This function removes a payment method from the user's stripe account
+        :param user: The user object
+        :param card_id: The payment method id
+        :return: True if the payment method was removed, False otherwise
+    """
     # -- Check if the user is valid
     if user is None: return False
 
@@ -214,13 +213,15 @@ def remove_stripe_payment_method(user: Member, card_id: str):
         print(e)
         return False
     
-"""
-    Including a list of ticket listing ids, in the event that we decide we want
-    the ability to buy more than one item at a time.
 
-    Returns ID
-"""
+
 def create_cust_payment_intent(user: Member, listing_ids: List[str], payment_method: str = None):
+    """
+        Including a list of ticket listing ids, in the event that we decide we want
+        the ability to buy more than one item at a time.
+
+        Returns ID
+    """
     price = 0
 
     for listing_id in listing_ids:
@@ -253,15 +254,17 @@ def create_cust_payment_intent(user: Member, listing_ids: List[str], payment_met
 
     return { "intent_id": intent_id }
 
-"""
-    :name: create_stripe_payment_intent
-    :description: This function creates a payment intent for the user
-    :param user: The user object
-    :param amount: The amount to charge
-    :param payment_method: The payment method id (optional)
-    :return: The payment intent
-"""
+
+
 def create_stripe_payment_intent(user: Member, amount: int, payment_method: str = None): 
+    """
+        :name: create_stripe_payment_intent
+        :description: This function creates a payment intent for the user
+        :param user: The user object
+        :param amount: The amount to charge
+        :param payment_method: The payment method id (optional)
+        :return: The payment intent
+    """
     # -- Check if the user is valid
     if user is None: return None
     customer = user.get_stripe_customer()
@@ -280,19 +283,20 @@ def create_stripe_payment_intent(user: Member, amount: int, payment_method: str 
     return payment_intent
 
 
-"""
-    Attempts to confirm a stripe payment intent.
-"""
-def confirm_payment_intent(intent_id: str):
-    stripe.PaymentIntent.confirm(
-        intent = intent_id
-    )
 
-"""
-    Checks status of a stripe payment intent.
-    TODO: check user intents when they go to their orders page.
-"""
+def confirm_payment_intent(intent_id: str):
+    """
+        Attempts to confirm a stripe payment intent.
+    """
+    stripe.PaymentIntent.confirm(intent = intent_id)
+
+
+
 def check_stripe_payment_intent_status(intent: stripe.PaymentIntent):
+    """
+        Checks status of a stripe payment intent.
+        TODO: check user intents when they go to their orders page.
+    """
     intent.refresh()
 
     status = intent["status"]
@@ -333,15 +337,18 @@ def check_cust_payment_intent(intent_id: str):
 
     return response
 
-"""
-    :name: start_subscription_saved_payment
-    :description: This function starts a subscription for the user
-    :param user: The user object
-    :param payment_method: The payment method id
-    :return: A list, the first being the subscription object, the second being
-        the error if there is one
-"""
+
+
+
 def start_subscription_saved_payment(user: Member, payment_method: str):
+    """
+        :name: start_subscription_saved_payment
+        :description: This function starts a subscription for the user
+        :param user: The user object
+        :param payment_method: The payment method id
+        :return: A list, the first being the subscription object, the second being
+            the error if there is one
+    """
     # -- Check if the user is valid
     if user is None: return False
 
@@ -394,13 +401,14 @@ def start_subscription_saved_payment(user: Member, payment_method: str):
         ]
 
 
-"""
-    :name: format_subscription
-    :description: This function formats the subscription into a dictionary
-    :param subscription: The subscription object
-    :return: The formatted subscription
-"""
+
 def format_subscription(subscription):
+    """
+        :name: format_subscription
+        :description: This function formats the subscription into a dictionary
+        :param subscription: The subscription object
+        :return: The formatted subscription
+    """
     # -- Check if the subscription is valid
     if subscription is None: return None
 

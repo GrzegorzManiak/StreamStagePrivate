@@ -1,44 +1,52 @@
-import { build_configuration, Type } from "../api/config";
-import { manage_paynow } from "../common/card_input";
 import { manage_add_review_panel, manage_override_btn } from "./reviews"
-import { manage_tickets_btn } from "./ticketing";
+import { build_configuration, Type } from "../api/config";
+import { instant_paynow } from "../common/card_input";
+import { single } from "../common/single";
+import { attach } from "../common";
 
-// -- Purchase streaming ticket btn
-//const purchase_stream_ticket = document.querySelector('#buy-streaming-ticket') as HTMLButtonElement;
+single('events');
 
-//manage_paynow(purchase_stream_ticket as HTMLButtonElement, "Purchase Streaming Ticket", "Test", "Ticket", "10.20");
 
-// -- Get the global configuration
+// -- Build the configuration
 export const configuration = build_configuration<{
     event_id: string,
     csrf_token: string,
 }>({
     event_id: new Type('data-event-id', 'string'),
     csrf_token: new Type('data-csrf-token', 'string'),
-
-
 });
 
-manage_tickets();
 
-function manage_tickets() {
-    document.querySelectorAll(".purchase-ticket").forEach(btn => {
-        manage_paynow(
-            btn as HTMLButtonElement,
-            "Purchase Ticket",
-            btn.getAttribute("data-item-name"),
-            btn.getAttribute("data-item-name"),
-            btn.getAttribute("data-item-price"),
-            btn.getAttribute("data-ticket-id")
-        );
-        
+// -- Get the ticketing buttons
+const buttons = Array.from(
+    document.querySelectorAll("[data-ticket-id]") as NodeListOf<HTMLButtonElement>
+);
 
 
-    });
-}
+// -- Loop trough the buttons and
+//    attach the payment handler
+buttons.forEach(btn => btn.addEventListener('click', async() => {
+    // -- Attach the spinner
+    const stop = attach(btn);
+
+    // -- Get the ticket details
+    const ticket_id = btn.getAttribute('data-ticket-id') as string,
+        item_name = btn.getAttribute('data-item-name') as string,
+        item_price = btn.getAttribute('data-item-price') as string;
+
+    // -- Manage the payment
+    await instant_paynow(
+        ticket_id, 'Event Ticket', 
+        'One time payment for "' + item_name + '"',
+        item_name, item_price, stop
+    );
+
+    // -- Remove the spinner
+    stop();
+}));
 
 
-//manage_tickets_btn(document.querySelector('#show-tickets-btn'));
+
 
 
 

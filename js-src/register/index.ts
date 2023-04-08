@@ -40,4 +40,7 @@ export function show_panel(panel: string) {
 
 
 // -- Get the main register form
-register_handler();
+if (panel_elms.register.getAttribute('data-in-progress') !== 'true') {
+    panel_elms.register.setAttribute('data-in-progress', 'true');
+    register_handler();
+};

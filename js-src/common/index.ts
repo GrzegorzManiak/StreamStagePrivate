@@ -99,6 +99,11 @@ export function construct_modal(
     color: 'danger' | 'success' | 'warning' | 'info' | 'secondary' | 'primary' | 'light' | 'dark',
     custom: string = '',
 ) {
+    // -- Try and get navbar-carrot
+    // const navbar_carrot = document.querySelector('#navbar-carrot');
+    // if (navbar_carrot)
+    //     navbar_carrot.dispatchEvent(new CustomEvent('close'));
+
     const buttons_template = `
         <!-- Continue -->
         <button type="submit" class="btn yes btn-${color} btn-lg w-75">
@@ -119,6 +124,13 @@ export function construct_modal(
             style="z-index: 9999; position: fixed; top: 0; left: 0; width: 100vw;
                 height: 100vh; background-color: rgba(0, 0, 0, 0.5);">
 
+            <style>
+                body {
+                  overflow: hidden!important;
+                }
+            </style>
+
+              
             <!-- Modal -->
             <div class="modal d-flex justify-content-center align-items-center"
                 style="z-index: 9999; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 

@@ -125,6 +125,7 @@ export type UpdateProiflePictureResponse = UpdateProiflePictureSuccess | Default
 
 export interface Configuration {
     admin: boolean, 
+    imposter: boolean,
     username: string, 
     userid: string,
     useremail: string, 

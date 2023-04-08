@@ -1,20 +1,11 @@
 import secrets
-import pyotp
 
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from rest_framework.decorators import api_view
-
-from django_countries.fields import CountryField
-from timezone_field import TimeZoneField
-from StreamStage.mail import send_template_email
 from StreamStage.models import Statistics
-
-from accounts.com_lib import authenticated, error_response, invalid_response, required_data, success_response, is_admin
-from accounts.oauth.oauth import get_all_oauth_for_member, format_providers
-from accounts.email.verification import add_key, send_email
-from accounts.models import LoginHistory, oAuth2
-
+from accounts.com_lib import invalid_response, required_data, success_response, is_admin
+from StreamStage.models import Terms, Privacy
 
 @api_view(['GET'])
 @is_admin()
@@ -35,7 +26,14 @@ def site_panel(request):
                 'resend_verification': reverse_lazy('resend_key'),
                 'remove_verification': reverse_lazy('remove_key'),
                 'recent_verification': reverse_lazy('recent_key'),
-            }
+                'users': reverse_lazy('users'),
+                'get_user': reverse_lazy('get_user'),
+                'update_email': reverse_lazy('update_user_email'),
+                'delete_user': reverse_lazy('delete_user'),
+                'update_streamer_status': reverse_lazy('update_streamer_status'),
+            },
+            'terms': Terms.latest(),
+            'privacy': Privacy.latest(),
         }
     )
 
@@ -50,7 +48,7 @@ def get_statistics(request, data):
         that is used to render the statistics page
     """
     # -- Make sure the frame is valid
-    if data['frame'] not in ['minute', 'hour', 'day', 'week', 'month', 'year']:
+    if data['frame'] not in ['seconds', 'minute', 'hour', 'day', 'week', 'month', 'year']:
         return invalid_response('Invalid frame')
         
     return success_response(

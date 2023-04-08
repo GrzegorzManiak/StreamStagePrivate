@@ -1,0 +1,109 @@
+<article class='panel' data-panel-type='broadcasters' data-panel-status='hidden'>
+    <div class="mb-5 justify-content-start">
+        <h1 class="fw-bold">Broadcasters</h1>
+        <p class="text-muted">Browse, create, edit and delete Broadcasters.</p>
+
+        <!-- Main content -->
+        <div class="mb-5 w-100">
+            <!-- FIlters -->
+            <div class='
+                mb-2
+                d-flex
+                filters
+                gap-2
+            '>  
+                <div class='w-50'>
+                    <label class="form-label" for="filter">Filter by</label>
+                    <select 
+                        name="filter" 
+                        id="filter" 
+                        class="form-select w-100 inp"
+                    >   
+                        <option value="updated" selected>Updated</option>
+                        <option value="created">Created</option>
+                        <option value="handle">Handle</option>
+                        <option value="name">Name</option>
+                        <option value="biography">Biography</option>
+                        <option value="over_18">Over 18</option>
+                        <option value="approved">Approved</option>
+                    </select>
+                </div>
+
+                <div class='w-50'>
+                    <label class="form-label" for="order">Order by</label>
+                    <select 
+                        name="order" 
+                        id="order" 
+                        class="form-select w-100 inp"
+                    >   
+                        <option value="desc" selected>Descending</option>
+                        <option value="asc">Ascending</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-4 w-100">
+                <label class="form-label" for="search">Search</label>
+                <input 
+                    name="search" 
+                    id="search" 
+                    placeholder="Color, Category, Description, etc..."
+                    class="form-control inp">
+            </div>
+
+
+
+            <!-- Users -->
+            <div class='content-loader' dimmed='false'>
+                <div class='dimmer'></div>
+                <div class='mb-5 d-flex users content flex-column gap-2'></div>
+            </div>
+
+
+
+            <!-- Pagination -->
+            <div class="
+                d-flex 
+                justify-content-between
+                justify-content-center
+                gap-2          
+                text-center  
+            ">   
+                
+                <!-- Prev -->
+                <button 
+                    id="prev"
+                    class="w-100 h-100 btn btn-primary info loader-btn prev"
+                    loader-state='default'>   
+                    <span> <div class='spinner-border' role='status'> 
+                    <span class='visually-hidden'>Loading...</span> </div> </span>
+                    <p><i class="fas fa-chevron-left"></i> Prev</p>
+                </button>
+
+                <!-- Input -->
+                <div class="h-100 w-100">
+                    <input 
+                        name="page" 
+                        id="page"
+                        placeholder="1" 
+                        value="1"
+                    class="form-control inp text-center">
+
+                    <!-- Out of -->
+                    <p class="text-muted m0 out-of">out of 1</p>
+                </div>
+
+                <!-- Next -->
+                <button 
+                    id="next"
+                    class="w-100 h-100 btn btn-primary info loader-btn next"
+                    loader-state='default'>   
+                    <span> <div class='spinner-border' role='status'> 
+                    <span class='visually-hidden'>Loading...</span> </div> </span>
+                    <p>Next <i class="fas fa-chevron-right"></i></p>
+                </button>
+
+            </div>
+        </div>
+    </div>
+</article>

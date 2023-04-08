@@ -2,13 +2,47 @@ import { create_toast } from '../common';
 import { DefaultResponse, DefaultResponseData, ResendVerificationResponse } from './index.d';
 import { configuration } from './config';
 
+// -- Check if we have a 'impersonate' query string
+//    If we do, then we need to set the 'Impersonate' header
+//    to the value of the query string
+const url = new URL(window.location.href);
+const impersonate = url.searchParams.get('impersonate');
+const COOKIE_NAME = 'streamstage-token';
 
+
+/**
+ * @name get_session_cookie
+ * @returns string | undefined
+ */
+export function get_session_cookie(): string | undefined {
+    // -- Get all cookies
+    const cookies = document.cookie.split(';');
+
+    // -- Loop through the cookies
+    for (const cookie of cookies) {
+        const cookie_name = cookie.split('=')[0].trim();
+        if (cookie_name === COOKIE_NAME) return cookie.split('=')[1];
+    }
+}
+
+
+/**
+ * @name base_request
+ * @param method - Method (GET, POST, PUT, DELETE)
+ * @param endpoint - Endpoint to make the request to
+ * @param data - Data to send with the request (if any)
+ * @param headers - Headers to send with the request (if any)
+ * @returns Promise<DefaultResponse>
+ */
 export async function base_request (
     mehod: string,
     endpoint: string,
     data: any = {},
     headers: any = {},
 ): Promise<DefaultResponse> {
+    // -- Get the session cookie
+    const session_cookie = get_session_cookie();
+    
     // -- If the request is a GET request, then
     //    we need to convert the data to a query string
     let query = '';
@@ -25,6 +59,8 @@ export async function base_request (
             clean_data[key] = data[key];
     }
         
+    headers['Impersonate'] = impersonate;
+    headers[COOKIE_NAME] = session_cookie;
     let clean_headers = {};
     for (let key in headers) {
         if (headers[key] !== undefined && headers[key] !== null)

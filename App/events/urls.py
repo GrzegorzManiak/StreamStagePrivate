@@ -1,16 +1,18 @@
-from django.urls import path
-from .views import (event_view,
-                    get_past_events,
-                    get_upcoming_events,
-                    event_update,
-                    event_delete,
-                    review_create,
-                    review_update,
-                    review_delete,
-                    review_like,
-                    showing_create,
-                    showing_update,
-                    showing_delete
+from django.urls import path, include
+
+from .views import (
+    event_view,
+    get_past_events,
+    get_upcoming_events,
+    event_update,
+    event_delete,
+    review_create,
+    review_update,
+    review_delete,
+    review_like,
+    showing_create,
+    showing_update,
+    showing_delete
 )
 
 from .api import (
@@ -25,6 +27,40 @@ from .api import (
     get_media,
     add_media,
     del_media
+)
+
+from .ext_api import (
+    categorys,
+    create_category,
+    update_category,
+    get_category,
+    delete_category, 
+    upload_category_image,
+    broadcasters,
+    get_broadcaster,
+    update_broadcaster,
+    delete_broadcaster,
+    events,
+    get_event,
+    delete_event,
+    update_event
+)
+
+from .ext_api import (
+    categorys,
+    create_category,
+    update_category,
+    get_category,
+    delete_category, 
+    upload_category_image,
+    broadcasters,
+    get_broadcaster,
+    update_broadcaster,
+    delete_broadcaster,
+    events,
+    get_event,
+    delete_event,
+    update_event
 )
 
 urlpatterns = [
@@ -53,4 +89,22 @@ urlpatterns = [
     path('api/get_media', get_media, name='get_media'),
     path('api/add_media', add_media, name='add_media'),
     path('api/del_media', del_media, name='del_media'),
+
+    # Admin
+    path('api/categorys/', categorys, name='categorys'),
+    path('api/categorys/create/', create_category, name='create_category'),
+    path('api/categorys/update/', update_category, name='update_category'),
+    path('api/categorys/get/', get_category, name='get_category'),
+    path('api/categorys/delete/', delete_category, name='delete_category'),
+    path('api/categorys/upload_image/', upload_category_image, name='upload_category_image'),
+
+    path('api/broadcasters/', broadcasters, name='broadcasters'),
+    path('api/broadcasters/get/', get_broadcaster, name='get_broadcaster'),
+    path('api/broadcasters/update/', update_broadcaster, name='update_broadcaster'),
+    path('api/broadcasters/delete/', delete_broadcaster, name='delete_broadcaster'),
+
+    path('api/events/', events, name='events'),
+    path('api/events/get/', get_event, name='get_event'),
+    path('api/events/delete/', delete_event, name='delete_event'),
+    path('api/events/update/', update_event, name='update_event'),
 ]

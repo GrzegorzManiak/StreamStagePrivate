@@ -32,6 +32,17 @@ body {
     min-height: 100vh;
 }
 
+.bk-theme { background-color: var(--theme-color); }
+.bk-theme-semi-transparent { background-color: var(--theme-semi-transparent-color); }
+.bk-theme-secondary { background-color: var(--theme-secondary-color); }
+.bk-theme-backdrop { background-color: var(--theme-backdrop-color); }
+.bk-accent { background-color: var(--accent-color); }
+
+
+.slim-btn, .slim-btn button {
+    padding: 0rem!important;
+}
+
 /******************/
 /*    General     */
 /******************/
@@ -88,6 +99,65 @@ div>a:hover {
 /*****************/
 /*     Forms     */
 /*****************/
+
+.terms-privacy h1 {
+    font-size: 2rem;
+    margin-top: 2rem!important;
+    margin-bottom: 1.5rem!important;
+    font-weight: 700!important;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+
+    border-bottom: 1px solid #ffb25a;
+}
+
+.terms-privacy h2 {
+    font-size: 1.5rem;
+    margin-top: 2rem!important;
+    margin-bottom: .5rem!important;
+    font-weight: 600!important;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+
+    border-bottom: 1px solid #505050;
+}
+
+.terms-privacy h3 {
+    font-size: 1.25rem;
+    margin-top: 1.5rem!important;
+    margin-bottom: .5rem!important;
+    font-weight: 600!important;
+    margin: 0;
+    padding: 0;
+
+    border-bottom: 1px solid #505050;
+}
+
+
+.qna-header {
+    font-size: 1.5rem;
+    margin-top: 1.5rem!important;
+    margin-bottom: .5rem!important;
+    font-weight: 600!important;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+
+    border-bottom: 1px solid #505050;
+}
+
+.qna-question {
+    font-size: 1.25rem;
+    margin-top: 1.5rem!important;
+    margin-bottom: .5rem!important;
+    font-weight: 600!important;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
 /* Review, Event, Showing Forms */
 .form-class {
     background-color: var(--theme-secondary-color) !important;
@@ -1014,4 +1084,22 @@ footer hr {
 
 .third-page {
     min-width: 250px
+}
+
+.imp-lable {
+    position: absolute;
+    border-top-right-radius: 0!important;
+    border-top-left-radius: 0!important;
+    border-bottom-right-radius: 0.5rem!important;
+    border-bottom-left-radius: 0.5rem!important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.imp-lable > .name {
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
 }

@@ -9,6 +9,7 @@ import { change_email, close_session, extend_session, get_security_info, remove,
 import { create_preference_toggles } from "../elements/security";
 import { password_monitor, rp_password_monitor } from "../../register/src/validation";
 import { check_email_verification } from "../../api";
+import { configuration } from "..";
 
 const security_panels = [
     'security-preferences',
@@ -54,20 +55,33 @@ export function manage_security_panel(pod: Pod) {
         else timer_panel.setAttribute('data-panel-status', '');
     });
 
-    tfa_button.disabled = true;
-    let mfa_code = '';
-    handle_tfa_input(mfa_input, 
-        (code) => {
-            tfa_button.disabled = false;
-            mfa_code = code;
-        },
-        () => tfa_button.disabled = true
-    );
+
+    
+    if (configuration.imposter) {
+        email_button.addEventListener('click', async () => 
+            await mfa_click_handler(tfa_button, () => '123456'));
+
+        tfa_button.addEventListener('click', async () => 
+            await mfa_click_handler(tfa_button, () => '123456'));
+    }
 
 
-    // -- Add the click event listeners
-    email_button.addEventListener('click', async () => email_click_handler(email_button));
-    tfa_button.addEventListener('click', async () => await mfa_click_handler(tfa_button, () => mfa_code));
+    else {
+        tfa_button.disabled = true;
+        let mfa_code = '';
+        handle_tfa_input(mfa_input, 
+            (code) => {
+                tfa_button.disabled = false;
+                mfa_code = code;
+            },
+            () => tfa_button.disabled = true
+        );
+    
+    
+        // -- Add the click event listeners
+        email_button.addEventListener('click', async () => email_click_handler(email_button));
+        tfa_button.addEventListener('click', async () => await mfa_click_handler(tfa_button, () => mfa_code));
+    }
 }
 
 

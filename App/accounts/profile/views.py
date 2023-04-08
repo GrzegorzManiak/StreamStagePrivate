@@ -9,7 +9,7 @@ from django_countries.fields import CountryField
 from timezone_field import TimeZoneField
 from StreamStage.mail import send_template_email
 from StreamStage.models import Statistics
-from accounts.com_lib import authenticated, error_response, invalid_response, required_data, success_response
+from accounts.com_lib import authenticated, error_response, invalid_response, required_data, success_response, impersonate
 
 from accounts.oauth.oauth import get_all_oauth_for_member, format_providers
 from accounts.email.verification import add_key, send_email
@@ -28,8 +28,12 @@ from .profile import (
 from StreamStage.secrets import STRIPE_PUB_KEY
 
 @api_view(['GET'])
+@impersonate()
 @authenticated()
 def profile(request):
+    # -- Check if we are getting an impersonate request
+    request.user.ensure()
+    
     # -- Construct the context
     context = {
         'user': request.user,
@@ -75,12 +79,21 @@ def profile(request):
 
 
 @api_view(['POST'])
+@impersonate()
 @authenticated()
 def send_verification(request):
-    def callback(data):
-        generate_pat(request.user, key)
+    print(request.impersonate)
+    if request.impersonate == True: 
+        return success_response('MFA code is valid', {
+            'access_key': generate_pat(request.user),
+            'resend_key': '',
+            'verify_key': '',
+        })
+    
+    elif request.user.tfa_secret is None:
+        def callback(data):
+            generate_pat(request.user, key)
 
-    if request.user.tfa_secret is None:
         key = secrets.token_urlsafe(32)
         new_key = add_key(
             request.user, 
@@ -121,13 +134,17 @@ def send_verification(request):
     
 
 @api_view(['POST'])
+@impersonate()
 @authenticated()
 @required_data(['token'])
 def security_info(request, data):
 
     # -- Check if the token is valid
     pat = validate_pat(data['token'], request.user)
-    if pat[0] == False: return invalid_response(pat[1])
+    if (
+        pat[0] == False and
+        request.impersonate is False
+    ): return invalid_response(pat[1])
     pat_data = get_pat(data['token'])[0]  
 
     # -- Return security data
@@ -155,6 +172,7 @@ def security_info(request, data):
 
 
 @api_view(['POST'])
+@impersonate()
 @authenticated()
 def update_profile_view(request):    
 
@@ -164,7 +182,12 @@ def update_profile_view(request):
 
     # -- Check if they provided a token
     token = request.data.get('token', None)
-    if token is not None:
+
+    # -- Check if we are impersinating the user
+    if request.impersonate is True:
+        res = update_profile(request.user, data, True)
+
+    elif token is not None:
 
         # -- Check if the token is valid
         pat = validate_pat(token, request.user)
@@ -182,13 +205,15 @@ def update_profile_view(request):
 
 
 @api_view(['POST'])
+@impersonate()
 @authenticated()
 @required_data(['token', 'oauth_id'])
 def remove_oauth(request, data):
     
     # -- Check if the token is valid
     pat = validate_pat(data['token'], request.user)
-    if pat[0] == False: return invalid_response(pat[1])
+    if pat[0] == False and request.impersonate is False: 
+        return invalid_response(pat[1])
     
     # -- Get the oauth
     oauth = oAuth2.objects.filter(
@@ -214,6 +239,7 @@ def remove_oauth(request, data):
 
 
 @api_view(['POST'])
+@impersonate()
 @authenticated()
 @required_data(['token'])
 def extend_session(request, data):
@@ -226,6 +252,7 @@ def extend_session(request, data):
 
 
 @api_view(['POST'])
+@impersonate()
 @authenticated()
 @required_data(['token'])
 def close_session(request, data):
@@ -238,16 +265,19 @@ def close_session(request, data):
 
 
 @api_view(['POST'])
+@impersonate()
 @authenticated()
 @required_data(['token', 'email'])
 def change_email_view(request, data):
     
     # -- Check if the token is valid
     pat = validate_pat(data['token'], request.user)
-    if pat[0] == False: return invalid_response(pat[1])
+    if pat[0] == False and request.impersonate is False:
+        return invalid_response(pat[1])
 
     res = change_email(request.user, data['email'])
-    if res[0] == False: return invalid_response(res[1])
+    if res[0] == False and request.impersonate is False:
+        return invalid_response(res[1])
 
     # -- Return success
     return success_response('Email changed successfully', {
@@ -258,6 +288,7 @@ def change_email_view(request, data):
 
 
 @api_view(['POST'])
+@impersonate()
 @authenticated()    
 @required_data(['image', 'type'])
 def upload_image(request, data):
@@ -265,7 +296,6 @@ def upload_image(request, data):
         Uploads a profile image to the server
         and saves it to the user's profile
     """ 
-    print(data['type'])
     if data['type'] not in ['pfp', 'banner']: return invalid_response(
         'Sorry, but it looks like you have provided an invalid image type. Please try again.')
     res = request.user.add_pic_from_base64(data['image'], data['type'])

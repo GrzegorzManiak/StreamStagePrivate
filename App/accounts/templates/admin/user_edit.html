@@ -1,0 +1,320 @@
+<div class='d-flex w-100 gap-4'>
+
+    <!--
+        Profile
+    -->
+    <div style='w-50'>
+
+        <!-- Banner -->
+        <div style="background-image: url('https://me.streamstage.co/media/member/profile_banners/8358b21c-c1cc-4449-823a-fb643505369a.svg')" 
+            class="modal-banner" 
+            alt="Banner">
+        </div>
+
+        <!-- Avatar -->
+        <div class="w-100 d-flex justify-content-center">
+            <div class="modal-avatar" style="background-image: url('https://me.streamstage.co/media/member/profile_pictures/8358b21c-c1cc-4449-823a-fb643505369a.svg')"></div>
+        </div>
+
+        <!-- Username -->
+        <div class="w-100 d-flex justify-content-center flex-column align-items-center">
+            <div class="mb-2 w-100">
+                <label class="form-label" for="username">Username</label>
+                <input 
+                    name="username" 
+                    id="username" 
+                    placeholder="Sick name 13" 
+                    value="{{ user.cased_username }}"
+                    class="form-control inp w-100">
+            </div>
+
+
+            <div class="d-flex gap-4 w-100">
+                <!-- Firstname -->
+                <div class="mb-2 w-100">
+                    <label class="form-label" for="fname">First name</label>
+                    <input 
+                        name="fname" 
+                        id="fname" 
+                        placeholder="Joe" 
+                        value="{{ user.first_name }}"
+                        class="form-control inp">
+                </div>
+
+                <!-- Lastname -->
+                <div class="mb-2 w-100">
+                    <label class="form-label" for="lname">Last name</label>
+                    <input 
+                        name="lname" 
+                        id="lname" 
+                        placeholder="Fungus"
+                        value="{{ user.last_name }}"
+                        class="form-control inp">
+                </div>
+            </div>
+
+            <div class="mb-2">
+                <label class="form-label" for="bio">Bio</label>
+                <textarea 
+                    name="bio" 
+                    id="bio" 
+                    cols="40" rows="5"
+                    placeholder="I like to eat cheese"
+                    class="form-control inp"> 
+                    {{ user.description }}
+                </textarea>
+            </div>
+
+            <!-- Time zone and country -->
+            <div
+                class="
+                    d-flex
+                    gap-4
+                    w-100
+                "
+            >
+                <!-- Time zone dropdown -->
+                <div class="mb-2 w-100">
+                    <label class="form-label" for="timezone">Time zone</label>
+                    <select 
+                        name="timezone" 
+                        id="timezone" 
+                        class="
+                            form-select 
+                            w-100
+                            inp
+                        "
+                    >   
+                        {% for timezone in timezones %}
+                            <option value="{{ timezone.0 }}" {% if timezone.0 == user.time_zone %}selected{% endif %}>
+                                {{ timezone.1 }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                
+                </div>
+                
+                <!-- Country dropdown -->
+                <div class="mb-4 w-100">
+                    <label class="form-label" for="country">Country</label>
+                    <select 
+                        name="country" 
+                        id="country" 
+                        class="
+                            form-select 
+                            w-100
+                            inp
+                        "
+                    >   
+                        {% for country in countries %}
+                            <option value="{{ country.0 }}" {% if country.0 == user.country %}selected{% endif %}>
+                                {{ country.1 }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!--
+        Login history
+    -->
+    <div class='w-50'>
+        <!-- Header -->
+        <div class="
+            mb-2
+            w-100
+            justify-content-start
+        ">
+            <!-- Header -->
+            <h1 class="
+                fw-bold 
+            ">Login History</h1>
+
+            <!-- Descriptiopn -->
+            <p class="
+                text-muted
+            ">
+                When and how the user logged in.
+            </p>
+        </div>
+
+        <!-- Main content -->
+        <div class='modal-logins'>
+        </div>
+    </div>
+</div>
+
+<hr>
+
+<!--
+    Reviews
+-->
+<div class='w-100'>
+    <!-- Header -->
+    <div class="
+        mb-2
+        w-100
+        justify-content-start
+    ">
+        <!-- Header -->
+        <h1 class="
+            fw-bold 
+        ">Reviews</h1>
+
+        <!-- Descriptiopn -->
+        <p class="
+            text-muted
+        ">
+            What the user has reviewed.
+        </p>
+    </div>
+
+    <!-- Main content -->
+    <!-- FIlters -->
+    <div class='
+        mb-5
+        d-flex
+        filters
+        gap-2
+    '>  
+        <div class='w-50'>
+            <label class="form-label" for="filter">Filter by</label>
+            <select 
+                name="filter" 
+                id="filter" 
+                class="form-select w-100 inp"
+            >   
+                <option value="created" selected>Created</option>
+                <option value="rating">Rating</option>
+                <option value="likes">Likes</option>
+            </select>
+        </div>
+
+        <div class='w-50'>
+            <label class="form-label" for="order">Order by</label>
+            <select 
+                name="order" 
+                id="order" 
+                class="form-select w-100 inp"
+            >   
+                <option value="desc" selected>Descending</option>
+                <option value="asc">Ascending</option>
+            </select>
+        </div>
+    </div>
+
+
+    <!-- Reviews -->
+    <div class='
+        mb-5
+        d-flex
+        reviews
+        flex-column
+        gap-2
+    '>
+        
+    </div>
+
+    <!-- Save button -->
+    <div class="
+        text-center
+    ">
+
+        <!-- Pagination -->
+        <div class="
+            d-flex 
+            justify-content-between
+            justify-content-center
+            gap-2            
+        ">   
+            
+            <!-- Prev -->
+            <button 
+                class="w-100 h-100 btn btn-primary btn-lg info loader-btn prev"
+                loader-state='default'>   
+                <span> <div class='spinner-border' role='status'> 
+                <span class='visually-hidden'>Loading...</span> </div> </span>
+                <p><i class="fas fa-chevron-left"></i> Prev</p>
+            </button>
+
+            <!-- Input -->
+            <div class="h-100 w-100">
+                <input 
+                    name="review-page" 
+                    id="review-page" 
+                    placeholder="0" 
+                    value="0"
+                class="form-control form-control-lg inp text-center">
+
+                <!-- Out of -->
+                <p class="text-muted m0 out-of">out of 0</p>
+            </div>
+
+            <!-- Next -->
+            <button 
+                class="w-100 h-100 btn btn-primary btn-lg info loader-btn next"
+                loader-state='default'>   
+                <span> <div class='spinner-border' role='status'> 
+                <span class='visually-hidden'>Loading...</span> </div> </span>
+                <p>Next <i class="fas fa-chevron-right"></i></p>
+            </button>
+
+        </div>
+    </div>
+</div>
+
+<hr>
+
+
+<div class='d-flex w-100 gap-4'>
+
+    <!--
+        Payment methods
+    -->
+    <div class='w-50'>
+        <!-- Header -->
+        <div class="
+            mb-2
+            w-100
+            justify-content-start
+        ">
+            <!-- Header -->
+            <h1 class="
+                fw-bold 
+            ">Payment Methods</h1>
+        </div>
+
+        <!-- Main content -->
+        <div class='modal-logins'>
+        </div>
+    </div>
+
+
+
+    <!--
+        Payment history
+    -->
+    <div class='w-50'>
+        <!-- Header -->
+        <div class="
+            mb-2
+            w-100
+            justify-content-start
+        ">
+            <!-- Header -->
+            <h1 class="
+                fw-bold 
+            ">Payment History</h1>
+        </div>
+
+        <!-- Main content -->
+        <div class='modal-logins'>
+        </div>
+    </div>
+</div>
+
+<hr>

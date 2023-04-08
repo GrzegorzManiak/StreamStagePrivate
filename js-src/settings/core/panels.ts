@@ -1,6 +1,14 @@
 import { PanelType, Panel, Pod } from '../index.d';
 import { sleep, create_toast } from '../../common';
-import { scrolled } from '../../elements/navbar';
+
+const navbar = document.getElementById('nav'),
+    toggle_at = 50;
+
+export const scrolled = () => {
+    const scroll = window.scrollY;
+    if (scroll > toggle_at) navbar.classList.add('scrolled');
+    else navbar.classList.remove('scrolled');
+}
 
 let panels: Array<Panel> = [];
 export let pods: Array<Pod> = [];
@@ -73,7 +81,7 @@ export function get_active_pod(): Pod | undefined {
 
 
 /**
- * @name attach_to_sidepanel
+  * @name attach_to_sidepanel
  * @returns void
  * 
  * @description This function attaches the sidepanel
@@ -109,13 +117,20 @@ export function attach_to_sidepanel() {
 
     const anim_lenght = 500;
 
-    // -- Attach the event listener
-    sidepanel_button.addEventListener('change', async() => {
-        // -- Disable the button
-        sidepanel_button.disabled = true;
+    const manage_panel = (
+        action: 'open' | 'close' | 'toggle' = 'toggle'
+    ) => {
+        // -- Check if the action is toggle
+        let checked = sidepanel_button.checked;
         
+        if (action === 'open' && checked) return;
+        if (action === 'close' && !checked) return;
+        
+        // -- Set the status of the checkbox
+        sidepanel_button.checked = checked;
+        console.log(sidepanel_button.checked);
         // -- Check the status of the checkbox
-        switch(sidepanel_button.checked) {
+        switch(checked) {
             case true: 
                 sidepanel.setAttribute('side-panel', 'in'); 
                 nav_bar.classList.add('scrolled');
@@ -136,12 +151,14 @@ export function attach_to_sidepanel() {
                 case true: sidepanel.setAttribute('side-panel', 'visible'); break;
                 case false: sidepanel.setAttribute('side-panel', 'hidden'); break;
             }
-
-            // -- Enable the button
-            sidepanel_button.disabled = false;
         });
-    });
+    }
+
+    // -- Attach the event listener
+    sidepanel_button.addEventListener('change', async() => manage_panel());
+    sidepanel_button.addEventListener('close', async() => manage_panel('close'));
 }
+
 
 
 

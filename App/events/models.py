@@ -13,15 +13,23 @@ from django.urls import reverse
 from django_countries.fields import CountryField
 from django.core.validators import MaxValueValidator, MinValueValidator
 
+from StreamStage.settings import MEDIA_URL
 from datetime import datetime, timedelta
+from django.core.files import File
+from PIL import Image
 import uuid
+import base64
+import io
+
 
 # Event/Broadcaster Category Model
 class Category(models.Model):
     name = models.CharField("Category Name", max_length=48)
     description = models.TextField("Brief Description", max_length=256)
-    splash_photo = models.ImageField(upload_to="events")
+    splash_photo = models.ImageField(upload_to="events", blank=True, null=True)
     hex_color = models.CharField(max_length=6, default="FFFFFF")
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = 'Category'
@@ -32,6 +40,61 @@ class Category(models.Model):
     
     def get_all_categories(self):
         return Category.objects.all().order_by('name')
+    
+
+
+    def add_pic_from_base64(self, base64_data: str):
+        """
+            Sets the category photo from a base64 
+            string, and saves it to the media folder
+        """
+        try:
+            img_tmp = NamedTemporaryFile(delete=True)
+            image_data = base64.b64decode(base64_data.split(',')[1])
+            image = Image.open(io.BytesIO(image_data))
+
+            # -- Compress the image
+            image = image.save(img_tmp, 'webp', quality=75)
+
+            # -- Save the image to the media folder
+            img_tmp.write(image_data)
+            img_tmp.flush()
+
+            img = File(img_tmp, name=f'categories/{uuid.uuid4()}.webp')
+            self.splash_photo = img
+
+            self.save()
+            return True
+
+        except Exception as e:
+            print(e)
+            return False
+
+
+    def get_splash_photo(self):
+        """
+            Returns the splash photo for the category
+            or a placeholder image if no photo is set
+        """
+        if self.splash_photo is not None or self.splash_photo != "":
+            return f'/{MEDIA_URL}{self.splash_photo}'
+        else: return "/static/img/placeholder.png"
+
+
+    def serialize(self):
+        """
+            Returns a serialized version of the category
+        """
+        return {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'color': self.hex_color,
+            'created': self.created,
+            'updated': self.updated,
+            'image': self.get_splash_photo()
+        }
+
 
 class TicketListing(models.Model):
     listing_id = models.UUIDField(default=uuid.uuid4)
@@ -57,6 +120,9 @@ class Event(models.Model):
     contributors = models.ManyToManyField(get_user_model(), related_name="event_contributors", blank=True)
     approved = models.BooleanField("Approved", default=False)
 
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    
     # Event
     
     def get_absolute_url(self):
@@ -169,6 +235,34 @@ class Event(models.Model):
     
     def get_showings_count(self):
         return EventShowing.objects.filter(event=self).all().count()
+    
+
+    def serialize(self):
+        return {
+            'title': self.title,
+            'description': self.description,
+            'over_18s': self.over_18s,
+            'categories': [{
+                'id': category.id,
+                'name': category.name,
+            } for category in self.categories.all()],
+            'broadcaster': {
+                'id': self.broadcaster.id,
+                'handle': self.broadcaster.handle,
+            },
+            'created': self.created,
+            'updated': self.updated,
+            'contributors': [{
+                'id': contributor.id,
+                'handle': contributor.username,
+            } for contributor in self.contributors.all()],
+            'approved': self.approved,
+            'id': self.event_id,
+            'showings': [{
+                'id': showing.showing_id,
+            } for showing in EventShowing.objects.filter(event=self).all()],
+        }
+
 
 # Event Review Model
 class EventReview(models.Model):

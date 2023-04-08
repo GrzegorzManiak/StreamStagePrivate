@@ -17,7 +17,12 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 
 from functools import wraps
+from django.contrib.auth import get_user_model
+import secrets
 
+from functools import reduce
+from operator import or_
+from django.db.models import Q
 
 """
     :name: success_response
@@ -87,6 +92,76 @@ def invalid_response(message, s = 400):
 
 
 """
+    :name: api_session_helper
+    :description: This decorator is used here in this file 
+    internally, it is used to allow authenticated cross subdomain 
+    requests to the api, when the user logs in, we assign them a
+    token, this token is passed to us even if the session is not
+"""
+def api_session_helper():
+    def decorator(view_func):
+        @wraps(view_func)
+        def wrapper(request, *args, **kwargs):
+
+            # -- Check if the user is logged in 
+            if request.user.is_authenticated:
+                
+                # -- Check if they passed a 'StreamStage-Token' header
+                if 'streamstage-token' in request.headers:
+                    # -- Check if it matches the token in the database
+                    if request.headers['streamstage-token'] != request.user.token:
+                        request.user.token = secrets.token_urlsafe(32)
+                        request.user.save()
+
+                # -- Check if they have a token
+                elif request.user.token is None or request.user.token == '':
+                    # -- Generate a token
+                    request.user.token = secrets.token_urlsafe(32)
+                    request.user.save()
+                    
+
+            # -- Check if we have a token and set the user
+            if 'streamstage-token' in request.headers:
+                # -- Get the user
+                user = get_user_model().objects.filter(token=request.headers['streamstage-token']).first()
+
+                # -- Check if we have a user
+                if user is not None:
+                    # -- Set the user
+                    request.user = user
+            
+            # -- Call the original function with the request object
+            return view_func(request, *args, **kwargs)
+        return wrapper
+    return decorator
+
+
+
+"""
+    :name: api_session_middleware
+    :description: This middleware is used to set the 
+    StreamStage-Token header on all requests, this is used
+    to allow authenticated cross subdomain requests to the api,
+"""
+def api_session_middleware(get_response):
+    
+    def middleware(request):
+        response = get_response(request)
+
+        # -- Check for the 'StreamStage-Token' header
+        if request.user.is_authenticated:
+            # -- Add the header and cookie
+            response.headers['streamstage-token'] = request.user.token
+            response.set_cookie('streamstage-token', request.user.token)
+
+        # -- Return the response
+        return response
+
+    return middleware
+
+
+                
+"""
     :name: authenticated
     :description: This function is used to check if the user is
                   authenticated, if they are not, it will return
@@ -95,6 +170,7 @@ def invalid_response(message, s = 400):
 def authenticated():
     def decorator(view_func):
         @wraps(view_func)
+        @api_session_helper()
         def wrapper(request, *args, **kwargs):
 
             # -- If the method is GET, redirect to the login page
@@ -104,7 +180,7 @@ def authenticated():
             # -- Check if user is authenticated
             if not request.user.is_authenticated:
                 return error_response('You are not logged in')
-            
+                        
             # -- Call the original function with the request object
             return view_func(request, *args, **kwargs)
         return wrapper
@@ -142,6 +218,7 @@ def not_authenticated():
 def is_admin():
     def decorator(view_func):
         @wraps(view_func)
+        @api_session_helper()
         def wrapper(request, *args, **kwargs):
             # If it is a GET request, Render a error page
             if request.method == 'GET' and not request.user.is_superuser:
@@ -228,5 +305,129 @@ def required_headers(required):
             
             # -- Call the original function with the request object
             return view_func(request, data_object, *args, **kwargs)
+        return wrapper
+    return decorator
+
+
+
+
+"""
+    :name: impersonate
+    :description: This function is used to impersonate a user
+        so that we dont have to create a new set of API's to
+        edit the user.
+
+        To use this function, just have to pass in the ID of
+        the user in the 'impersonate' header and it will
+        automatically impersonate that user for any API calls
+
+        This function will also check if the user is an admin
+        and if they are not, it will do nothing.
+"""
+def impersonate():
+    def decorator(view_func):
+        @wraps(view_func)
+        def wrapper(request, *args, **kwargs):
+
+            # -- Check if the user is an admin
+            if not request.user.is_superuser:
+                request.impersonate = False
+                return view_func(request, *args, **kwargs)
+            
+            user_id = None
+
+            # -- Check if the user is trying to impersonate
+            if 'impersonate' in request.headers:
+                user_id = request.headers['impersonate']
+
+            if request.method == 'GET' and 'impersonate' in request.GET:
+                user_id = request.GET['impersonate']
+
+            if user_id is None:
+                request.impersonate = False
+                return view_func(request, *args, **kwargs)
+
+            try:
+                # -- Save the original user
+                request.impersonater = request.user
+
+                # -- Get the user
+                user = get_user_model().objects.get(id=user_id)
+
+                # -- Make sure the uses is not an admin
+                if user.is_superuser:
+                    return invalid_response('You cannot impersonate an admin')
+
+                # -- Set the impersonate flag to allow us to bypass some
+                #    security checks
+                request.user = user
+                request.impersonate = True
+
+            except Exception as e:
+                print(e)
+                request.impersonate = False
+            
+            # -- Call the original function with the request object
+            return view_func(request, *args, **kwargs)
+        return wrapper
+    return decorator
+
+
+
+"""
+    :name: paginate
+    :description: This decorator is used to create
+    a basic pagination system for any model
+"""
+def paginate(
+    order_fields: list,
+    search_fields: list,
+    page_size: int,
+    model: object,
+):
+    def decorator(view_func):
+
+        @wraps(view_func)
+        @required_data(['page', 'sort', 'order', 'search'])
+        def wrapper(request, data, *args, **kwargs):
+           
+            # -- Make sure all the data is valid
+            try: 
+                page = int(data['page'])
+                if page < 0: return invalid_response('Page must be greater than 0')
+            except ValueError: return invalid_response('Page must be an integer')
+            
+            orders = ['asc', 'desc']
+            if data['sort'] not in order_fields: 
+                return invalid_response(f'Invalid sort field: {data["sort"]}, must be one of {", ".join(order_fields)}')
+            if data['order'] not in orders: 
+                return invalid_response(f'Invalid order: {data["order"]}, must be one of {", ".join(orders)}')
+
+    
+            sort = data['sort']
+            if data['order'] == 'desc': sort = '-' + sort
+
+            # -- Check if we are searching
+            filter
+            search = data['search'].strip().lower()
+            query_list = [Q(**{f'{field}__icontains': search}) for field in search_fields]
+
+            # -- Get the data
+            models = model.objects.filter(reduce(or_, query_list))
+
+            # -- Get the page
+            total_pages = int(models.count() / page_size)
+            models = models[page * page_size:page * page_size + page_size]
+
+            # -- Pass the models to the view
+            return view_func(
+                request, 
+                models, 
+                total_pages, 
+                page,
+                *args, 
+                **kwargs
+            )
+        
         return wrapper
     return decorator

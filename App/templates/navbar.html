@@ -1,5 +1,6 @@
 {% load static %}
 {% load tags %}
+{% load render_bundle from webpack_loader %}
 
 <nav id='nav'>
     <span class='config'
@@ -27,8 +28,16 @@
             StreamStage
         </div>
 
+        {% if request.impersonate %}
+            <!-- Absolute position -->
+            <div class="alert alert-warning imp-lable" role="alert">
+                <p class='m-0'>You are currently impersonating</p>
+                <p class='name m-0'>{{ request.user.cased_username }} | {{ request.user.email }}</p>
+            </div>
+        {% endif %}
+
         <!-- Common items -->
-        <div class="nav-items" data-nav-active='home'>
+        <div class="nav-items" data-nav-active='home' {% if request.impersonate %}style='display:none'{% endif %}>
             <ul class="d-flex">
                 <li data-nav-area='home'><a href="{% cross_app_reverse_tag 'homepage' 'homepage_index' %}"> Home </a></li>
                 <li data-nav-area='live'><a> Live </a></li>
@@ -39,6 +48,7 @@
 
         <!-- Search Bar -->
         <form 
+            {% if request.impersonate %}style='display:none'{% endif %}
             class="nav-search-bar" 
             action="{% cross_app_reverse_tag 'search' 'searchResult' %}" 
             method="get"
@@ -55,7 +65,7 @@
         </form>
 
         <!-- User Dropdown Menu -->
-        <div class="user-dropdown">
+        <div class="user-dropdown" {% if request.impersonate %}style='display:none'{% endif %}>
             <div class='nav-dropdown-toggle d-flex align-items-center gap-2'>
                 <!-- User Icon -->
                 <div class="user-icon">
@@ -125,5 +135,5 @@
     </div>
 
     <!-- Nav script -->
-    <script src="{% static 'js/navbar_bin.js' %}"></script>
+    {% render_bundle 'navbar' %}
 </nav>

@@ -1,4 +1,4 @@
-from django.urls import  path
+from django.urls import path, include
 
 from .email.views import (
     check_if_verified_recently_view,
@@ -37,7 +37,12 @@ from .other import (
     get_reviews,
     update_review,
     delete_review,
-    submit_report
+    submit_report,
+    users,
+    get_user,
+    delete_user,
+    update_user_email,
+    update_user_streamer
 )
 from .views import get_token, login, logout, register, validate_token
 
@@ -105,5 +110,12 @@ urlpatterns = [
 
     # -- Admin
     path('site_panel/', site_panel, name='site_panel'),
-    path('site_panel/get_statistics/', get_statistics, name='get_statistics')
+    path('site_panel/get_statistics/', get_statistics, name='get_statistics'),
+    path('site_panel/users/', users, name='users'),
+    path('site_panel/get_user/', get_user, name='get_user'),
+    path('site_panel/delete_user/', delete_user, name='delete_user'),
+    path('site_panel/update_user_email/', update_user_email, name='update_user_email'),
+    path('site_panel/update_streamer_status/', update_user_streamer, name='update_streamer_status'),
+
+    path('events/', include('events.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

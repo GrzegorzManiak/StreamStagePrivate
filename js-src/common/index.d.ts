@@ -19,6 +19,7 @@ export interface PaymentMethod {
 }
 
 export type PaymentIntentMethod = Card | PaymentMethod;
+export type FilterOrder = 'asc' | 'desc';
 
 interface PaymentIntent {
     id: string,

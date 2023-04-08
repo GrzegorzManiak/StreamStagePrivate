@@ -4,7 +4,7 @@
 
 # -- Imports
 from rest_framework.decorators import api_view
-from accounts.com_lib import authenticated, invalid_response, required_data, success_response, error_response
+from accounts.com_lib import authenticated, invalid_response, required_data, success_response, impersonate, error_response
 from .payments import (
     add_stripe_payment_method,
     create_cust_payment_intent,
@@ -39,6 +39,7 @@ def add_payment_method(request, data):
 
 
 @api_view(['GET'])
+@impersonate()
 @authenticated()
 def get_payment_methods(request):
     # -- Get the payment methods
@@ -53,6 +54,7 @@ def get_payment_methods(request):
 
 
 @api_view(['POST'])
+@impersonate()
 @authenticated()
 @required_data(['id'])
 def remove_payment_method(request, data):
@@ -84,6 +86,7 @@ def create_payment_intent(request, data):
     return success_response("Intent created.", response)
 
 @api_view(['POST'])
+@impersonate()
 @authenticated()
 @required_data(['intent_id'])
 def check_payment_intent(request, data):
@@ -106,6 +109,7 @@ def check_payment_intent(request, data):
     return error_response("Error in checking status of payment")
 
 @api_view(['POST'])
+@impersonate()
 @authenticated()
 @required_data(['payment_method'])
 def start_subscription(request, data):

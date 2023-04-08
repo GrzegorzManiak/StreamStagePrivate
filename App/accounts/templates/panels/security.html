@@ -33,30 +33,43 @@
             </p>
         </div>
 
+        {% if request.impersonate %}
+            <div class='alert alert-warning'>
+                <p>
+                    You are currently impersonating '{{ request.user.cased_username }}', This 
+                    security esculation will not prompt the user and it will be
+                    instantly verified.
+                </p>
+            </div>
+        {% else %}
 
-        <!-- 
-            2FA
-        -->
-        <div 
-        data-has-tfa='{% if has_tfa %}true{% else %}false{% endif %}'
-        class="
-            mb-5
-            justify-content-start
-            text-center
-        ">
-            <!-- Descriptiopn -->
-            <p class="">
-                But, before you can make any changes,
-                <span class='mfa'>
-                    you must enter the code from your authenticator app.
-                </span>
+            <!-- 
+                2FA
+            -->
 
-                <span class='email'>
-                    you must click the link sent to {{ user.mask_email }}.
-                </span>
-            </p>
+            <div 
+            data-has-tfa='{% if has_tfa %}true{% else %}false{% endif %}'
+            class="
+                mb-5
+                justify-content-start
+                text-center
+            ">
+                <!-- Descriptiopn -->
+                <p class="">
+                    But, before you can make any changes,
+                    <span class='mfa'>
+                        you must enter the code from your authenticator app.
+                    </span>
 
-        </div>
+                    <span class='email'>
+                        you must click the link sent to {{ user.mask_email }}.
+                    </span>
+                </p>
+
+            </div>
+
+        {% endif %}
+
 
         <!-- Buttons -->
         <div 
@@ -68,7 +81,10 @@
             flex-column
         ">   
             
-            <div id='mfa-input' class='mfa form-group mt-1 mb-5 tfa-input d-flex gap-2 justify-content-center'>
+            <div 
+                {% if has_tfa %}style='display: none;'{% endif %}
+                id='mfa-input' 
+                class='mfa form-group mt-1 mb-5 tfa-input d-flex gap-2 justify-content-center'>
             </div>
 
             <button 
@@ -90,7 +106,7 @@
                         <span class='visually-hidden'>Loading...</span>
                     </div>
                 </span>
-                <p>Verify</p>
+                <p>{% if request.impersonate %} Continue {% else %} Verify {% endif %}</p>
             </button>
 
             <button 
@@ -112,7 +128,7 @@
                         <span class='visually-hidden'>Loading...</span>
                     </div>
                 </span>
-                <p>Send verification email</p>
+                <p>{% if request.impersonate %} Continue {% else %} Send Verification Email {% endif %}</p>
             </button>
         </div>
     </span>

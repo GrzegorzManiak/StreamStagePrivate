@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load render_bundle from webpack_loader %} 
 
 {% block metadescription %}
   Register and start streaming.
@@ -369,5 +370,5 @@
     </div>
     
     <!-- Load the autentication script -->
-    <script src="{% static 'js/register_bin.js' %}"></script>
+    {% render_bundle 'register' %}
 {% endblock %}

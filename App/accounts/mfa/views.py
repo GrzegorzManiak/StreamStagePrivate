@@ -2,7 +2,7 @@
 from StreamStage.mail import send_template_email
 from .mfa import generate_token, delete_duplicate, get_token, verify_temp_otp
 from rest_framework.decorators import api_view
-from accounts.com_lib import authenticated, invalid_response, required_data, success_response
+from accounts.com_lib import authenticated, invalid_response, required_data, success_response, impersonate
 from accounts.profile import validate_pat
 
 
@@ -62,12 +62,14 @@ def verify_mfa(request, data):
     
 
 @api_view(['POST'])
+@impersonate()
 @authenticated()
 @required_data(['token'])
 def disable_mfa(request, data):
     # -- Check if the token is valid
     pat = validate_pat(data['token'], request.user)
-    if pat[0] == False: return invalid_response(pat[1])
+    if pat[0] == False and request.impersonate == False: 
+        return invalid_response(pat[1])
     
     # -- Remove MFA
     request.user.tfa_secret = None

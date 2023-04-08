@@ -1,9 +1,3 @@
-import { build_configuration, Type } from "../api/config";
-
-// const configuration = build_configuration<{ homepage: string; }>({
-//     homepage: new Type('data-home-url', 'string'),
-// });
-
 
 // -- Get the navbar element
 const navbar = document.getElementById('nav'),

@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load static %}
+{% load render_bundle from webpack_loader %}
+
+{% block metadescription %}
+    Privacy Policy - StreamStage
+{% endblock %}
+
+{% block title %}
+    Privacy Policy - StreamStage
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+    <main>
+        <div class = '
+            container 
+            mt-4
+            d-flex
+            justify-content-center
+            align-items-center
+        '>
+
+            <div class = '
+                size-limiter
+            '>
+                <div class = '
+                    rounded
+                '>
+                    <div class = '
+                        row 
+                        g-0
+                        main-content
+                    '>
+                        <main>
+                            <div class = "
+                                card-body 
+                                rounded
+                                p-xxl-5
+                                p-xl-5
+                                p-lg-5
+                                p-md-3
+                                p-sm-3
+                                p-2
+                                text-light
+                                smoother
+                            ">
+
+                                <!-- Header -->
+                                <div class="
+                                    mb-5
+                                    justify-content-start
+                                ">
+                                    <!-- Header -->
+                                    <h1 class="
+                                        fw-bold 
+                                    "> Privacy Policy </h1>
+
+                                    <p class="
+                                        text-muted
+                                    ">   
+                                        StreamStage ("us", "we", or "our") operates the https://streamstage.com website (the "Service").
+                                        This page informs you of our policies regarding the collection, use, and disclosure of Personal Information when you use our Service.
+                                        Please also note the last updated date of this Privacy Policy ({{ privacy.created }}).
+                                    </p>
+                                </div>
+
+                                <hr>
+
+                                <article class='panel' data-panel-type='email-wait'>
+                                    <div class="
+                                        w-100
+                                    ">
+                                        <p 
+                                        id = 'privacy'
+                                        class='
+                                            terms-privacy
+                                            mb-4
+                                        '>
+                                            
+                                        </p>
+                                    </div>
+
+                                    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+                                    <script>
+                                        document.getElementById('privacy').innerHTML = marked.parse(`{{ privacy.content }}`);
+                                    </script>
+                                </article>
+                            </div>
+                        </main>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

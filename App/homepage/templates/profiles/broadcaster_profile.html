@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load render_bundle from webpack_loader %}
 
 {% block metadescription %}
     
@@ -217,5 +218,5 @@
     </div>
 
     <!-- Scripts -->
-    <script src="{% static 'js/broadcaster_profiles_bin.js' %}"></script>
+    {% render_bundle 'broadcaster_profiles' %}
 {% endblock %}

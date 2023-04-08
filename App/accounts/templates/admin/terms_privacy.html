@@ -1,0 +1,279 @@
+<article class='panel' data-panel-type='terms' data-panel-status='hidden'>
+    <div class="mb-5 justify-content-start">
+        <h1 class="fw-bold">Terms of Service</h1>
+        <p class="text-muted">Edit the terms of service.</p>
+
+        <!-- Main content -->
+        <div class="mb-5 w-100">
+            <!-- FIlters -->
+            <div class='
+                mb-2
+                d-flex
+                filters
+                gap-2
+            '>  
+                <div class='w-50'>
+                    <label class="form-label" for="filter">Filter by</label>
+                    <select 
+                        name="filter" 
+                        id="filter" 
+                        class="form-select w-100 inp"
+                    >   
+                        <option value="created" selected>Created</option>
+                        <option value="name">Name</option>
+                        <option value="content">Content</option>
+                    </select>
+                </div>
+
+                <div class='w-50'>
+                    <label class="form-label" for="order">Order by</label>
+                    <select 
+                        name="order" 
+                        id="order" 
+                        class="form-select w-100 inp"
+                    >   
+                        <option value="desc" selected>Descending</option>
+                        <option value="asc">Ascending</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-4 w-100">
+                <label class="form-label" for="search">Search</label>
+                <input 
+                    name="search" 
+                    id="search" 
+                    placeholder="Name, Content, etc."
+                    class="form-control inp">
+            </div>
+
+
+
+            <!-- Users -->
+            <div class='content-loader' dimmed='false'>
+                <div class='dimmer'></div>
+                <div class='mb-5 d-flex users content flex-column gap-2'></div>
+            </div>
+
+
+
+            <!-- Pagination -->
+            <div class="
+                d-flex 
+                justify-content-between
+                justify-content-center
+                gap-2          
+                text-center  
+            ">   
+                
+                <!-- Prev -->
+                <button 
+                    id="prev"
+                    class="w-100 h-100 btn btn-primary info loader-btn prev"
+                    loader-state='default'>   
+                    <span> <div class='spinner-border' role='status'> 
+                    <span class='visually-hidden'>Loading...</span> </div> </span>
+                    <p><i class="fas fa-chevron-left"></i> Prev</p>
+                </button>
+
+                <!-- Input -->
+                <div class="h-100 w-100">
+                    <input 
+                        name="page" 
+                        id="page"
+                        placeholder="1" 
+                        value="1"
+                    class="form-control inp text-center">
+
+                    <!-- Out of -->
+                    <p class="text-muted m0 out-of">out of 1</p>
+                </div>
+
+                <!-- Next -->
+                <button 
+                    id="next"
+                    class="w-100 h-100 btn btn-primary info loader-btn next"
+                    loader-state='default'>   
+                    <span> <div class='spinner-border' role='status'> 
+                    <span class='visually-hidden'>Loading...</span> </div> </span>
+                    <p>Next <i class="fas fa-chevron-right"></i></p>
+                </button>
+
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="mb-2 w-100">
+            <label class="form-label" for="terms-name">Name</label>
+            <input 
+                name="terms-name" 
+                id="terms-name" 
+                placeholder="Most terms of service ever" 
+            class="
+                form-control 
+                form-control-lg
+                inp
+            ">
+        </div>
+
+        <textarea 
+            name="terms" 
+            id="terms-md" 
+            class="form-control inp" 
+            rows="10"
+            placeholder="Terms of Service"
+        >{{ terms.content }}</textarea>
+
+        <div class='w-100 mt-2'>
+            <button 
+                id="terms-create"
+                class="w-100 h-100 btn btn-success success loader-btn"
+                loader-state='default'>   
+                <span> <div class='spinner-border' role='status'> 
+                <span class='visually-hidden'>Loading...</span> </div> </span>
+                <p>Create</p>
+            </button>
+        </div>
+    </div>
+</article>
+
+
+
+<article class='panel' data-panel-type='privacy' data-panel-status='hidden'>
+    <div class="mb-5 justify-content-start">
+        <h1 class="fw-bold">Privacy Policy</h1>
+        <p class="text-muted">Edit the privacy policy.</p>
+
+        <!-- Main content -->
+        <div class="mb-5 w-100">
+            <!-- FIlters -->
+            <div class='
+                mb-2
+                d-flex
+                filters
+                gap-2
+            '>  
+                <div class='w-50'>
+                    <label class="form-label" for="filter">Filter by</label>
+                    <select 
+                        name="filter" 
+                        id="filter" 
+                        class="form-select w-100 inp"
+                    >   
+                        <option value="created" selected>Created</option>
+                        <option value="name">Name</option>
+                        <option value="content">Content</option>
+                    </select>
+                </div>
+
+                <div class='w-50'>
+                    <label class="form-label" for="order">Order by</label>
+                    <select 
+                        name="order" 
+                        id="order" 
+                        class="form-select w-100 inp"
+                    >   
+                        <option value="desc" selected>Descending</option>
+                        <option value="asc">Ascending</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-4 w-100">
+                <label class="form-label" for="search">Search</label>
+                <input 
+                    name="search" 
+                    id="search" 
+                    placeholder="Name, Content, etc."
+                    class="form-control inp">
+            </div>
+
+
+
+            <!-- Users -->
+            <div class='content-loader' dimmed='false'>
+                <div class='dimmer'></div>
+                <div class='mb-5 d-flex users content flex-column gap-2'></div>
+            </div>
+
+
+
+            <!-- Pagination -->
+            <div class="
+                d-flex 
+                justify-content-between
+                justify-content-center
+                gap-2          
+                text-center  
+            ">   
+                
+                <!-- Prev -->
+                <button 
+                    id="prev"
+                    class="w-100 h-100 btn btn-primary info loader-btn prev"
+                    loader-state='default'>   
+                    <span> <div class='spinner-border' role='status'> 
+                    <span class='visually-hidden'>Loading...</span> </div> </span>
+                    <p><i class="fas fa-chevron-left"></i> Prev</p>
+                </button>
+
+                <!-- Input -->
+                <div class="h-100 w-100">
+                    <input 
+                        name="page" 
+                        id="page"
+                        placeholder="1" 
+                        value="1"
+                    class="form-control inp text-center">
+
+                    <!-- Out of -->
+                    <p class="text-muted m0 out-of">out of 1</p>
+                </div>
+
+                <!-- Next -->
+                <button 
+                    id="next"
+                    class="w-100 h-100 btn btn-primary info loader-btn next"
+                    loader-state='default'>   
+                    <span> <div class='spinner-border' role='status'> 
+                    <span class='visually-hidden'>Loading...</span> </div> </span>
+                    <p>Next <i class="fas fa-chevron-right"></i></p>
+                </button>
+
+            </div>
+        </div>
+
+        <div class="mb-2 w-100">
+            <label class="form-label" for="privacy-name">Name</label>
+            <input 
+                name="privacy-name" 
+                id="privacy-name" 
+                placeholder="Most privacy oriented policy ever"
+            class="
+                form-control 
+                form-control-lg
+                inp
+            ">
+        </div>
+
+        <textarea 
+            name="privacy" 
+            id="privacy-md" 
+            class="form-control inp" 
+            rows="10"
+            placeholder="Privacy Policy"
+        >{{ privacy.content }}</textarea>
+
+        <div class='w-100 mt-2'>
+            <button 
+                id="privacy-create"
+                class="w-100 h-100 btn btn-success success loader-btn"
+                loader-state='default'>   
+                <span> <div class='spinner-border' role='status'> 
+                <span class='visually-hidden'>Loading...</span> </div> </span>
+                <p>Create</p>
+            </button>
+        </div>
+    </div>
+</article>

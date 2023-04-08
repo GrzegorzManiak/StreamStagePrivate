@@ -82,6 +82,7 @@ def send_reg_verification(request, data):
             # -- Link the oauth account
             link_oauth_account(new_member, oauth_token)
             Statistics.log('accounts', 'register')
+            Statistics.log('accounts', 'oauth')
             new_member.add_pic_from_url(oauth_data['data']['picture'], 'pfp')
             
 
