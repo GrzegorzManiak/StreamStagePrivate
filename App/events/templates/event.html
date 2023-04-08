@@ -107,7 +107,7 @@
                         Event Description 
                         -->
                     <div class="mx-2 my-4">
-                        <p>{{ event.short_description }}...</p>
+                        <p>{{ event.description | slice:':380' }}. . .</p>
                     </div>
 
 
