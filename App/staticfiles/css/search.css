@@ -224,6 +224,58 @@ swiper-container {
 }
 
 
+.filter-dropdown {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--theme-backdrop-color);
+    border-radius: 0.5rem;
+    width: 100%;
+    height: 100%;
+    border: 0px;
+}
+
+.filter-dropdown > p {
+    font-size: 1rem;
+    font-weight: 400;
+    width: 100%;
+    color: var(--font-color);
+    margin: 0;
+    padding: 0.25rem;
+}
+
+.filter {
+    min-height: 2.5rem;
+    max-height: 2.5rem;
+    width: 100%;
+    height: 100%;
+    border-radius: 0.5rem!important;
+}
+
+.dropdown-menu {
+    background-color: var(--theme-backdrop-color);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+}
+
+.dropdown-menu * {
+    color: var(--font-color);
+    border: 0;
+}
+
+.dropdown-input {
+    width: 100%;
+    height: 100%;
+    border-radius: 0.5rem!important;
+    background-color: var(--theme-color)!important;
+
+    /* -- This disables the incrementors */
+    -moz-appearance: textfield;
+}
+
+
 /* 900px start breaking */
 @media only screen and (max-width: 800px) {
     .event-listing {

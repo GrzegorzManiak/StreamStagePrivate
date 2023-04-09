@@ -20,11 +20,11 @@ Search Events | StreamStage
     <main class='ss_wl'>
         <div class="nav-gap px-4 mx-auto">
             <div class="m-2">
-
                 {% if query %}
-                <p class="text-center"><b><span class="sub-title">You have searched for: </span>"{{ query }}"</b></p>
+                    <p class="text-center"><b><span class="sub-title">You have searched for: </span>"{{ query }}"</b></p>
                 {% endif %}
             </div>
+
             <!-- Refine Search Options -->
             <div class="row px-2 d-flex gap-2">
                 <div class="col-12 mx-auto mb-4">
@@ -36,12 +36,6 @@ Search Events | StreamStage
 
                 {% for event in events_list %}
                     <div class="event-listing">
-
-                            <!-- 
-                                Event Broadcaster 
-                                <h6 class="my-2">@{{ event.broadcaster.handle }}</h6>
-
-                            -->
 
                         <div class="event-cover-container">
                             <!-- 
