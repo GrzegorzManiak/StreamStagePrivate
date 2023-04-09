@@ -162,7 +162,8 @@ def check_payment_intent(request, data):
     
     match response["status"]:
         case "success": return success_response("Purchase completed!", {
-            "status": "success"
+            "status": "success",
+            "purchase_id": response["purchase_id"]
         })
         case "cancelled": return error_response("Payment cancelled", {
             "status": "cancelled"

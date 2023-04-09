@@ -365,7 +365,8 @@ def check_cust_payment_intent(intent_id: str):
     response = check_stripe_payment_intent_status(cust_intent["stripe_intent"])
 
     if response["status"] == "success":
-        on_intent_success(cust_intent)
+        purchase_id = on_intent_success(cust_intent)
+        response["purchase_id"] = purchase_id
 
     return response
 

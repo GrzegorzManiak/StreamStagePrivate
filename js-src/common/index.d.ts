@@ -66,6 +66,7 @@ interface PaymentIntent {
 
 export interface CheckIntent {
     next_action?: string,
+    purchase_id?: string,
 }
 
 export type AddCardSuccess = DefaultResponseData & { data: PaymentMethod }

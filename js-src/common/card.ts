@@ -206,43 +206,6 @@ export const card_modal = (
 
 
 /**
- * @name tds_modal
- * 
- * NOTE: DONT USE THIS AINT WORKING
- */
-export const tds_modal = (
-    url: string,
-) => construct_modal(
-    '3D Secure',
-    'Please complete the 3D Secure process to continue',
-    false,
-    'primary',
-    `   
-    <iframe 
-        class='tds-iframe'
-        id="tds-iframe" 
-        src="${url}" 
-        style="width: 100%; height: 500px;"
-    ></iframe>
-
-    <!-- Cancel Button -->
-    <div class="d-flex h-100 align-items-center">
-        <button type="submit" id="3ds-cancel" 
-            class="mfa btn btn-danger btn-lg loader-btn error w-100" loader-state='default'>
-            <span>
-                <div class='spinner-border' role='status'>
-                    <span class='visually-hidden'>Loading...</span>
-                </div>
-            </span>
-            <p>Cancel</p>
-        </button>
-    </div>
-    `
-);
-
-
-
-/**
  * @name pay_now
  * @description Creates the HTML sting for the pay now modal 
  * TODO: Add callbacks for when the purchase is successful
@@ -278,31 +241,71 @@ export const pay_now = (
             </span>
 
             <span class='pay-confirm d-flex justify-content-between flex-column'>
-                <div class='cards cards-slim'><div class='final-card card-body p-2'></div></div>
-
-                <div class='pay-confirm-body'>
-                    <p class='pay-confirm-item'>${item}</p>
-                    <p class='pay-confirm-amount'>${cost}</p>
+                <div class='w-100 h-100 loading-pulse' loading-state='none'>
+                    <i class="fas fs-1 fa-spinner fa-spin"></i>
                 </div>
-                
-                <div class="d-flex align-items-center">
-                    <hr>
-                    <!-- Terms -->
+                <div class='w-100 h-100 d-flex flex-column justify-content-between'>
+                    <div class='cards cards-slim w-100'><div class='w-100 final-card card-body p-2'></div></div>
+
+                    <div class='pay-confirm-body'>
+                        <p class='pay-confirm-item'>${item}</p>
+                        <p class='pay-confirm-amount'>${cost}</p>
+                    </div>
+                    
+                    <div class="d-flex align-items-center">
+                        <hr>
+                        <!-- Terms -->
+                        <p class="
+                            text-muted
+                            text-center
+                            m-0
+                        ">
+                            By proceeding with this purchase, you agree to StreamStage's <a href='/terms'>terms and conditions</a>,
+                            which includes refund policies, and the <a href='/privacy'>privacy policy</a>.
+                            Additionally, you also agree to Stripe's <a href='https://stripe.com/'>terms and conditions</a>.
+                        </p>
+                    </div>
+                </div>
+            </span>
+
+
+            <span class='pay-tds d-flex justify-content-between flex-column'>
+                <iframe 
+                    class='tds-iframe'
+                    id="tds-iframe" 
+                    src="" 
+                    style="width: 100%; height: 500px;"
+                ></iframe>
+            </span>
+
+            <span class='pay-thank-you d-flex justify-content-between flex-column'>
+
+                <div class="d-flex align-items-center justify-content-between flex-column h-100">
+                    <h1 class="text-center text-success mb-0 d-flex flex-column mt-3">
+                        <i class="fas fa-check-circle"></i>
+                        Thank you for your purchase!
+                    </h1>
+
                     <p class="
                         text-muted
                         text-center
                         m-0
                     ">
-                        By proceeding with this purchase, you agree to StreamStage's <a href='/terms'>terms and conditions</a>,
-                        which includes refund policies, and the <a href='/privacy'>privacy policy</a>.
-                        Additionally, you also agree to Stripe's <a href='https://stripe.com/'>terms and conditions</a>.
+                        A confirmation email has been sent to your email address. 
+                        Please take note of the order number for future reference.
+
+                        <hr>
+
+                        <span 
+                            class='w-100 text-center text-muted' 
+                            id='order-num'
+                        ></span>
                     </p>
                 </div>
             </span>
 
         </span>
 
-        <p class='w-100 text-muted text-center go-back'> Go back </p>
     `
 );
 

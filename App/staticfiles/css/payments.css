@@ -165,12 +165,59 @@
     50% { opacity: 0; }
     100% { opacity: 1; }
 }
+
+@keyframes pulse {
+    0% { opacity: 0.5; }
+    50% { opacity: 0.6; }
+    100% { opacity: 0.5; }
+}
+
 .pay-now-modal {
     animation: fade-in-pay 1.5s ease-in-out forwards;
 }
 
-.payment-select, .pay-now-modal, .pay-confirm {
+.payment-select, .pay-now-modal, .pay-confirm, .pay-tds, .pay-thank-you {
     overflow: hidden;
+}
+
+.pay-confirm {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    position: relative;
+}
+
+.loading-pulse {
+    width: 100%;
+    height: 100%;
+    background-color: var(--theme-color);
+    position: absolute;
+    z-index: 1;
+    animation: pulse 3s infinite;
+    border-radius: 0.5rem;
+    transition: all 0.5s ease-in-out;
+}
+
+.pay-confirm > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    grid-column: 1;
+    grid-row: 1;
+    position: absolute;
+}
+
+[loading-state='none'] {
+    display: none;
+    animation: none;
+    pointer-events: none;
+    opacity: 0;
+}
+
+[loading-state='loading'] {
+    display: block;
+    opacity: 0.5;
 }
 
 .pay-now-slider {
@@ -194,7 +241,7 @@
     transition: all 0.5s ease-in-out;
 }
 
-.pay-now-body, .pay-now-modal {
+.pay-now-body, .pay-now-modal, .pay-tds, .pay-thank-you {
     /* 1x1 grid so items overlap */
     display: grid;
     grid-template-columns: 1fr;
@@ -215,7 +262,15 @@
     100% { transform: translateX(0); opacity: 1; }
 }
 
-.new-card, .saved-card, .pay-confirm, .payment-select {
+@keyframes fully-out {
+    100% { transform: translateX(-100%); opacity: 0; display: none; }
+}
+
+
+@keyframes opacity-in { 0% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes opacity-out { 0% { opacity: 1; } 100% { opacity: 0; } }
+
+.new-card, .saved-card, .pay-confirm, .payment-select, .pay-tds, .pay-thank-you {
     grid-column: 1;
     grid-row: 1;
 }
@@ -240,10 +295,18 @@
     outline: 2px solid var(--accent-color);
 }
 
+.pay-thank-you {
+    z-index: 100;
+}
+.payment-select, .pay-confirm, .pay-tds, .pay-thank-you {
+    transition: opacity 1s ease-in-out;
+}
+
 [data-mode='saved'] .pay-now-slider .saved-card { background-color: var(--accent-color); }
 [data-mode='saved'] .pay-now-slider .new-card:hover { outline: 2px solid var(--accent-color); }
 [data-mode='saved'] .pay-now-body .new-card { animation: slide-out-pay 1s ease-in-out forwards; }
 [data-mode='saved'] .pay-now-body .saved-card { animation: slide-in-pay 1s ease-in-out forwards; }
+
 
 [data-mode='new'] .pay-now-slider .new-card { background-color: var(--accent-color); }
 [data-mode='new'] .pay-now-slider .saved-card:hover { outline: 2px solid var(--accent-color); }
@@ -253,9 +316,24 @@
 
 [data-mode='select'] .payment-select { animation: slide-in-pay 1s ease-in-out forwards; }
 [data-mode='select'] .pay-confirm { animation: slide-out-pay 1s ease-in-out forwards; }
+[data-mode='select'] .pay-tds { animation: fully-out 0s ease-in-out forwards; }
+[data-mode='select'] .pay-thank-you { animation: fully-out 0s ease-in-out forwards; }
 
 [data-mode='confirm'] .payment-select { animation: slide-out-pay 1s ease-in-out forwards; }
 [data-mode='confirm'] .pay-confirm { animation: slide-in-pay 1s ease-in-out forwards; }
+[data-mode='confirm'] .pay-tds { animation: fully-out 0s ease-in-out forwards; }
+[data-mode='confirm'] .pay-thank-you { animation: fully-out 0s ease-in-out forwards; }
+
+[data-mode='tds'] .payment-select { animation: fully-out 0s ease-in-out forwards; opacity: 0; }
+[data-mode='tds'] .pay-confirm { animation: slide-out-pay 1s ease-in-out forwards; }
+[data-mode='tds'] .pay-tds { animation: slide-in-pay 1s ease-in-out forwards; }
+[data-mode='tds'] .pay-thank-you { animation: fully-out 0s ease-in-out forwards; }
+
+[data-mode='thank-you'] .pay-thank-you { animation: opacity-in 1s ease-in-out forwards; }
+[data-mode='thank-you'] .payment-select { opacity: 0; }
+[data-mode='thank-you'] .pay-confirm { opacity: 0; }
+[data-mode='thank-you'] .pay-tds { opacity: 0; }
+
 
 
 .pay-confirm-body {
