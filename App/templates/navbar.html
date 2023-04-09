@@ -24,20 +24,20 @@
 
     <div class='nav-limiter'>
         <!-- Logo -->
-        <div class="logo-text">
+        <a class="logo-text" href="{% cross_app_reverse_tag 'homepage' 'homepage_index' %}">
             StreamStage
-        </div>
+        </a>
 
         {% if request.impersonate %}
             <!-- Absolute position -->
-            <div class="alert alert-warning imp-lable" role="alert">
+            <div class="alert alert-warning imp-lable" role="alert">    
                 <p class='m-0'>You are currently impersonating</p>
                 <p class='name m-0'>{{ request.user.cased_username }} | {{ request.user.email }}</p>
             </div>
         {% endif %}
 
         <!-- Common items -->
-        <div class="nav-items" data-nav-active='home' {% if request.impersonate %}style='display:none'{% endif %}>
+        <div class="nav-items" data-nav-active='home' {% if request.impersonate %} style='display:none'{% endif %}>
             <ul class="d-flex">
                 <li data-nav-area='home'><a href="{% cross_app_reverse_tag 'homepage' 'homepage_index' %}"> Home </a></li>
                 <li data-nav-area='live'><a href="{% cross_app_reverse_tag 'events' 'live_events' %}"> Live </a></li>

@@ -12,6 +12,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django_countries.fields import CountryField
 from django.core.validators import MaxValueValidator, MinValueValidator
+from StreamStage.templatetags.tags import cross_app_reverse
 
 from StreamStage.settings import MEDIA_URL
 from datetime import datetime, timedelta, time
@@ -126,7 +127,7 @@ class Event(models.Model):
     # Event
     
     def get_absolute_url(self):
-        return reverse('event_view', args=[self.event_id])
+        return cross_app_reverse('events', 'event_view', kwargs=[self.event_id])
     
     def __str__(self):
         return self.title

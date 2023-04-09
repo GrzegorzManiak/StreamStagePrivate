@@ -281,6 +281,12 @@ nav {
     z-index: 100;
 }
 
+.logo-text:hover {
+    color: var(--accent-color);
+    font-size: 2.1rem;
+    transition: all 0.5s ease-in-out;
+}
+
 .nav-items {
     width: 100%;
     align-items: start;
