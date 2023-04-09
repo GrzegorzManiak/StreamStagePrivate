@@ -36,10 +36,9 @@ def can_edit_broadcaster():
                 
                
             if not request.user.is_staff:
-                if not request.user.is_streamer:
-                    return redirect('homepage_index')
+                is_contributor = broadcaster.contributors.filter(id=request.user.id).exists()
 
-                if broadcaster.streamer != request.user and not broadcaster.contributors.filter(id=request.user.id).exists():
+                if not broadcaster.streamer != request.user and not request.user.is_streamer and not is_contributor:
                     return redirect('homepage_index')
             
             # -- Call the original function with the request object
