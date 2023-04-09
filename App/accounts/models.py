@@ -454,7 +454,7 @@ class Broadcaster(models.Model):
             - profile_pic
         """
         try:
-            img_tmp = NamedTemporaryFile(delete=True)
+            img_tmp = NamedTemporaryFile()
             image_data = base64.b64decode(base64_data.split(',')[1])
             image = Image.open(io.BytesIO(image_data))
 
@@ -467,11 +467,11 @@ class Broadcaster(models.Model):
 
             # -- Set the image
             if type == "banner":
-                img = File(img_tmp, name=f'broadcaster/banners/{uuid.uuid4()}.webp')
+                img = File(img_tmp, name=f'banners/{uuid.uuid4()}.webp')
                 self.banner = img
 
             elif type == "profile_pic":
-                img = File(img_tmp, name=f'broadcaster/pfp/{uuid.uuid4()}.webp')
+                img = File(img_tmp, name=f'pfp/{uuid.uuid4()}.webp')
                 self.profile_pic = img
 
             self.save()

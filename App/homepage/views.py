@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from rest_framework.decorators import api_view
 from django.conf import settings
@@ -120,8 +120,11 @@ def broadcaster_profile(request, username):
     """
    
     broadcaster = Broadcaster.objects.filter(
-        handle=username.lower()
+        handle__iexact=username
     ).first()
+    
+    if not broadcaster:
+        return redirect('homepage_index')
 
     # -- Render the login page
     return render(

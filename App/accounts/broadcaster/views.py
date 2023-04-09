@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view
+from accounts.forms import BroadcasterUpdateForm
 
 from StreamStage.templatetags.tags import cross_app_reverse
 
@@ -24,13 +25,16 @@ def edit_broadcasters(request):
     # Trim trailing comma
     broadcasters = broadcasters[:-1]
 
+    update_form = BroadcasterUpdateForm()
+
     return render(request, 'member_broadcaster.html', 
         context = {
             "broadcaster_id_list": broadcasters,
             "api": {
                 "get_broadcaster_details": cross_app_reverse('accounts', 'get_broadcaster_details'),
                 "update_broadcaster_details": cross_app_reverse('accounts', 'update_broadcaster_details')
-            }
+            },
+            "update_form": update_form
         }
     )
 
@@ -45,17 +49,19 @@ def update_broadcaster_details(request, broadcaster:Broadcaster, data):
     banner = data['banner']
 
     if len(profile) > 0:
-        broadcaster.set_picture_b64("profile_pic", profile)
+        if not broadcaster.set_picture_b64("profile_pic", profile):
+            return error_response("Error setting profile picture.")
     
     if len(banner) > 0:
-        broadcaster.set_picture_b64("banner", profile)
+        if not broadcaster.set_picture_b64("banner", banner):
+            return error_response("Error setting banner picture.")
     
     broadcaster.biography = data["biography"]
     broadcaster.name = data["name"]
 
     broadcaster.save()
 
-    return success_response("Successfully updated biography details.")
+    return success_response("Successfully updated broadcaster details.")
 
 @api_view(['POST'])
 @authenticated()

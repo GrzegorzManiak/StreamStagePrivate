@@ -10,6 +10,11 @@ Update Event {{ event.title }}
 Update Event | StreamStage
 {% endblock title %}
 
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/cropper.css' %}">
+{% endblock %}
+
+
 {% block content %}
 <span 
     class='config'
