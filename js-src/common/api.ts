@@ -122,3 +122,16 @@ export const check_intent = async (
     }).check_intent,
     { intent_id }
 );
+
+
+
+/**
+ * @name logged_in
+ * @returns boolean
+ * @description Check if the user is logged in
+ */
+export const logged_in = (): boolean => {
+    return build_configuration<{logged_in: boolean}>({
+        logged_in: new Type('data-logged-in', 'boolean'),
+    }).logged_in;
+}

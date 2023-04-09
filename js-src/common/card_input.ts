@@ -1,7 +1,7 @@
 import { Card, CheckPaymentIntentSuccess, GetCardsSuccess, NewPaymentIntentSuccess, PaymentIntentMethod, PaymentMethod } from './index.d';
 import { card_type, card_type_to_fontawesome, create_new_card, fit_card, pay_now } from "./card";
 import { attach, confirmation_modal, create_toast, sleep } from '.';
-import { check_intent, create_intent, get_cards, remove_card } from './api';
+import { check_intent, create_intent, get_cards, logged_in, remove_card } from './api';
 
 
 export function read_card_modal(
@@ -188,6 +188,12 @@ export async function instant_paynow(
     item_price: string = '$9.99 USD / month',
     stop: () => void = () => {},
 ) {
+    // -- Check if the user is logged in
+    if (logged_in() === false) {
+        create_toast('warning', 'Not logged in', 'You must be able to purchase this item');
+        return;
+    }
+    
     // -- Create the modal and append it to the document body
     const modal = document.createElement('div');
     modal.innerHTML = pay_now(title, description, item_name, item_price);

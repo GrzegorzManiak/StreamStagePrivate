@@ -104,7 +104,11 @@
     <body class="text-light">
         <!-- Main body of page -->
         <div id='toasts'></div>
-        
+        <span class='config'
+            data-logged-in="{{ request.user.is_authenticated }}"
+            data-impersonate="{{ request.impersonate }}"
+        ></span>
+
         <!-- Navbar -->
         {% include 'navbar.html' %}
 
