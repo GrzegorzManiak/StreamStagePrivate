@@ -1,3 +1,4 @@
+{% load tags %}
 <div class="card bg-dark p-3 mb-1">
     <div>
         <b class="card-title">{{ review.title }} </b>
@@ -41,8 +42,8 @@
 
     {% if review.author == user %}
     <div>
-        <a href="{% url 'review_delete' event.event_id review.review_id %}" class="float-start btn btn-danger btn-sm m-1">Delete</a>
-        <a href="{% url 'review_update' event.event_id review.review_id %}" class="float-start btn btn-primary btn-sm m-1">Update</a>
+        <a href="{% cross_app_reverse_tag 'events' 'review_delete' event_id=event.event_id review_id=review.review_id %}" class="float-start btn btn-danger btn-sm m-1">Delete</a>
+        <a href="{% cross_app_reverse_tag 'events' 'review_update' event_id=event.event_id review_id=review.review_id %}" class="float-start btn btn-primary btn-sm m-1">Update</a>
     </div>
 
     {% endif %}

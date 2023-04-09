@@ -16,23 +16,24 @@ Live Events | StreamStage
 {% endblock %}
 
 {% block content %}
-<div class="nav-gap">
-    
-    <!-- Listing Live Events (if has showings & showing is still live)-->
-    {% for event in events %}
-        {% if event.get_showings_count > 0 and event.is_event_live == True %}
-            {% include 'event_list.html' with event=event %}
-        {% endif %}
-    {% empty %}
-    <div class="row mx-auto">
-        <h4 class="text-center">Currently No Live Events</h4>
-    </div>
-    {% endfor %}
-</div>
+    <main>
+        <div class="nav-gap">
+            
+            <!-- Listing Live Events (if has showings & showing is still live)-->
+            {% for event in events %}
+                {% if event.get_showings_count > 0 and event.is_event_live == True %}
+                    {% include 'event_list.html' with event=event %}
+                {% endif %}
+            {% empty %}
+            <div class="row mx-auto">
+                <h4 class="text-center">Currently No Live Events</h4>
+            </div>
+            {% endfor %}
+        </div>
 
-<!-- Carousel js -->
-<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
-<!-- Like button js -->
-<script src="/static/js/events.js"></script>
-
+        <!-- Carousel js -->
+        <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+        <!-- Like button js -->
+        <script src="/static/js/events.js"></script>
+    </main>
 {% endblock %}

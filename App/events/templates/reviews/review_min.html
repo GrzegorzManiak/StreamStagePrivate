@@ -1,0 +1,26 @@
+{% load tags %}
+<!--
+    This is just the cutdown version of the actual review, so it fits
+    on smaller screens.
+-->
+<div class='review-min'>
+    <div class='review-text'>
+        <h4 class="w-100">{{ review.title }} </h4>
+        <p 
+            class="w-100"
+            onclick="window.location.href='{% cross_app_reverse_tag 'homepage' 'user_profile' username=review.author.cased_username %}'"
+        >Written by @{{review.author.username}}</p>
+    </div>
+
+    <ul class='review-rating'>
+        <li><i class="fa fa-star {% if review.rating > 4 %} checked {% endif %}" title="Rate 5"></i></li>
+        <li><i class="fa fa-star {% if review.rating > 3 %} checked {% endif %}" title="Rate 4"></i></li>
+        <li><i class="fa fa-star {% if review.rating > 2 %} checked {% endif %}" title="Rate 3"></i></li>
+        <li><i class="fa fa-star {% if review.rating > 1 %} checked {% endif %}" title="Rate 2"></i></li>
+        <li><i class="fa fa-star {% if review.rating > 0 %} checked {% endif %}" title="Rate 1"></i></li>
+    </ul>
+
+    <p class='review-body'>
+        "{% if review.get_review_body_length > 49 %}{{ review.body }}...{% else %}{{ review.body }}{% endif %}"
+    </p>
+</div>

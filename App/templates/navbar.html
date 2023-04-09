@@ -24,9 +24,12 @@
 
     <div class='nav-limiter'>
         <!-- Logo -->
-        <a class="logo-text" href="{% cross_app_reverse_tag 'homepage' 'homepage_index' %}">
+        <p 
+            class="logo-text" 
+            onclick="window.location.href='{% cross_app_reverse_tag 'homepage' 'homepage_index' %}'"
+            href="{% cross_app_reverse_tag 'homepage' 'homepage_index' %}">
             StreamStage
-        </a>
+        </p>
 
         {% if request.impersonate %}
             <!-- Absolute position -->
