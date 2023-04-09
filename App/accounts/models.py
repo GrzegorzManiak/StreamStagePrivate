@@ -17,6 +17,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django_countries.fields import CountryField
+from django.db.models import Q
 from timezone_field import TimeZoneField
 
 from .oauth import OAuthTypes
@@ -356,6 +357,9 @@ class Member(AbstractUser):
 
         # -- Save the user
         self.save()
+
+    def get_authorized_broadcasters(self):
+        return Broadcaster.objects.filter(Q(streamer = self) | Q(contributors__id=self.id))
 
 
 

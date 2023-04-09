@@ -46,6 +46,12 @@ from .other import (
 )
 from .views import get_token, login, logout, register, validate_token
 
+from .broadcaster.views import (
+    edit_broadcasters,
+    get_broadcaster_details,
+    update_broadcaster_details
+)
+
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -109,6 +115,9 @@ urlpatterns = [
     path('api/other/submit_report', submit_report, name='submit_report'),
 
     # -- Broadcaster
+    path('broadcaster/', edit_broadcasters, name='edit_broadcasters'),
+    path('broadcaster/get_details', get_broadcaster_details, name='get_broadcaster_details'),
+    path('broadcaster/set_details', update_broadcaster_details, name='update_broadcaster_details'),
 
     # -- Admin
     path('site_panel/', site_panel, name='site_panel'),

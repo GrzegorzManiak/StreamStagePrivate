@@ -24,9 +24,6 @@ def can_edit_broadcaster():
             if request.method == 'POST':
                 if not broadcaster:
                     return error_response("Broadcaster not found.")
-
-                if not broadcaster:
-                    return error_response("Invalid event ID specified.")
                 
                 if not request.user.is_authenticated:
                     return error_response("You do not have the permission to access this resource.")
