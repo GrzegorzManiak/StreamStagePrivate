@@ -24,8 +24,7 @@ from .models import (
 
     STATUS_APPROVED,
     STATUS_REJECTED,
-    STATUS_WAITING,
-    STATUSES
+    STATUS_WAITING
 )
 
 
@@ -119,7 +118,7 @@ def get_user_applications(request):
 
 @api_view(['POST'])
 @required_data(['type', 'application_id', 'status'])
-@is_admin
+@is_admin()
 def update_application_status(request, data):
     type = data['type']
     status = data['status']
