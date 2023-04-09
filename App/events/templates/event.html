@@ -51,6 +51,11 @@
 
                 <div class="col-md-3 col-sm-12 mx-auto p-2 third-page">
 
+                    <!-- Update Event Button -->
+                    {% if can_edit %}
+                    <a href="update/" class="text-muted">Edit Event</a>
+                    {% endif %}
+
                     <!-- Category -->
                     <div class="mx-2 my-4">
                         {% for category in event.categories.all %}
@@ -113,7 +118,7 @@
                         Event Description 
                         -->
                     <div class="mx-2 my-4">
-                        <p>{{ event.short_description }}...</p>
+                        <p>{{ event.description | slice:':380' }}. . .</p>
                     </div>
 
 
@@ -254,9 +259,9 @@
                 </div>
             </div>
 
-        </div>
-        <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
-        <script src="/static/js/events.js"></script>
-        {% render_bundle 'events' %}
-    </main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+<script src="/static/js/events.js"></script>
+<script src="/static/js/events_bin.js"></script>
+
 {% endblock content %}

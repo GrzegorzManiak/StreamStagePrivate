@@ -3,6 +3,7 @@ from .models import *
 from StreamStage import identifiers
 
 from .models import STATUS_APPROVED, STATUS_REJECTED
+from events.models import Category
 
 # Submitting + Amending / User Functionality
 
@@ -46,11 +47,9 @@ def submit_event_application(user, data):
         event_id = identifiers.generate_event_id(),
         #live_price = data['live_price']
     )
-        # stream_price = data['stream_price'],
-
-    #print(data['categories'])
-    #for category in data['categories']:
-    #    event.categories.add(category)
+    
+    for category in data['categories']:
+       event.categories.add(Category.objects.get(id=category))
 
     event.save()
 
@@ -104,11 +103,11 @@ def reject_event_application(application, admin):
 
 
 # Utility Functions
-def get_broadcaster_application(user):
-    return BroadcasterApplication.objects.filter(applicant=user).first()
+def get_broadcaster_applications(user, statuses = [ STATUS_WAITING ]):
+    return BroadcasterApplication.objects.filter(applicant=user, status__in=statuses).order_by('-submitted').all()
 
-def get_streamer_application(user):
-    return StreamerApplication.objects.filter(applicant=user).first()
+def get_streamer_applications(user, statuses = [ STATUS_WAITING ]):
+    return StreamerApplication.objects.filter(applicant=user, status__in=statuses).order_by('-submitted').all()
 
-def get_event_applications(user):
-    return EventApplication.objects.filter(applicant=user).all()
+def get_event_applications(user, statuses = [ STATUS_WAITING ]):
+    return EventApplication.objects.filter(applicant=user, status__in=statuses).order_by('-submitted').all()

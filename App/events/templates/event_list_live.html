@@ -3,11 +3,11 @@
 {% load tags %}
 
 {% block metadescription %}
-Past Events
+Live Events
 {% endblock %}
 
 {% block title %}
-Past Events | StreamStage
+Live Events | StreamStage
 {% endblock title %}
 
 {% block head %}
@@ -18,14 +18,14 @@ Past Events | StreamStage
 {% block content %}
 <div class="nav-gap">
     
-    <!-- Listing Past Events (if has showings and showing dates have passed)-->
+    <!-- Listing Live Events (if has showings & showing is still live)-->
     {% for event in events %}
-        {% if event.get_showings_count > 0 and event.get_num_upcoming_showings == 0 %}
+        {% if event.get_showings_count > 0 and event.is_event_live == True %}
             {% include 'event_list.html' with event=event %}
         {% endif %}
     {% empty %}
     <div class="row mx-auto">
-        <h4 class="text-center">No Past Events Available</h4>
+        <h4 class="text-center">Currently No Live Events</h4>
     </div>
     {% endfor %}
 </div>

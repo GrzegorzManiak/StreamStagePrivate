@@ -32,8 +32,11 @@ DEBUG = True
 # SET THIS TO TRUE IF YOU ARE USING LOCALHOST
 # IF THIS IS TRUE, COOKIES WONT WORK (SESSIONS WONT WORK)
 # AND REVERSE'S WONT WORK
-RUNNING_ON_LOCALHOST = False 
+RUNNING_ON_LOCALHOST = False
 
+if os.path.isfile("./.localhost"):
+    RUNNING_ON_LOCALHOST = True
+    print("Found .localhost file, server settings adjusted accordingly.")
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -180,6 +183,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
             ],
         },
     },

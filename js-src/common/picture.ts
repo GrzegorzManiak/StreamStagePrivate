@@ -18,10 +18,11 @@ export function picture_upload_modal(
     title: string = 'Upload Picture',
     description: string = 'Upload a new picture',
     on_upload: (image: string) => boolean | Promise<boolean>,
+    extra_html: string = '',
 ) {
     const modal = construct_modal(
         title, description, false,
-        'success', upload_template(initial_image)
+        'success', extra_html + upload_template(initial_image)
     );
 
     // -- Add the modal to the body

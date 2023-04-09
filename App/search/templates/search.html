@@ -12,110 +12,114 @@ Search Events | StreamStage
 
 {% block head %}
 <!-- Carousel css -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
 {% endblock %}
 
 {% block content %}
 
-<div class="event-listings-title container mx-auto">
+<div class="nav-gap px-4 mx-auto">
     <div class="m-2">
 
         {% if query %}
-        <p class="text-center">You have searched for: <b>"{{ query }}"</b></p>
-        {% elif category %}
-        <p class="text-center">Sorting category: <b>{{ category_name }}</b></p>
+        <p class="text-center"><b><span class="sub-title">You have searched for: </span>"{{ query }}"</b></p>
         {% endif %}
     </div>
     <!-- Refine Search Options -->
-    <div class="container">
-        <div class="row">
-            <div class="col-12 mx-auto">
-                {% include 'search_filters.html' %}
+    <div class="row px-2 ">
+        <div class="col-12 mx-auto mb-4">
+            {% include 'search_filters.html' %}
+        </div>
+        <hr/>
+
+        <!-- Display Search Results -->
+
+        {% for event in events_list %}
+        <div class="row my-2 px-4 mx-auto">
+            <div class="col-md-3 col-sm-12">
+                <!-- Event Categories -->
+                {% for category in event.categories.all %}
+                <span class="badge bg-primary">{{category.name}}</span>
+                {% endfor %}
+                <!-- Event Broadcaster -->
+                <h6 class="my-2">@{{ event.broadcaster.handle }}</h6>
+                <!-- Event Cover Picture (if any) -->
+                {% if event.get_media_count == 0 %}
+                <img class="event-cover" src="{% static 'images/default_event_cover.png' %}" alt="No Event Cover Photo">
+                {% else %}
+                <img class="event-cover" src="{{ event.get_cover_picture.picture.url }}" alt="Event Cover Photo">
+                {% endif %}
             </div>
+            <a class="col-md-6 col-sm-12" href="{% url 'event_view' event.event_id %}">
+                <!-- Event title & description -->
+                <h4 class="sub-title">{{ event.title }}</h4>
+                <p>{{ event.description | slice:':250' }}...</p>
 
-            <!-- Display Search Results -->
-
-            {% for event in events_list %}
-
-            <div class="m-2 p-2 border border-2 rounded" style="border-color: #ffb25a;">
+                <!-- Displaying next showing (if any) -->
                 <div class="row">
-                    <div class="col-9">
-                        <a href=''>
-                            <div class="row">
-
-                                <div class="col-3">
-                                    <!-- Event Categories -->
-                                    {% for category in event.categories.all %}
-                                    <span class="badge bg-primary">{{category.name}}</span>
-                                    {% endfor %}
-                                    <!-- Event Broadcaster -->
-                                    <h6>@{{ event.broadcaster.handle }}</h6>
-                                    <!-- Event Cover Picture (if any) -->
-                                    {% if event.get_media_count == 0 %}
-                                    <img class="event-cover col-3" src="{% static 'images/default_event_cover.png' %}"
-                                        alt="No Event Cover Photo">
-                                    {% else %}
-                                    <img class="event-cover col-3" src="{{ event.get_cover_picture.picture.url }}" alt="Event Cover Photo">
-                                    {% endif %}
-                                </div>
-                                <div class="col-9">
-                                    <!-- Event title & description -->
-                                    <h4>{{ event.title }}</h4>
-                                    <p>{{ event.short_description }}...</p>
-
-                                    <!-- Displaying next showing (if any) -->
-                                    <div class="row">
-                                        {% if event.get_showings_count > 0 %}
-                                        <div class="col-6">
-                                            <h6><b>Next Showing</b></h6>
-                                            <p>{{ event.get_next_showing }}</p>
-                                            <p>See event page for more showings</p>
-                                        </div>
-                                        <div class="col-6">
-                                            <h6><b>Where</b></h6>
-                                            <p>{{ event.get_next_showing.city }} - {{ event.get_next_showing.country.name }}</p>
-                                        </div>
-                                        {% else %}
-                                        <div class="col-12">
-                                            <h6><b>No upcoming showings</b></h6>
-                                        </div>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
+                    {% if event.get_showings_count > 0 %}
+                    <div class="col-6">
+                        <h6 class="sub-title"><b>Next Showing</b></h6>
+                        <p>{{ event.get_next_showing }}</p>
                     </div>
-                    <!-- Reviews for Event -->
-                    <div class="col-3">
-                        <div class="m-4">
-                            {% if event.get_review_count > 0 %}
-                            <h6 class="text-center"><b>Reviews</b></h6>
-                            <!-- Review Carousel -->
-                            <div class="swiper mySwiper">
-                                <div class="swiper-wrapper">
-                                    {% for review in event.get_reviews %}
-                                    <div class="swiper-slide">
-                                        {% include 'reviews/review.html' %}
-                                    </div>
-                                    {% endfor %}
-                                </div>
-                                <div class="swiper-pagination"></div>
-                                <div class="s-btn swiper-button-prev"></div>
-                                <div class="s-btn swiper-button-next"></div>
+                    <div class="col-6">
+                        <h6 class="sub-title"><b>Where</b></h6>
+                        <p>{{ event.get_next_showing.venue }} - {{ event.get_next_showing.city }}</p>
+                    </div>
+                    {% else %}
+                    <div class="col-12">
+                        <h6>No upcoming showings</h6>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="row">
+                    {% if event.get_showings_count > 0 and event.has_ticket_listings > 0 %}
+                    <div class="col-6">
+                        <h6 class="sub-title"><b>Tickets From</b></h6>
+                    </div>
+                    <div class="col-6">
+                        <p>€{{ event.get_min_ticket_price.price }}</p>
+                    </div>
+                    <div class="col-12">
+                        <p>See event page for more details</p>
+                    </div>
+                    {% else %}
+                    <div class="col-12">
+                        <h6><b>No tickets available</b></h6>
+                    </div>
+                    {% endif %}
+                </div>
+            </a>
+            <!-- Reviews for Event -->
+            <div class="col-md-3 col-sm-12">
+                <div class="my-4 mx-1">
+                    {% if event.get_review_count > 0 %}
+                    <h6 class="text-center"><b>Reviews</b></h6>
+                    <!-- Review Carousel -->
+                    <div class="swiper mySwiper">
+                        <div class="swiper-wrapper">
+                            {% for review in event.get_short_reviews %}
+                            <div class="swiper-slide">
+                                {% include 'reviews/review.html' %}
                             </div>
-                            {% else %}
-                            <h6 class="text-center"><b>No reviews yet</b></h6>
-                            {% endif %}
+                            {% endfor %}
                         </div>
+                        <div class="swiper-pagination"></div>
+                        <div class="s-btn swiper-button-prev"></div>
+                        <div class="s-btn swiper-button-next"></div>
                     </div>
+                    {% else %}
+                    <h6 class="text-center"><b>No reviews yet</b></h6>
+                    {% endif %}
                 </div>
             </div>
-            {% empty %}
-            <div class="row mx-auto">
-                <p class="text-center">No results found.</p>
-            </div>
-            {% endfor %}
         </div>
+        <hr />
+
+        {% empty %}
+        <div class="row mx-auto">
+            <p class="text-center">No results found.</p>
+        </div>
+        {% endfor %}
     </div>
 </div>
 
@@ -125,8 +129,8 @@ Search Events | StreamStage
         <hr>
         <div class="text-center">
             {% for pg in paginator.page_range %}
-            <a href="?q={{query}}&cat={{cat.id}}&b={{broadcaster}}&s={{sort_by}}^mip={{min_price}}&map={{max_price}}&page={{pg}}" class="btn btn-light btn-sm 
-                {% if products.number == pg %}active{% endif %}">{{pg}}
+            <a href="?q={{query}}&cat={{category.name}}&b={{broadcaster}}&sd={{start_date}}&ed={{end_date}}&v={{venue}}&c={{city}}&co={{country}}&u={{upcoming}}&ip={{in_person}}&s={{sort_by}}&mip={{min_price}}&map={{max_price}}&page={{pg}}" class="btn btn-light btn-sm 
+                {% if events.number == pg %}active{% endif %}">{{pg}}
             </a>
             {% endfor %}
         </div>

@@ -1,9 +1,9 @@
 from django.urls import path, include
 
 from .views import (
-    event_create,
     event_view,
     get_past_events,
+    get_live_events,
     get_upcoming_events,
     event_update,
     event_delete,
@@ -19,7 +19,18 @@ from .views import (
 from .api import (
     get_ticket_listings,
     add_ticket_listing,
-    del_ticket_listing
+    del_ticket_listing,
+
+    get_showings,
+    add_showing,
+    del_showing,
+
+    get_media,
+    add_media,
+    del_media,
+
+    # get_event_details,
+    # update_event_details
 )
 
 from .ext_api import (
@@ -43,7 +54,7 @@ urlpatterns = [
     # Events
     path('', get_upcoming_events, name='upcoming_events'),
     path('past/', get_past_events, name='past_events'),
-    path('new/', event_create, name='event_new'),
+    path('live/', get_live_events, name='live_events'),
     path('<slug:event_id>/', event_view, name='event_view'),
     path('<slug:event_id>/update/', event_update, name='event_update'),
     path('<slug:event_id>/delete/', event_delete, name='event_delete'),
@@ -58,6 +69,17 @@ urlpatterns = [
     path('api/get_ticket_listings', get_ticket_listings, name='get_ticket_listings'),
     path('api/add_ticket_listings', add_ticket_listing, name='add_ticket_listing'),
     path('api/del_ticket_listings', del_ticket_listing, name='del_ticket_listing'),
+
+    path('api/get_showings', get_showings, name='get_showings'),
+    path('api/add_showings', add_showing, name='add_showing'),
+    path('api/del_showings', del_showing, name='del_showing'),
+
+    path('api/get_media', get_media, name='get_media'),
+    path('api/add_media', add_media, name='add_media'),
+    path('api/del_media', del_media, name='del_media'),
+
+    # path('api/get_details', get_event_details, name='get_event_details'),
+    # path('api/update_details', update_event_details, name='update_event_details'),
 
     # Admin
     path('api/categorys/', categorys, name='categorys'),

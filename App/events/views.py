@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.urls import reverse_lazy
+from accounts.com_lib import authenticated
+from .api_auth import can_edit_event
 
 from StreamStage.templatetags.tags import cross_app_reverse
 
 from .models import Event, EventReview, EventShowing
-from .forms import (EventApplyForm, 
-                    EventUpdateForm, 
+from .forms import (EventUpdateForm, 
                     EventDeleteForm, 
                     ReviewCreateForm, 
                     ReviewUpdateForm, 
@@ -35,6 +36,7 @@ def event_view(request, event_id):
     avg_rating = round(event.get_average_rating(reviews), 1)
 
     context = {
+        'can_edit': event.is_authorized(request.user),
         'event': event,
         'cover_pic': event.get_cover_picture(),
         'reviews' : reviews,
@@ -71,6 +73,13 @@ def get_past_events(request):
 
     return render(request, "event_list_past.html", context)
 
+# Display Live Events
+def get_live_events(request):
+    context = {}
+    context["events"] = Event.objects.all()
+
+    return render(request, "event_list_live.html", context)
+
 # Display Upcoming Events
 def get_upcoming_events(request):
     context = {}
@@ -78,40 +87,26 @@ def get_upcoming_events(request):
 
     return render(request, "event_list_upcoming.html", context)
 
-def event_create(request):
-    context = {}
-    
-    form = EventApplyForm(request.POST or None)
-    if not request.user.is_authenticated or not request.user.is_streamer:
-        return redirect('upcoming_events')
-    if form.is_valid():
-        new_event_id = identifiers.generate_event_id()
-        form = form.save(commit=False)
-        form.streamer = request.user
-        form.event_id = new_event_id
-        form.save()
-
-        return redirect('event_view', new_event_id)
-
-    context['form']= form
-    return render(request, "event_new.html", context)
-
 # Update an event
-def event_update(request, event_id):
-    event = Event.objects.get(event_id=event_id)
+@authenticated()
+@can_edit_event()
+def event_update(request, event, event_id):
 
-    if not request.user.is_authenticated or not request.user.is_streamer:
-        return redirect('homepage_index')
-    if event == None: # if event id in URL is invalid, redirect
-        return redirect('homepage_index')
-    
     context = {
         'event_id': event_id,
 
         'api': {
-            'get_ticket_listings': reverse_lazy('get_ticket_listings'),
-            'add_ticket_listing': reverse_lazy('add_ticket_listing'),
-            'del_ticket_listing': reverse_lazy('del_ticket_listing')
+            'get_ticket_listings': cross_app_reverse('events', 'get_ticket_listings'),
+            'add_ticket_listing': cross_app_reverse('events', 'add_ticket_listing'),
+            'del_ticket_listing': cross_app_reverse('events', 'del_ticket_listing'),
+
+            'get_showings': cross_app_reverse('events', 'get_showings'),
+            'add_showing': cross_app_reverse('events', 'add_showing'),
+            'del_showing': cross_app_reverse('events', 'del_showing'),
+
+            'get_media': cross_app_reverse('events', 'get_media'),
+            'add_media': cross_app_reverse('events', 'add_media'),
+            'del_media': cross_app_reverse('events', 'del_media')
         }
     }
     

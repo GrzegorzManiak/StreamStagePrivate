@@ -28,7 +28,7 @@ like_buttons.forEach(button => {
 })
 
 
-// Function for Media Carousel
+// Function for Media & Search Results/Event Listings Review Carousels
 const media_settings = {
   slidesPerView: 1,
   loop: true,
@@ -49,11 +49,6 @@ const swiper = new Swiper('.mySwiper', media_settings);
 const review_settings = {
   loop: true,
   slidesPerView: 2,
-  pagination: {
-    el: '.swiper-pagination',
-    type: 'bullets',
-    clickable: 'true',
-  },
   navigation: {
     nextEl: '.swiper-button-next',
     prevEl: '.swiper-button-prev',

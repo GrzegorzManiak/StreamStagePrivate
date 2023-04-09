@@ -20,11 +20,13 @@ Upcoming Events | StreamStage
 
         <!-- Listing Upcoming Events (if they have upcoming showings) -->
         {% for event in events %}
-        {% if event.get_num_upcoming_showings > 0 %}
-
-        {% include 'event_list.html' with event=event %}
-
-        {% endif %}
+                {% if event.get_num_upcoming_showings > 0 %}
+                        {% include 'event_list.html' with event=event %}
+                {% endif %}
+        {% empty %}
+        <div class="row mx-auto">
+                <h4 class="text-center">No Upcoming Events</h4>
+        </div>
         {% endfor %}
 </div>
 

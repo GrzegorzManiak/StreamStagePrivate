@@ -1,3 +1,6 @@
+# Localhost file
+.localhost
+
 # Django #
 *.log
 *.pot

@@ -6,9 +6,24 @@ from .models import STATUS_WAITING, STATUS_APPROVED, STATUS_REJECTED, status_fri
 
 from accounts.com_lib import authenticated, is_admin
 
-from .processing import submit_streamer_application, submit_event_application, submit_broadcaster_application, get_broadcaster_application, get_streamer_application
-from .processing import approve_streamer_application, reject_streamer_application, approve_broadcaster_application, reject_broadcaster_application, approve_event_application, reject_event_application
+from .processing import (
+    submit_streamer_application,
+    submit_event_application,
+    submit_broadcaster_application,
+    
+    get_broadcaster_applications,
+    get_streamer_applications,
+    get_event_applications,
 
+    approve_streamer_application,
+    reject_streamer_application,
+
+    approve_broadcaster_application,
+    reject_broadcaster_application,
+
+    approve_event_application,
+    reject_event_application
+)
 # User views
 
 @authenticated()
@@ -17,10 +32,9 @@ def apply_broadcaster(request):
 
     # user must either have a streamer application submitted, or be a streamer
     # to apply for a broadcaster profile.
-    if get_streamer_application(request.user) is None and not request.user.is_streamer:
+    if get_streamer_applications(request.user).count() == 0 and not request.user.is_streamer:
         return redirect('homepage_index')
     
-    print(request.POST)
     # if the skip button was pressed
     if request.POST.get('skip') is not None:
         return redirect('apply_event')
@@ -57,8 +71,9 @@ def apply_event(request):
 
     # user must either have a broadcaster application submitted, or be a streamer
     # to apply for an event.
-    if get_streamer_application(request.user) is None and not request.user.is_streamer:
+    if get_streamer_applications(request.user).count() == 0 and not request.user.is_streamer:
         return redirect('homepage_index')
+    
     # if the skip button was pressed
     if request.POST.get('skip') is not None:
         return redirect('landing')
@@ -130,11 +145,11 @@ def review_broadcaster_application(request, id):
         return redirect('review_applications')
 
     if request.POST.get("reject") is not None:
-        reject_streamer_application(application, user)
+        reject_broadcaster_application(application, user)
         return redirect('review_applications')
         
     elif request.POST.get("approve") is not None:
-        approve_streamer_application(application, user)
+        approve_broadcaster_application(application, user)
         return redirect('review_applications')
 
     return render(request, "admin/review_broadcaster.html", { 'app' : application })
