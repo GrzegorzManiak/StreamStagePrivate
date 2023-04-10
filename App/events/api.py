@@ -125,7 +125,8 @@ def get_showings(request, data):
             'country': showing.country.name,
             'city': showing.city,
             'venue': showing.venue,
-            'time': (showing.time.strftime("%d %B, %Y - %H:%M"))
+            'time': (showing.time.strftime("%d %B, %Y - %H:%M")),
+            'max_duration': showing.max_duration
         })
 
     return success_response('Event showings retrieved successfully', {
@@ -153,13 +154,13 @@ def add_showing(request, data):
     city = data['city']
     country = data['country']
     
-    
     showing = EventShowing(
         event = event,
         time = datetime.datetime.strptime(time, '%Y-%m-%dT%H:%M'),
         venue = venue,
         city = city,
-        country = country
+        country = country,
+        max_duration = 120
     )
     showing.save()
 
@@ -168,7 +169,8 @@ def add_showing(request, data):
         'country': showing.country.name,
         'city': showing.city,
         'venue': showing.venue,
-        'time': showing.time.strftime("%d %B, %Y - %H:%M")
+        'time': showing.time.strftime("%d %B, %Y - %H:%M"),
+        'max_duration': showing.max_duration
     }
 
     return success_response('Successfully added showing', {
