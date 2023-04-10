@@ -19,21 +19,22 @@ Search Events | StreamStage
 {% block content %}
     <main class='ss_wl'>
         <div class="nav-gap px-4 mx-auto">
-            <div class="m-2">
-                {% if query %}
-                    <p class="text-center"><b><span class="sub-title">You have searched for: </span>"{{ query }}"</b></p>
-                {% endif %}
-            </div>
 
             <!-- Refine Search Options -->
             <div class="row px-2 d-flex gap-2">
+
+                <div>
+                    {% if query %}
+                        <p class="text-center m-0 w-100"><span class='m-0 accent-font'>Showing search results for: </span>"{{ query }}"</p>
+                    {% endif %}
+                </div>
+                
                 <div class="col-12 mx-auto mb-4">
                     {% include 'search_filters.html' %}
                 </div>
                 <hr/>
 
                 <!-- Display Search Results -->
-
                 {% for event in events_list %}
                     <div class="event-listing">
 

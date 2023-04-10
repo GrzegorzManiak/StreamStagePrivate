@@ -25,6 +25,10 @@
     border-bottom-left-radius: 0!important;
 }
 
+.accent-font {
+    color: var(--accent-color);
+}
+
 .event-cover {
     width: 100%;
     height: 100%;
@@ -151,7 +155,7 @@
 
 .review-rating {
     display: flex;
-    flex-direction: row;
+    flex-direction: row-reverse;
     gap: 0.5rem;
     align-items: center;
     justify-content: center;
@@ -164,14 +168,12 @@
     list-style: none;
     font-size: 1rem;
     font-weight: 600;
-    color: var(--accent-color);
     margin: 0;
 }
 
 .review-rating i {
     font-size: 1rem;
     font-weight: 600;
-    color: var(--accent-color);
     margin: 0;
 }
 
@@ -326,6 +328,18 @@ swiper-container {
     .event-reviews * {
         display: none;
     }
+
+    .filter-menu {
+        flex-direction: column;
+    }
+
+    .filter-menu > .filter-menu > .filter-menu {
+        flex-direction: row!important;
+    }
+
+    .filter-menu > div { 
+        width: 100%!important;
+    }
 }
 
 
@@ -343,4 +357,27 @@ swiper-container {
     .event-listing {
         padding-bottom: 11rem;
     }
+
+    .filter-menu {
+        flex-direction: column;
+    }
+
+    .filter-menu > div { 
+        width: 100%!important;
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        left: 0;
+        width: 100vw;
+    }
+}
+
+
+.rating {
+    color: var(--greyed-out-font-color);
+}
+
+.checked {
+    color: var(--accent-color);
 }
