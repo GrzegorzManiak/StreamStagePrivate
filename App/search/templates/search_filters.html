@@ -195,52 +195,67 @@
 
 
             <!-- Filter By Date -->
-            <div class="filter-dropdown h-100 filter">
-                <div class="m-auto filter-dropdown">
+            <div class="w-100 h-100">
 
-                    <!-- Dropdown Button -->
-                    <p class="m-0" data-bs-toggle="collapse" href="#datefilter" role="button">
-                        <i class="fa-solid fa-caret-down"></i> Filter by Date
-                    </p>
+                <!-- Dropdown Button -->
+                <button 
+                    class="filter-dropdown filter text-start"
+                    href="#datefilter" 
+                    role="button"
+                    type="button"
+                    data-bs-toggle="collapse" 
+                    aria-expanded="false"
+                >
+                    <p><i class="fa-solid fa-caret-down px-2"></i>Filter by Date</p>
+                </button>
 
 
-                    <div class="collapse {% if start_date or end_date %}show{% endif %}" id="datefilter">
-                        <div id="date-filters">
-                            <div>
-                                Start Date (dd/mm/yyyy) <input class="border-light rounded" type="datetime" name="sd" 
+                <div 
+                    class="dropdown-menu {% if start_date or end_date %}show{% endif %}" 
+                    id="datefilter"
+                >
+
+                    <!-- Filter By Date Range -->
+                    <div class="d-flex justify-content-center align-items-center gap-2 mb-2">
+                        <div class='d-flex w-100 flex-column'>
+                            <label class="form-label w-100" for="sd">From</label>
+                            <input 
+                                class="w-100 dropdown-input"
+                                type="number" 
+                                name="sd" 
+                                id="sd"
+                                style="background-color: var(--theme-color)!important"
+                                placeholder="(dd/mm/yyyy)"
                                 {% if start_date %} value="{{start_date}}" {% endif %}>
-                            </div>
-                            <p class="my-0">to</p>
-                            <div>
-                                End Date (dd/mm/yyyy) <input class="border-light rounded mb-1" type="datetime" name="ed" 
+                        </div>
+
+                        <div class='d-flex w-100 flex-column'>
+                            <label class="form-label w-100" for="ed">To</label>
+                            <input 
+                                class="w-100 dropdown-input"
+                                type="number"
+                                name="ed" 
+                                id="ed"
+                                style="background-color: var(--theme-color)!important"
+                                placeholder="(dd/mm/yyyy)"
                                 {% if end_date %} value="{{end_date}}" {% endif %}>
-                            </div>
                         </div>
-                        <!-- Upcoming Events only -->
-                        <div class="collapse mt-1" id="datefilter">
-                            <label class="d-block">
-                                {% if upcoming %}
-                                <input type="checkbox" name="u" value="y" checked>
-                                {% else %}
-                                <input type="checkbox" name="u" value="y">
-                                {% endif %}
-                
-                                Upcoming Events Only
-                            </label>
-                        </div>
-                        <!-- Events with in-person tickets only -->
-                        <div class="collapse mt-1" id="datefilter">
-                            <label class="d-block">
-                                {% if in_person %}
-                                <input type="checkbox" name="ip" value="y" checked>
-                                {% else %}
-                                <input type="checkbox" name="ip" value="y">
-                                {% endif %}
-                
-                                In-Person Tickets Available
-                            </label>
-                        </div>
-                    </div>                
+                    </div>
+                        
+
+                    <!-- Upcoming Events only -->
+                    <div class="collapse d-flex w-100" id="datefilter">
+                        <label for='u' class="d-block w-50">Upcoming Events Only</label>
+                        {% if upcoming %} <input type="checkbox" name="u" value="y" checked>
+                        {% else %} <input type="checkbox" name="u" value="y"> {% endif %}
+                    </div>
+
+                    <!-- Events with in-person tickets only -->
+                    <div class="collapse d-flex w-100" id="datefilter">
+                        <label for='ip' class="d-block w-50">In-Person Tickets Available</label>
+                        {% if in_person %} <input type="checkbox" name="ip" value="y" checked>
+                        {% else %} <input type="checkbox" name="ip" value="y"> {% endif %}
+                    </div>
                 </div>
             </div>
         </div>

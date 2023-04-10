@@ -1,14 +1,6 @@
 {
   "status": "done",
   "assets": {
-    "adult-land-fastened.js": {
-      "name": "adult-land-fastened.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/adult-land-fastened.js"
-    },
-    "adult-land-fastened.js.LICENSE.txt": {
-      "name": "adult-land-fastened.js.LICENSE.txt",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/adult-land-fastened.js.LICENSE.txt"
-    },
     "alive-search-purpose.js": {
       "name": "alive-search-purpose.js",
       "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/alive-search-purpose.js"
@@ -29,25 +21,9 @@
       "name": "atomic-hardly-taste.js.LICENSE.txt",
       "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/atomic-hardly-taste.js.LICENSE.txt"
     },
-    "bad-put-forth.js": {
-      "name": "bad-put-forth.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/bad-put-forth.js"
-    },
-    "barn-dirt-prize.js": {
-      "name": "barn-dirt-prize.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/barn-dirt-prize.js"
-    },
-    "barn-dirt-prize.js.LICENSE.txt": {
-      "name": "barn-dirt-prize.js.LICENSE.txt",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/barn-dirt-prize.js.LICENSE.txt"
-    },
     "began-everything-herd.js": {
       "name": "began-everything-herd.js",
       "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/began-everything-herd.js"
-    },
-    "birds-flies-beyond.js": {
-      "name": "birds-flies-beyond.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/birds-flies-beyond.js"
     },
     "brave-fog-loss.js": {
       "name": "brave-fog-loss.js",
@@ -56,14 +32,6 @@
     "bright-entire-one.js": {
       "name": "bright-entire-one.js",
       "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/bright-entire-one.js"
-    },
-    "bush-function-canal.js": {
-      "name": "bush-function-canal.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/bush-function-canal.js"
-    },
-    "bush-function-canal.js.LICENSE.txt": {
-      "name": "bush-function-canal.js.LICENSE.txt",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/bush-function-canal.js.LICENSE.txt"
     },
     "chose-pile-around.js": {
       "name": "chose-pile-around.js",
@@ -81,21 +49,37 @@
       "name": "column-brief-yard.js",
       "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/column-brief-yard.js"
     },
-    "compare-another-arm.js": {
-      "name": "compare-another-arm.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/compare-another-arm.js"
+    "corner-cap-connected.js": {
+      "name": "corner-cap-connected.js",
+      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/corner-cap-connected.js"
     },
-    "control-part-closely.js": {
-      "name": "control-part-closely.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/control-part-closely.js"
+    "corner-cap-connected.js.LICENSE.txt": {
+      "name": "corner-cap-connected.js.LICENSE.txt",
+      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/corner-cap-connected.js.LICENSE.txt"
     },
-    "deal-hall-horn.js": {
-      "name": "deal-hall-horn.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/deal-hall-horn.js"
+    "couple-zebra-neighborhood.js": {
+      "name": "couple-zebra-neighborhood.js",
+      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/couple-zebra-neighborhood.js"
     },
-    "deal-hall-horn.js.LICENSE.txt": {
-      "name": "deal-hall-horn.js.LICENSE.txt",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/deal-hall-horn.js.LICENSE.txt"
+    "couple-zebra-neighborhood.js.LICENSE.txt": {
+      "name": "couple-zebra-neighborhood.js.LICENSE.txt",
+      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/couple-zebra-neighborhood.js.LICENSE.txt"
+    },
+    "current-source-magic.js": {
+      "name": "current-source-magic.js",
+      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/current-source-magic.js"
+    },
+    "current-source-magic.js.LICENSE.txt": {
+      "name": "current-source-magic.js.LICENSE.txt",
+      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/current-source-magic.js.LICENSE.txt"
+    },
+    "damage-mine-passage.js": {
+      "name": "damage-mine-passage.js",
+      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/damage-mine-passage.js"
+    },
+    "damage-mine-passage.js.LICENSE.txt": {
+      "name": "damage-mine-passage.js.LICENSE.txt",
+      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/damage-mine-passage.js.LICENSE.txt"
     },
     "dress-women-mouth.js": {
       "name": "dress-women-mouth.js",
@@ -117,21 +101,9 @@
       "name": "easy-hand-snow.js",
       "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/easy-hand-snow.js"
     },
-    "either-luck-dog.js": {
-      "name": "either-luck-dog.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/either-luck-dog.js"
-    },
-    "either-luck-dog.js.LICENSE.txt": {
-      "name": "either-luck-dog.js.LICENSE.txt",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/either-luck-dog.js.LICENSE.txt"
-    },
-    "faster-period-pure.js": {
-      "name": "faster-period-pure.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/faster-period-pure.js"
-    },
-    "faster-period-pure.js.LICENSE.txt": {
-      "name": "faster-period-pure.js.LICENSE.txt",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/faster-period-pure.js.LICENSE.txt"
+    "factory-immediately-date.js": {
+      "name": "factory-immediately-date.js",
+      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/factory-immediately-date.js"
     },
     "feature-floating-minerals.js": {
       "name": "feature-floating-minerals.js",
@@ -144,10 +116,6 @@
     "flight-protection-thin.js": {
       "name": "flight-protection-thin.js",
       "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/flight-protection-thin.js"
-    },
-    "foot-children-many.js": {
-      "name": "foot-children-many.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/foot-children-many.js"
     },
     "fort-fur-glass.js": {
       "name": "fort-fur-glass.js",
@@ -169,18 +137,6 @@
       "name": "gas-swimming-higher.js.LICENSE.txt",
       "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/gas-swimming-higher.js.LICENSE.txt"
     },
-    "hundred-tropical-score.js": {
-      "name": "hundred-tropical-score.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/hundred-tropical-score.js"
-    },
-    "information-look-tiny.js": {
-      "name": "information-look-tiny.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/information-look-tiny.js"
-    },
-    "information-look-tiny.js.LICENSE.txt": {
-      "name": "information-look-tiny.js.LICENSE.txt",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/information-look-tiny.js.LICENSE.txt"
-    },
     "island-event-written.js": {
       "name": "island-event-written.js",
       "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/island-event-written.js"
@@ -196,26 +152,6 @@
     "lucky-pipe-knew.js.LICENSE.txt": {
       "name": "lucky-pipe-knew.js.LICENSE.txt",
       "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/lucky-pipe-knew.js.LICENSE.txt"
-    },
-    "many-against-get.js": {
-      "name": "many-against-get.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/many-against-get.js"
-    },
-    "many-against-get.js.LICENSE.txt": {
-      "name": "many-against-get.js.LICENSE.txt",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/many-against-get.js.LICENSE.txt"
-    },
-    "medicine-neighbor-guide.js": {
-      "name": "medicine-neighbor-guide.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/medicine-neighbor-guide.js"
-    },
-    "medicine-neighbor-guide.js.LICENSE.txt": {
-      "name": "medicine-neighbor-guide.js.LICENSE.txt",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/medicine-neighbor-guide.js.LICENSE.txt"
-    },
-    "meet-handsome-jungle.js": {
-      "name": "meet-handsome-jungle.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/meet-handsome-jungle.js"
     },
     "mission-cent-queen.js": {
       "name": "mission-cent-queen.js",
@@ -233,14 +169,6 @@
       "name": "opposite-energy-small.js",
       "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/opposite-energy-small.js"
     },
-    "part-today-balloon.js": {
-      "name": "part-today-balloon.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/part-today-balloon.js"
-    },
-    "part-today-balloon.js.LICENSE.txt": {
-      "name": "part-today-balloon.js.LICENSE.txt",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/part-today-balloon.js.LICENSE.txt"
-    },
     "plates-full-manufacturing.js": {
       "name": "plates-full-manufacturing.js",
       "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/plates-full-manufacturing.js"
@@ -248,18 +176,6 @@
     "plates-full-manufacturing.js.LICENSE.txt": {
       "name": "plates-full-manufacturing.js.LICENSE.txt",
       "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/plates-full-manufacturing.js.LICENSE.txt"
-    },
-    "primitive-station-statement.js": {
-      "name": "primitive-station-statement.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/primitive-station-statement.js"
-    },
-    "primitive-station-statement.js.LICENSE.txt": {
-      "name": "primitive-station-statement.js.LICENSE.txt",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/primitive-station-statement.js.LICENSE.txt"
-    },
-    "property-noise-whole.js": {
-      "name": "property-noise-whole.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/property-noise-whole.js"
     },
     "proud-represent-fly.js": {
       "name": "proud-represent-fly.js",
@@ -289,50 +205,6 @@
       "name": "sat-wall-bag.js",
       "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/sat-wall-bag.js"
     },
-    "sent-root-fastened.js": {
-      "name": "sent-root-fastened.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/sent-root-fastened.js"
-    },
-    "sent-root-fastened.js.LICENSE.txt": {
-      "name": "sent-root-fastened.js.LICENSE.txt",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/sent-root-fastened.js.LICENSE.txt"
-    },
-    "seven-structure-frog.js": {
-      "name": "seven-structure-frog.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/seven-structure-frog.js"
-    },
-    "shake-daily-claws.js": {
-      "name": "shake-daily-claws.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/shake-daily-claws.js"
-    },
-    "shake-daily-claws.js.LICENSE.txt": {
-      "name": "shake-daily-claws.js.LICENSE.txt",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/shake-daily-claws.js.LICENSE.txt"
-    },
-    "smile-hand-safety.js": {
-      "name": "smile-hand-safety.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/smile-hand-safety.js"
-    },
-    "smile-hand-safety.js.LICENSE.txt": {
-      "name": "smile-hand-safety.js.LICENSE.txt",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/smile-hand-safety.js.LICENSE.txt"
-    },
-    "solar-wet-blanket.js": {
-      "name": "solar-wet-blanket.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/solar-wet-blanket.js"
-    },
-    "solar-wet-blanket.js.LICENSE.txt": {
-      "name": "solar-wet-blanket.js.LICENSE.txt",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/solar-wet-blanket.js.LICENSE.txt"
-    },
-    "stove-bet-spring.js": {
-      "name": "stove-bet-spring.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/stove-bet-spring.js"
-    },
-    "stove-bet-spring.js.LICENSE.txt": {
-      "name": "stove-bet-spring.js.LICENSE.txt",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/stove-bet-spring.js.LICENSE.txt"
-    },
     "subject-today-root.js": {
       "name": "subject-today-root.js",
       "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/subject-today-root.js"
@@ -341,25 +213,13 @@
       "name": "subject-today-root.js.LICENSE.txt",
       "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/subject-today-root.js.LICENSE.txt"
     },
-    "sun-quarter-establish.js": {
-      "name": "sun-quarter-establish.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/sun-quarter-establish.js"
+    "symbol-information-our.js": {
+      "name": "symbol-information-our.js",
+      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/symbol-information-our.js"
     },
-    "sun-quarter-establish.js.LICENSE.txt": {
-      "name": "sun-quarter-establish.js.LICENSE.txt",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/sun-quarter-establish.js.LICENSE.txt"
-    },
-    "terrible-attached-brick.js": {
-      "name": "terrible-attached-brick.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/terrible-attached-brick.js"
-    },
-    "terrible-attached-brick.js.LICENSE.txt": {
-      "name": "terrible-attached-brick.js.LICENSE.txt",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/terrible-attached-brick.js.LICENSE.txt"
-    },
-    "thus-should-iron.js": {
-      "name": "thus-should-iron.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/thus-should-iron.js"
+    "symbol-information-our.js.LICENSE.txt": {
+      "name": "symbol-information-our.js.LICENSE.txt",
+      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/symbol-information-our.js.LICENSE.txt"
     },
     "title-successful-bare.js": {
       "name": "title-successful-bare.js",
@@ -369,22 +229,6 @@
       "name": "title-successful-bare.js.LICENSE.txt",
       "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/title-successful-bare.js.LICENSE.txt"
     },
-    "weak-globe-pay.js": {
-      "name": "weak-globe-pay.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/weak-globe-pay.js"
-    },
-    "western-start-mass.js": {
-      "name": "western-start-mass.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/western-start-mass.js"
-    },
-    "what-eight-citizen.js": {
-      "name": "what-eight-citizen.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/what-eight-citizen.js"
-    },
-    "what-eight-citizen.js.LICENSE.txt": {
-      "name": "what-eight-citizen.js.LICENSE.txt",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/what-eight-citizen.js.LICENSE.txt"
-    },
     "wheel-community-donkey.js": {
       "name": "wheel-community-donkey.js",
       "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/wheel-community-donkey.js"
@@ -393,21 +237,21 @@
       "name": "wheel-community-donkey.js.LICENSE.txt",
       "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/wheel-community-donkey.js.LICENSE.txt"
     },
-    "wooden-newspaper-thank.js": {
-      "name": "wooden-newspaper-thank.js",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/wooden-newspaper-thank.js"
-    },
-    "wooden-newspaper-thank.js.LICENSE.txt": {
-      "name": "wooden-newspaper-thank.js.LICENSE.txt",
-      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/wooden-newspaper-thank.js.LICENSE.txt"
-    },
     "wore-occur-guess.js": {
       "name": "wore-occur-guess.js",
       "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/wore-occur-guess.js"
     },
+    "would-shut-largest.js": {
+      "name": "would-shut-largest.js",
+      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/would-shut-largest.js"
+    },
     "you-score-air.js": {
       "name": "you-score-air.js",
       "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/you-score-air.js"
+    },
+    "zebra-lady-area.js": {
+      "name": "zebra-lady-area.js",
+      "path": "/home/grzegorzm/Projects/StreamStage/App/staticfiles/webpack_bundles/zebra-lady-area.js"
     }
   },
   "chunks": {
@@ -416,9 +260,9 @@
       "mixture-mysterious-somebody.js",
       "lucky-pipe-knew.js",
       "subject-today-root.js",
-      "property-noise-whole.js",
-      "part-today-balloon.js",
-      "smile-hand-safety.js",
+      "zebra-lady-area.js",
+      "couple-zebra-neighborhood.js",
+      "symbol-information-our.js",
       "review-brass-gate.js"
     ],
     "api": [
@@ -427,16 +271,16 @@
     ],
     "applications": [
       "began-everything-herd.js",
-      "foot-children-many.js",
+      "factory-immediately-date.js",
       "fort-fur-glass.js"
     ],
     "broadcaster_profiles": [
       "opposite-energy-small.js",
-      "property-noise-whole.js",
-      "part-today-balloon.js",
-      "either-luck-dog.js",
-      "bad-put-forth.js",
-      "sun-quarter-establish.js",
+      "zebra-lady-area.js",
+      "couple-zebra-neighborhood.js",
+      "corner-cap-connected.js",
+      "would-shut-largest.js",
+      "damage-mine-passage.js",
       "chose-pile-around.js"
     ],
     "common": [
@@ -446,15 +290,15 @@
     "event_edit": [
       "flight-protection-thin.js",
       "mixture-mysterious-somebody.js",
-      "either-luck-dog.js",
-      "smile-hand-safety.js",
-      "foot-children-many.js",
+      "corner-cap-connected.js",
+      "symbol-information-our.js",
+      "factory-immediately-date.js",
       "title-successful-bare.js"
     ],
     "events": [
       "eager-wait-magnet.js",
-      "property-noise-whole.js",
-      "part-today-balloon.js",
+      "zebra-lady-area.js",
+      "couple-zebra-neighborhood.js",
       "dress-women-mouth.js"
     ],
     "homepage": [
@@ -463,8 +307,8 @@
     ],
     "login": [
       "easy-hand-snow.js",
-      "property-noise-whole.js",
-      "faster-period-pure.js",
+      "zebra-lady-area.js",
+      "current-source-magic.js",
       "atomic-hardly-taste.js"
     ],
     "navbar": [
@@ -473,32 +317,32 @@
     ],
     "profiles": [
       "class-brown-film.js",
-      "property-noise-whole.js",
-      "part-today-balloon.js",
-      "either-luck-dog.js",
-      "bad-put-forth.js",
-      "sun-quarter-establish.js",
+      "zebra-lady-area.js",
+      "couple-zebra-neighborhood.js",
+      "corner-cap-connected.js",
+      "would-shut-largest.js",
+      "damage-mine-passage.js",
       "roll-stared-continent.js"
     ],
     "register": [
       "column-brief-yard.js",
-      "property-noise-whole.js",
-      "faster-period-pure.js",
+      "zebra-lady-area.js",
+      "current-source-magic.js",
       "gas-swimming-higher.js"
     ],
     "settings": [
       "brave-fog-loss.js",
       "mixture-mysterious-somebody.js",
-      "property-noise-whole.js",
-      "smile-hand-safety.js",
-      "bad-put-forth.js",
+      "zebra-lady-area.js",
+      "symbol-information-our.js",
+      "would-shut-largest.js",
       "island-event-written.js"
     ],
     "srr_visualizer": [
       "bright-entire-one.js",
       "frame-with-figure.js",
       "mission-cent-queen.js",
-      "part-today-balloon.js",
+      "couple-zebra-neighborhood.js",
       "feature-floating-minerals.js"
     ],
     "streamer_apps": [
