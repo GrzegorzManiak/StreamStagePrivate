@@ -127,8 +127,8 @@ main .width-limiter {
     padding: 1rem;
     gap: 1rem;
     position: relative;
+    margin-bottom: 5rem;
 }
-
 
 .tab-selectors { 
     margin-top: 2rem;
