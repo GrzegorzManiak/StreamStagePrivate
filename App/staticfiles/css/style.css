@@ -1114,7 +1114,7 @@ footer hr {
     padding: 10px;
     width: 100%;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     margin: 10px;
 }
 

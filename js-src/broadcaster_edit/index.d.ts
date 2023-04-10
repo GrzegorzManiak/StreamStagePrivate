@@ -6,6 +6,7 @@ export interface BroadcasterDetails {
     biography: string,
     profile: string,
     banner: string,
+    url: string,
 
     profile_updated: boolean,
     banner_updated: boolean

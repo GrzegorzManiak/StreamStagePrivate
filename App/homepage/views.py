@@ -125,29 +125,34 @@ def broadcaster_profile(request, username):
     
     if not broadcaster:
         return redirect('homepage_index')
+    
+    context = {
+        'data': {
+            'handle': broadcaster.handle,
+            'background': broadcaster.banner.url,
+            'avatar': broadcaster.profile_pic.url,
+            'description': broadcaster.biography,
+            'is_you': False,
+            'short_description': broadcaster.biography[:50] + '...' if len(broadcaster.biography) > 50 else broadcaster.biography,
+            'name': broadcaster.name,
+            'joined': broadcaster.created,
+            'reviews': 0,
+        },
+        'api': {
+            'get_reviews': cross_app_reverse('accounts', 'get_reviews'),
+            'resend_verification': cross_app_reverse('accounts', 'resend_key'),
+            'remove_verification': cross_app_reverse('accounts', 'remove_key'),
+            'recent_verification': cross_app_reverse('accounts', 'recent_key'),
+            'submit_report': reverse_lazy('submit_report'),
+        }
+    }
+
+    if request.user.is_authenticated and broadcaster in request.user.get_authorized_broadcasters():
+        context['edit_details_path'] = cross_app_reverse('accounts', 'edit_broadcasters') + "?bid=" + str(broadcaster.id)
 
     # -- Render the login page
     return render(
         request, 
-        'profiles/user_profile.html', 
-        context={
-            'data': {
-                'handle': broadcaster.handle,
-                'background': broadcaster,
-                'avatar': broadcaster,
-                'description': broadcaster.biography,
-                'is_you': False,
-                'short_description': broadcaster.biography[:50] + '...' if len(broadcaster.biography) > 50 else broadcaster.biography,
-                'name': broadcaster.name,
-                'joined': broadcaster,
-                'reviews': 0,
-            },
-            'api': {
-                'get_reviews': cross_app_reverse('accounts', 'get_reviews'),
-                'resend_verification': cross_app_reverse('accounts', 'resend_key'),
-                'remove_verification': cross_app_reverse('accounts', 'remove_key'),
-                'recent_verification': cross_app_reverse('accounts', 'recent_key'),
-                'submit_report': reverse_lazy('submit_report'),
-            }
-        }
+        'profiles/broadcaster_profile.html', 
+        context=context
     )

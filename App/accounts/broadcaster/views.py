@@ -29,7 +29,7 @@ def edit_broadcasters(request):
 
     update_form = BroadcasterUpdateForm()
 
-    return render(request, 'member_broadcaster.html', 
+    return render(request, 'my_broadcasters.html', 
         context = {
             "broadcaster_id_list": broadcasters,
             "api": {
@@ -81,7 +81,8 @@ def get_broadcaster_details(request, broadcaster:Broadcaster, data):
         "name": broadcaster.name,
         "biography": broadcaster.biography,
         "profile": broadcaster.get_picture("profile_pic"),
-        "banner": broadcaster.get_picture("banner")
+        "banner": broadcaster.get_picture("banner"),
+        "url": cross_app_reverse('homepage', 'broadcaster_profile', {"username": broadcaster.handle})
     }
 
     return success_response("Retrieved broadcaster details", { "details": encoded_broadcaster })
