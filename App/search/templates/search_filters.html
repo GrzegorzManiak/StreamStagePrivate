@@ -6,9 +6,8 @@
         method="get"
         class="d-flex flex-column justify-content-center align-items-center gap-2"
     >   
-        <h4 class="w-100 text-center">Refine Event Search</h4>
 
-        <div class='w-100 d-flex justify-content-center align-items-center gap-2'>
+        <div class='filter-menu w-100 d-flex justify-content-center align-items-center gap-2'>
             <!-- 
                 New Search 
             -->
@@ -27,7 +26,7 @@
             <!-- 
                 Filter By Broadcaster 
             -->
-            <div class="w-100">
+            <div class="w-50">
                 <label class="form-label" for="broadcaster">Broadcaster</label>
                 <input 
                     class="form-control filter" 
@@ -40,239 +39,266 @@
         </div>
 
 
+        <div class='filter-menu w-100 d-flex justify-content-center align-items-center gap-2'>
+            <div class='filter-menu inner w-100 d-flex justify-content-center align-items-center gap-2'>
+                <div class='filter-menu w-100 d-flex justify-content-center align-items-center gap-2'>
+                    <!-- 
+                        Filter By Category 
+                    -->
+                    <div class="w-100 h-100">
+                        <button 
+                            class="filter-dropdown filter text-start"
+                            href="#categoryfilter" 
+                            role="button"
+                            type="button"
+                            data-bs-toggle="dropdown" 
+                            aria-expanded="false"
+                        >
+                            <p><i class="fa-solid fa-caret-down px-2"></i>Category</p>
+                        </button>
 
-        <div class='w-100 d-flex justify-content-center align-items-center gap-2'>
-            <!-- 
-                Filter By Category 
-            -->
-            <div class="w-100 h-100">
-                <select class="form-select h-100 filter" name="cat">
-                    <option value="">Category</option>
-
-                    {% for cat in categories %}
-                        {% if cat.name == category_name %}
-                            <option value="{{ cat.name }}" selected="selected">{{ cat.name }}</option>
-                        {% else %}
-                            <option value="{{ cat.name }}">{{ cat.name }}</option>
-                        {% endif %}
-                    {% endfor %}
-                </select>
-            </div>
-
-
-            <!-- 
-                Filter By Price 
-            -->
-            <div class="w-100 h-100">
-                <!-- Dropdown Button -->
-                <button 
-                    class="filter-dropdown filter text-start"
-                    href="#pricefilter" 
-                    role="button"
-                    type="button"
-                    data-bs-toggle="dropdown" 
-                    aria-expanded="false"
-                >
-                    <p><i class="fa-solid fa-caret-down px-2"></i>Filter by Price</p>
-                </button>
-
-
-                <!-- Dropdown Menu -->
-                <div 
-                    class="dropdown-menu {% if min_price or max_price %}show{% endif %}" 
-                    id="pricefilter"
-                >
-                    <div id="price-filters">
-                        <div class="d-flex justify-content-center align-items-center gap-2 mb-2">
-                            <!-- Filter By Price Range -->
-                            <div class='d-flex w-100 flex-column'>
-                                <label class="form-label w-100" for="min-price">From</label>
-                                <input 
-                                    class="w-100 dropdown-input"
-                                    type="number" 
-                                    name="mip" 
-                                    style="background-color: var(--theme-color)!important"
-                                    placeholder="€1"
-                                    {% if min_price %}value="€{{min_price}}"{% endif %}>
-                            </div>
-
-                            <div class='d-flex w-100 flex-column'>
-                                <label class="form-label w-100" for="max-price">To</label>
-                                <input 
-                                    class="w-100 dropdown-input"
-                                    type="number"
-                                    name="map" 
-                                    style="background-color: var(--theme-color)!important"
-                                    placeholder="€1000"
-                                    {% if max_price %}value="€{{max_price}}"{% endif %}>
-                            </div>
-                        </div>
-                            
-                        <!-- Sort By Price Asc, Price Desc -->
-                        <div class='w-100'>
-                            <label class="form-label" for="sort-by-price">Sort By</label>
-
+                        <div 
+                            class="dropdown-menu" 
+                            id="categoryfilter"
+                        >
                             <select 
-                                class="form-select " name="s"
+                                class="form-select h-100 filter" 
                                 style="background-color: var(--theme-color)!important"
+                                name="cat"
                             >
-                                <option value="none">None</option>
-                                <option value="price-asc" {% if sort_by == 'price-asc' %}selected{% endif %}>Lowest Priced First</option>
-                                <option value="price-desc" {% if sort_by == 'price-desc' %}selected{% endif %}>Highest Priced First</option>
+                                <option value="">Category</option>
+
+                                {% for cat in categories %}
+                                    {% if cat.name == category_name %}
+                                        <option value="{{ cat.name }}" selected="selected">{{ cat.name }}</option>
+                                    {% else %}
+                                        <option value="{{ cat.name }}">{{ cat.name }}</option>
+                                    {% endif %}
+                                {% endfor %}
                             </select>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-            
 
 
-        <div class='w-100 d-flex justify-content-center align-items-center gap-2'>
+                    <!-- 
+                        Filter By Price 
+                    -->
+                    <div class="w-100 h-100">
+                        <!-- Dropdown Button -->
+                        <button 
+                            class="filter-dropdown filter text-start"
+                            href="#pricefilter" 
+                            role="button"
+                            type="button"
+                            data-bs-toggle="dropdown" 
+                            aria-expanded="false"
+                        >
+                            <p><i class="fa-solid fa-caret-down px-2"></i>Price</p>
+                        </button>
 
 
-            <!-- Filter By Location -->
-            <div class="w-100 h-100">
+                        <!-- Dropdown Menu -->
+                        <div 
+                            class="dropdown-menu" 
+                            id="pricefilter"
+                        >
+                            <div id="price-filters">
+                                <div class="d-flex justify-content-center align-items-center gap-2 mb-2">
+                                    <!-- Filter By Price Range -->
+                                    <div class='d-flex w-100 flex-column'>
+                                        <label class="form-label w-100" for="min-price">From</label>
+                                        <input 
+                                            class="w-100 dropdown-input"
+                                            type="number" 
+                                            name="mip" 
+                                            style="background-color: var(--theme-color)!important"
+                                            placeholder="€1"
+                                            {% if min_price %}value="€{{min_price}}"{% endif %}>
+                                    </div>
 
-                <!-- Dropdown Button -->
-                <button 
-                    class="filter-dropdown filter text-start"
-                    href="#locationfilter" 
-                    role="button"
-                    type="button"
-                    data-bs-toggle="dropdown" 
-                    aria-expanded="false">
-                    <p><i class="fa-solid fa-caret-down px-2"></i>Filter by Location</p>
-                </button>
+                                    <div class='d-flex w-100 flex-column'>
+                                        <label class="form-label w-100" for="max-price">To</label>
+                                        <input 
+                                            class="w-100 dropdown-input"
+                                            type="number"
+                                            name="map" 
+                                            style="background-color: var(--theme-color)!important"
+                                            placeholder="€1000"
+                                            {% if max_price %}value="€{{max_price}}"{% endif %}>
+                                    </div>
+                                </div>
+                                    
+                                <!-- Sort By Price Asc, Price Desc -->
+                                <div class='w-100'>
+                                    <label class="form-label" for="sort-by-price">Sort By</label>
 
-
-                <div 
-                    class="dropdown-menu {% if venue or city or country %}show{% endif %}" 
-                    id="locationfilter"
-                >
-                    <div id="location-filters d-flex justify-content-center align-items-center gap-2">
-
-                        <!-- 
-                            Filter By Venue 
-                        -->
-                        <input 
-                            class="form-control" 
-                            type="search" 
-                            placeholder="Venue" 
-                            aria-label="Venue" 
-                            name="v"
-                            style="background-color: var(--theme-color)!important"
-                            value="{% if venue %}{{ venue }}{% endif %}">
-
-
-                        <!-- 
-                            Filter By City 
-                        -->
-                        <input 
-                            class="form-control" 
-                            type="search" 
-                            placeholder="City" 
-                            aria-label="City" 
-                            name="c"
-                            style="background-color: var(--theme-color)!important"
-                            value="{% if city %}{{ city }}{% endif %}">
-
-
-                        <!-- 
-                            Filter By Country 
-                        -->
-                        <input 
-                            class="form-control" 
-                            type="search" 
-                            placeholder="Country" 
-                            aria-label="Country" 
-                            name="co"
-                            style="background-color: var(--theme-color)!important"
-                            value="{% if country %}{{ country }}{% endif %}">
-                    </div>
-                </div>
-            </div>
-
-
-            <!-- Filter By Date -->
-            <div class="w-100 h-100">
-
-                <!-- Dropdown Button -->
-                <button 
-                    class="filter-dropdown filter text-start"
-                    href="#datefilter" 
-                    role="button"
-                    type="button"
-                    data-bs-toggle="collapse" 
-                    aria-expanded="false"
-                >
-                    <p><i class="fa-solid fa-caret-down px-2"></i>Filter by Date</p>
-                </button>
-
-
-                <div 
-                    class="dropdown-menu {% if start_date or end_date %}show{% endif %}" 
-                    id="datefilter"
-                >
-
-                    <!-- Filter By Date Range -->
-                    <div class="d-flex justify-content-center align-items-center gap-2 mb-2">
-                        <div class='d-flex w-100 flex-column'>
-                            <label class="form-label w-100" for="sd">From</label>
-                            <input 
-                                class="w-100 dropdown-input"
-                                type="number" 
-                                name="sd" 
-                                id="sd"
-                                style="background-color: var(--theme-color)!important"
-                                placeholder="(dd/mm/yyyy)"
-                                {% if start_date %} value="{{start_date}}" {% endif %}>
-                        </div>
-
-                        <div class='d-flex w-100 flex-column'>
-                            <label class="form-label w-100" for="ed">To</label>
-                            <input 
-                                class="w-100 dropdown-input"
-                                type="number"
-                                name="ed" 
-                                id="ed"
-                                style="background-color: var(--theme-color)!important"
-                                placeholder="(dd/mm/yyyy)"
-                                {% if end_date %} value="{{end_date}}" {% endif %}>
+                                    <select 
+                                        class="form-select " name="s"
+                                        style="background-color: var(--theme-color)!important"
+                                    >
+                                        <option value="none">None</option>
+                                        <option value="price-asc" {% if sort_by == 'price-asc' %}selected{% endif %}>Lowest Priced First</option>
+                                        <option value="price-desc" {% if sort_by == 'price-desc' %}selected{% endif %}>Highest Priced First</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                        
+                </div>
+                    
 
-                    <!-- Upcoming Events only -->
-                    <div class="collapse d-flex w-100" id="datefilter">
-                        <label for='u' class="d-block w-50">Upcoming Events Only</label>
-                        {% if upcoming %} <input type="checkbox" name="u" value="y" checked>
-                        {% else %} <input type="checkbox" name="u" value="y"> {% endif %}
+
+                <div class='filter-menu w-100 d-flex justify-content-center align-items-center gap-2'>
+
+
+                    <!-- Filter By Location -->
+                    <div class="w-100 h-100">
+
+                        <!-- Dropdown Button -->
+                        <button 
+                            class="filter-dropdown filter text-start"
+                            href="#locationfilter" 
+                            role="button"
+                            type="button"
+                            data-bs-toggle="dropdown" 
+                            aria-expanded="false">
+                            <p><i class="fa-solid fa-caret-down px-2"></i>Location</p>
+                        </button>
+
+
+                        <div 
+                            class="dropdown-menu" 
+                            id="locationfilter"
+                        >
+                            <div id="location-filters d-flex justify-content-center align-items-center gap-2">
+
+                                <!-- 
+                                    Filter By Venue 
+                                -->
+                                <input 
+                                    class="form-control" 
+                                    type="search" 
+                                    placeholder="Venue" 
+                                    aria-label="Venue" 
+                                    name="v"
+                                    style="background-color: var(--theme-color)!important"
+                                    value="{% if venue %}{{ venue }}{% endif %}">
+
+
+                                <!-- 
+                                    Filter By City 
+                                -->
+                                <input 
+                                    class="form-control" 
+                                    type="search" 
+                                    placeholder="City" 
+                                    aria-label="City" 
+                                    name="c"
+                                    style="background-color: var(--theme-color)!important"
+                                    value="{% if city %}{{ city }}{% endif %}">
+
+
+                                <!-- 
+                                    Filter By Country 
+                                -->
+                                <input 
+                                    class="form-control" 
+                                    type="search" 
+                                    placeholder="Country" 
+                                    aria-label="Country" 
+                                    name="co"
+                                    style="background-color: var(--theme-color)!important"
+                                    value="{% if country %}{{ country }}{% endif %}">
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Events with in-person tickets only -->
-                    <div class="collapse d-flex w-100" id="datefilter">
-                        <label for='ip' class="d-block w-50">In-Person Tickets Available</label>
-                        {% if in_person %} <input type="checkbox" name="ip" value="y" checked>
-                        {% else %} <input type="checkbox" name="ip" value="y"> {% endif %}
+
+                    <!-- Filter By Date -->
+                    <div class="w-100 h-100">
+
+                        <!-- Dropdown Button -->
+                        <button 
+                            class="filter-dropdown filter text-start"
+                            href="#datefilter" 
+                            role="button"
+                            type="button"
+                            data-bs-toggle="collapse" 
+                            aria-expanded="false"
+                        >
+                            <p><i class="fa-solid fa-caret-down px-2"></i>Date</p>
+                        </button>
+
+
+                        <div 
+                            class="dropdown-menu" 
+                            id="datefilter"
+                        >
+
+                            <!-- Filter By Date Range -->
+                            <div class="d-flex justify-content-center align-items-center gap-2 mb-2">
+                                <div class='d-flex w-100 flex-column'>
+                                    <label class="form-label w-100" for="sd">From</label>
+                                    <input 
+                                        class="w-100 dropdown-input"
+                                        type="number" 
+                                        name="sd" 
+                                        id="sd"
+                                        style="background-color: var(--theme-color)!important"
+                                        placeholder="(dd/mm/yyyy)"
+                                        {% if start_date %} value="{{start_date}}" {% endif %}>
+                                </div>
+
+                                <div class='d-flex w-100 flex-column'>
+                                    <label class="form-label w-100" for="ed">To</label>
+                                    <input 
+                                        class="w-100 dropdown-input"
+                                        type="number"
+                                        name="ed" 
+                                        id="ed"
+                                        style="background-color: var(--theme-color)!important"
+                                        placeholder="(dd/mm/yyyy)"
+                                        {% if end_date %} value="{{end_date}}" {% endif %}>
+                                </div>
+                            </div>
+                                
+
+                            <!-- Upcoming Events only -->
+                            <div class="collapse d-flex w-100" id="datefilter">
+                                <label for='u' class="d-block w-50">Upcoming Events Only</label>
+                                {% if upcoming %} <input type="checkbox" name="u" value="y" checked>
+                                {% else %} <input type="checkbox" name="u" value="y"> {% endif %}
+                            </div>
+
+                            <!-- Events with in-person tickets only -->
+                            <div class="collapse d-flex w-100" id="datefilter">
+                                <label for='ip' class="d-block w-50">In-Person Tickets Available</label>
+                                {% if in_person %} <input type="checkbox" name="ip" value="y" checked>
+                                {% else %} <input type="checkbox" name="ip" value="y"> {% endif %}
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- 
-            Apply Filters / Reset Search
-        -->
-        <div class='d-flex w-100 gap-2'>
-            <!-- Apply Filters -->
-            <div class="w-100">
-                <button class="btn btn-primary w-100">Apply Filters</button>
-            </div>
+                <!-- 
+                    Apply Filters / Reset Search
+                -->
+                <div class='filter-menu d-flex w-100 gap-2'>
+                    <!-- Apply Filters -->
+                    <div class="w-100">
+                        <button 
+                        class="btn btn-primary w-100 info"
+                        >Apply</button>
+                    </div>
 
-            <!-- Clear Filters -->
-            <a class="w-100" href="?">
-                <button class="btn btn-danger w-100">Reset Search</button>
-            </a>
+                    <!-- Clear Filters -->
+                    <a class="w-100" href="?">
+                        <button 
+                        class="btn btn-danger w-100 error"
+                        >Clear</button>
+                    </a>
+                </div>
+            </div>
         </div>
     </form>
 </div>
