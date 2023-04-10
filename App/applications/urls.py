@@ -3,7 +3,8 @@ from .views import *
 
 from .api import (
     get_user_applications,
-    update_application_status
+    update_application_status,
+    fetch_pending_applications
 )
 
 urlpatterns = [
@@ -24,5 +25,6 @@ urlpatterns = [
     # API
 
     path('admin/api/get_applications', get_user_applications, name='get_user_applications'),
-    path('admin/api/update_status', update_application_status, name='update_application_status')
+    path('admin/api/update_status', update_application_status, name='update_application_status'),
+    path('admin/api/fetch_applications', fetch_pending_applications, name='fetch_applications')
 ]
