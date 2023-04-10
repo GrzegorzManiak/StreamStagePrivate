@@ -62,6 +62,10 @@
                     <p class='text-muted'>
                         {{ data.short_description }}
                         <span class="more-desc"> | More <i class="fas fa-chevron-right"></i></span>
+                        
+                        {% if edit_details_path %}
+                        <a href="{{edit_details_path}}" class="edit-details float-end"> <i class="fas fa-chevron-left"></i> Edit Details </a>
+                        {% endif %}
                     </p>
                 </div>
 

@@ -291,3 +291,8 @@
     background-color: var(--theme-backdrop-color);
     border-radius: 0.5rem;
 }
+
+
+.width-limiter {
+    margin-bottom: 5rem;
+}

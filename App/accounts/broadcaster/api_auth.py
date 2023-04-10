@@ -24,9 +24,6 @@ def can_edit_broadcaster():
             if request.method == 'POST':
                 if not broadcaster:
                     return error_response("Broadcaster not found.")
-
-                if not broadcaster:
-                    return error_response("Invalid event ID specified.")
                 
                 if not request.user.is_authenticated:
                     return error_response("You do not have the permission to access this resource.")
@@ -39,10 +36,9 @@ def can_edit_broadcaster():
                 
                
             if not request.user.is_staff:
-                if not request.user.is_streamer:
-                    return redirect('homepage_index')
+                is_contributor = broadcaster.contributors.filter(id=request.user.id).exists()
 
-                if broadcaster.streamer != request.user and not broadcaster.contributors.filter(id=request.user.id).exists():
+                if not broadcaster.streamer != request.user and not request.user.is_streamer and not is_contributor:
                     return redirect('homepage_index')
             
             # -- Call the original function with the request object

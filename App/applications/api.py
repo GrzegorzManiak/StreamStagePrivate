@@ -28,11 +28,14 @@ from .models import (
 )
 
 
+# USER APIs
+
 @api_view(['POST'])
 @required_data(['submission_statement'])
 @authenticated()
 def submit_streamer_app(request, data):
 
+    # Check if user has alreadyy submitted an event application
     if get_streamer_applications(request.user).count() > 0:
         return error_response("You can not submit an event application with another pending.")
     
@@ -45,6 +48,7 @@ def submit_streamer_app(request, data):
 @authenticated()
 def submit_broadcaster_app(request, data):
 
+    # ensure user is either a streamer or has an application pending
     if not request.user.is_streamer and get_streamer_applications(request.user).count() == 0:
         return error_response("You can not submit a broadcaster application application without submitting a streamer application first.")
 
@@ -56,12 +60,14 @@ def submit_broadcaster_app(request, data):
 @required_data(['broadcaster', 'title', 'description', 'categories', 'over_18s'])
 def submit_event_app(request, data):
 
+    # ensure user is either a streamer or has an application pending
     if not request.user.is_streamer and get_streamer_applications(request.user).count() == 0:
         return error_response("You can not submit an event application before submitting a streamer application.")
 
+    # ensure user has a broadcaster application pending, or is already
+    # authorized to act on behalf of a broadcaster
     if get_broadcaster_applications(request.user, [ STATUS_WAITING, STATUS_APPROVED ]).count() == 0:
         return error_response("You can not submit an event application without a pending or accepted broadcaster application.")
-
 
     submit_event_application(request.user, data)
 
@@ -114,6 +120,43 @@ def get_user_applications(request):
         applications["broadcaster"].append(serialized)
 
     return success_response("Successfully retrieved applications. ", { "applications": applications })
+
+
+# Admin APIs
+
+@api_view(['POST'])
+@is_admin()
+def fetch_pending_applications(request):
+    streamers = []
+    broadcasters = []
+    events = []
+
+    for application in get_streamer_applications(None):
+        streamers.append({
+            "application_id": application.application_id,
+            "applicant": application.applicant.cased_username,
+            "statement": application.submission_statement
+        })
+
+    for application in get_broadcaster_applications(None):
+        broadcasters.append({
+            "application_id": application.application_id,
+            "applicant": application.applicant.cased_username,
+            "handle": application.broadcaster.handle,
+            "statement": application.submission_statement
+        })
+
+    for event in get_event_applications(None):
+        events.append({
+            "application_id": application.application_id,
+            "applicant": application.applicant.cased_username,
+            "handle": application.broadcaster.handle,
+            "event_id": application.event.event_id,
+            "event_title": application.event.title,
+            "statement": application.submission_statement
+        })
+
+    return success_response("Successfully fetched applications.", { "streamers": streamers, "broadcasters": broadcasters, "events": events })
 
 
 @api_view(['POST'])

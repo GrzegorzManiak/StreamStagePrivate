@@ -127,8 +127,8 @@ main .width-limiter {
     padding: 1rem;
     gap: 1rem;
     position: relative;
+    margin-bottom: 5rem;
 }
-
 
 .tab-selectors { 
     margin-top: 2rem;
@@ -170,7 +170,14 @@ main .width-limiter {
     overflow: hidden;
 }
 
+.edit-details {
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--accent-color)
+}
+
 .more-desc { cursor: pointer; } 
+
 .tabs > div { 
     transform: translateX(100%); 
     grid-column: 1;
