@@ -16,7 +16,11 @@ export interface Config {
 
     get_broadcaster_details: string,
     update_broadcaster_details: string,
-    broadcaster_ids: string
+    broadcaster_ids: string,
+
+    fetch_invites: string,
+    send_invite: string,
+    respond_invite: string
 }
 
 

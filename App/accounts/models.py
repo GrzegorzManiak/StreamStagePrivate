@@ -542,3 +542,13 @@ class Report(models.Model):
             "time": self.time,
             "date": self.date,
         }
+
+class BroadcasterContributeInvite(models.Model):
+    broadcaster = models.ForeignKey(Broadcaster, on_delete=models.CASCADE, related_name="broadcaster")
+    inviter = models.ForeignKey(Member, on_delete=models.CASCADE, related_name="inviter")
+    invitee = models.ForeignKey(Member, on_delete=models.CASCADE, related_name="invitee")
+    
+    message = models.TextField(max_length=256)
+
+    is_pending = models.BooleanField("Is Pending", default=True)
+

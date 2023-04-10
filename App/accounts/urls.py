@@ -49,7 +49,11 @@ from .views import get_token, login, logout, register, validate_token
 from .broadcaster.views import (
     edit_broadcasters,
     get_broadcaster_details,
-    update_broadcaster_details
+    update_broadcaster_details,
+
+    fetch_invites,
+    send_contribute_invite,
+    respond_to_invite
 )
 
 from django.conf import settings
@@ -116,8 +120,12 @@ urlpatterns = [
 
     # -- Broadcaster
     path('broadcaster/', edit_broadcasters, name='edit_broadcasters'),
-    path('broadcaster/get_details', get_broadcaster_details, name='get_broadcaster_details'),
-    path('broadcaster/set_details', update_broadcaster_details, name='update_broadcaster_details'),
+    path('broadcaster/api/get_details', get_broadcaster_details, name='get_broadcaster_details'),
+    path('broadcaster/api/set_details', update_broadcaster_details, name='update_broadcaster_details'),
+
+    path('broadcaster/api/send_invite', send_contribute_invite, name='send_contribute_invite'),
+    path('broadcaster/api/respond_invite', respond_to_invite, name='respond_contribute_invite'),
+    path('broadcaster/api/fetch_invites', fetch_invites, name='fetch_contribute_invites'),
 
     # -- Admin
     path('site_panel/', site_panel, name='site_panel'),
