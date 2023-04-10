@@ -21,9 +21,9 @@ function manage_add_media_btn(
     btn: HTMLElement
 ) {
     btn.addEventListener('click', () => picture_upload_modal(
-        configuration.add_media, 1,
-        'Event Media',
-        'Upload a representative picture for your event.',
+        null, 1,
+        'Event Image',
+        'Upload an image for your event',
         async (image: string) => {
             var description = (document.querySelector("#id_media_description") as HTMLInputElement).value
 

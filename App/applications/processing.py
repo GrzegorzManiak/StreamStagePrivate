@@ -49,7 +49,7 @@ def submit_event_application(user, data):
     )
     
     for category in data['categories']:
-       event.categories.add(Category.objects.get(id=category))
+       event.categories.add(category)#Category.objects.get(id=category))
 
     event.save()
 
@@ -104,10 +104,25 @@ def reject_event_application(application, admin):
 
 # Utility Functions
 def get_broadcaster_applications(user, statuses = [ STATUS_WAITING ]):
-    return BroadcasterApplication.objects.filter(applicant=user, status__in=statuses).order_by('-submitted').all()
+    result = BroadcasterApplication.objects.filter(status__in=statuses)
+
+    if user is not None:
+        result = result.filter(applicant=user)
+
+    return result.order_by('-submitted').all()
 
 def get_streamer_applications(user, statuses = [ STATUS_WAITING ]):
-    return StreamerApplication.objects.filter(applicant=user, status__in=statuses).order_by('-submitted').all()
+    result = StreamerApplication.objects.filter(status__in=statuses)
+
+    if user is not None:
+        result = result.filter(applicant=user)
+
+    return result.order_by('-submitted').all()
 
 def get_event_applications(user, statuses = [ STATUS_WAITING ]):
-    return EventApplication.objects.filter(applicant=user, status__in=statuses).order_by('-submitted').all()
+    result = EventApplication.objects.filter(status__in=statuses)
+
+    if user is not None:
+        result = result.filter(applicant=user)
+
+    return result.order_by('-submitted').all()

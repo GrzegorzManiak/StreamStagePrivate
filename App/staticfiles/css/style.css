@@ -1116,3 +1116,23 @@ footer hr {
     font-weight: 600;
     margin-bottom: 0.25rem;
 }
+
+/* ********************* */
+/*      BROADCASTERS     */
+/* ********************* */
+.broadcaster-entry {
+    background-color:var(--theme-backdrop-color);
+    border-radius: 7px;
+    padding: 10px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    margin: 10px;
+}
+
+.broadcaster-entry:hover {
+    background-color:var(--theme-backdrop-color);
+    border-radius: 7px;
+    padding: 10px;
+    width: 100%;
+}

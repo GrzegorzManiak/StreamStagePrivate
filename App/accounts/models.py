@@ -17,6 +17,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django_countries.fields import CountryField
+from django.db.models import Q
 from timezone_field import TimeZoneField
 
 from .oauth import OAuthTypes
@@ -368,6 +369,9 @@ class Member(AbstractUser):
         # -- Save the user
         self.save()
 
+    def get_authorized_broadcasters(self):
+        return Broadcaster.objects.filter(Q(streamer = self) | Q(contributors__id=self.id))
+
 
 
 class MembershipStatus(models.Model):
@@ -461,7 +465,7 @@ class Broadcaster(models.Model):
             - profile_pic
         """
         try:
-            img_tmp = NamedTemporaryFile(delete=True)
+            img_tmp = NamedTemporaryFile()
             image_data = base64.b64decode(base64_data.split(',')[1])
             image = Image.open(io.BytesIO(image_data))
 
@@ -474,11 +478,11 @@ class Broadcaster(models.Model):
 
             # -- Set the image
             if type == "banner":
-                img = File(img_tmp, name=f'broadcaster/banners/{uuid.uuid4()}.webp')
+                img = File(img_tmp, name=f'banners/{uuid.uuid4()}.webp')
                 self.banner = img
 
             elif type == "profile_pic":
-                img = File(img_tmp, name=f'broadcaster/pfp/{uuid.uuid4()}.webp')
+                img = File(img_tmp, name=f'pfp/{uuid.uuid4()}.webp')
                 self.profile_pic = img
 
             self.save()
@@ -549,3 +553,13 @@ class Report(models.Model):
             "time": self.time,
             "date": self.date,
         }
+
+class BroadcasterContributeInvite(models.Model):
+    broadcaster = models.ForeignKey(Broadcaster, on_delete=models.CASCADE, related_name="broadcaster")
+    inviter = models.ForeignKey(Member, on_delete=models.CASCADE, related_name="inviter")
+    invitee = models.ForeignKey(Member, on_delete=models.CASCADE, related_name="invitee")
+    
+    message = models.TextField(max_length=256)
+
+    is_pending = models.BooleanField("Is Pending", default=True)
+
