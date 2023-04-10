@@ -20,8 +20,8 @@
 .thumbnail {
     position: relative;
     width: var(--tb-width);
-    height: var(--tb-height);
-    /* overflow: hidden; */
+    aspect-ratio: var(--tb-aspect-ratio);
+
     border-radius: 0.5rem;
     padding: 0;
     background-color: var(--theme-color);
@@ -34,7 +34,7 @@
         All extra space will be cropped
     */
     width: var(--tb-width);
-    height: var(--tb-height);
+    aspect-ratio: var(--tb-aspect-ratio);
 
     padding: 0;
     border-radius: 0.5rem;
@@ -515,8 +515,9 @@
 */
 
 .inner-showcase {
-    padding: 1rem;
     max-height: 50rem;
+    height: 100%;
+    width: 100%;
 }
 
 
@@ -558,7 +559,7 @@
 
 .showcase-big {
     width: 100%;
-    height: auto;
+    height: 100%;
     border-radius: 0.5rem;
     position: relative;
 
@@ -585,7 +586,7 @@
     background: linear-gradient(
         200deg, 
         rgba(0,0,0,0) 0%, 
-        rgba(0, 0, 0, 0.568) 100%
+        rgba(0, 0, 0, 0.7) 100%
     );
 }
 
@@ -630,4 +631,39 @@
     width: 2rem;
     height: 2rem;
     border-radius: 100%;
+}
+
+.showcase-slide {
+    min-height: 50vh;
+    max-height: 50rem;
+    background-color: var(--theme-backdrop-color);
+
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+}
+
+.showcase-cover {
+    grid-column: 1;
+    grid-row: 1;
+    z-index: 5;
+}
+
+.showcase-big {
+    grid-column: 1;
+    grid-row: 1;
+    z-index: 10;
+}
+
+.description {
+    font-size: 1rem;
+    font-weight: 400;
+    margin-top: 0.5rem;
+    color: var(--greyed-out-font-color)
+}
+
+swiper-container {
+    --swiper-navigation-color: #fff; 
+    --swiper-pagination-color: #fff;
+    --swiper-navigation-size: 1.5rem;
 }

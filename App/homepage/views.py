@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view
 from django.conf import settings
 from accounts.models import Member, Broadcaster
 from StreamStage.templatetags.tags import cross_app_reverse
-from events.models import EventReview
+from events.models import EventReview, Event
 
 """
     Main homepage view, first page a user sees when they visit the site
@@ -12,9 +12,13 @@ from events.models import EventReview
 @api_view(['GET'])
 def index(request):
 
+    # -- Get 3 random events
+    featuerd = Event.objects.all().order_by('?')[:3]
+
     context = {
         'is_admin': request.user.is_superuser,
-        'base_url': settings.DOMAIN_NAME
+        'base_url': settings.DOMAIN_NAME,
+        'features': featuerd
     }
 
     return render(

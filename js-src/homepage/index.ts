@@ -221,9 +221,28 @@ function set_splash_state(
 }
 
 // -- Start the splash animation
-set_splash_state('loading');
-sleep(1000).then(() => {
-    set_splash_state('finising');
-    sleep(1500).then(() => set_splash_state('finished'));
-});
-attach_to_showcases();
+const load = () => {
+    let loaded = false;
+    set_splash_state('loading');
+    sleep(3000).then(() => {
+        if (loaded) return;
+        set_splash_state('finising');
+        sleep(1500).then(() => { 
+            if (loaded) return;
+            loaded = true;
+            set_splash_state('finished'); 
+        });
+    });
+
+    window.addEventListener('load', async() => {
+        if (loaded) return;
+        set_splash_state('finising');
+        sleep(1000).then(() => {
+            if (loaded) return;
+            loaded = true;
+            set_splash_state('finished'); 
+        });
+    });
+
+    attach_to_showcases();
+}

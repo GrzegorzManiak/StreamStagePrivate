@@ -29,7 +29,142 @@
     </div>
 
     <!-- Showcase -->
-    {% include 'showcase.html' %}
+    {% comment %} {% include 'showcase.html' %} {% endcomment %}
+    <swiper-container 
+        class="showcase-container showcase w-100" 
+        pagination="true" 
+        pagination-clickable="true" 
+        navigation="true" 
+        space-between="30"
+        loop="true"
+    >
+        {% for featured in features %}
+            <swiper-slide 
+                class="showcase-slide w-100"
+        >
+                <div 
+                    class = 'showcase-cover'
+                    {% if event.get_media_count == 0 %}
+                        style="background-image: url({% static 'images/default_event_cover.png' %});"
+                    {% else %}
+                        style="background-image: url({{ featured.get_cover_picture.picture.url }});"
+                    {% endif %}
+                ></div>
+
+                
+                <div
+                class='
+                    showcase-big 
+                    w-100
+                    d-flex
+                    justify-content-center
+                    align-items-center
+                '>
+                    <div class='showcase-inner'>
+                        <!-- 
+                            This is going to be the inner showcase
+                            Where the text, buttons etc will be
+                            placed in the bottom left corner.
+                        -->
+                        <div class='
+                            w-100
+                            h-100
+                            d-flex
+                            justify-content-start
+                            align-items-end
+                            p-2
+                        '>
+                            <div>
+                                <h1 data-sci-elm='title'>
+                                    {{ featured.title }}
+                                </h1>
+                                
+                                <div data-sci-elm='desc'>
+
+                                    <!-- Streamer details -->
+                                    <div class='
+                                        d-flex
+                                        gap-2
+                                        flex-wrap
+                                        align-items-center
+                                    '>
+                                        <!-- PFP -->
+                                        <div 
+                                            class='showcase-pfp'
+                                        >
+                                            <img 
+                                                data-skeleton='image'
+                                                src='{{ featured.broadcaster.get_picture }}' 
+                                                alt=''
+                                            >
+                                        </div>
+
+                                        <!-- View count -->
+                                        <div class='thumbnail-view-count'>
+                                            <p 
+                                                class='skeleton m-0'
+                                                data-elm='view-count'
+                                                data-skeleton='text'
+                                            > 1.3K views</p>
+                                        </div>
+
+                                        <!-- Date -->
+                                        <div class='thumbnail-date d-flex gap-2'>
+                                            <p 
+                                                class='skeleton m-0'
+                                                data-elm='date-vod'
+                                                data-skeleton='text'
+                                            ></p>
+
+                                            <p 
+                                                class='skeleton m-0'
+                                                data-elm='date-live'
+                                                data-skeleton='text'
+                                            >NOW</p>
+
+                                            <!-- DOT -->
+                                            <div class='thumbnail-dot'>
+                                                <i class="fa-solid fa-circle"></i>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    
+                                    <p class='description'>
+                                        {{ featured.description }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!--
+                            This is the tags at the top
+                        -->
+                        <div class='
+                            w-100
+                            h-100
+                            d-flex
+                            justify-content-end
+                            align-items-end
+                            pb-2
+                            px-2
+                        '>
+                            <div class='
+                                d-flex
+                                gap-2
+                                flex-wrap
+                                tags
+                            '>
+            
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </swiper-slide>
+        {% endfor %}
+    </swiper-container>
+
 
     <!-- Thumbnail -->
     {% include 'thumbnail.html' %}
@@ -45,5 +180,6 @@
     </main>
 
     <!-- Js -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-element-bundle.min.js"></script>
     {% render_bundle 'homepage' %}
 {% endblock %}
