@@ -234,9 +234,20 @@ class Member(AbstractUser):
             return customer
         
         # -- If the user has a stripe customer id, return the customer
-        customer = stripe.Customer.retrieve(self.stripe_customer)
-        if customer: return customer
-        return None
+        try:
+            customer = stripe.Customer.retrieve(self.stripe_customer)
+            if customer: return customer
+            return None
+        
+        except Exception as e:
+            customer = stripe.Customer.create(
+                email=self.email,
+                name=self.username,
+                description=self.id
+            )
+            self.stripe_customer = customer['id']
+            self.save()
+            return customer
 
 
 
@@ -422,7 +433,7 @@ class Broadcaster(models.Model):
 
 
 
-    def get_picture(self, type: str):
+    def get_picture(self, type: str = 'profile_pic'):
         """
             Returns the a picture url based on the type
             - banner
@@ -437,7 +448,7 @@ class Broadcaster(models.Model):
 
         if type == "profile_pic":
             if self.profile_pic is None or self.profile_pic == "": 
-                return None
+                return '/static/images/placeholder-pfp.png'
 
             if self.profile_pic is not None:
                 return f'/{MEDIA_URL}{self.profile_pic}'

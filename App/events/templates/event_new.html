@@ -2,16 +2,16 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<div class="container mx-auto" style="margin-top: var(--header-height)!important">
-    <h1 class="page-title">Add Event</h1>
-    <div class="d-flex mx-auto">
-        <form class="form-class form-layout" action="" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form|crispy }}
-            <div class="d-flex">
-                <button class="btn btn-primary" type="submit">Add Event</button>
-            </div>
-        </form>
+    <div class="container mx-auto" style="margin-top: var(--header-height)!important">
+        <h1 class="page-title">Add Event</h1>
+        <div class="d-flex mx-auto">
+            <form class="form-class form-layout" action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <div class="d-flex">
+                    <button class="btn btn-primary" type="submit">Add Event</button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 {% endblock %}

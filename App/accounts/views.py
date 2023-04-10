@@ -217,6 +217,8 @@ def logout(request):
     request._request.method = 'GET'
     request._request.user = request.user
     dj_logout(request._request)
+    request.user.token = secrets.token_urlsafe(32)
+    request.user.save()
     Statistics.log('accounts', 'logout')
 
     return render(

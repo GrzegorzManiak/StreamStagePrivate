@@ -1,4 +1,4 @@
-import { AddCardResponse, Card, GetCardsResponse, GetReviewsResponse, report_type } from './index.d';
+import { AddCardResponse, Card, CheckPaymentIntentResponse, GetCardsResponse, GetReviewsResponse, NewPaymentIntentResponse, report_type } from './index.d';
 import { base_request } from '../api';
 import { load_cfg } from '.';
 import { DefaultResponse } from '../api/index.d';
@@ -85,3 +85,53 @@ export const submit_report = async (
     }).submit_report,
     { type, r_id, reason }
 );
+
+
+
+/**
+ * @name create_intent
+ * @param {string | Card & { save: boolean }} method - Payment method
+ * @param {string} buyable_id - The ID of the thing being bought
+ * @returns {Promise<NewPaymentIntentResponse>}
+ */
+export const create_intent = async (
+    buyable_id: string,
+    payment_method: string | Card & { save: boolean },
+): Promise<NewPaymentIntentResponse> => base_request(
+    'POST',
+    build_configuration<{create_intent: string}>({
+        create_intent: new Type('data-create-payment-intent', 'string'),
+    }).create_intent,
+    { payment_method, buyable_id }
+);
+
+
+
+/**
+ * @name check_intent
+ * @param {string} intent_id - The ID of the payment intent
+ * @returns {Promise<CheckPaymentIntentResponse>}
+ * @description Check the status of a payment intent
+ */
+export const check_intent = async (
+    intent_id: string
+): Promise<CheckPaymentIntentResponse> => base_request(
+    'POST',
+    build_configuration<{check_intent: string}>({
+        check_intent: new Type('data-check-payment-intent', 'string'),
+    }).check_intent,
+    { intent_id }
+);
+
+
+
+/**
+ * @name logged_in
+ * @returns boolean
+ * @description Check if the user is logged in
+ */
+export const logged_in = (): boolean => {
+    return build_configuration<{logged_in: boolean}>({
+        logged_in: new Type('data-logged-in', 'boolean'),
+    }).logged_in;
+}

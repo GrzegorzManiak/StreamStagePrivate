@@ -3,6 +3,7 @@ from orders.processing import create_purchase
 from store.models import FlexibleTicket
 from accounts.models import Member
 from events.models import TicketListing
+import uuid
 
 """
     Queries 'item' price rather than ticket price as I intend
@@ -16,7 +17,11 @@ def get_item_price(item_id):
     
     return None
 
-def create_ticket(ticket_listing: TicketListing, purchase_item: PurchaseItem):
+def create_ticket(
+    purchase_id: uuid.UUID,
+    ticket_listing: TicketListing, 
+    purchase_item: PurchaseItem
+):
     ticket = FlexibleTicket(
         item = purchase_item,
         listing = ticket_listing,
@@ -40,14 +45,24 @@ def on_intent_success(cust_payment_intent):
 
     item_ids = cust_payment_intent["items"]
     items = reverse_items(item_ids)
-
+    purchase_id = uuid.uuid4()
+    
     for item in items:        
         # currently all items are TicketListings, but may not always be.
         if item is TicketListing:
-            purchase_item = create_purchase(cust_payment_intent.user, billing_data, item)
+            purchase_item = create_purchase(
+                purchase_id,
+                cust_payment_intent.user, 
+                billing_data, item
+            )
 
-            create_ticket(item, purchase_item)
+            create_ticket(
+                purchase_id,
+                item, 
+                purchase_item
+            )
 
+    return purchase_id
 
 def reverse_items(item_ids):
     return [ listing for listing in TicketListing.objects.filter(listing_id__in=item_ids)]

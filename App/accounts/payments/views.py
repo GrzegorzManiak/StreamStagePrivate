@@ -9,10 +9,12 @@ from .payments import (
     add_stripe_payment_method,
     create_cust_payment_intent,
     get_cards_formatted,
+    get_id_from_card,
     remove_stripe_payment_method,
     start_subscription_saved_payment,
     check_cust_payment_intent
 )
+import uuid
 
 
 @api_view(['POST'])
@@ -67,23 +69,86 @@ def remove_payment_method(request, data):
     # -- Return the payment method
     return success_response('Payment method removed successfully', payment_method)
 
+
+
 @api_view(['POST'])
 @authenticated()
-@required_data(["ids"])
+@required_data(["buyable_id", "payment_method"])
 def create_payment_intent(request, data):
-    ids = data["ids"]
 
+    # -- Get the users cars
     cards = get_cards_formatted(request.user)
 
+    # -- Create the payment intent 
+    ids = data['buyable_id'].split(",")
+    for i in range(len(ids)):
+        try: ids[i] = uuid.UUID(ids[i])
+        except: return invalid_response("Invalid UUID")
+
+    # -- Get the payment method
+    payment_method = None
+
+
+    # -- If the payment method is a dict, it's a new card
+    #    otherwise it's a saved card
+    if isinstance(data['payment_method'], dict):
+        valid_entrys = ['card', 'exp_month', 'exp_year', 'cvc', 'name', 'save']
+        for entry in valid_entrys:
+            if entry not in data['payment_method']:
+                return invalid_response("Invalid payment method, missing " + entry)
+            
+        # -- Add the payment method
+        if data['payment_method']['save'] is True:
+            payment_method = add_stripe_payment_method(
+                request.user,
+                data['payment_method']['card'],
+                data['payment_method']['exp_month'],
+                data['payment_method']['exp_year'],
+                data['payment_method']['cvc'],
+                data['payment_method']['name'],
+            )
+
+            # -- Check if the payment method is valid
+            if payment_method[0] is None:
+                return invalid_response(payment_method[1])
+            
+            payment_method = payment_method[0]["id"]
+
+
+        # -- We are not saving the card, so we can just create
+        #    a temporary payment method not linked to the user
+        else: payment_method = get_id_from_card(
+            data['payment_method']['card'],
+            data['payment_method']['exp_month'],
+            data['payment_method']['exp_year'],
+            data['payment_method']['cvc'],
+            data['payment_method']['name'],
+        )
+    
+    # -- Check if the payment method is a saved card
+    else:
+        for card in cards:
+            if card["id"] == data['payment_method']:
+                payment_method = card["id"]
+                break
+
+    
+    # -- Make sure the payment method is valid
+    if payment_method is None:
+        return invalid_response("Invalid payment method")
+
     # -- Create the payment intent
-    response = create_cust_payment_intent(request.user, ids, cards[0]["id"])
+    response = create_cust_payment_intent(
+        request.user, ids, payment_method
+    )
 
     if response.get("error") is not None:
         return invalid_response(response.get("error"))
     
-    print(response.get("intent_id") + ", " + cards[0]["id"])
     # -- Return the payment intent
     return success_response("Intent created.", response)
+
+
 
 @api_view(['POST'])
 @impersonate()
@@ -95,18 +160,22 @@ def check_payment_intent(request, data):
     if response.get("error"):
         return error_response(response["error"])
     
-    status = response["status"]
-    
-    if status == "success":
-        return success_response("Purchase completed!")
-    elif status == "requires_action":
-        data = { "next_action": response["next_action"] }
-
-        return success_response("Additional action required.", data)
-    elif status == "canceled":
-        return error_response("Payment cancelled")
+    match response["status"]:
+        case "success": return success_response("Purchase completed!", {
+            "status": "success",
+            "purchase_id": response["purchase_id"]
+        })
+        case "cancelled": return error_response("Payment cancelled", {
+            "status": "cancelled"
+        })
+        case "requires_action": return success_response("Additional action required.", {
+            "next_action": response["next_action"],
+            "status": "requires_action"
+        })
     
     return error_response("Error in checking status of payment")
+
+
 
 @api_view(['POST'])
 @impersonate()

@@ -16,23 +16,24 @@ Upcoming Events | StreamStage
 {% endblock %}
 
 {% block content %}
-<div class="nav-gap">
+        <main>
+                <div class="nav-gap">
 
-        <!-- Listing Upcoming Events (if they have upcoming showings) -->
-        {% for event in events %}
-                {% if event.get_num_upcoming_showings > 0 %}
-                        {% include 'event_list.html' with event=event %}
-                {% endif %}
-        {% empty %}
-        <div class="row mx-auto">
-                <h4 class="text-center">No Upcoming Events</h4>
-        </div>
-        {% endfor %}
-</div>
+                        <!-- Listing Upcoming Events (if they have upcoming showings) -->
+                        {% for event in events %}
+                                {% if event.get_num_upcoming_showings > 0 %}
+                                        {% include 'event_list.html' with event=event %}
+                                {% endif %}
+                        {% empty %}
+                        <div class="row mx-auto">
+                                <h4 class="text-center">No Upcoming Events</h4>
+                        </div>
+                        {% endfor %}
+                </div>
 
-<!-- Carousel js -->
-<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
-<!-- Like button js -->
-<script src="/static/js/events.js"></script>
-
+                <!-- Carousel js -->
+                <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+                <!-- Like button js -->
+                <script src="/static/js/events.js"></script>
+        </main>
 {% endblock %}

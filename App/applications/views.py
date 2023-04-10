@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 
+from StreamStage.templatetags.tags import cross_app_reverse
+
 from .forms import *
 
 from .models import STATUS_WAITING, STATUS_APPROVED, STATUS_REJECTED, status_friendly_list
@@ -88,7 +90,7 @@ def apply_event(request):
 
         event = submit_event_application(user, form.cleaned_data)
 
-        return redirect('event_view', event.event_id) # temporary
+        return redirect(cross_app_reverse('events', 'event_view'), event.event_id) # temporary
 
     context = {
         'form': form,

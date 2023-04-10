@@ -21,6 +21,9 @@
     --ss-error: #FF6666;
     --ss-success: #6FD08C;
     --ss-info: #39A9DB;
+
+    --wide-aspect-ratio: 21/7;
+    --tb-aspect-ratio: 4/2;
 }
 
 /******************/
@@ -55,9 +58,16 @@ body {
     display: none !important;
 }
 
+.ss_wl {
+    max-width: 65rem;
+}
+
 main {
     min-height: 100vh;
+    width: 100%;
+    margin: auto;
 }
+
 
 /* Gap to leave room for nav */
 .nav-gap {
@@ -279,6 +289,15 @@ nav {
     user-select: none;
     margin-right: 1rem;
     z-index: 100;
+    margin: 0;
+}
+
+.logo-text:hover {
+    color: var(--accent-color);
+    font-size: 2rem;
+    transition: all 0.5s ease-in-out;
+    user-select: none;
+
 }
 
 .nav-items {
@@ -733,13 +752,6 @@ footer hr {
 
 /***** Event Page *****/
 /* Event media */
-.event-cover {
-    display: block;
-    max-width: 100%;
-    max-height: 100%;
-    margin: 1rem auto;
-    object-fit: cover;
-}
 
 /* Event Trailer */
 .video {

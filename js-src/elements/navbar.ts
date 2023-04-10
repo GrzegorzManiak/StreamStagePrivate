@@ -100,25 +100,12 @@ const get_current_location = () => {
     return location;
 }
 
-const current = get_current_location(),
-    is_home = home_locations.includes(current);
-
-// -- Set location function (no reload)
-const set_location = (location: string) => {
-    if (!is_home) window.location 
-    window.history.pushState(null, '', `/${location}`);
-    window.dispatchEvent(new Event('locationchange'));
-}
+const current = get_current_location();
 
 // -- If the logo is clicked, go to the home page
-logo?.addEventListener('click', () => set_location('home'));
 buttons.forEach(button => {
     const location = button.getAttribute('data-nav-area');
     if (!location) return;
-    button.addEventListener('click', () => {
-        set_location(location);
-        nav_items.setAttribute('data-nav-active', location);
-    });
 });
 
 

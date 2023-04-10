@@ -52,7 +52,7 @@ from .ext_api import (
 
 urlpatterns = [
     # Events
-    path('', get_upcoming_events, name='upcoming_events'),
+    path('upcoming', get_upcoming_events, name='upcoming_events'),
     path('past/', get_past_events, name='past_events'),
     path('live/', get_live_events, name='live_events'),
     path('<slug:event_id>/', event_view, name='event_view'),

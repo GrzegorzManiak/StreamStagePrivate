@@ -94,11 +94,11 @@ urlpatterns = [
     path('api/sso/remove/', remove_oauth, name='remove_oauth'),
 
     # -- Payments
-    path('api/payment/methods/', get_payment_methods, name='get_payments'),
-    path('api/payment/add/', add_payment_method, name='add_payment'),
-    path('api/payment/remove/', remove_payment_method, name='remove_payment'),
-    path('api/payment/create/', create_payment_intent, name='create_payment'),
-    path('api/payment/check/', check_payment_intent, name='check_payment'),
+    path('api/payment/methods', get_payment_methods, name='get_payments'),
+    path('api/payment/add', add_payment_method, name='add_payment'),
+    path('api/payment/remove', remove_payment_method, name='remove_payment'),
+    path('api/payment/create', create_payment_intent, name='create_payment'),
+    path('api/payment/check', check_payment_intent, name='check_payment'),
     
     # -- Subscriptions
     path('api/subscription/start/', start_subscription, name='start_subscription'),

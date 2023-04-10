@@ -20,8 +20,8 @@ STRIPE_MODES = {
     },
 
     'test': {
-        'pub': 'pk_test_51M6y9CHEyDrsSJvelnXxEtxn277Z3hfbVVIk9xK9mHGaRWkL0HFefAf1ng4hHzAaKc11wlq2cfudpiccZzFEL29s00dz15pnGu',
-        'pri': 'sk_test_51M6y9CHEyDrsSJvexuyA5aeupHqHNGzEy2YwSNnUHla9Y3fW0pBUIxkdknMWWoGhYdluWth8UMJyi3kMKdxdRHFO00ZtBDaTqT',
+        'pub': 'pk_test_51MluK8KeLSBX93CvBxGhDGotysXopqoTvL4E7HYvmi4lrGFId5Ik4N7FvPo65JdrfHghzaLoxEhNhQuIADiCW8uq00BUFyzq9P',
+        'pri': 'sk_test_51MluK8KeLSBX93CvdELL57Uvj6z3vI8Yhk9xw7I35wDDTOhN8vDEdahTnSX8sqADnA9iwDsWKDzI6p4LrmLEsiRQ00JcaN5yQG',
 
         'prices': {
             'SSP': 'price_1MmcXIKeLSBX93CvwgTOkru0'

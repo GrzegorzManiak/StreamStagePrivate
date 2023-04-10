@@ -1,10 +1,8 @@
 from django.db import models
-
 from accounts.models import Member
-
 from django.core.validators import MaxValueValidator, MinValueValidator
-
 from StreamStage.identifiers import new_purchase_id
+import uuid
 
 class Purchase(models.Model):
     purchaser = models.ForeignKey(Member, null=True, blank=True, on_delete=models.SET_NULL)
@@ -17,6 +15,7 @@ class Purchase(models.Model):
     billingPostcode = models.CharField(max_length=10, blank=True)
     billingCountry = models.CharField(max_length=200, blank=True)
 
+    purchase_id = models.UUIDField(editable=False, null=False, default=uuid.uuid4)
     # how much the total was multiplied after summing (pertains to discounts)s
     total_multiplier = models.FloatField(default = 0, validators=[MinValueValidator(0), MaxValueValidator(1)])
 

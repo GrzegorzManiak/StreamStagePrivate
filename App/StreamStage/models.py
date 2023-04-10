@@ -33,7 +33,10 @@ class Terms(models.Model):
         return self.name
     
     def latest():
-        return Terms.objects.order_by('-created')[0]
+        try:
+            return Terms.objects.order_by('-created')[0]
+        except:
+            return None
     
     def serialize(self):
         return {
@@ -55,7 +58,10 @@ class Privacy(models.Model):
         return self.name
     
     def latest():
-        return Privacy.objects.order_by('-created').first()
+        try:
+            return Privacy.objects.order_by('-created')[0]
+        except:
+            return None
     
     def serialize(self):
         return {

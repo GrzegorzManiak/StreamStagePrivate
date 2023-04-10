@@ -11,137 +11,157 @@ Search Events | StreamStage
 {% endblock %}
 
 {% block head %}
-<!-- Carousel css -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
+    <!-- Carousel css -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="{% static 'css/search.css' %}">
 {% endblock %}
 
 {% block content %}
+    <main class='ss_wl'>
+        <div class="nav-gap px-4 mx-auto">
 
-<div class="nav-gap px-4 mx-auto">
-    <div class="m-2">
+            <!-- Refine Search Options -->
+            <div class="row px-2 d-flex gap-2">
 
-        {% if query %}
-        <p class="text-center"><b><span class="sub-title">You have searched for: </span>"{{ query }}"</b></p>
-        {% endif %}
-    </div>
-    <!-- Refine Search Options -->
-    <div class="row px-2 ">
-        <div class="col-12 mx-auto mb-4">
-            {% include 'search_filters.html' %}
-        </div>
-        <hr/>
+                <div>
+                    {% if query %}
+                        <p class="text-center m-0 w-100"><span class='m-0 accent-font'>Showing search results for: </span>"{{ query }}"</p>
+                    {% endif %}
+                </div>
+                
+                <div class="col-12 mx-auto mb-4">
+                    {% include 'search_filters.html' %}
+                </div>
+                <hr/>
 
-        <!-- Display Search Results -->
+                <!-- Display Search Results -->
+                {% for event in events_list %}
+                    <div class="event-listing">
 
-        {% for event in events_list %}
-        <div class="row my-2 px-4 mx-auto">
-            <div class="col-md-3 col-sm-12">
-                <!-- Event Categories -->
-                {% for category in event.categories.all %}
-                <span class="badge bg-primary">{{category.name}}</span>
+                        <div class="event-cover-container">
+                            <!-- 
+                                Event Cover Picture (if any) 
+                            -->
+                            <div class='event-title'>
+                                <div class="sub-title">
+                                    <h4 onclick="window.location.href = '{% cross_app_reverse_tag 'events' 'event_view' event_id=event.event_id %}'"
+                                    >{{ event.title }}</h4>
+                                    <p onclick="window.location.href = '{% cross_app_reverse_tag 'homepage' 'broadcaster_profile' username=event.broadcaster.handle %}'"
+                                    > @{{ event.broadcaster.handle }}</p>
+                                </div>
+                                {% if event.description|length > 250 %}
+                                    <p>{{ event.description|slice:":250" }}...</p>
+                                {% else %}
+                                    <p>{{ event.description }}</p>
+                                {% endif %}
+
+
+                                <div class='h-100 w-100 d-flex flex-wrap justify-content-end align-items-end gap-1'>
+                                    {% for category in event.categories.all %}
+                                        <span class="badge bg-primary">{{category.name}}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <div class='event-gradient'></div>
+
+                            {% if event.get_media_count == 0 %}
+                                <div 
+                                    class="event-cover" 
+                                    style="background-image: url({% static 'images/default_event_cover.png' %});"
+                                    alt="No Event Cover Photo"></div>
+                            {% else %}
+                                <div 
+                                    class="event-cover" 
+                                    style="background-image: url({{ event.get_cover_picture.picture.url }});"
+                                    alt="Event Cover Photo"></div>
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="event-details">
+
+                            <!-- 
+                                Displaying next showing (if any) 
+                            -->
+                            <div class="w-100 text-center event-showings">
+                                {% if event.get_showings_count > 0 %}
+                                    <h2>Next Showing</h2>
+                                    <p>{{ event.get_next_showing }}</p>
+                                {% else %}
+                                    <p>No showings available</p>
+                                {% endif %}
+                            </div>
+
+
+                            <div class='w-100 text-center event-tickets'>
+                                {% if event.get_showings_count > 0 and event.has_ticket_listings > 0 %}
+                                    <p> Tickets starting from <span>€{{ event.get_min_ticket_price.price }}</span></p>
+                                {% else %}
+                                    <p>No tickets available</p>
+                                {% endif %}
+                            </div>
+
+                        </div>
+
+
+                        <!-- 
+                            Reviews for Event 
+                        -->
+                        <div class="
+                            event-reviews
+                            d-flex
+                            h-100
+                        ">
+                            {% if event.get_review_count > 0 %}
+                                <!-- 
+                                    Review Carousel 
+                                -->
+                                <swiper-container class="swiper swiper-review" navigation="true">
+                                    {% for review in event.get_short_reviews %}
+                                        <swiper-slide class="swiper-slide">
+                                            {% include 'reviews/review_min.html' %}
+                                        </swiper-slide>
+                                    {% endfor %}
+                                </swiper-container>
+
+                            {% else %}
+                                <!-- 
+                                    No Reviews
+                                -->
+                                <h6 class="text-center"><b>No reviews yet</b></h6>
+                            {% endif %}
+                        </div>
+
+
+                    </div>
+
+                    {% empty %}
+                    <div class="row mx-auto">
+                        <p class="text-center">No results found.</p>
+                    </div>
                 {% endfor %}
-                <!-- Event Broadcaster -->
-                <h6 class="my-2">@{{ event.broadcaster.handle }}</h6>
-                <!-- Event Cover Picture (if any) -->
-                {% if event.get_media_count == 0 %}
-                <img class="event-cover" src="{% static 'images/default_event_cover.png' %}" alt="No Event Cover Photo">
-                {% else %}
-                <img class="event-cover" src="{{ event.get_cover_picture.picture.url }}" alt="Event Cover Photo">
+            </div>
+        </div>
+
+        <!-- Paginator -->
+        <!-- <div class="mx-auto">
+                {% if is_paginated %}
+                <hr>
+                <div class="text-center">
+                    {% for pg in paginator.page_range %}
+                    <a href="?q={{query}}&cat={{category.name}}&b={{broadcaster}}&sd={{start_date}}&ed={{end_date}}&v={{venue}}&c={{city}}&co={{country}}&u={{upcoming}}&ip={{in_person}}&s={{sort_by}}&mip={{min_price}}&map={{max_price}}&page={{pg}}" class="btn btn-light btn-sm 
+                        {% if events.number == pg %}active{% endif %}">{{pg}}
+                    </a>
+                    {% endfor %}
+                </div>
                 {% endif %}
             </div>
-            <a class="col-md-6 col-sm-12" href="{% url 'event_view' event.event_id %}">
-                <!-- Event title & description -->
-                <h4 class="sub-title">{{ event.title }}</h4>
-                <p>{{ event.description | slice:':250' }}...</p>
+            <br>
+        </div> -->
 
-                <!-- Displaying next showing (if any) -->
-                <div class="row">
-                    {% if event.get_showings_count > 0 %}
-                    <div class="col-6">
-                        <h6 class="sub-title"><b>Next Showing</b></h6>
-                        <p>{{ event.get_next_showing }}</p>
-                    </div>
-                    <div class="col-6">
-                        <h6 class="sub-title"><b>Where</b></h6>
-                        <p>{{ event.get_next_showing.venue }} - {{ event.get_next_showing.city }}</p>
-                    </div>
-                    {% else %}
-                    <div class="col-12">
-                        <h6>No upcoming showings</h6>
-                    </div>
-                    {% endif %}
-                </div>
-                <div class="row">
-                    {% if event.get_showings_count > 0 and event.has_ticket_listings > 0 %}
-                    <div class="col-6">
-                        <h6 class="sub-title"><b>Tickets From</b></h6>
-                    </div>
-                    <div class="col-6">
-                        <p>€{{ event.get_min_ticket_price.price }}</p>
-                    </div>
-                    <div class="col-12">
-                        <p>See event page for more details</p>
-                    </div>
-                    {% else %}
-                    <div class="col-12">
-                        <h6><b>No tickets available</b></h6>
-                    </div>
-                    {% endif %}
-                </div>
-            </a>
-            <!-- Reviews for Event -->
-            <div class="col-md-3 col-sm-12">
-                <div class="my-4 mx-1">
-                    {% if event.get_review_count > 0 %}
-                    <h6 class="text-center"><b>Reviews</b></h6>
-                    <!-- Review Carousel -->
-                    <div class="swiper mySwiper">
-                        <div class="swiper-wrapper">
-                            {% for review in event.get_short_reviews %}
-                            <div class="swiper-slide">
-                                {% include 'reviews/review.html' %}
-                            </div>
-                            {% endfor %}
-                        </div>
-                        <div class="swiper-pagination"></div>
-                        <div class="s-btn swiper-button-prev"></div>
-                        <div class="s-btn swiper-button-next"></div>
-                    </div>
-                    {% else %}
-                    <h6 class="text-center"><b>No reviews yet</b></h6>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-        <hr />
-
-        {% empty %}
-        <div class="row mx-auto">
-            <p class="text-center">No results found.</p>
-        </div>
-        {% endfor %}
-    </div>
-</div>
-
-<!-- Paginator -->
-<!-- <div class="mx-auto">
-        {% if is_paginated %}
-        <hr>
-        <div class="text-center">
-            {% for pg in paginator.page_range %}
-            <a href="?q={{query}}&cat={{category.name}}&b={{broadcaster}}&sd={{start_date}}&ed={{end_date}}&v={{venue}}&c={{city}}&co={{country}}&u={{upcoming}}&ip={{in_person}}&s={{sort_by}}&mip={{min_price}}&map={{max_price}}&page={{pg}}" class="btn btn-light btn-sm 
-                {% if events.number == pg %}active{% endif %}">{{pg}}
-            </a>
-            {% endfor %}
-        </div>
-        {% endif %}
-    </div>
-    <br>
-</div> -->
-
-<!-- Carousel js -->
-<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
-<!-- Like button js -->
-<script src="/static/js/events.js"></script>
-
+        <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-element-bundle.min.js"></script>
+        <script src="/static/js/events.js"></script>
+    </main>
 {% endblock %}
