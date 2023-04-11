@@ -136,6 +136,7 @@ def broadcaster_profile(request, username):
             'background': broadcaster.banner.url,
             'avatar': broadcaster.profile_pic.url,
             'description': broadcaster.biography,
+            'approved': broadcaster.approved,
             'is_you': False,
             'short_description': broadcaster.biography[:50] + '...' if len(broadcaster.biography) > 50 else broadcaster.biography,
             'name': broadcaster.name,
@@ -152,7 +153,7 @@ def broadcaster_profile(request, username):
     }
 
     if request.user.is_authenticated and broadcaster in request.user.get_authorized_broadcasters():
-        context['edit_details_path'] = cross_app_reverse('accounts', 'edit_broadcasters') + "?bid=" + str(broadcaster.id)
+        context['edit_details_path'] = cross_app_reverse('accounts', 'broadcaster_panel') + "?bid=" + str(broadcaster.id)
 
     # -- Render the login page
     return render(

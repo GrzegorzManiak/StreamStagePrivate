@@ -48,8 +48,8 @@ def submit_event_application(user, data):
         #live_price = data['live_price']
     )
     
-    for category in data['categories']:
-       event.categories.add(category)#Category.objects.get(id=category))
+    # for category in data['categories']:
+    #    event.categories.add(category)#Category.objects.get(id=category))
 
     event.save()
 

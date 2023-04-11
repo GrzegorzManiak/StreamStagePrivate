@@ -59,6 +59,9 @@
                 <div class='profile-info'>
                     <h1>{{ data.name }}</h1>
                     <h3 class='text-muted'>@{{ data.handle }}</h3>
+                    {% if not data.approved %}
+                    <span class="b text-danger"> <i class="fas fa-exclame"></i> Awaiting Approval </span>
+                    {% endif %}
                     <p class='text-muted'>
                         {{ data.short_description }}
                         <span class="more-desc"> | More <i class="fas fa-chevron-right"></i></span>
