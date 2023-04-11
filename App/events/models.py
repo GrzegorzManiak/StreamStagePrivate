@@ -259,7 +259,7 @@ class Event(models.Model):
         showings = []
         for showing in self.get_showings():
             time_left = datetime.now(tz = showing.time.tzinfo) - showing.time
-            if time_left < timedelta(minutes=showing.max_duration) and time_left > 0:
+            if time_left < timedelta(minutes=showing.max_duration) and time_left.total_seconds() > 0:
                 showings.append(showing)
         if len(showings) > 0:        
             return True 
