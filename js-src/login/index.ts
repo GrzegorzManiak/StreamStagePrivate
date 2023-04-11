@@ -1,5 +1,8 @@
 import { Type, build_configuration } from '../api/config';
+import { single } from '../common/single';
 import { login_handler } from './src/core';
+
+single('logib');
 
 export const configuration = build_configuration<{
     verify_token_url: string,

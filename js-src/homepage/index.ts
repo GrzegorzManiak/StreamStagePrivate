@@ -1,7 +1,10 @@
 import { sleep } from '../common';
+import { single } from '../common/single';
 import { attach_to_showcases } from './featured';
 import { Event, Streamer } from './index.d';
 import { create_carousel } from './thumbnail';
+
+single('homepage');
 
 const streamer: Streamer = {
     id: '1',

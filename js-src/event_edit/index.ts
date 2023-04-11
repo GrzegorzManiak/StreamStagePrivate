@@ -2,6 +2,9 @@ import { handle_ticket_section } from "./edit_tickets";
 import { handle_showings_panel } from "./edit_showings";
 import { build_configuration, Type } from "../api/config";
 import { handle_media_panel } from "./edit_media";
+import { single } from "../common/single";
+
+single('event_edit');
 
 // -- Get the global configuration
 export const configuration = build_configuration<{

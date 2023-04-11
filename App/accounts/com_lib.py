@@ -24,6 +24,8 @@ from functools import reduce
 from operator import or_
 from django.db.models import Q
 
+from StreamStage.templatetags.tags import cross_app_reverse
+
 """
     :name: success_response
     :description: This function is used to return a success response
@@ -102,7 +104,6 @@ def api_session_helper():
     def decorator(view_func):
         @wraps(view_func)
         def wrapper(request, *args, **kwargs):
-
             # -- Check if the user is logged in 
             if request.user.is_authenticated:
                 
@@ -119,7 +120,6 @@ def api_session_helper():
                     request.user.token = secrets.token_urlsafe(32)
                     request.user.save()
                     
-
             # -- Check if we have a token and set the user
             if 'streamstage-token' in request.headers:
                 # -- Get the user
@@ -175,7 +175,7 @@ def authenticated():
 
             # -- If the method is GET, redirect to the login page
             if request.method == 'GET' and not request.user.is_authenticated:
-                return redirect('login')
+                return redirect(cross_app_reverse('accounts', 'login'))
             
             # -- Check if user is authenticated
             if not request.user.is_authenticated:
