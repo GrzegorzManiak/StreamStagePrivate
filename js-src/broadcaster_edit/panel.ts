@@ -212,6 +212,12 @@ function bc_html(details: BroadcasterDetails) : HTMLElement {
     
     row.style.backgroundImage = details.banner;
 
+    var approval_html = "";
+
+    if (!details.approved) {
+        approval_html = `<div class="float-end text-danger">Awaiting Approval</div>`
+    }
+
     row.innerHTML = `
         <img alt="Profile Picture" class="profile-picture-edit" src="${details.profile}">
         <div class='profile-info'>
@@ -222,6 +228,7 @@ function bc_html(details: BroadcasterDetails) : HTMLElement {
             ${details.biography}
         </p>
         <div class="float-end" style="width:100%;">
+            ${approval_html}
             <div data-broadcaster-id="${details.id}" class="broadcaster-edit-btn edit-details float-end"> Edit Details <i class="fas fa-chevron-right"></i> </div>
         </div>
     `

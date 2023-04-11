@@ -205,7 +205,7 @@ form>div>button {
 
 form>div>textarea,
 form>p>textarea {
-    height: 4rem !important;
+    /* height: 6rem !important; */
 }
 
 .button-slim p,
