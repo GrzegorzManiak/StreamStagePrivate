@@ -1,0 +1,20 @@
+{% load render_bundle from webpack_loader %}
+
+{% block content %}
+
+<!--
+    My Broadcasters Panel
+-->
+<article class='panel' data-panel-type='invitations' data-panel-status='' style="max-width:1000px; margin:auto">
+    <div class="nav-gap">
+        <form id="bc-update-form" class="form-class form-layout" action="" method="POST" enctype="multipart/form-data" style="display: none; max-width: 900px;">
+  
+        <div class="mb-5 justify-content-start">
+            <h1 class="fw-bold">My Invitations</h1>
+            <p class="text-muted">Manage broadcaster profiles that you are authorized to edit.</p>
+            <div id="broadcaster-list"></div>
+        </div>
+    </div>
+</article>
+
+{% endblock %}

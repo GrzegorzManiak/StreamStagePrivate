@@ -28,6 +28,8 @@ from .processing import (
 )
 # User views
 
+
+
 @authenticated()
 def apply_broadcaster(request):
     user = request.user
