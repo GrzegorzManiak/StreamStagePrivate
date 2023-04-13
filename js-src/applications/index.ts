@@ -1,6 +1,9 @@
 import { DefaultResponse, DefaultResponseData } from "./index.d";
 import { create_toast } from "../common";
 import { Type, build_configuration } from "../api/config";
+import { single } from "../common/single";
+
+single('applications');
 
 // -- Get the global configuration
 export const configuration = build_configuration<{

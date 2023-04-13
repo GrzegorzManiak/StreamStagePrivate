@@ -1,7 +1,10 @@
 import { Type, build_configuration } from "../api/config";
 import { create_toast } from "../common";
 import { report } from "../common/report";
+import { single } from "../common/single";
 import { manage_reviews_panel } from "./src/reviews";
+
+single('profiles');
 
 export const configuration = build_configuration<{
     authenticated: boolean,

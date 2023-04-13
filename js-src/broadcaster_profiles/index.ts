@@ -1,6 +1,9 @@
 import { Type, build_configuration } from "../api/config";
 import { report } from "../common/report";
+import { single } from "../common/single";
 import { manage_reviews_panel } from "./src/reviews";
+
+single('broad_profiles');
 
 export const configuration = build_configuration<{
     authenticated: boolean,
@@ -13,7 +16,10 @@ export const configuration = build_configuration<{
 }); 
 
 // -- Load the review panel
-manage_reviews_panel();
+manage_reviews_panel(
+    configuration.username,
+    configuration.is_you,
+);
 
 
 // -- Get the tab selector

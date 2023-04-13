@@ -3,12 +3,14 @@ import { add_stage_listners } from './src/listeners';
 import { add_pan_control, add_zoom_control, resize_canvas } from './src/controls';
 import { update_interval } from './api';
 import { create_toast } from '../common';
+import { single } from '../common/single';
 
 
 
 //
 // CONFIGURATION
 //
+single('srr');
 
 const config = document.getElementById('config');
 export function get_or_error<e>(element: HTMLElement, attribute: string): e {

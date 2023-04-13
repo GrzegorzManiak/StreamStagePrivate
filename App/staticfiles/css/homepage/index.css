@@ -42,7 +42,8 @@
 
     background-image: url('https://picsum.photos/300/300');
     background-size: cover;
-
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 [data-elm='title'] {
@@ -196,6 +197,10 @@
         --tb-height: var(--tb-height-sm);
     }
 
+    .showcase-cover {
+        height: 20rem;
+    }
+
     .thumbnail-pfp {
         --pfp-size: var(--pfp-size-md);
     }
@@ -208,6 +213,10 @@
     .thumbnail, .showcase-small-img {
         --tb-width: var(--tb-width-md);
         --tb-height: var(--tb-height-md);
+    }
+
+    .showcase-cover {
+        height: 35rem;
     }
 
     .thumbnail-pfp {
@@ -224,6 +233,10 @@
         --tb-height: var(--tb-height-lg);
     }
 
+    .showcase-cover {
+        height: 40rem;
+    }
+
     .thumbnail-pfp {
         --pfp-size: var(--pfp-size-lg);
     }
@@ -234,6 +247,10 @@
     .thumbnail, .showcase-small-img {
         --tb-width: var(--tb-width-xl);
         --tb-height: var(--tb-height-xl);
+    }
+
+    .showcase-cover {
+        height: 50rem;
     }
 
     .thumbnail-pfp {
@@ -613,15 +630,20 @@
 }
 
 .showcase-slide {
-    min-height: 40vh;
     background-color: var(--theme-backdrop-color);
 
     display: grid;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
 }
 
 .showcase-cover {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     grid-column: 1;
     grid-row: 1;
     z-index: 5;

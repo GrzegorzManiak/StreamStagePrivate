@@ -24,8 +24,8 @@ class EventMediaAdmin(admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = [ 'name', 'description', 'splash_photo' ]
-    list_editable = [ 'description', 'splash_photo' ]
+    list_display = [ 'name', 'description', 'splash_photo', 'hex_color' ]
+    list_editable = [ 'description', 'splash_photo', 'hex_color' ]
     list_displaylinks = []
 
 @admin.register(EventShowing)
@@ -41,7 +41,7 @@ class EventReviewAdmin(admin.ModelAdmin):
     list_display_links = []
 
 @admin.register(EventTrailer)
-class EventReviewAdmin(admin.ModelAdmin):
+class EventTrailerAdmin(admin.ModelAdmin):
     list_display = [ 'event', 'videofile', 'description' ]
     list_editable = [ 'videofile', 'description' ]
     list_display_links = []

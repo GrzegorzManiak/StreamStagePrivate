@@ -6,6 +6,9 @@ import { manage_profile_panel } from './core/profile';
 import { manage_reviews_panel } from './core/reviews';
 import { Type, build_configuration } from '../api/config';
 import { Configuration } from './index.d';
+import { single } from '../common/single';
+
+single('settings');
 
 export const configuration = build_configuration<Configuration>({
     admin: new Type('data-admin', 'boolean'),
