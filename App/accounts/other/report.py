@@ -38,9 +38,9 @@ def submit_report(request, data):
     report = Report.objects.create(
         reason=data['reason'],
         r_user= target if data['type'] == 'user' else None,
-        r_event= target if data['type'] == 'event' else None,
-        r_review= target if data['type'] == 'review' else None,
-        r_broadcaster= target if data['type'] == 'broadcaster' else None,
+        # r_event= target if data['type'] == 'event' else None,
+        # r_review= target if data['type'] == 'review' else None,
+        # r_broadcaster= target if data['type'] == 'broadcaster' else None,
         reporter=request.user,
     )
 
