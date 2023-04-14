@@ -25,7 +25,7 @@ from store.models import FlexibleTicket
     model=Purchase,
     
     # -- This lambda checks if the user is the owner of the purchase
-   # validate=lambda request, model: model.user == request.user
+    validate=lambda request, model: model.purchaser == request.user
 )
 def filter_purchases(request, models, total_pages, page):
     return success_response('Successfully filtered Purchases', {

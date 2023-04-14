@@ -6,13 +6,18 @@ import uuid
     
 def create_purchase(
     purchase_id: uuid.uuid4,
+    stripe_intent: dict,
     purchaser: Member, 
     billing_data, 
     ticket_listing: TicketListing, 
     total_mult: float = 1
 ):
-    
+    stripe_id = stripe_intent["id"]
+    payment_id = stripe_intent["payment_method"]
+
     purchase = Purchase.objects.create(
+        stripe_id = stripe_id,
+        payment_id = payment_id,
         purchase_id = purchase_id,
         purchaser = purchaser,
         billingName = billing_data["billingName"],

@@ -9,6 +9,9 @@ class Purchase(models.Model):
 
     purchase_timestamp = models.DateTimeField(auto_now_add=True)
 
+    stripe_id = models.CharField(max_length=250, blank=True)
+    payment_id = models.CharField(max_length=250, blank=True)
+
     billingName = models.CharField(max_length=250, blank=True)
     billingAddress1 = models.CharField(max_length=250, blank=True)
     billingCity = models.CharField(max_length=250, blank=True)
@@ -43,6 +46,8 @@ class Purchase(models.Model):
             "billingPostcode": self.billingPostcode,
             "billingCountry": self.billingCountry,
             "total": self.get_total(),
+            "stripe_id": self.stripe_id,
+            "payment_id": self.payment_id,
             "items": [item.serialize() for item in self.get_items()]
         }
 
