@@ -46,13 +46,13 @@ def on_intent_success(cust_payment_intent):
     item_ids = cust_payment_intent["items"]
     items = reverse_items(item_ids)
     purchase_id = uuid.uuid4()
-    
+
     for item in items:        
         # currently all items are TicketListings, but may not always be.
-        if item is TicketListing:
+        if isinstance(item, TicketListing):
             purchase_item = create_purchase(
                 purchase_id,
-                cust_payment_intent.user, 
+                cust_payment_intent["user"], 
                 billing_data, item
             )
 

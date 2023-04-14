@@ -12,7 +12,7 @@ def create_purchase(
     total_mult: float = 1
 ):
     
-    purchase = Purchase(
+    purchase = Purchase.objects.create(
         purchase_id = purchase_id,
         purchaser = purchaser,
         billingName = billing_data["billingName"],
@@ -23,10 +23,13 @@ def create_purchase(
         total_multiplier = total_mult
     )
 
-    item = PurchaseItem(
+    item = PurchaseItem.objects.create(
         purchase = purchase,
         item_name = ticket_listing.ticket_detail,
         price = ticket_listing.price
     )
+
+    purchase.save()
+    item.save()
 
 
