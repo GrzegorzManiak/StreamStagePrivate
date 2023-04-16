@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% load render_bundle from webpack_loader %}
+{% load tags %}
 
 {% block metadescription %}
     
@@ -33,7 +34,10 @@
     <div class="swiper showcase-container showcase w-100">
         <div class="swiper-wrapper">
             {% for featured in features %}
-                <div class="showcase-slide w-100 swiper-slide">
+                <div 
+                    class="showcase-slide w-100 swiper-slide"
+                    onclick="window.location.href = '{% cross_app_reverse_tag "events" "event_view" event_id=featured.event_id %}'"
+                >
                     <div 
                         class = 'showcase-cover'
                         {% if event.get_media_count == 0 %}
@@ -166,12 +170,36 @@
     {% include 'carousel.html' %}
     
     <!-- Main -->
-    <main>
+    <main class='showcase-main'>
         <!-- Featured -->
         <!-- Carousel -->
         <div id='c1'></div>
         <div id='c2' class='car'></div>
         <div id='c3' class='car'></div>
+
+        {% for categorie in categories %}
+            <div 
+                id='c-{{ categorie.category.id }}' 
+                class='car' 
+                data-category-id='{{ categorie.category.id }}'
+                data-category='{{ categorie.category.name }}'
+                data-search-url='{% cross_app_reverse_tag "search" "searchResult" %}'
+            >
+                {% for event in categorie.events %}
+                    <span
+                        data-id='{{ event.id }}'
+                        data-is-live='{{ event.is_event_live }}'
+                        data-title='{{ event.title }}'
+                        data-description='{{ event.description }}'
+                        data-thumbnail='{{ event.thumbnail }}'
+                        data-streamer-id='{{ event.broadcaster.id }}'
+                        data-streamer-name='{{ event.thumbnail }}'
+                        data-earliest-date='{{ event.earliest_showing.date }}'
+                        data-streamer-pfp='{{ event.broadcaster.get_picture }}'
+                    ></span>
+                {% endfor %}
+            </div>
+        {% endfor %}
     </main>
 
     <!-- Js -->

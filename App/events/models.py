@@ -1,5 +1,6 @@
 import base64
 import io
+import random
 
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
@@ -97,6 +98,38 @@ class Category(models.Model):
         }
 
 
+    def get_random_categories(amount: int):
+        """
+            Returns a random amount of categories
+        """
+        return Category.objects.all().order_by('?')[:amount]
+    
+
+    def get_random_events(self, amount: int):
+        """
+            Returns a random amount of events
+            from the category
+        """
+        events = Event.objects.filter(categories=self).order_by('?')[:amount]
+        processed_events = []
+
+        for event in events:
+            processed_events.append(event.serialize())
+
+        # -- If theres 0 events, return an empty list
+        if len(processed_events) == 0:
+            return []
+        
+        # -- If theres not enough events, just duplicate some
+        while(len(processed_events) < amount):
+            # -- Pick a random event from the list
+            random_int = random.randint(0, len(events) - 1)   
+            processed_events.append(processed_events[random_int])
+
+        return processed_events
+    
+
+
 class TicketListing(models.Model):
     listing_id = models.UUIDField(default=uuid.uuid4)
     event = models.ForeignKey(to="events.Event", on_delete=models.CASCADE)
@@ -160,8 +193,8 @@ class Event(models.Model):
     def get_cover_picture(self):
         media = EventMedia.objects.filter(event=self).all()
 
-        if media.count() == 0:
-            return None
+        if len(media) == 0:
+            return "https://picsum.photos/300/200.jpg"
         else:
             return media[self.primary_media_idx]
 
@@ -267,6 +300,13 @@ class Event(models.Model):
 
 
     def serialize(self):
+        next_showing = self.get_next_showing()
+        if next_showing: next_showing = next_showing.time
+        else: next_showing = "TBC"
+
+        cover_pic = self.get_cover_picture()
+        if isinstance(cover_pic, EventMedia): cover_pic = cover_pic.picture.url
+
         return {
             'title': self.title,
             'description': self.description,
@@ -290,6 +330,8 @@ class Event(models.Model):
             'showings': [{
                 'id': showing.showing_id,
             } for showing in EventShowing.objects.filter(event=self).all()],
+            'earliest_showing': next_showing,
+            'thumbnail': cover_pic,
         }
     
     def is_authorized(self, user):
