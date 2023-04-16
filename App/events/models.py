@@ -418,3 +418,13 @@ class EventShowing(models.Model):
 
     def __str__(self):
         return self.time.strftime("%H:%M %d-%m-%Y")
+    
+    def serialize(self):
+        return {
+            'id': self.showing_id,
+            'country': self.country,
+            'city': self.city,
+            'venue': self.venue,
+            'time': self.time,
+            'max_duration': self.max_duration,
+        }

@@ -22,3 +22,11 @@ class FlexibleTicket(models.Model):
     def getOwner(self):
         return self.purchase.purchaser
     
+    def serialize(self):
+        return {
+            "ticket_id": self.ticket_id,
+            "purchase_id": self.purchase_id,
+            "listing": self.listing.serialize(),
+            "purchased_date": self.purchased_date,
+            "showing": self.showing.serialize() if self.showing else None
+        }
