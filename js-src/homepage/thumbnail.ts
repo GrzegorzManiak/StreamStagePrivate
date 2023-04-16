@@ -23,7 +23,10 @@ export function add_thumbnail(event: Event) {
     const tn_clone = tn.cloneNode(true) as HTMLElement;
 
     tn_clone.id = 'thumbnail-' + event.id;
-
+    tn_clone.onclick = () => {
+        window.location.href = event.full_url;
+    };
+    
     // -- Is the event live [data-is-live='']
     //    Is the event hidden [data-is-hidden='']
     //    Is the event a skeleton [data-is-skeleton=''] (used for loading)
@@ -46,7 +49,6 @@ export function add_thumbnail(event: Event) {
     const tn_date_vod = tn_clone.querySelector('[data-elm="date-vod"]') as HTMLSpanElement;
 
     tn_title.innerText = event.title;
-    tn_view_count.innerText = event.views_formatted + ' views';
     tn_date_vod.innerText = event.start_time;
     
 

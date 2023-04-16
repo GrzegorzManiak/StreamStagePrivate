@@ -32,7 +32,9 @@ carousels.forEach((carousel) => {
             thumbnail = event_elm.getAttribute('data-thumbnail'),
             streamer_id = event_elm.getAttribute('data-streamer-id'),
             streamer_name = event_elm.getAttribute('data-streamer-name'),
-            streamer_pfp = event_elm.getAttribute('data-streamer-pfp');
+            streamer_pfp = event_elm.getAttribute('data-streamer-pfp'),
+            start_time = event_elm.getAttribute('data-earliest-date'),
+            full_url = event_elm.getAttribute('data-full-url');
 
         // -- Create the event
         const event: Event = {
@@ -42,9 +44,10 @@ carousels.forEach((carousel) => {
             views: 0,
             views_formatted: '',
             description: description,
-            start_time: '2020-01-01',
+            start_time: start_time,
             end_time: '2020-01-01',
             thumbnail: thumbnail,
+            full_url: full_url,
             streamer: {
                 id: streamer_id,
                 name: streamer_name,

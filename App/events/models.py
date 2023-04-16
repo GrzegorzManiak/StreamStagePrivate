@@ -160,7 +160,9 @@ class Event(models.Model):
     # Event
     
     def get_absolute_url(self):
-        return cross_app_reverse('events', 'event_view', kwargs=[self.event_id])
+        return cross_app_reverse('events', 'event_view', {
+            "event_id": self.event_id
+        })
     
     def __str__(self):
         return self.title
@@ -301,13 +303,14 @@ class Event(models.Model):
 
     def serialize(self):
         next_showing = self.get_next_showing()
-        if next_showing: next_showing = next_showing.time
+        if next_showing: next_showing = str(next_showing.time).split(" ")[0]
         else: next_showing = "TBC"
 
         cover_pic = self.get_cover_picture()
         if isinstance(cover_pic, EventMedia): cover_pic = cover_pic.picture.url
 
         return {
+            'full_url': self.get_absolute_url(),
             'title': self.title,
             'description': self.description,
             'over_18s': self.over_18s,

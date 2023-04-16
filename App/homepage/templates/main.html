@@ -187,6 +187,7 @@
             >
                 {% for event in categorie.events %}
                     <span
+                        data-full-url='{{ event.full_url }}'
                         data-id='{{ event.id }}'
                         data-is-live='{{ event.is_event_live }}'
                         data-title='{{ event.title }}'
@@ -194,7 +195,7 @@
                         data-thumbnail='{{ event.thumbnail }}'
                         data-streamer-id='{{ event.broadcaster.id }}'
                         data-streamer-name='{{ event.thumbnail }}'
-                        data-earliest-date='{{ event.earliest_showing.date }}'
+                        data-earliest-date='{{ event.earliest_showing }}'
                         data-streamer-pfp='{{ event.broadcaster.pfp }}'
                     ></span>
                 {% endfor %}
