@@ -316,6 +316,7 @@ class Event(models.Model):
                 'name': category.name,
             } for category in self.categories.all()],
             'broadcaster': {
+                'pfp': self.broadcaster.get_picture(),
                 'id': self.broadcaster.id,
                 'handle': self.broadcaster.handle,
             },
