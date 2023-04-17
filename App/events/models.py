@@ -322,6 +322,7 @@ class Event(models.Model):
                 'pfp': self.broadcaster.get_picture(),
                 'id': self.broadcaster.id,
                 'handle': self.broadcaster.handle,
+                'url': self.broadcaster.get_absolute_url(),
             },
             'created': self.created,
             'updated': self.updated,

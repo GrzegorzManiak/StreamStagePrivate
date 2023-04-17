@@ -33,6 +33,7 @@ carousels.forEach((carousel) => {
             streamer_id = event_elm.getAttribute('data-streamer-id'),
             streamer_name = event_elm.getAttribute('data-streamer-name'),
             streamer_pfp = event_elm.getAttribute('data-streamer-pfp'),
+            streamer_url = event_elm.getAttribute('data-streamer-url'),
             start_time = event_elm.getAttribute('data-earliest-date'),
             full_url = event_elm.getAttribute('data-full-url');
 
@@ -51,6 +52,7 @@ carousels.forEach((carousel) => {
             streamer: {
                 id: streamer_id,
                 name: streamer_name,
+                url: streamer_url,
                 pfp: streamer_pfp,
             }
         };

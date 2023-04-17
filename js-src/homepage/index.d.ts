@@ -2,6 +2,7 @@ export interface Streamer {
     id: string;
     name: string;
     pfp: string;
+    url: string;
 }
 
 export interface Event {

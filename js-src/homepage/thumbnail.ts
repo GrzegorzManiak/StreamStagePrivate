@@ -23,10 +23,7 @@ export function add_thumbnail(event: Event) {
     const tn_clone = tn.cloneNode(true) as HTMLElement;
 
     tn_clone.id = 'thumbnail-' + event.id;
-    tn_clone.onclick = () => {
-        window.location.href = event.full_url;
-    };
-    
+
     // -- Is the event live [data-is-live='']
     //    Is the event hidden [data-is-hidden='']
     //    Is the event a skeleton [data-is-skeleton=''] (used for loading)
@@ -37,11 +34,16 @@ export function add_thumbnail(event: Event) {
     // -- Set the thumbnail image, [data-elm='main-image']
     const tn_img = tn_clone.querySelector('.thumbnail-image') as HTMLImageElement;
     tn_img.style.backgroundImage = 'url(' + event.thumbnail + ')';
+    tn_img.onclick = () => {
+        window.location.href = event.full_url;
+    };
 
     // -- Set the streamer pfp, [data-elm='pfp']
     const tn_pfp = tn_clone.querySelector('[data-elm="pfp"]') as HTMLImageElement;
     tn_pfp.src = event.streamer.pfp;
-
+    tn_pfp.onclick = () => {
+        window.location.href = event.streamer.url;
+    }
 
     // -- Sreamtitle, [data-elm='title'], [data-elm='view-count'], [data-elm='date-vod']
     const tn_title = tn_clone.querySelector('[data-elm="title"]') as HTMLHeadingElement;
@@ -49,7 +51,17 @@ export function add_thumbnail(event: Event) {
     const tn_date_vod = tn_clone.querySelector('[data-elm="date-vod"]') as HTMLSpanElement;
 
     tn_title.innerText = event.title;
+    tn_title.style.userSelect = 'none';
+    tn_title.onclick = () => {
+        window.location.href = event.full_url;
+    };
+
     tn_date_vod.innerText = event.start_time;
+
+    tn_view_count.innerText = "@" + event.streamer.name;
+    tn_view_count.onclick = () => {
+        window.location.href = event.streamer.url;
+    }
     
 
     // -- Return the cloned thumbnail

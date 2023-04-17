@@ -194,7 +194,8 @@
                         data-description='{{ event.description }}'
                         data-thumbnail='{{ event.thumbnail }}'
                         data-streamer-id='{{ event.broadcaster.id }}'
-                        data-streamer-name='{{ event.thumbnail }}'
+                        data-streamer-name='{{ event.broadcaster.handle }}'
+                        data-streamer-url='{{ event.broadcaster.url }}'
                         data-earliest-date='{{ event.earliest_showing }}'
                         data-streamer-pfp='{{ event.broadcaster.pfp }}'
                     ></span>

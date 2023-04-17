@@ -20,6 +20,8 @@ from django_countries.fields import CountryField
 from django.db.models import Q
 from timezone_field import TimeZoneField
 
+from StreamStage.templatetags.tags import cross_app_reverse
+
 from .oauth import OAuthTypes
 
 from django.core.files import File
@@ -492,6 +494,11 @@ class Broadcaster(models.Model):
             print(e)
             return False
         
+
+    def get_absolute_url(self):
+        return cross_app_reverse('homepage', 'broadcaster_profile', {
+            "username": self.handle
+        })
 
 
 class oAuth2(models.Model):
