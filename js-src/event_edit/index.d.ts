@@ -15,6 +15,8 @@ interface Showing {
     city: string;
     venue: string;
     time: string;
+    
+    tickets: TicketListing[];
 }
 
 interface Media {

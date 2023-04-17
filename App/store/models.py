@@ -14,7 +14,8 @@ class FlexibleTicket(models.Model):
     
     purchased_date = models.DateTimeField(auto_now_add=True)
     
-    # this field is null until member chooses a showing to watch
+    # if this is a streaming ticket - field is null until member chooses a showing to watch
+    # if a live ticket - then the field should point to the showing that the member has purchased a ticket for. 
     showing = models.ForeignKey(EventShowing, null=True, on_delete=models.DO_NOTHING)
 
     #ticket_price = models.DecimalField("Price", decimal_places=2, max_digits=10)

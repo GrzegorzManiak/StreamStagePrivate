@@ -33,7 +33,8 @@ def get_ticket_listings(request, data):
             'id': listing.listing_id,
             'detail': listing.ticket_detail,
             'price': listing.price,
-            'stock': listing.remaining_stock
+            'stock': listing.remaining_stock,
+            'ticket_type': listing.ticket_type
         })
 
     return success_response('Listings retrieved successfully', {
@@ -55,7 +56,17 @@ def add_ticket_listing(request, event, data):
     if price < 0:
         return error_response('Invalid price.')
     
-    listing = create_ticket_listing(event, ticket_type, price, stock, detail)
+    showing = None
+
+    if ticket_type is TicketType.LiveTicket:
+        showing_id = data.get('showing_id')
+
+        showing = EventShowing.objects.get(showing_id=showing_id)
+
+        if showing is None:
+            return error_response('Must specify valid showing to create a live ticket.')
+    
+    listing = create_ticket_listing(event, ticket_type, price, stock, detail, showing)
 
     if not listing:
         return error_response('Unknown error.')
@@ -64,7 +75,8 @@ def add_ticket_listing(request, event, data):
         'id': listing.listing_id,
         'detail': listing.ticket_detail,
         'price': listing.price,
-        'stock': listing.remaining_stock
+        'stock': listing.remaining_stock,
+        'ticket_type': listing.ticket_type
     }
 
     return success_response('Successfully added listing', {

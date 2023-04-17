@@ -12,9 +12,8 @@ export function handle_ticket_section(panel: HTMLElement) {
 
     if (add_listing_btn)
         manage_add_listing_btn(add_listing_btn);
-        
+    
     query_listings();
-
 }
 
 function manage_add_listing_btn(
@@ -70,7 +69,12 @@ function set_listings(listings: TicketListing[]) {
     listings_panel.innerHTML = "";
 
     for (var listing of listings) {
-        append_listing(listing);
+        console.log(listing.ticket_type);
+
+        if (listing.ticket_type == 0) { // Streaming ticket
+            append_listing(listing);
+        }else { // In person ticket - attach to showing.
+        }
     }
 }
 
