@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load tags %}
 {% load render_bundle from webpack_loader %}
 
 {% block metadescription %}
@@ -63,6 +64,19 @@
 
         data-stripe-pub='{{ stripe_key }}'
         data-stripe-customer='{{ stripe }}'
+
+        data-add-payment='{{ api.add_payment }}'
+        data-get-payments='{{ api.get_payments }}'
+        data-remove-payment='{{ api.remove_payment }}',
+
+        data-get-payment-methods='{% cross_app_reverse_tag "accounts" "get_payments" %}'
+        data-add-payment-method='{% cross_app_reverse_tag "accounts" "add_payment" %}'
+        data-remove-payment-method='{% cross_app_reverse_tag "accounts" "remove_payment" %}'
+        data-create-payment-intent='{% cross_app_reverse_tag "accounts" "create_payment" %}'
+        data-check-payment-intent='{% cross_app_reverse_tag "accounts" "check_payment" %}'
+        
+        data-create-payment='{{ api.create_payment }}'
+        data-check-payment='{{ api.check_payment }}'
     ></span>
     <div 
     id = 'main-container'

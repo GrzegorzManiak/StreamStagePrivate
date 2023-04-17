@@ -34,12 +34,10 @@
     <div class="swiper showcase-container showcase w-100">
         <div class="swiper-wrapper">
             {% for featured in features %}
-                <div 
-                    class="showcase-slide w-100 swiper-slide"
-                    onclick="window.location.href = '{% cross_app_reverse_tag "events" "event_view" event_id=featured.event_id %}'"
-                >
+                <div class="showcase-slide w-100 swiper-slide">
                     <div 
                         class = 'showcase-cover'
+                        onclick="window.location.href = '{% cross_app_reverse_tag "events" "event_view" event_id=featured.event_id %}'"
                         {% if event.get_media_count == 0 %}
                             style="background-image: url({% static 'images/default_event_cover.png' %});"
                         {% else %}
@@ -56,13 +54,18 @@
                         justify-content-center
                         align-items-center
                     '>
-                        <div class='showcase-inner'>
+                        <div 
+                        onclick="window.location.href = '{% cross_app_reverse_tag "events" "event_view" event_id=featured.event_id %}'"
+                        class='showcase-inner'>
                             <!-- 
                                 This is going to be the inner showcase
                                 Where the text, buttons etc will be
                                 placed in the bottom left corner.
                             -->
-                            <div class='
+                            <div 
+                            {% comment %} NO poitner evetns {% endcomment %}
+                            style='pointer-events: none;'
+                            class='
                                 w-100
                                 h-100
                                 d-flex
@@ -71,7 +74,11 @@
                                 p-2
                             '>
                                 <div>
-                                    <h1 data-sci-elm='title'>
+                                    <h1 
+                                        data-sci-elm='title'
+                                        style='pointer-events: all;'
+                                        onclick="window.location.href = '{% cross_app_reverse_tag "events" "event_view" event_id=featured.event_id %}'"
+                                    >
                                         {{ featured.title }}
                                     </h1>
                                     
@@ -89,19 +96,25 @@
                                                 class='showcase-pfp'
                                             >
                                                 <img 
+                                                    style='pointer-events: all;'
                                                     data-skeleton='image'
                                                     src='{{ featured.broadcaster.get_picture }}' 
+                                                    onclick="window.location.href = '{{ featured.broadcaster.url }}'"
                                                     alt=''
                                                 >
                                             </div>
 
                                             <!-- View count -->
-                                            <div class='thumbnail-view-count'>
+                                            <div 
+                                                style='pointer-events: all;'
+                                                class='thumbnail-view-count'
+                                            >
                                                 <p 
                                                     class='skeleton m-0'
                                                     data-elm='view-count'
                                                     data-skeleton='text'
-                                                > 1.3K views</p>
+                                                    onclick="window.location.href = '{{ featured.broadcaster.url }}'"
+                                                >@{{ featured.broadcaster.handle }}</p>
                                             </div>
 
                                             <!-- Date -->
@@ -137,7 +150,9 @@
                             <!--
                                 This is the tags at the top
                             -->
-                            <div class='
+                            <div 
+                            style='pointer-events: none;'
+                            class='
                                 w-100
                                 h-100
                                 d-flex
@@ -146,7 +161,9 @@
                                 pb-2
                                 px-2
                             '>
-                                <div class='
+                                <div 
+                                style='pointer-events: none;'
+                                class='
                                     d-flex
                                     gap-2
                                     flex-wrap

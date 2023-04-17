@@ -28,11 +28,10 @@ def send_template_email(
 ): 
     # -- Should we log the email?
     log = True
-
+    print(member)
     # -- Generate a new uuid
     email_id = str(uuid.uuid4())
-    if template_id == 'verification':
-        email = member
+    if template_id == 'verification': email = member
     else: email = member.email
     subject = ""
     body = ""

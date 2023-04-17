@@ -78,10 +78,14 @@ def create_payment_intent(request, data):
 
     # -- Get the users cars
     cards = get_cards_formatted(request.user)
+    subscription = False
 
     # -- Create the payment intent 
     ids = data['buyable_id'].split(",")
     for i in range(len(ids)):
+        if ids[i] == "ss_monthly" or ids[i] == "ss_yearly":
+            subscription = True
+            continue
         try: ids[i] = uuid.UUID(ids[i])
         except: return invalid_response("Invalid UUID")
 
@@ -98,7 +102,10 @@ def create_payment_intent(request, data):
                 return invalid_response("Invalid payment method, missing " + entry)
             
         # -- Add the payment method
-        if data['payment_method']['save'] is True:
+        if (
+            data['payment_method']['save'] is True or
+            subscription is True
+        ):
             payment_method = add_stripe_payment_method(
                 request.user,
                 data['payment_method']['card'],
@@ -155,7 +162,7 @@ def create_payment_intent(request, data):
 @authenticated()
 @required_data(['intent_id'])
 def check_payment_intent(request, data):
-    response = check_cust_payment_intent(data['intent_id'])
+    response = check_cust_payment_intent(request.user, data['intent_id'])
     
     if response.get("error"):
         return error_response(response["error"])
