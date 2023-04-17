@@ -45,7 +45,9 @@ from .other import (
     delete_user,
     update_user_email,
     update_user_streamer,
-    filter_purchases
+    filter_purchases,
+    get_subscription, 
+    cancel_subscription
 )
 
 from .views import (
@@ -126,6 +128,8 @@ urlpatterns = [
     path('api/other/delete_review', delete_review, name='delete_review'),
     path('api/other/submit_report', submit_report, name='submit_report'),
     path('api/purchases/filter', filter_purchases, name='filter_purchases'),
+    path('api/subscription/get', get_subscription, name='get_subscription'),
+    path('api/subscription/cancel', cancel_subscription, name='cancel_subscription'),
 
     # -- Broadcaster
     path('broadcaster/', broadcaster_panel, name='broadcaster_panel'),

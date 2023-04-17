@@ -40,7 +40,7 @@ def username_taken(username) -> bool:
             return True
 
     # -- Check the database
-    if Member.objects.filter(cased_username=username.lower()).first() is not None:
+    if Member.objects.filter(username=username.lower()).first() is not None:
         return True
 
     return False

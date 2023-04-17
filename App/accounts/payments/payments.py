@@ -307,6 +307,7 @@ def create_cust_payment_intent(user: Member, listing_ids: List[str], payment_met
     """
     price = 0
     subscription = False
+    plan = None
     
     # -- If its ss_monthly, or ss_yearly we need to first check if they have a subscription
     #    and if so return an error.
@@ -314,8 +315,12 @@ def create_cust_payment_intent(user: Member, listing_ids: List[str], payment_met
         if user.is_subscribed(): return { "error": "You already have a subscription." }
         else: subscription = True
 
-        if listing_ids[0] == "ss_monthly": price = STRIPE['prices']['ss_monthly']
-        else: price = STRIPE['prices']['ss_yearly']
+        if listing_ids[0] == "ss_monthly": 
+            price = STRIPE['prices']['ss_monthly']
+            plan = 'monthly'
+        else: 
+            price = STRIPE['prices']['ss_yearly']
+            plan = 'yearly'
 
     
 
@@ -341,7 +346,8 @@ def create_cust_payment_intent(user: Member, listing_ids: List[str], payment_met
         stripe_indent_id = formated_intent['id']
         
         na = stripe_intent['latest_invoice']['payment_intent']['next_action']
-        if na["type"] == "redirect_to_url": next_action = na["redirect_to_url"]["url"]
+        if na is None: pass
+        elif na["type"] == "redirect_to_url": next_action = na["redirect_to_url"]["url"]
         elif na["type"] == "use_stripe_sdk": next_action = na["use_stripe_sdk"]["stripe_js"]
 
     else: stripe_indent_id = stripe_intent['id']
@@ -360,7 +366,8 @@ def create_cust_payment_intent(user: Member, listing_ids: List[str], payment_met
         "subscription": subscription,
         "payment_method": payment_method,
         "price": price,
-        "next_action": next_action
+        "next_action": next_action,
+        "plan": plan
     }
 
     # -- Return the external intent id

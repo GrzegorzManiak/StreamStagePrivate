@@ -2,6 +2,7 @@ import { PaymentIntentMethod } from "../common/index.d";
 import { configuration } from "./";
 import { 
     DefaultResponse, 
+    GetSubscriptionResponse, 
     SecurityInfoResponse, 
     StartSubscriptionResponse, 
     UpdateProiflePictureResponse, 
@@ -292,4 +293,26 @@ export const change_image = async (
     'POST',
     configuration.change_img,
     { image: base64, type }
+);
+
+
+
+/**
+ * @name get_subscription
+ * @returns Promise<GetSubscriptionResponse>
+ */
+export const get_subscription = async (): Promise<GetSubscriptionResponse> => base_request(
+    'GET',
+    configuration.get_subscription
+);
+
+
+
+/**
+ * @name cancel_subscription
+ * @returns Promise<DefaultResponse>
+ */
+export const cancel_subscription = async (): Promise<DefaultResponse> => base_request(
+    'POST',
+    configuration.cancel_subscription
 );

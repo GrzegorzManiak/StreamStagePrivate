@@ -187,6 +187,7 @@ export async function instant_paynow(
     item_name: string = 'Monthly Subscription',
     item_price: string = '$9.99 USD / month',
     stop: () => void = () => {},
+    complete: (success: boolean) => void = () => {},
 ) {
     // -- Check if the user is logged in
     if (logged_in() === false) {
@@ -224,14 +225,14 @@ export async function instant_paynow(
     let stage = 0;
     pmo.continue.addEventListener('click', async() => {
         if (stage === 2) { modal.remove(); return stop(); }
-        switch_stage(++stage, price_id, pmo, payment_details);
+        switch_stage(++stage, price_id, pmo, payment_details, complete);
     });
 
 
     // -- Event listener for the no button
     pmo.back.addEventListener('click', async() => {
         if (stage === 0) { modal.remove(); return stop(); }
-        switch_stage(--stage, price_id, pmo, payment_details);
+        switch_stage(--stage, price_id, pmo, payment_details, complete);
     });
 }
 
@@ -295,6 +296,7 @@ export async function switch_stage(
     price_id: string,
     pmo: PaymentModalObject,
     payment_details: Promise<() => PaymentIntentMethod>,
+    complete: (success: boolean) => void = () => {},
 ) {
     let selected_card = (await payment_details)();
 
@@ -360,6 +362,9 @@ export async function switch_stage(
                     // -- Update the order number
                     pmo.order_num_elm.innerHTML = pid;
                     stop();
+
+                    // -- Call the complete function
+                    complete(true);
                 }, 
                 
                 // -- If the intent is 3DS

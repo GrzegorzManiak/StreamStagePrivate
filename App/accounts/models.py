@@ -123,7 +123,7 @@ class Member(AbstractUser):
     subscription_id = models.CharField("Subscription ID", max_length=100, blank=True, null=True)
     subscription_start = models.IntegerField("Subscription Start", blank=True, null=True)
     subscription_end = models.IntegerField("Subscription End", blank=True, null=True)
-    subscription_status = models.CharField("Subscription Status", max_length=100, blank=True, null=True)
+    subscription_status = models.CharField("Subscription Status", max_length=100, default='none', blank=True, null=True)
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email', 'first_name', 'last_name']
@@ -255,9 +255,23 @@ class Member(AbstractUser):
                 subscription
             """
 
-        return False
+        return subscribed
 
         
+    
+    def serialize_subscription(self):
+        """
+            Serializes the subscription
+            for the user
+        """
+        return {
+            'has_subscription': self.has_subscription,
+            'subscription_id': self.subscription_id,
+            'subscription_start': self.subscription_start,
+            'subscription_end': self.subscription_end,
+            'subscription_status': self.subscription_status
+        }
+    
 
 
     def get_stripe_customer(self):
@@ -294,6 +308,13 @@ class Member(AbstractUser):
             self.save()
             return customer
 
+
+    def set_plan(self, plan: str):
+        """
+            Sets the plan for a user
+        """
+        self.subscription_status = plan
+        self.save()
 
 
     def set_recovery_codes(self):

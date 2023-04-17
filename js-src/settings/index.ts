@@ -44,7 +44,11 @@ export const configuration = build_configuration<Configuration>({
     update_review: new Type('data-update-review', 'string'),
     delete_review: new Type('data-delete-review', 'string'),
 
-    change_img: new Type('data-change-picture', 'string')
+    change_img: new Type('data-change-picture', 'string'),
+
+    is_subscribed: new Type('data-is-subscribed', 'boolean'),
+    get_subscription: new Type('data-get-subscription', 'string'),
+    cancel_subscription: new Type('data-cancel-subscription', 'string'),
 });
 
 // -- Attach the event listeners

@@ -99,14 +99,14 @@ def on_subscription_success(cust_payment_intent):
     user = cust_payment_intent["user"]
     start_date = stripe_intent['current_period_start']
     end_date = stripe_intent['current_period_end']
-    plan = stripe_intent['plan']['interval']
+    plan = cust_payment_intent['plan']
 
     user.has_subscription = True
     user.subscription_id = stripe_id
     user.subscription_start = int(start_date)
     user.subscription_end = int(end_date)
-    user.subscription_status = plan
     
     purchase.save()
     user.save()
+    user.set_plan(plan)
     return purchase_id

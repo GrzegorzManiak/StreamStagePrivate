@@ -107,6 +107,14 @@ export type DefaultResponse = DefaultResponseNoData | DefaultResponseNoData;
 
 
 
+export interface Subscription {
+    has_subscription: boolean,
+    subscription_id: string,
+    subscription_start: string,
+    subscription_end: string,
+    subscription_status: string,
+}
+
 //
 // Custom Responses
 //
@@ -122,6 +130,9 @@ export type StartSubscriptionResponse = StartSubscriptionSuccess | DefaultRespon
 
 export type UpdateProiflePictureSuccess = DefaultResponseData & { data: { image: string } }
 export type UpdateProiflePictureResponse = UpdateProiflePictureSuccess | DefaultResponse;
+
+export type GetSubscriptionSuccess = DefaultResponseData & { data: Subscription }
+export type GetSubscriptionResponse = GetSubscriptionSuccess | DefaultResponse;
 
 export interface Configuration {
     admin: boolean, 
@@ -153,4 +164,7 @@ export interface Configuration {
     delete_review: string, 
     verify_mfa: string,
     change_img: string,
+    is_subscribed: boolean,
+    get_subscription: string,
+    cancel_subscription: string,
 }
