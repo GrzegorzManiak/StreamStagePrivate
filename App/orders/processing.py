@@ -2,6 +2,7 @@ from events.models import Event
 from accounts.models import Member
 from store.models import TicketListing
 from .models import Purchase, PurchaseItem
+from StreamStage.models import Statistics
 import uuid
     
 def create_purchase(
@@ -33,6 +34,10 @@ def create_purchase(
         item_name = ticket_listing.ticket_detail,
         price = ticket_listing.price
     )
+
+    Statistics.log('payment', 'gross', (ticket_listing.price * total_mult))
+    Statistics.log('tickets', 'gross', (ticket_listing.price * total_mult))
+    Statistics.log('tickets', 'count', 1)
 
     purchase.save()
     item.save()

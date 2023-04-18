@@ -4,6 +4,7 @@
 
 # -- Imports
 from rest_framework.decorators import api_view
+from StreamStage.models import Statistics
 from accounts.com_lib import authenticated, invalid_response, required_data, success_response, impersonate, error_response
 from .payments import (
     add_stripe_payment_method,
@@ -172,18 +173,25 @@ def check_payment_intent(request, data):
         return error_response(response["error"])
     
     match response["status"]:
-        case "success": return success_response("Purchase completed!", {
-            "status": "success",
-            "purchase_id": response["purchase_id"]
-        })
-        case "cancelled": return error_response("Payment cancelled", {
-            "status": "cancelled"
-        })
-        case "requires_action": return success_response("Additional action required.", {
-            "next_action": response["next_action"],
-            "status": "requires_action"
-        })
+        case "success": 
+            Statistics.log('payment', 'complete', 1)
+            return success_response("Purchase completed!", {
+                "status": "success",
+                "purchase_id": response["purchase_id"]
+            })
+        case "cancelled": 
+            Statistics.log('payment', 'cancelled', 1)
+            return error_response("Payment cancelled", {
+                "status": "cancelled"
+            })
+        case "requires_action": 
+            Statistics.log('payment', 'requires_action', 1)
+            return success_response("Additional action required.", {
+                "next_action": response["next_action"],
+                "status": "requires_action"
+            })
     
+    Statistics.log('payment', 'unk', 1)
     return error_response("Error in checking status of payment")
 
 

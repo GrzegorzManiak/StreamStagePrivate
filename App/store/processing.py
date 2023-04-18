@@ -4,6 +4,7 @@ from store.models import FlexibleTicket
 from accounts.models import Member
 from events.models import TicketListing
 import uuid
+from StreamStage.models import Statistics
 
 """
     Queries 'item' price rather than ticket price as I intend
@@ -35,6 +36,7 @@ def create_ticket(
     successful.
 """
 def on_intent_success(cust_payment_intent):
+    Statistics.log('payment', 'count', 1)
     billing_data = {
         "billingName": "",
         "billingAddress1": "",
@@ -70,6 +72,7 @@ def reverse_items(item_ids):
 
 
 def on_subscription_success(cust_payment_intent):
+    Statistics.log('payment', 'count', 1)
     billing_data = {
         "billingName": "",
         "billingAddress1": "",
@@ -120,6 +123,12 @@ def on_subscription_success(cust_payment_intent):
             other_data=f'A:{item["plan"]["active"]},LM:{item["plan"]["livemode"]},I:{item["plan"]["interval"]},P:{item["plan"]["product"]},T:{item["plan"]["trial_period_days"]},O:{item["plan"]["object"]}'
         )
         purchase_item.save()
+        Statistics.log('payment', 'gross', int(ammount))
+
+        Statistics.log('subscription', 'gross', int(ammount))
+        Statistics.log('subscription', plan, int(ammount))
+        Statistics.log('subscription', 'count', 1)
+        Statistics.log('subscription', f'count_{plan}', int(ammount))
 
     purchase.save()
     user.save()
