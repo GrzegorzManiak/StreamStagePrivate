@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="nav-gap container">
-    <a href="{% cross_app_reverse_tag 'events' 'event_view' 'event_id' %}" alt="Back to Event Page">
+    <a href="{{ event.get_absolute_url }}" alt="Back to Event Page">
         <button class="w-100 my-2 btn btn-primary">
             Back to Event Page
         </button>

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags%}
 {% load tags %}
+{% load static %}
 
 {% block metadescription %}
 Past Events
@@ -23,7 +24,10 @@ Past Events | StreamStage
             <!-- Listing Past Events (if has showings and showing dates have passed)-->
             {% for event in events %}
                 {% if event.get_showings_count > 0 and event.get_num_upcoming_showings == 0 %}
-                    {% include 'event_list.html' with event=event %}
+                    {% if request.user.is_subscribed and event.seven_days_past == True %}
+                        {% include 'event_list.html' with event=event %}
+
+                    {% endif %}
                 {% endif %}
             {% empty %}
             <div class="row mx-auto">

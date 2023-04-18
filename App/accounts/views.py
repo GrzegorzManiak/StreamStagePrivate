@@ -141,12 +141,12 @@ def get_token(request, data):
     if data['emailorusername'].find('@') != -1:
         try: user = Member.objects.get(email=data['emailorusername'].lower())
         except Member.DoesNotExist: return invalid_response('Invalid credentials')
-
+    
     # -- Probably a username
     else:
+        print("Lalalala")   
         try: user = Member.objects.get(username=data['emailorusername'].lower())
         except Member.DoesNotExist: return invalid_response('Invalid credentials')
-
 
     # -- Authenticate the user
     user.ensure()

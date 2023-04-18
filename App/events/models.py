@@ -279,29 +279,36 @@ class Event(models.Model):
 
     def get_showings(self):
         return EventShowing.objects.filter(event=self).all().order_by('time')
-
+    
+    def get_showings_count(self):
+        return EventShowing.objects.filter(event=self).all().count()
+    
     def get_upcoming_showings(self):
-        showing = self.get_showings().first()
-        start_date = datetime.now(tz = showing.time.tzinfo)
-        end_date = datetime(2100, 1, 1)
-        showings = EventShowing.objects.filter(event=self).filter(time__range=(start_date,end_date)).all().order_by('time')
-        return showings
-    
-    def get_next_showing(self):
-        return self.get_upcoming_showings().first()
+        if self.get_showings_count() > 0:
+            showing = self.get_showings().first()
+            start_date = datetime.now(tz = showing.time.tzinfo)
+            end_date = datetime(2100, 1, 1)
+            showings = EventShowing.objects.filter(event=self).filter(time__range=(start_date,end_date)).all().order_by('time')
+            return showings
 
-    def get_last_showing(self):
-        return self.get_showings().last()
-    
     def get_num_upcoming_showings(self):
         showings = []
         for showing in self.get_showings():
             if showing.time + timedelta(hours=0.5) >= datetime.now(tz = showing.time.tzinfo):
                 showings.append(showing)
         return len(showings)
+      
+    def get_next_showing(self):
+        if self.get_showings_count() > 0:
+            return self.get_upcoming_showings().first()
+
+    def get_last_showing(self):
+        if self.get_showings_count() > 0:
+            return self.get_showings().last()
     
-    def get_showings_count(self):
-        return EventShowing.objects.filter(event=self).all().count()
+    def seven_days_past(self):
+        if self.get_last_showing().time + timedelta(days=7) >= datetime.now(tz = self.get_last_showing().time.tzinfo):
+            return True
     
     def is_event_live(self):
         showings = []
