@@ -223,16 +223,21 @@ export async function instant_paynow(
         
     // -- Add the event listener to the yes/no buttons
     let stage = 0;
+    const set_page = (n_page: number) => {
+        stage = n_page;
+        switch_stage(n_page, price_id, pmo, payment_details, complete, set_page);
+    };
+
     pmo.continue.addEventListener('click', async() => {
         if (stage === 2) { modal.remove(); return stop(); }
-        switch_stage(++stage, price_id, pmo, payment_details, complete);
+        set_page(++stage);
     });
 
 
     // -- Event listener for the no button
     pmo.back.addEventListener('click', async() => {
         if (stage === 0) { modal.remove(); return stop(); }
-        switch_stage(--stage, price_id, pmo, payment_details, complete);
+        set_page(--stage);
     });
 }
 
@@ -297,6 +302,7 @@ export async function switch_stage(
     pmo: PaymentModalObject,
     payment_details: Promise<() => PaymentIntentMethod>,
     complete: (success: boolean) => void = () => {},
+    set_page: (n_page: number) => void = () => {},
 ) {
     let selected_card = (await payment_details)();
 
@@ -304,6 +310,8 @@ export async function switch_stage(
 
         // -- Payment selection
         case 0:
+            pmo.loading_pulse.setAttribute('loading-state', 'none');
+            pmo.main_elm.setAttribute('data-mode', 'select');
             pmo.back.disabled = false;
             pmo.back.innerHTML = 'Cancel';
             return;
@@ -343,6 +351,8 @@ export async function switch_stage(
             if (intent.code !== 200) {
                 pmo.back.disabled = false;
                 create_toast('error', 'Oops!', intent.message);
+                console.error(intent);
+                set_page(0);
                 stop();
                 return;
             }

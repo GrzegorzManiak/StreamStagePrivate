@@ -68,7 +68,7 @@ def email_taken(email) -> bool:
             return True
 
     # -- Check the database
-    if Member.objects.filter(email=email).first() is not None:
+    if Member.objects.filter(email=email).first() is not None: 
         return True
 
     return False

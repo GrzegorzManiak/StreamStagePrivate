@@ -150,7 +150,11 @@ def create_payment_intent(request, data):
     )
 
     if response.get("error") is not None:
-        return invalid_response(response.get("error"))
+        # -- If the error has ':' in it, it's a card error
+        #    so we can split it and return the error
+        error = response.get("error")
+        if ":" in error: error = error.split(":")[1]
+        return invalid_response(error)
     
     # -- Return the payment intent
     return success_response("Intent created.", response)
