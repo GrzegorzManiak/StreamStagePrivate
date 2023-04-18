@@ -6,6 +6,7 @@ interface TicketListing {
     price: number;
     ticket_type: number;
     stock: number;
+    showing_id: string|null;
 }
 
 interface Showing {

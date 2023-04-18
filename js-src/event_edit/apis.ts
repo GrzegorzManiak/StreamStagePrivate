@@ -50,7 +50,8 @@ export const add_ticket_listing = async (
     ticket_type: number,
     price: number,
     detail: string,
-    stock: number = 0
+    stock: number = 0,
+    showing_id: string = null
 ): Promise<AddTicketListingResponse> => base_request(
     'POST',
     configuration.add_listing,
@@ -59,7 +60,8 @@ export const add_ticket_listing = async (
         ticket_type: ticket_type,
         price: price,
         detail: detail,
-        stock: stock
+        stock: stock,
+        showing_id: showing_id
     }
 );
 
