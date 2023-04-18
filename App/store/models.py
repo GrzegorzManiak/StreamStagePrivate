@@ -1,6 +1,5 @@
 from django.db import models
-from accounts.models import Member
-from events.models import Event, EventShowing, Category, TicketListing
+from events.models import EventShowing, TicketListing
 from orders.models import PurchaseItem
 from StreamStage.identifiers import new_ticket_id
 import uuid
