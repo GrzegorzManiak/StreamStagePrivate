@@ -103,3 +103,26 @@
     color: #ffb25a;
 }
 
+.rating-list li {
+    transition: all 0.2s ease-in-out;
+}
+
+[data-value="1"] :nth-child(5) { color: #ffb25a; }
+
+[data-value="2"] :nth-child(5) { color: #ffb25a; }
+[data-value="2"] :nth-child(4) { color: #ffb25a; }
+
+[data-value="3"] :nth-child(5) { color: #ffb25a; }
+[data-value="3"] :nth-child(4) { color: #ffb25a; }
+[data-value="3"] :nth-child(3) { color: #ffb25a; }
+
+[data-value="4"] :nth-child(5) { color: #ffb25a; }
+[data-value="4"] :nth-child(4) { color: #ffb25a; }
+[data-value="4"] :nth-child(3) { color: #ffb25a; }
+[data-value="4"] :nth-child(2) { color: #ffb25a; }
+
+[data-value="5"] :nth-child(5) { color: #ffb25a; }
+[data-value="5"] :nth-child(4) { color: #ffb25a; }
+[data-value="5"] :nth-child(3) { color: #ffb25a; }
+[data-value="5"] :nth-child(2) { color: #ffb25a; }
+[data-value="5"] :nth-child(1) { color: #ffb25a; }
