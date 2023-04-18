@@ -115,6 +115,38 @@ export interface Subscription {
     subscription_status: string,
 }
 
+
+export type PurchaseSorts = 'purchase_timestamp' | 'billingAddress1' | 'billingCity' | 'billingPostcode' | 'billingCountry' | 'purchase_id' | 'total_multiplier'
+
+export interface PurchaseItem {
+    item_name: string,
+    price: string,
+    other_data: string
+}
+
+export interface Purchase {
+    purchase_id: string,
+    purchase_timestamp: string,
+    billingName: string,
+    billingAddress1: string,
+    billingCity: string,
+    billingPostcode: string,
+    billingCountry: string,
+    total: number,
+    total_multiplier: number,
+    stripe_id: string,
+    payment_id: string,
+    items: Array<PurchaseItem>
+}
+
+export interface FilterdPurchases {
+    purchases: Array<Purchase>,
+    page: number,
+    per_page: number,
+    total: number,
+    pages: number,
+}
+
 //
 // Custom Responses
 //
@@ -133,6 +165,9 @@ export type UpdateProiflePictureResponse = UpdateProiflePictureSuccess | Default
 
 export type GetSubscriptionSuccess = DefaultResponseData & { data: Subscription }
 export type GetSubscriptionResponse = GetSubscriptionSuccess | DefaultResponse;
+
+export type GetPurchasesSuccess = DefaultResponseData & { data: FilterdPurchases }
+export type GetPurchasesResponse = GetPurchasesSuccess | DefaultResponse;
 
 export interface Configuration {
     admin: boolean, 
@@ -167,4 +202,5 @@ export interface Configuration {
     is_subscribed: boolean,
     get_subscription: string,
     cancel_subscription: string,
+    filter_purchases: string,
 }

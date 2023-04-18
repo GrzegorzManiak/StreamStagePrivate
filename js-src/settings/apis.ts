@@ -1,8 +1,10 @@
-import { PaymentIntentMethod } from "../common/index.d";
+import { FilterOrder, PaymentIntentMethod } from "../common/index.d";
 import { configuration } from "./";
 import { 
     DefaultResponse, 
+    GetPurchasesResponse, 
     GetSubscriptionResponse, 
+    PurchaseSorts, 
     SecurityInfoResponse, 
     StartSubscriptionResponse, 
     UpdateProiflePictureResponse, 
@@ -316,3 +318,24 @@ export const cancel_subscription = async (): Promise<DefaultResponse> => base_re
     'POST',
     configuration.cancel_subscription
 );
+
+
+/**
+ * @name filter_purchases
+ * @param {number} page - The page to get
+ * @param {CategorySorts} sort - The sort to use (name, email, etc)
+ * @param {FilterOrder} order - The order to use (asc, desc)
+ * @param {string} search - The search query
+ * @returns {Promise<GetPurchasesResponse>}
+ */
+export const filter_purchases = async (
+    page: number,
+    sort: PurchaseSorts,
+    order: FilterOrder,
+    search: string,
+): Promise<GetPurchasesResponse> => base_request(
+    'GET',
+    configuration.filter_purchases,
+    { page, sort, order, search }
+);
+

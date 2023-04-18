@@ -65,6 +65,7 @@ def profile(request):
             'change_pfp': reverse_lazy('change_pfp'),
             'get_subscription': reverse_lazy('get_subscription'),
             'cancel_subscription': reverse_lazy('cancel_subscription'),
+            'filter_purchases': reverse_lazy('filter_purchases'),
         },
         'stripe': request.user.get_stripe_customer(),
         'stripe_key': STRIPE_PUB_KEY,

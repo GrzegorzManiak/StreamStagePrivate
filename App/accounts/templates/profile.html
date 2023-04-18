@@ -81,6 +81,8 @@
         data-is-subscribed='{{ user.is_subscribed }}'
         data-get-subscription='{{ api.get_subscription }}'
         data-cancel-subscription='{{ api.cancel_subscription }}'
+
+        data-filter-purchases='{{ api.filter_purchases }}'
     ></span>
     <div 
     id = 'main-container'
@@ -657,6 +659,9 @@
 
                                 <!-- Reviews -->
                                 {% include 'panels/reviews.html' %}
+
+                                <!-- Purchases -->
+                                {% include 'panels/purchases.html' %}
                                 
                                 <!--
                                     Events Panel

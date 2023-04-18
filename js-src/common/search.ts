@@ -70,14 +70,14 @@ export function manage_search_panel<
         ));
 
         // -- Ensure that the buttons are enabled/disabled correctly
-        if (data.page === 0) prev.setAttribute('disabled', 'true');
+        if (Number(data.page) === 0) prev.setAttribute('disabled', 'true');
         else prev.removeAttribute('disabled');
 
-        if (data.page === data.pages) next.setAttribute('disabled', 'true');
+        if (Number(data.page) === Number(data.pages)) next.setAttribute('disabled', 'true');
         else next.removeAttribute('disabled');
 
         // -- Update the max page
-        out_of.innerHTML = 'out of ' + (data.pages + 1);
+        out_of.innerHTML = 'out of ' + (Number(data.pages) + 1);
         content.setAttribute('dimmed', 'false');
     }
 

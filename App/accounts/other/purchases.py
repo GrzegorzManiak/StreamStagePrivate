@@ -10,7 +10,7 @@ from store.models import FlexibleTicket
 @impersonate()
 @authenticated()
 @paginate(
-    page_size=10,
+    page_size=5,
     search_fields=[
         'purchase_timestamp', 
         'billingAddress1', 'billingCity', 
@@ -31,8 +31,10 @@ from store.models import FlexibleTicket
 def filter_purchases(request, models, total_pages, page):
     return success_response('Successfully filtered Purchases', {
         'purchases': [m.serialize() for m in models],
-        'total_pages': total_pages,
-        'page': page
+        'page': page,
+        'per_page': 5,
+        'total': len(models),
+        'pages': total_pages,
     })
 
 
