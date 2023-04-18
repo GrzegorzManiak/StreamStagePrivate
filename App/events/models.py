@@ -127,7 +127,7 @@ class Event(models.Model):
     # Event
     
     def get_absolute_url(self):
-        return cross_app_reverse('events', 'event_view', kwargs=[self.event_id])
+        return cross_app_reverse('events', 'event_view',kwargs={'event_id': self.event_id})
     
     def __str__(self):
         return self.title
@@ -208,15 +208,15 @@ class Event(models.Model):
     def get_top_review(self, reviews_in = None):
         return EventReview.objects.filter(event=self).aggregate(Max("likes"))["likes__max"]
 
-        reviews = reviews_in or self.get_reviews()
+        # reviews = reviews_in or self.get_reviews()
 
-        top_review = None
-        likes = 0
-        for review in reviews:
-            if review.likes >= likes:
-                likes = review.likes
-                top_review = review
-        return top_review
+        # top_review = None
+        # likes = 0
+        # for review in reviews:
+        #     if review.likes >= likes:
+        #         likes = review.likes
+        #         top_review = review
+        # return top_review
     
     # Showings
 

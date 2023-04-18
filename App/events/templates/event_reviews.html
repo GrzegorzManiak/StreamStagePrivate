@@ -4,6 +4,12 @@
 
 {% block content %}
 <div class="nav-gap container">
+    <a href="{% cross_app_reverse_tag 'events' 'event_view' 'event_id' %}" alt="Back to Event Page">
+        <button class="w-100 my-2 btn btn-primary">
+            Back to Event Page
+        </button>
+    </a>
+
     <div class="row">
         {% for review in event.get_reviews %}
         <div class="col-md-6 col-12">

@@ -11,7 +11,7 @@
             <!-- 
                 New Search 
             -->
-            <div class="w-100">
+            <div class="w-50">
                 <input 
                     class="form-control filter" 
                     type="search" 
@@ -25,7 +25,7 @@
             <!-- 
                 Filter By Broadcaster 
             -->
-            <div class="w-50">
+            <div class="w-25">
                 <input 
                     class="form-control filter" 
                     type="search" 
@@ -33,6 +33,26 @@
                     aria-label="Broadcaster"
                     name="b" 
                     value="{% if broadcaster %}{{ broadcaster }}{% endif %}">
+            </div>
+            <!-- 
+                Events with in-person tickets only 
+            -->
+            <div class="w-25">
+                {% if in_person %} 
+                    <input 
+                        type="checkbox" 
+                        name="ip" 
+                        value="y" 
+                        checked>
+                {% else %} 
+                    <input 
+                        type="checkbox" 
+                        name="ip" 
+                        value="y"> 
+                {% endif %}
+                <label for="ip">
+                    In-Person Tickets Available
+                </label>
             </div>
         </div>
 
@@ -263,16 +283,11 @@
 
                             <!-- Upcoming Events only -->
                             <div class="collapse d-flex w-100" id="datefilter">
-                                <label for='u' class="d-block w-50">Upcoming Events Only</label>
                                 {% if upcoming %} <input type="checkbox" name="u" value="y" checked>
                                 {% else %} <input type="checkbox" name="u" value="y"> {% endif %}
-                            </div>
-
-                            <!-- Events with in-person tickets only -->
-                            <div class="collapse d-flex w-100" id="datefilter">
-                                <label for='ip' class="d-block w-50">In-Person Tickets Available</label>
-                                {% if in_person %} <input type="checkbox" name="ip" value="y" checked>
-                                {% else %} <input type="checkbox" name="ip" value="y"> {% endif %}
+                                <label for='u' class="d-block w-50"> 
+                                    &nbsp; Upcoming Events Only
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -291,7 +306,7 @@
 
                     <!-- Clear Filters -->
                     <a class="w-100" href="?">
-                        <button 
+                        <button type='button' 
                         class="btn btn-danger w-100 error"
                         >Clear</button>
                     </a>

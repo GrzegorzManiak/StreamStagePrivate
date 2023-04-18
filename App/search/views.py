@@ -197,20 +197,10 @@ class SearchResultsListView(ListView):
 
             if min_price == 0:
                 max_price = 99999
-            # Getting events that have ticket listings
-            events = []
-            for event in results:
-                if event.has_ticket_listings > 0:
-                    events.append(event)
-            # Isolating event ID
-            event_ids = []
-            for event in events:
-                event_ids.append(event.event_id)
-            # Making results
-            results = results.filter(event_id__in=event_ids).distinct()
+
             # Checking results between max and min price
-            results = [ result for result in results if max_price >= result.get_min_ticket_price().price >= min_price 
-                and max_price >= result.get_max_price_ticket().price >= min_price ]
+            results = [ result for result in results if result.has_ticket_listings() and max_price >= result.get_min_ticket_price().price >= min_price 
+            and max_price >= result.get_max_price_ticket().price >= min_price ]
 
 
         # Once filtering complete, return results
