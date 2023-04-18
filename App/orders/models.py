@@ -55,9 +55,11 @@ class PurchaseItem(models.Model):
     purchase = models.ForeignKey(Purchase, null=False, on_delete=models.CASCADE)
     item_name = models.CharField(max_length=80)
     price = models.DecimalField("Price", decimal_places=2, max_digits=10)
+    other_data = models.CharField(max_length=2500, blank=True)
 
     def serialize(self):
         return {
             "item_name": self.item_name,
-            "price": self.price
+            "price": self.price,
+            "other_data": self.other_data,
         }

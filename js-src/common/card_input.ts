@@ -62,10 +62,7 @@ export function read_card_modal(
         card_expiry.value = cleaned.replace(/(^\d{2})/g, '$1/').slice(0, 6);
     });
     
-    // -- When the submit button is clicked
-    submit_button.addEventListener('click', () => {
-        submit_button.disabled = true;
-    });
+
 
     // -- Return the function
     return () => {
@@ -389,11 +386,7 @@ export async function switch_stage(
 
                 // -- If the intent is an error
                 () => {
-                    pmo.loading_pulse.setAttribute('loading-state', 'none');
-                    pmo.main_elm.setAttribute('data-mode', 'confirm');
-                    pmo.back.disabled = false;
-                    pmo.back.innerHTML = 'Back';
-                    pmo.continue.disabled = false;
+                    set_page(0);
                 }
             );
             return;

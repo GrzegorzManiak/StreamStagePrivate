@@ -105,7 +105,22 @@ def on_subscription_success(cust_payment_intent):
     user.subscription_id = stripe_id
     user.subscription_start = int(start_date)
     user.subscription_end = int(end_date)
-    
+
+    for item in stripe_intent["items"]["data"]:
+        id = item["id"]
+
+        ammount = int(item["plan"]["amount"]) / 100
+        interval = item["plan"]["interval"]
+        object = item["plan"]["object"]
+
+        purchase_item = PurchaseItem.objects.create(
+            purchase=purchase,
+            item_name=f'{object}-{interval}-{id}-{plan}',
+            price=ammount ,
+            other_data=f'A:{item["plan"]["active"]},LM:{item["plan"]["livemode"]},I:{item["plan"]["interval"]},P:{item["plan"]["product"]},T:{item["plan"]["trial_period_days"]},O:{item["plan"]["object"]}'
+        )
+        purchase_item.save()
+
     purchase.save()
     user.save()
     user.set_plan(plan)
