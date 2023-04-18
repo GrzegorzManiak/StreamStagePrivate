@@ -14,7 +14,7 @@
                 <ul class="list-unstyled">
                     <li class='title'>Homepage</li>
                     <li><a href="{% cross_app_reverse_tag 'homepage' 'homepage_index' %}">Home</a></li>
-                    <li><a href="#">Live</a></li>
+                    <li><a href="{% cross_app_reverse_tag 'events' 'live_events' %}">Live</a></li>
                     <li><a href="{% cross_app_reverse_tag 'events' 'upcoming_events' %}">Upcoming</a></li>
                     <li><a href="{% cross_app_reverse_tag 'events' 'past_events' %}">Past</a></li>
                 </ul>
@@ -31,14 +31,13 @@
                     <li class='title'>Support</li>
                     <li><a href="#">Contact Us</a></li>
                     <li><a href="{% cross_app_reverse_tag 'StreamStage' 'render_faq' %}">FAQ</a></li>
-                    <li><a href="{% cross_app_reverse_tag 'StreamStage' 'render_terms' %}">Terms</a></li>
-                    <li><a href="{% cross_app_reverse_tag 'StreamStage' 'render_privacy' %}">Privacy</a></li>
                 </ul>
 
                 <ul class="list-unstyled">
                     <li class='title'>Company</li>
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Privacy</a></li>
+                    <li><a href="{% cross_app_reverse_tag 'StreamStage' 'about_us' %}">About Us</a></li>
+                    <li><a href="{% cross_app_reverse_tag 'StreamStage' 'render_terms' %}">Terms</a></li>
+                    <li><a href="{% cross_app_reverse_tag 'StreamStage' 'render_privacy' %}">Privacy</a></li>
                 </ul>
 
                 <ul class="list-unstyled">

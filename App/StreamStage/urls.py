@@ -21,6 +21,7 @@ from django.conf.urls.static import static
 from .api.terms import get_latest_terms, create_terms, filter_terms, render_terms, render_terms_specific
 from .api.privacy import get_latest_privacy, create_privacy, filter_privacy, render_privacy, render_privacy_specific
 from .api.faq import create_faq, filter_faq, render_faq, delete_faq, update_faq
+from .views import about_us_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,6 +32,7 @@ urlpatterns = [
     path('search/', include('search.urls')),
     path('', include('homepage.urls')),
     path('homepage/', include('homepage.urls')),
+    path('about_us', about_us_view, name='about_us'),
 
     # -- API
     path('api/terms/latest', get_latest_terms, name='get_latest_terms'),

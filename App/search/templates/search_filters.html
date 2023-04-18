@@ -12,7 +12,6 @@
                 New Search 
             -->
             <div class="w-100">
-                <label class="form-label" for="new-search">New Search</label>
                 <input 
                     class="form-control filter" 
                     type="search" 
@@ -27,11 +26,10 @@
                 Filter By Broadcaster 
             -->
             <div class="w-50">
-                <label class="form-label" for="broadcaster">Broadcaster</label>
                 <input 
                     class="form-control filter" 
                     type="search" 
-                    placeholder="Broadcaster" 
+                    placeholder="Search Broadcasters" 
                     aria-label="Broadcaster"
                     name="b" 
                     value="{% if broadcaster %}{{ broadcaster }}{% endif %}">
@@ -241,24 +239,24 @@
                                     <label class="form-label w-100" for="sd">From</label>
                                     <input 
                                         class="w-100 dropdown-input"
-                                        type="number" 
+                                        type="datetime" 
                                         name="sd" 
                                         id="sd"
                                         style="background-color: var(--theme-color)!important"
                                         placeholder="(dd/mm/yyyy)"
-                                        {% if start_date %} value="{{start_date}}" {% endif %}>
+                                        {% if start_date %} value="{{ start_date }}" {% endif %}>
                                 </div>
 
                                 <div class='d-flex w-100 flex-column'>
                                     <label class="form-label w-100" for="ed">To</label>
                                     <input 
                                         class="w-100 dropdown-input"
-                                        type="number"
+                                        type="datetime"
                                         name="ed" 
                                         id="ed"
                                         style="background-color: var(--theme-color)!important"
                                         placeholder="(dd/mm/yyyy)"
-                                        {% if end_date %} value="{{end_date}}" {% endif %}>
+                                        {% if end_date %} value="{{ end_date }}" {% endif %}>
                                 </div>
                             </div>
                                 

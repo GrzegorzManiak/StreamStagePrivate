@@ -158,12 +158,11 @@ class SearchResultsListView(ListView):
             min_price_tickets = {}
             events = []
             for event in results:
-                # Get cheapest priced ticket for event
-                min_price_ticket = event.get_min_ticket_price()
-                print(min_price_ticket)
-                # Add to list of cheapest priced tickets
-                min_price_tickets.update({min_price_ticket.price : min_price_ticket.event})
-                print(min_price_tickets)
+                if event.has_ticket_listings() > 0:
+                    # Get cheapest priced ticket for event
+                    min_price_ticket = event.get_min_ticket_price()
+                    # Add to list of cheapest priced tickets
+                    min_price_tickets.update({min_price_ticket.price : min_price_ticket.event})
             # Order list by price
             sorted_prices = sorted(min_price_tickets.items(), key=lambda x:x[0])
             # Making list of events using ticket prices
@@ -177,12 +176,11 @@ class SearchResultsListView(ListView):
             min_price_tickets = {}
             events = []
             for event in results:
-                # Get cheapest priced ticket for event
-                min_price_ticket = event.get_min_ticket_price()
-                print(min_price_ticket)
-                # Add to list of cheapest priced tickets
-                min_price_tickets.update({min_price_ticket.price : min_price_ticket.event})
-                print(min_price_tickets)
+                if event.has_ticket_listings() > 0:
+                    # Get cheapest priced ticket for event
+                    min_price_ticket = event.get_min_ticket_price()
+                    # Add to list of cheapest priced tickets
+                    min_price_tickets.update({min_price_ticket.price : min_price_ticket.event})
             # Order list by price
             sorted_prices = sorted(min_price_tickets.items(), key=lambda x:x[0])
             # Making list of events using ticket prices
@@ -199,9 +197,20 @@ class SearchResultsListView(ListView):
 
             if min_price == 0:
                 max_price = 99999
-
+            # Getting events that have ticket listings
+            events = []
+            for event in results:
+                if event.has_ticket_listings > 0:
+                    events.append(event)
+            # Isolating event ID
+            event_ids = []
+            for event in events:
+                event_ids.append(event.event_id)
+            # Making results
+            results = results.filter(event_id__in=event_ids).distinct()
+            # Checking results between max and min price
             results = [ result for result in results if max_price >= result.get_min_ticket_price().price >= min_price 
-                   and max_price >= result.get_max_price_ticket().price >= min_price ]
+                and max_price >= result.get_max_price_ticket().price >= min_price ]
 
 
         # Once filtering complete, return results

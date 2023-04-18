@@ -203,11 +203,6 @@ form>div>button {
     width: 100% !important;
 }
 
-form>div>textarea,
-form>p>textarea {
-    height: 4rem !important;
-}
-
 .button-slim p,
 .button-slim i {
     font-size: 0.9rem;
@@ -755,7 +750,7 @@ footer hr {
 /* Event media */
 .event-cover {
     display: block;
-    max-width: 100%;
+    max-width: 80%;
     max-height: 100%;
     margin: 1rem auto;
     object-fit: cover;

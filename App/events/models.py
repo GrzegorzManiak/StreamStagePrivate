@@ -201,23 +201,13 @@ class Event(models.Model):
     def get_review_count(self):
         return EventReview.objects.filter(event=self).all().count()
     
-    def get_average_rating(self, reviews_in = None):
-        # avg_rating = 0
-
-        # reviews = reviews_in or self.get_reviews()
-        # count = reviews.count()
-
-        # if count > 0:
-        #     for review in reviews:
-        #         avg_rating += review.rating
-            
-        #     avg_rating /= count
-        
-        # return round(avg_rating,1)
+    def get_average_rating(self):
         return EventReview.objects.filter(event=self).aggregate(Avg("rating"))["rating__avg"] or 0
     
     # Get top review based on likes
     def get_top_review(self, reviews_in = None):
+        return EventReview.objects.filter(event=self).aggregate(Max("likes"))["likes__max"]
+
         reviews = reviews_in or self.get_reviews()
 
         top_review = None
@@ -233,14 +223,15 @@ class Event(models.Model):
     def get_showings(self):
         return EventShowing.objects.filter(event=self).all().order_by('time')
 
-    # def get_showings(self):
-    #     showings = EventShowing.objects.filter(event=self).all().order_by('time')
-    #     for showing in showings:
-    #         showing.time = showing.time(tz = showing.time.tzinfo)
-    #     return showings
-
+    def get_upcoming_showings(self):
+        showing = self.get_showings().first()
+        start_date = datetime.now(tz = showing.time.tzinfo)
+        end_date = datetime(2100, 1, 1)
+        showings = EventShowing.objects.filter(event=self).filter(time__range=(start_date,end_date)).all().order_by('time')
+        return showings
+    
     def get_next_showing(self):
-        return self.get_showings().first()
+        return self.get_upcoming_showings().first()
 
     def get_last_showing(self):
         return self.get_showings().last()
@@ -248,7 +239,7 @@ class Event(models.Model):
     def get_num_upcoming_showings(self):
         showings = []
         for showing in self.get_showings():
-            if showing.time + timedelta(hours=1) >= datetime.now(tz = showing.time.tzinfo):
+            if showing.time + timedelta(hours=0.5) >= datetime.now(tz = showing.time.tzinfo):
                 showings.append(showing)
         return len(showings)
     
@@ -389,6 +380,7 @@ class EventMedia(models.Model):
             print("ERROR")
             print(e)
             return False
+        
 # Event Trailer Model
 class EventTrailer(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)

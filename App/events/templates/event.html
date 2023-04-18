@@ -109,10 +109,7 @@
                     <div class="mx-2 my-4">
                         <h2 class="page-title">{{ event.title }}</h2>
                     </div>
-
-
-                    <hr>
-
+                    <hr/>
 
                     <!-- 
                         Event Description 
@@ -120,10 +117,7 @@
                     <div class="mx-2 my-4">
                         <p>{{ event.description | slice:':380' }}. . .</p>
                     </div>
-
-
-                    <hr>
-
+                    <hr/>
 
                     <!-- 
                         Tickets 
@@ -197,6 +191,8 @@
 
                                     </div>
                                 {% endfor %}
+                            {% else %}
+                            <p>Currently No Tickets Available</p>
                             {% endif %}
                         </div>
                     </div>

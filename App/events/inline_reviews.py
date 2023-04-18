@@ -1,5 +1,4 @@
-from .forms import ReviewUpdateForm, ReviewCreateForm
-from django.shortcuts import redirect
+from .forms import ReviewCreateForm
 from .models import EventReview
 
 def handle(request, event):

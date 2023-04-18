@@ -50,7 +50,8 @@ class EventTests(TestCase):
             country = 'AU',
             city = 'Sydney',
             venue = 'Opera House',
-            time = '2023-02-28T21:17:06.089Z'
+            time = '2023-02-28T21:17:06.089Z',
+            max_duration = 180
         )
 
         # Create Test Review 1 - Low Likes, High Rating
@@ -59,7 +60,7 @@ class EventTests(TestCase):
             event = self.event,
             title = 'Unhappy Review Title', 
             body = 'Review Body',
-            rating = 10,
+            rating = 5,
             likes = 2
         )
 
@@ -115,6 +116,14 @@ class EventTests(TestCase):
         # Testing if correct template used
         self.assertTemplateUsed(self.response, 'event_list_upcoming.html') 
 
+    # Testing Viewing Live Events Page
+    def test_get_live_events_page_displays(self):
+        # Defining HTTP response & testing if correct
+        self.response = self.client.get(reverse('live_events'))
+        self.assertEqual(self.response.status_code, 200) 
+        # Testing if correct template used
+        self.assertTemplateUsed(self.response, 'event_list_live.html') 
+
         
     # Testing Updating an Event
     def test_event_update_event_updated(self):
@@ -160,6 +169,7 @@ class EventTests(TestCase):
         self.assertEqual(f'{showing.city}', 'Sydney') 
         self.assertEqual(f'{showing.venue}', 'Opera House') 
         self.assertEqual(f'{showing.time}', '2023-02-28 21:17:06.089000+00:00') 
+        self.assertEqual(f'{showing.max_duration}', 180) 
 
         # Defining HTTP response & testing if correct
         self.response = self.client.get(self.event.get_absolute_url())
@@ -175,6 +185,7 @@ class EventTests(TestCase):
         showing.city = 'City 2'
         showing.venue = 'Venue 2'
         showing.time = '2024-03-28T22:18:00.089Z'
+        showing.max_duration = 200
         showing.save()
 
         # Testing Updated details of Showing
@@ -182,6 +193,7 @@ class EventTests(TestCase):
         self.assertEqual(f'{showing.city}', 'City 2') 
         self.assertEqual(f'{showing.venue}', 'Venue 2') 
         self.assertEqual(f'{showing.time}', '2024-03-28T22:18:00.089Z') 
+        self.assertEqual(f'{showing.max_duration}', 200) 
 
         # Defining HTTP response & testing if correct
         self.response = self.client.get(self.event.get_absolute_url())
@@ -207,7 +219,8 @@ class EventTests(TestCase):
             country = 'IE',
             city = 'City',
             venue = 'Venue',
-            time = '2024-02-28T21:17:06.089Z'
+            time = '2024-02-28T21:17:06.089Z',
+            max_duration = 300
         )
         showing = self.event.get_next_showing()
 
@@ -224,8 +237,8 @@ class EventTests(TestCase):
         self.assertEqual(f'{review.author}', 'TestMember') 
         self.assertEqual(f'{review.title}', 'Unhappy Review Title') 
         self.assertEqual(f'{review.body}', 'Review Body') 
-        self.assertEqual(f'{review.rating}', '10') 
-        self.assertEqual(f'{review.likes}', '2') 
+        self.assertEqual(f'{review.rating}', 5) 
+        self.assertEqual(f'{review.likes}', 2) 
 
         # Defining HTTP response & testing if correct
         self.response = self.client.get(self.event.get_absolute_url())
@@ -239,13 +252,13 @@ class EventTests(TestCase):
         review = EventReview.objects.filter(event='TstEvnt0').first()
         review.title = 'Review Title 2'
         review.body = 'Review Body 2'
-        review.rating = '5'
+        review.rating = '3'
         review.save()
 
         # Testing Updated details of Review
         self.assertEqual(f'{review.title}', 'Review Title 2') 
         self.assertEqual(f'{review.body}', 'Review Body 2') 
-        self.assertEqual(f'{review.rating}', '5') 
+        self.assertEqual(f'{review.rating}', 3) 
 
         # Defining HTTP response & testing if correct
         self.response = self.client.get(self.event.get_absolute_url())
