@@ -51,7 +51,7 @@
                     <!-- 
                             Pod - Applications
                         -->
-                    <div data-pod-status='active' data-pod='profile' class='
+                    <div data-pod-status='' data-pod='applications' class='
                             side-panel-pod
                             text-light d-flex
                             align-items-center
@@ -82,7 +82,7 @@
                     <!-- 
                             Pod - Contribution
                         -->
-                    <div data-pod-status='' data-pod='profile' class='
+                    <div data-pod-status='' data-pod='invitations' class='
                         side-panel-pod
                         text-light d-flex
                         align-items-center
@@ -125,9 +125,9 @@
 
                 <div class='pods'>
                     <!-- 
-                            Pod - Security
+                            Pod - My Broadcasters
                         -->
-                    <div data-pod-status='' data-pod='my_broadcasters' class='
+                    <div data-pod-status='active' data-pod='my_broadcasters' class='
                             side-panel-pod
                             text-light d-flex
                             align-items-center
@@ -153,7 +153,7 @@
                         </div>
                     </div>
                     <!-- 
-                            End of Pod - Security
+                            End of Pod - My Broadcasters
                         -->
                 </div>
             </section>
@@ -173,7 +173,6 @@
                 justify-content-center
                 align-items-center
             '>
-
             <div class='
                 size-limiter
             '>
@@ -204,11 +203,14 @@
                             ">
 
 
+                                <!-- 'Applications' Panel -->
+                                {% include 'users/apply.html' %}
+
                                 <!-- 'My Broadcasters' Panel -->
                                 {% include 'broadcaster/my_broadcasters.html' %}
 
-                                <!-- Security panel -->
-                                {% include 'panels/security.html' %}
+                                <!-- 'My Broadcasters' Panel -->
+                                {% include 'broadcaster/invitations.html' %}
                             </div>
                         </main>
                     </div>

@@ -91,7 +91,7 @@ module.exports = {
             threadPool: happyThreadPool,
             loaders: ['babel-loader?cacheDirectory=true'],
         }),
-        new BundleAnalyzerPlugin(),
+        // new BundleAnalyzerPlugin(),
         new BundleTracker({filename: '../App/webpack-stats.json'}),
         new CleanWebpackPlugin(),
     ],

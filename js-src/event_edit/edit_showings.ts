@@ -153,7 +153,7 @@ function showing_html(
     showing: Showing
 ) : HTMLElement {
     var row = document.createElement('div');
-    row.className = "row border m-1 listing-row";
+    row.className = "row m-1 listing-row";
     row.setAttribute("data-sid", showing.showing_id);
 
     if (showing.venue.length > 0){
