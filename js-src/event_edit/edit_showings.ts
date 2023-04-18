@@ -4,6 +4,8 @@ import { GetShowingsResponse, AddShowingResponse, Showing, GetShowingsSuccess, A
 import { configuration } from "./index"
 import { transpileModule } from "typescript";
 
+import { manage_add_live_ticket_btn } from "./edit_tickets";
+
 let showings_panel;
 
 export function handle_showings_panel(panel: HTMLElement) {
@@ -84,6 +86,10 @@ function append_showing(showing: Showing) {
             .addEventListener("click", () => {
                 del_showing(showing.showing_id);
             });
+        
+    var add_ticket_btn = showings_panel.querySelector(`.add-live-ticket`);
+    
+    manage_add_live_ticket_btn(add_ticket_btn, showing.showing_id);
 }
 
 // API calls
@@ -153,7 +159,7 @@ function showing_html(
     showing: Showing
 ) : HTMLElement {
     var row = document.createElement('div');
-    row.className = "row border m-1 listing-row";
+    row.className = "row m-1 listing-row";
     row.setAttribute("data-sid", showing.showing_id);
 
     if (showing.venue.length > 0){
@@ -170,8 +176,15 @@ function showing_html(
             </p>
             <p>${showing.country}</p>
         </div>
-        <div class="remove-showing-btn btn btn-danger" data-sid="${showing.showing_id}">
-            Remove Showing
+        <div class="showing-tickets" data-sid="${showing.showing_id}">
+        </div>
+        <div class="m-1">
+        <div class="col-6 m-1 remove-showing-btn btn btn-danger" data-sid="${showing.showing_id}">
+            Delete Showing
+        </div>
+            <div class="col-5 m-1 add-live-ticket btn btn-success" data-sid="${showing.showing_id}">
+                Add Ticket
+            </div>
         </div>
     `
 

@@ -92,7 +92,7 @@ export async function base_request (
     catch (error) {
         return {
             code: response.status,
-            message: 'An unknown error has occured, ' + error.message,
+            message: 'Oops! It appears that our servers dont want to talk to us right now. Please try again later.'
         };
     }
 }

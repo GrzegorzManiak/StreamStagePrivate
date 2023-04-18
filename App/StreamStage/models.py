@@ -201,7 +201,7 @@ class Statistics(models.Model):
                     if (
                         stat['created'] > more_than and
                         stat['created'] < less_than 
-                    ): values.append(stat['value'])
+                    ): values.append(int(stat['value']))
 
                 if len(values) <= 0: data['data'].append(0.0)
                 else: data['data'].append(sum(values) / len(values))
@@ -221,7 +221,6 @@ class Statistics(models.Model):
                 created__lte=get_time(frame_type, time_frame[1])
             ).order_by('created')
 
-
             for i in range(dif):
                 # -- Get the data
                 stat = stats.filter( 
@@ -230,9 +229,12 @@ class Statistics(models.Model):
                 )
 
                 # -- Add the data
-                data['data'].append(stat.count())
+                grouped_data = []
+                for s in stat: grouped_data.append(s.value)
 
-
+                # -- Process the data
+                if len(grouped_data) <= 0: data['data'].append(0.0)
+                else: data['data'].append(sum(grouped_data) / len(grouped_data))
 
         data['labels'].reverse()
         return data

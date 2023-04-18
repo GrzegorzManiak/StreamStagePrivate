@@ -6,7 +6,7 @@ class TicketType:
 
     Types = [ Streaming, LiveTicket ]
 
-def create_ticket_listing(event, ticket_type, price, stock = -1, details = None):
+def create_ticket_listing(event, ticket_type, price, stock = -1, details = None, showing = None):
     # Add default ticket listings
     if ticket_type == TicketType.Streaming:
         listing = TicketListing(
@@ -16,13 +16,16 @@ def create_ticket_listing(event, ticket_type, price, stock = -1, details = None)
             price = price
         )
     elif ticket_type == TicketType.LiveTicket:
+
+
         listing = TicketListing(
             event = event,
             ticket_detail = "In-Person Ticket"if not details else details,
             ticket_type = ticket_type,
             price = price,
             maximum_stock = stock,
-            remaining_stock = stock
+            remaining_stock = stock,
+            showing = showing
         )
     else:
         print(f"Ticketing Error: Tried to create ticket of unknown type ({ticket_type})")

@@ -27,7 +27,7 @@ class BroadcasterAppForm(forms.ModelForm):
         ]
 
     # less work doing it this way than generating a Broadcaster with code i think.
-    submission_statement = forms.CharField(widget=forms.Textarea(attrs={'name':'body', 'rows':5, 'cols':32}))
+    submission_statement = forms.CharField(widget=forms.Textarea(attrs={'name':'body', 'rows':5, 'cols':32, 'placeholder': 'TITLE'}))
     
 class EventAppForm(forms.ModelForm):
     class Meta:

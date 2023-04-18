@@ -9,6 +9,9 @@ import { manage_event_panel } from './src/events';
 import { manage_terms_panel } from './src/terms';
 import { manage_privacy_panel } from './src/privacy';
 import { manage_faq_panel } from './src/faq';
+import { single } from '../common/single';
+
+single('admin');
 
 // -- Build the configuration
 export const configuration = build_configuration<Configuration>({

@@ -115,6 +115,10 @@
                             <i class="fa-solid fa-cog pe-2"></i>
                             <a href="{% cross_app_reverse_tag 'accounts' 'member_profile' %}">Settings</a>
                         </li>
+                        <li class='nav-selectable' nav-id='profile'>
+                            <i class="fa-solid fa-camera-movie pe-2"></i>
+                            <a href="{% cross_app_reverse_tag 'accounts' 'broadcaster_panel' %}">Broadcasting</a>
+                        </li>
                     {% endif %}
                     {% if user.is_staff %}
                         <li class='nav-selectable' nav-id='site_panel'>

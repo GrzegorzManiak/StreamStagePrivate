@@ -47,6 +47,9 @@ from .ext_api import (
     update_event
 )
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
     # Events
     path('', get_upcoming_events, name='upcoming_events'),
@@ -93,4 +96,4 @@ urlpatterns = [
     path('api/events/get/', get_event, name='get_event'),
     path('api/events/delete/', delete_event, name='delete_event'),
     path('api/events/update/', update_event, name='update_event'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

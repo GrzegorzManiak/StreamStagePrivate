@@ -12,9 +12,58 @@ export function handle_ticket_section(panel: HTMLElement) {
 
     if (add_listing_btn)
         manage_add_listing_btn(add_listing_btn);
-        
-    query_listings();
 
+    
+    
+    query_listings();
+}
+
+export function manage_add_live_ticket_btn(
+    btn: HTMLElement,
+    showing_id: string
+) {
+
+    btn.addEventListener("click", () => {
+        const modal = construct_modal("Add In Person Ticket", "Fill in ticket details below.", true, 'success', add_live_ticket_form);
+
+        // -- Create a div element
+        const modal_wrap = document.createElement('div');
+
+        // -- Set the innerHTML of the div to the modal
+        modal_wrap.innerHTML = modal;
+
+        // Set up price formatting
+
+        var detail_field = modal_wrap.querySelector("#id_ticket_detail") as HTMLInputElement;
+        var price_field = modal_wrap.querySelector("#id_ticket_price") as HTMLInputElement;
+        var stock_field = modal_wrap.querySelector("#id_ticket_stock") as HTMLInputElement;
+
+        // -- Get the buttons
+        const yes_btn = modal_wrap.querySelector('.yes') as HTMLButtonElement,
+            no_btn = modal_wrap.querySelector('.no') as HTMLButtonElement;
+
+        // -- Add the event listeners
+        yes_btn.addEventListener('click', async() => {
+            // -- Call the yes function
+            //yes();
+
+            add_live_listing(detail_field.value, price_field.valueAsNumber, stock_field.valueAsNumber, showing_id);
+
+            // -- Remove the modal
+            modal_wrap.remove();
+        });
+
+        no_btn.addEventListener('click', async() => {
+            // -- Call the no function
+            //no();
+
+            // -- Remove the modal
+            modal_wrap.remove();
+        });
+
+        // -- Append the modal to the body
+        document.body.appendChild(modal_wrap);
+    });
 }
 
 function manage_add_listing_btn(
@@ -22,7 +71,7 @@ function manage_add_listing_btn(
 ) {
 
     btn.addEventListener("click", () => {
-        const modal = construct_modal("Add Ticket Listing", "What kind of ticket listing would you like to add?", true, 'success', add_stream_ticket_form);
+        const modal = construct_modal("Add Streaming Ticket", "Fill in ticket details below.", true, 'success', add_stream_ticket_form);
 
         // -- Create a div element
         const modal_wrap = document.createElement('div');
@@ -70,7 +119,13 @@ function set_listings(listings: TicketListing[]) {
     listings_panel.innerHTML = "";
 
     for (var listing of listings) {
-        append_listing(listing);
+        console.log(listing.ticket_type);
+
+        if (listing.ticket_type == 0) { // Streaming ticket
+            append_streaming_ticket(listing);
+        }else { // In person ticket - attach to showing.
+            append_inperson_ticket(listing);
+        }
     }
 }
 
@@ -78,16 +133,30 @@ function remove_listing(lid: number) {
     listings_panel.querySelector(".listing-row[data-lid=\"" + lid + "\"]").remove();
 }
 
-function append_listing(listing: TicketListing) {
-    listings_panel.appendChild(ticket_listing_html(listing));
+function append_inperson_ticket(listing: TicketListing) {
+    if (listing.showing_id == null)
+        return;
 
-    console.log(listings_panel.querySelector(`.remove-listing-btn[data-lid="${listing.id}"]`));
+    console.log(`.listing-row[data-sid="${listing.showing_id}"]`);
 
-    listings_panel.querySelector(`.remove-listing-btn[data-lid="${listing.id}"]`)
+    var showing_elem = document.querySelector(`.listing-row[data-sid="${listing.showing_id}"]`);
+
+    showing_elem.appendChild(ticket_listing_html(listing));
+    
+    showing_elem.querySelector(`.remove-listing-btn[data-lid="${listing.id}"]`)
             .addEventListener("click", () => {
                 del_listing(listing.id);
             });
-    console.log("added event listener for " + listing.id);
+}
+
+function append_streaming_ticket(listing: TicketListing) {
+    listings_panel.appendChild(ticket_listing_html(listing));
+
+
+    listings_panel.querySelector(`.remove-listing-btn[data-lid="${listing.id}"]`)
+            .addEventListener("click", () => {
+                del_listing(listing.id);7
+            });
 }
 
 // API calls
@@ -122,7 +191,33 @@ async function add_listing(
 
     const data = (request as AddTicketListingSuccess).data
 
-    append_listing(data.listing);
+    append_streaming_ticket(data.listing);
+
+    create_toast(
+        'success', 'Ticketing',
+        'Added new ticket listing successfully.'
+    )
+}
+
+
+async function add_live_listing(
+    detail: string,
+    price: number,
+    stock: number,
+    showing_id: string
+) {
+    const request = await add_ticket_listing(configuration.event_id, 1, price, detail, stock, showing_id);
+
+    // -- Check if the request was successful
+    if (request.code !== 200)
+        return create_toast(
+            'error', 'Oops!',
+            'There was an error while trying to add ticket listing, please try again later.'
+        )
+
+    const data = (request as AddTicketListingSuccess).data
+
+    append_inperson_ticket(data.listing);
 
     create_toast(
         'success', 'Ticketing',
@@ -155,21 +250,23 @@ function ticket_listing_html(
     listing: TicketListing
 ) : HTMLElement {
     var row = document.createElement('div');
-    row.className = "row border m-1 listing-row";
+    row.className = "row m-1 listing-row";
     row.setAttribute("data-lid", listing.id.toString());
 
     row.innerHTML = `
-        <div class="col-6">
+        <div class="col-8">
             <div class="b">${listing.detail}</div>
             <span>€${listing.price}</span>
         </div>
-        <div class="remove-listing-btn btn btn-danger" data-lid="${listing.id}">
-            Remove Listing
+        <div class="col-4 h-75 remove-listing-btn btn btn-danger" data-lid="${listing.id}">
+            Delete
         </div>
     `
 
     return row;
 }
+
+
 
 const add_stream_ticket_form = `
     <form>
@@ -185,6 +282,30 @@ const add_stream_ticket_form = `
                 Price<span class="asteriskField">*</span>
             </label>
             <input name="price" type="number" min="0" max="100" class="form-control" required="" id="id_ticket_price" value="10.99"></input>
+        </div>
+    </form>
+`;
+
+const add_live_ticket_form = `
+    <form>
+        <div class="mb-3">
+            <label for="id_ticket_detail" class="form-label requiredField">
+                Ticket Detail<span class="asteriskField">*</span>
+            </label>
+            <input name="detail" maxlength="100" class="textarea form-control" required="" id="id_ticket_detail" value="Standing Ticket"></input>
+        </div>
+
+        <div class="mb-3">
+            <label for="id_price" class="form-label requiredField">
+                Price<span class="asteriskField">*</span>
+            </label>
+            <input name="price" type="number" min="0" max="100" class="form-control" required="" id="id_ticket_price" value="10.99"></input>
+        </div>
+        <div class="mb-3">
+            <label for="id_ticket_stock" class="form-label requiredField">
+                Maximum Stock<span class="asteriskField">*</span>
+            </label>
+            <input name="stock" type="number" min="1" max="10000" class="form-control" required="" id="id_ticket_stock" value="100"></input>
         </div>
     </form>
 `;

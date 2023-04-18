@@ -14,7 +14,7 @@ from .invitations import send_invite, accept_invite, get_invitations, reject_inv
 # temporary
 @api_view(['GET'])
 @authenticated()
-def edit_broadcasters(request):
+def broadcaster_panel(request):
     # Create a comma-delimited list of broadcasters this user
     # has access to so that the client script can retrieve data
     # about them.
@@ -24,12 +24,15 @@ def edit_broadcasters(request):
     for broadcaster in request.user.get_authorized_broadcasters():
         broadcasters += str(broadcaster.id) + ","
 
-    # Trim trailing comma
-    broadcasters = broadcasters[:-1]
+    if len(broadcasters) == 0:
+        broadcasters = ':none:'
+    else:
+        # Trim trailing comma
+        broadcasters = broadcasters[:-1]
 
     update_form = BroadcasterUpdateForm()
 
-    return render(request, 'my_broadcasters.html', 
+    return render(request, 'broadcaster.html', 
         context = {
             "broadcaster_id_list": broadcasters,
             "api": {
@@ -82,7 +85,8 @@ def get_broadcaster_details(request, broadcaster:Broadcaster, data):
         "biography": broadcaster.biography,
         "profile": broadcaster.get_picture("profile_pic"),
         "banner": broadcaster.get_picture("banner"),
-        "url": cross_app_reverse('homepage', 'broadcaster_profile', {"username": broadcaster.handle})
+        "url": cross_app_reverse('homepage', 'broadcaster_profile', {"username": broadcaster.handle}),
+        "approved": broadcaster.approved
     }
 
     return success_response("Retrieved broadcaster details", { "details": encoded_broadcaster })

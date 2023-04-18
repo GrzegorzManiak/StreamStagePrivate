@@ -6,6 +6,7 @@ interface TicketListing {
     price: number;
     ticket_type: number;
     stock: number;
+    showing_id: string|null;
 }
 
 interface Showing {
@@ -15,6 +16,8 @@ interface Showing {
     city: string;
     venue: string;
     time: string;
+    
+    tickets: TicketListing[];
 }
 
 interface Media {

@@ -32,13 +32,18 @@ export function add_thumbnail(event: Event) {
     tn_clone.setAttribute('data-is-skeleton', 'false');
 
     // -- Set the thumbnail image, [data-elm='main-image']
-    const tn_img = tn_clone.querySelector('[data-elm="main-image"]') as HTMLImageElement;
-    // tn_img.src = event.thumbnail;
+    const tn_img = tn_clone.querySelector('.thumbnail-image') as HTMLImageElement;
+    tn_img.style.backgroundImage = 'url(' + event.thumbnail + ')';
+    tn_img.onclick = () => {
+        window.location.href = event.full_url;
+    };
 
     // -- Set the streamer pfp, [data-elm='pfp']
     const tn_pfp = tn_clone.querySelector('[data-elm="pfp"]') as HTMLImageElement;
-    // tn_pfp.src = event.streamer.pfp;
-
+    tn_pfp.src = event.streamer.pfp;
+    tn_pfp.onclick = () => {
+        window.location.href = event.streamer.url;
+    }
 
     // -- Sreamtitle, [data-elm='title'], [data-elm='view-count'], [data-elm='date-vod']
     const tn_title = tn_clone.querySelector('[data-elm="title"]') as HTMLHeadingElement;
@@ -46,8 +51,17 @@ export function add_thumbnail(event: Event) {
     const tn_date_vod = tn_clone.querySelector('[data-elm="date-vod"]') as HTMLSpanElement;
 
     tn_title.innerText = event.title;
-    tn_view_count.innerText = event.views_formatted + ' views';
+    tn_title.style.userSelect = 'none';
+    tn_title.onclick = () => {
+        window.location.href = event.full_url;
+    };
+
     tn_date_vod.innerText = event.start_time;
+
+    tn_view_count.innerText = "@" + event.streamer.name;
+    tn_view_count.onclick = () => {
+        window.location.href = event.streamer.url;
+    }
     
 
     // -- Return the cloned thumbnail
@@ -102,6 +116,8 @@ export function fill_carousel(
 export function create_carousel(
     parent: HTMLElement,
     events: Array<Event>,
+    category_name: string,
+    search_url: string,
 ) {
     // -- Fill the carousel with thumbnails
     const {
@@ -112,6 +128,15 @@ export function create_carousel(
     // -- Get the buttons
     const btn_left = parent.querySelector('.carousel-button-left') as HTMLElement;
     const btn_right = parent.querySelector('.carousel-button-right') as HTMLElement;
+
+    const car_header = parent.querySelector('#car-header') as HTMLElement,
+        show_more = parent.querySelector('.show-more') as HTMLElement;
+    car_header.innerText = category_name;
+
+    // -- Get the Search URL for this carousel
+    search_url += '?cat=' + category_name;
+    car_header.onclick = () => { window.location.replace(search_url); };
+    show_more.onclick = () => { window.location.replace(search_url); };
 
     // -- Group count
     let hit_left = false;

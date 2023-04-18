@@ -28,6 +28,8 @@ from .processing import (
 )
 # User views
 
+
+
 @authenticated()
 def apply_broadcaster(request):
     user = request.user
@@ -90,7 +92,7 @@ def apply_event(request):
 
         event = submit_event_application(user, form.cleaned_data)
 
-        return redirect(cross_app_reverse('events', 'event_view'), event.event_id) # temporary
+        return redirect(cross_app_reverse('events', 'event_view', { "event_id": event.event_id })) # temporary
 
     context = {
         'form': form,

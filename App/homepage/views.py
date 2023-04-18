@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view
 from django.conf import settings
 from accounts.models import Member, Broadcaster
 from StreamStage.templatetags.tags import cross_app_reverse
-from events.models import EventReview, Event
+from events.models import EventReview, Event, Category
 
 """
     Main homepage view, first page a user sees when they visit the site
@@ -14,11 +14,21 @@ def index(request):
 
     # -- Get 3 random events
     featuerd = Event.objects.all().order_by('?')[:3]
+    categories = Category.get_random_categories(10)
+    categories_formatted = []
+
+    for category in categories:
+        categories_formatted.append({
+            'category': category,
+            'events': category.get_random_events(10)
+        })
+        
 
     context = {
         'is_admin': request.user.is_superuser,
         'base_url': settings.DOMAIN_NAME,
-        'features': featuerd
+        'features': featuerd,
+        'categories': categories_formatted,
     }
 
     return render(
@@ -111,7 +121,7 @@ def user_profile(request, username):
                 'recent_verification': cross_app_reverse('accounts', 'recent_key'),
                 'submit_report': reverse_lazy('submit_report'),
             }
-        }
+        },
     )
 
 
@@ -133,9 +143,10 @@ def broadcaster_profile(request, username):
     context = {
         'data': {
             'handle': broadcaster.handle,
-            'background': broadcaster.banner.url,
-            'avatar': broadcaster.profile_pic.url,
+            'background': broadcaster.get_picture('banner'),
+            'avatar': broadcaster.get_picture('profile_pic'),
             'description': broadcaster.biography,
+            'approved': broadcaster.approved,
             'is_you': False,
             'short_description': broadcaster.biography[:50] + '...' if len(broadcaster.biography) > 50 else broadcaster.biography,
             'name': broadcaster.name,
@@ -152,7 +163,7 @@ def broadcaster_profile(request, username):
     }
 
     if request.user.is_authenticated and broadcaster in request.user.get_authorized_broadcasters():
-        context['edit_details_path'] = cross_app_reverse('accounts', 'edit_broadcasters') + "?bid=" + str(broadcaster.id)
+        context['edit_details_path'] = cross_app_reverse('accounts', 'broadcaster_panel') + "?bid=" + str(broadcaster.id)
 
     # -- Render the login page
     return render(

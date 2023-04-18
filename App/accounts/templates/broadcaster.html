@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags%}
+{% load render_bundle from webpack_loader %}
+
+{% block metadescription %}
+{{ user.cased_username }} broadcasters
+{% endblock %}
+
+{% block title %}
+{{ user.cased_username }} - Broadcasters
+{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/cropper.css' %}">
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'css/broadcaster_edit.css' %}">
+{% endblock %}
+
+{% block content %}
+<span class='config'
+    data-csrf-token='{{ csrf_token }}'
+
+    data-get-broadcaster-details='{{ api.get_broadcaster_details }}'
+    data-update-broadcaster-details='{{ api.update_broadcaster_details }}'
+
+    data-fetch-invites='{{ api.fetch_invites }}'
+    data-send-invite='{{ api.send_invite }}'
+    data-respond-invite='{{ api.respond_invite }}'
+
+    data-broadcasters='{{ broadcaster_id_list }}'
+></span>
+
+<div id='main-container' class='
+        main-container
+    '>
+    <!-- 1/4 Of the page-->
+    <div id='side-panel' class='side-panel text-light' side-panel='hidden'>
+        <div class='width-limiter'>
+            <section id='pod-personal'>
+                <!-- 
+                        Header - Personal
+                    -->
+                <div class='side-panel-header'>
+                    <p class='side-panel-header-text'>
+                        Personal
+                    </p>
+                </div>
+
+                <div class='pods'>
+                    <!-- 
+                            Pod - Applications
+                        -->
+                    <div data-pod-status='' data-pod='applications' class='
+                            side-panel-pod
+                            text-light d-flex
+                            align-items-center
+                            justify-content-start
+                        '>
+                        <!-- Icon -->
+                        <div class='
+                                    side-panel-pod-icon
+                                    d-flex
+                                    align-items-center
+                                    justify-content-center
+                                '>
+                            <i class="fa-solid text-justify accordion
+                                    fa-user
+                                "></i>
+                        </div>
+
+                        <!-- Text -->
+                        <div class='side-panel-pod-text'>
+                            <p class='side-panel-pod-text-text m-0 mb-0'>
+                                Applications
+                            </p>
+                        </div>
+                    </div>
+                    <!-- 
+                            End of Pod - Applications
+                        -->
+                    <!-- 
+                            Pod - Contribution
+                        -->
+                    <div data-pod-status='' data-pod='invitations' class='
+                        side-panel-pod
+                        text-light d-flex
+                        align-items-center
+                        justify-content-start
+                    '>
+                    <!-- Icon -->
+                    <div class='
+                                side-panel-pod-icon
+                                d-flex
+                                align-items-center
+                                justify-content-center
+                            '>
+                        <i class="fa-solid text-justify accordion
+                                fa-user
+                            "></i>
+                    </div>
+
+                    <!-- Text -->
+                    <div class='side-panel-pod-text'>
+                        <p class='side-panel-pod-text-text m-0 mb-0'>
+                            Invitations
+                        </p>
+                    </div>
+                </div>
+                <!-- 
+                        End of Pod - Contribution
+                    -->
+                </div>
+            </section>
+
+            <section id='pod-broadcaster'>
+                <!--
+                        Header - Security
+                    -->
+                <div class='side-panel-header'>
+                    <p class='side-panel-header-text'>
+                        Broadcaster
+                    </p>
+                </div>
+
+                <div class='pods'>
+                    <!-- 
+                            Pod - My Broadcasters
+                        -->
+                    <div data-pod-status='active' data-pod='my_broadcasters' class='
+                            side-panel-pod
+                            text-light d-flex
+                            align-items-center
+                            justify-content-start
+                        '>
+                        <!-- Icon -->
+                        <div class='
+                                    side-panel-pod-icon
+                                    d-flex
+                                    align-items-center
+                                    justify-content-center
+                                '>
+                            <i class="fa-solid text-justify accordion
+                                    fa-shield-check
+                                "></i>
+                        </div>
+
+                        <!-- Text -->
+                        <div class='side-panel-pod-text'>
+                            <p class='side-panel-pod-text-text m-0 mb-0'>
+                                My Broadcasters
+                            </p>
+                        </div>
+                    </div>
+                    <!-- 
+                            End of Pod - My Broadcasters
+                        -->
+                </div>
+            </section>
+        </div>
+
+        <!-- End of menu -->
+    </div>
+
+
+    <!-- 3/4 Of the page-->
+    <div class='
+            main-panel
+        '>
+
+        <div class='
+                mt-4
+                justify-content-center
+                align-items-center
+            '>
+            <div class='
+                size-limiter
+            '>
+                <div class='
+                    rounded
+                '>
+                    <div class='
+                        row 
+                        g-0
+                        main-content
+                    '>
+                        <main>
+                            <!--
+                                p-5 on large screens
+                                p-3 on small screens
+                            -->
+                            <div class="
+                                card-body 
+                                rounded
+                                p-xxl-5
+                                p-xl-5
+                                p-lg-5
+                                p-md-3
+                                p-sm-3
+                                p-2
+                                text-light
+                                smoother
+                            ">
+
+
+                                <!-- 'Applications' Panel -->
+                                {% include 'users/apply.html' %}
+
+                                <!-- 'My Broadcasters' Panel -->
+                                {% include 'broadcaster/my_broadcasters.html' %}
+
+                                <!-- 'My Broadcasters' Panel -->
+                                {% include 'broadcaster/invitations.html' %}
+                            </div>
+                        </main>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+{% render_bundle 'broadcaster_edit' %}
+{% endblock %}

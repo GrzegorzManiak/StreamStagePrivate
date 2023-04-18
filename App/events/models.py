@@ -1,5 +1,6 @@
 import base64
 import io
+import random
 
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
@@ -20,8 +21,6 @@ from django.core.files import File
 from PIL import Image
 import uuid
 import base64
-import io
-
 
 # Event/Broadcaster Category Model
 class Category(models.Model):
@@ -97,17 +96,73 @@ class Category(models.Model):
         }
 
 
+    def get_random_categories(amount: int):
+        """
+            Returns a random amount of categories
+        """
+        return Category.objects.all().order_by('?')[:amount]
+    
+
+    def get_random_events(self, amount: int):
+        """
+            Returns a random amount of events
+            from the category
+        """
+        events = Event.objects.filter(categories=self).order_by('?')[:amount]
+        processed_events = []
+
+        for event in events:
+            processed_events.append(event.serialize())
+
+        # -- If theres 0 events, return an empty list
+        if len(processed_events) == 0:
+            return []
+        
+        # -- If theres not enough events, just duplicate some
+        while(len(processed_events) < amount):
+            # -- Pick a random event from the list
+            random_int = random.randint(0, len(events) - 1)   
+            processed_events.append(processed_events[random_int])
+
+        return processed_events
+    
+
+
 class TicketListing(models.Model):
     listing_id = models.UUIDField(default=uuid.uuid4)
     event = models.ForeignKey(to="events.Event", on_delete=models.CASCADE)
     ticket_detail = models.CharField(max_length=100, blank=True)
     price = models.DecimalField(max_digits=1000, decimal_places=2, validators=[MinValueValidator(0)])
+    
     # seat = models.CharField(max_length=25, blank=True)
+    
     ticket_type = models.IntegerField(default=0) # streaming ticket ID
+
+    # If this is an in-person ticket, a showing must be specified.
+    showing = models.ForeignKey(to="events.EventShowing", null=True, on_delete=models.CASCADE)
 
     # 0 means no stocking.
     maximum_stock = models.IntegerField(default=0, validators=[MinValueValidator(-1)])
     remaining_stock = models.IntegerField(default=0, validators=[MinValueValidator(0)])
+
+    def serialize(self):
+        if self.ticket_type == 0: # streaming
+            return {
+                'id': self.listing_id,
+                'detail': self.ticket_detail,
+                'price': self.price,
+                'stock': self.remaining_stock,
+                'ticket_type': self.ticket_type
+            }
+        else:
+            return {
+                'id': self.listing_id,
+                'detail': self.ticket_detail,
+                'price': self.price,
+                'stock': self.remaining_stock,
+                'ticket_type': self.ticket_type,
+                'showing_id': self.showing.showing_id
+            }
 
 # Event Model
 class Event(models.Model):
@@ -127,7 +182,9 @@ class Event(models.Model):
     # Event
     
     def get_absolute_url(self):
-        return cross_app_reverse('events', 'event_view',kwargs={'event_id': self.event_id})
+        return cross_app_reverse('events', 'event_view', {
+            "event_id": self.event_id
+        })
     
     def __str__(self):
         return self.title
@@ -160,8 +217,8 @@ class Event(models.Model):
     def get_cover_picture(self):
         media = EventMedia.objects.filter(event=self).all()
 
-        if media.count() == 0:
-            return None
+        if len(media) == 0:
+            return "https://picsum.photos/300/200.jpg"
         else:
             return media[self.primary_media_idx]
 
@@ -258,7 +315,15 @@ class Event(models.Model):
 
 
     def serialize(self):
+        next_showing = self.get_next_showing()
+        if next_showing: next_showing = str(next_showing.time).split(" ")[0]
+        else: next_showing = "TBC"
+
+        cover_pic = self.get_cover_picture()
+        if isinstance(cover_pic, EventMedia): cover_pic = cover_pic.picture.url
+
         return {
+            'full_url': self.get_absolute_url(),
             'title': self.title,
             'description': self.description,
             'over_18s': self.over_18s,
@@ -267,8 +332,10 @@ class Event(models.Model):
                 'name': category.name,
             } for category in self.categories.all()],
             'broadcaster': {
+                'pfp': self.broadcaster.get_picture(),
                 'id': self.broadcaster.id,
                 'handle': self.broadcaster.handle,
+                'url': self.broadcaster.get_absolute_url(),
             },
             'created': self.created,
             'updated': self.updated,
@@ -281,6 +348,8 @@ class Event(models.Model):
             'showings': [{
                 'id': showing.showing_id,
             } for showing in EventShowing.objects.filter(event=self).all()],
+            'earliest_showing': next_showing,
+            'thumbnail': cover_pic,
         }
     
     def is_authorized(self, user):
@@ -410,3 +479,13 @@ class EventShowing(models.Model):
 
     def __str__(self):
         return self.time.strftime("%H:%M %d-%m-%Y")
+    
+    def serialize(self):
+        return {
+            'id': self.showing_id,
+            'country': self.country,
+            'city': self.city,
+            'venue': self.venue,
+            'time': self.time,
+            'max_duration': self.max_duration,
+        }

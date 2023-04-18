@@ -19,11 +19,13 @@ from .profile import (
     change_email_view,
     upload_image
 )
+
 from .mfa import (
     setup_mfa,
     verify_mfa,
     disable_mfa
 )
+
 from .payments.views import (
     add_payment_method,
     get_payment_methods,
@@ -42,15 +44,24 @@ from .other import (
     get_user,
     delete_user,
     update_user_email,
-    update_user_streamer
+    update_user_streamer,
+    filter_purchases,
+    get_subscription, 
+    cancel_subscription
 )
-from .views import get_token, login, logout, register, validate_token
+
+from .views import (
+    get_token, 
+    login, 
+    logout, 
+    register, 
+    validate_token
+)
 
 from .broadcaster.views import (
-    edit_broadcasters,
+    broadcaster_panel,
     get_broadcaster_details,
     update_broadcaster_details,
-
     fetch_invites,
     send_contribute_invite,
     respond_to_invite
@@ -58,7 +69,6 @@ from .broadcaster.views import (
 
 from django.conf import settings
 from django.conf.urls.static import static
-
 from .site import site_panel, get_statistics
 
 # -- Should probably simplify this into GET/POST/PUT/DELETE instead of having multiple paths
@@ -117,9 +127,12 @@ urlpatterns = [
     path('api/other/update_review', update_review, name='update_review'),
     path('api/other/delete_review', delete_review, name='delete_review'),
     path('api/other/submit_report', submit_report, name='submit_report'),
+    path('api/purchases/filter', filter_purchases, name='filter_purchases'),
+    path('api/subscription/get', get_subscription, name='get_subscription'),
+    path('api/subscription/cancel', cancel_subscription, name='cancel_subscription'),
 
     # -- Broadcaster
-    path('broadcaster/', edit_broadcasters, name='edit_broadcasters'),
+    path('broadcaster/', broadcaster_panel, name='broadcaster_panel'),
     path('broadcaster/api/get_details', get_broadcaster_details, name='get_broadcaster_details'),
     path('broadcaster/api/set_details', update_broadcaster_details, name='update_broadcaster_details'),
 

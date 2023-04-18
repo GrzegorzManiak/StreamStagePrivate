@@ -29,12 +29,7 @@ def get_ticket_listings(request, data):
     encoded_listings = []
     
     for listing in listings:
-        encoded_listings.append({
-            'id': listing.listing_id,
-            'detail': listing.ticket_detail,
-            'price': listing.price,
-            'stock': listing.remaining_stock
-        })
+        encoded_listings.append(listing.serialize())
 
     return success_response('Listings retrieved successfully', {
         'listings': encoded_listings
@@ -55,7 +50,17 @@ def add_ticket_listing(request, event, data):
     if price < 0:
         return error_response('Invalid price.')
     
-    listing = create_ticket_listing(event, ticket_type, price, stock, detail)
+    showing = None
+
+    if ticket_type is TicketType.LiveTicket:
+        showing_id = request.data.get('showing_id')
+
+        showing = EventShowing.objects.filter(showing_id=showing_id).first()
+
+        if showing is None:
+            return error_response('Must specify valid showing to create a live ticket.')
+    
+    listing = create_ticket_listing(event, ticket_type, price, stock, detail, showing)
 
     if not listing:
         return error_response('Unknown error.')
@@ -64,7 +69,9 @@ def add_ticket_listing(request, event, data):
         'id': listing.listing_id,
         'detail': listing.ticket_detail,
         'price': listing.price,
-        'stock': listing.remaining_stock
+        'stock': listing.remaining_stock,
+        'ticket_type': listing.ticket_type,
+        'showing_id': listing.showing.showing_id if listing.showing else None
     }
 
     return success_response('Successfully added listing', {
@@ -125,7 +132,8 @@ def get_showings(request, data):
             'country': showing.country.name,
             'city': showing.city,
             'venue': showing.venue,
-            'time': (showing.time.strftime("%d %B, %Y - %H:%M"))
+            'time': (showing.time.strftime("%d %B, %Y - %H:%M")),
+            'max_duration': showing.max_duration
         })
 
     return success_response('Event showings retrieved successfully', {
@@ -153,13 +161,13 @@ def add_showing(request, data):
     city = data['city']
     country = data['country']
     
-    
     showing = EventShowing(
         event = event,
         time = datetime.datetime.strptime(time, '%Y-%m-%dT%H:%M'),
         venue = venue,
         city = city,
-        country = country
+        country = country,
+        max_duration = 120
     )
     showing.save()
 
@@ -168,7 +176,8 @@ def add_showing(request, data):
         'country': showing.country.name,
         'city': showing.city,
         'venue': showing.venue,
-        'time': showing.time.strftime("%d %B, %Y - %H:%M")
+        'time': showing.time.strftime("%d %B, %Y - %H:%M"),
+        'max_duration': showing.max_duration
     }
 
     return success_response('Successfully added showing', {

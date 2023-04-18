@@ -6,6 +6,10 @@ import { manage_profile_panel } from './core/profile';
 import { manage_reviews_panel } from './core/reviews';
 import { Type, build_configuration } from '../api/config';
 import { Configuration } from './index.d';
+import { single } from '../common/single';
+import { manage_purchases_panel } from './core/pruchases';
+
+single('settings');
 
 export const configuration = build_configuration<Configuration>({
     admin: new Type('data-admin', 'boolean'),
@@ -41,7 +45,12 @@ export const configuration = build_configuration<Configuration>({
     update_review: new Type('data-update-review', 'string'),
     delete_review: new Type('data-delete-review', 'string'),
 
-    change_img: new Type('data-change-picture', 'string')
+    change_img: new Type('data-change-picture', 'string'),
+
+    is_subscribed: new Type('data-is-subscribed', 'boolean'),
+    get_subscription: new Type('data-get-subscription', 'string'),
+    cancel_subscription: new Type('data-cancel-subscription', 'string'),
+    filter_purchases: new Type('data-filter-purchases', 'string'),
 });
 
 // -- Attach the event listeners
@@ -63,3 +72,6 @@ if (profile_panel) manage_profile_panel(profile_panel);
 
 const reviews_panel = get_pod('reviews');
 if (reviews_panel) manage_reviews_panel(reviews_panel);
+
+const purchases_panel = get_pod('purchases');
+if (purchases_panel) manage_purchases_panel(purchases_panel);

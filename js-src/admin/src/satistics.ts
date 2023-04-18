@@ -20,10 +20,9 @@ export async function manage_statistical_panels(
     // -- group the pods
     const pods = [
         accounts, server,
-        // , server,
-        // cash_flow, tickets,
-        // reviews, subscriptions,
-        // viewers
+        cash_flow, tickets,
+        subscriptions,
+        // viewers, reviews
     ];
 
     pods.forEach(async (pod: Pod) => {
@@ -31,6 +30,8 @@ export async function manage_statistical_panels(
         add_callback((panel_type) => {
             if (loaded) return;
             if (panel_type === pod.type) loaded = true;
+
+            // -- Build the graphs
             build_graphs(pod);
         });
     });

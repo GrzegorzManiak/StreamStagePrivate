@@ -24,6 +24,8 @@ from functools import reduce
 from operator import or_
 from django.db.models import Q
 
+from StreamStage.templatetags.tags import cross_app_reverse
+
 """
     :name: success_response
     :description: This function is used to return a success response
@@ -102,7 +104,6 @@ def api_session_helper():
     def decorator(view_func):
         @wraps(view_func)
         def wrapper(request, *args, **kwargs):
-
             # -- Check if the user is logged in 
             if request.user.is_authenticated:
                 
@@ -119,7 +120,6 @@ def api_session_helper():
                     request.user.token = secrets.token_urlsafe(32)
                     request.user.save()
                     
-
             # -- Check if we have a token and set the user
             if 'streamstage-token' in request.headers:
                 # -- Get the user
@@ -175,7 +175,7 @@ def authenticated():
 
             # -- If the method is GET, redirect to the login page
             if request.method == 'GET' and not request.user.is_authenticated:
-                return redirect('login')
+                return redirect(cross_app_reverse('accounts', 'login'))
             
             # -- Check if user is authenticated
             if not request.user.is_authenticated:
@@ -384,6 +384,10 @@ def paginate(
     search_fields: list,
     page_size: int,
     model: object,
+
+    # -- This lambda function is called to validate that the
+    #    should be returned, we pass (request, model)
+    validate: lambda request, model: bool = lambda request, model: True
 ):
     def decorator(view_func):
 
@@ -398,7 +402,7 @@ def paginate(
             except ValueError: return invalid_response('Page must be an integer')
             
             orders = ['asc', 'desc']
-            if data['sort'] not in order_fields: 
+            if data['sort'] not in order_fields and data['sort'] != '':
                 return invalid_response(f'Invalid sort field: {data["sort"]}, must be one of {", ".join(order_fields)}')
             if data['order'] not in orders: 
                 return invalid_response(f'Invalid order: {data["order"]}, must be one of {", ".join(orders)}')
@@ -408,15 +412,17 @@ def paginate(
             if data['order'] == 'desc': sort = '-' + sort
 
             # -- Check if we are searching
-            filter
             search = data['search'].strip().lower()
             query_list = [Q(**{f'{field}__icontains': search}) for field in search_fields]
 
             # -- Get the data
             models = model.objects.filter(reduce(or_, query_list))
 
+            # -- Validate the data
+            models = [model for model in models if validate(request, model)]
+
             # -- Get the page
-            total_pages = int(models.count() / page_size)
+            total_pages = int(len(models) / page_size)
             models = models[page * page_size:page * page_size + page_size]
 
             # -- Pass the models to the view

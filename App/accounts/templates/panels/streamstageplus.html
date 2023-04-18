@@ -1,3 +1,4 @@
+{% load tags %}
 <!--
     StreamStage+
 -->
@@ -25,95 +26,233 @@
         </p>
     </div>
 
-
-    <!-- Features -->
-    <div class='plan-center'>
-        <div class="
-            mb-5
-            justify-content-start
-            d-flex
-            payment-plan
-        ">
-
-            <!-- Annualy -->
+    <div class='w-100 h-100' id='not-subscribed'>
+        <!-- Features -->
+        <div class='plan-center'>
             <div class="
+                mb-5
                 justify-content-start
-                selected
-                w-100
-                annualy
+                d-flex
+                payment-plan
             ">
-                <!-- Header -->
-                <h2 class="
-                    fw-bold
+
+                <!-- Annualy -->
+                <div class="
+                    justify-content-start
+                    selected
                     w-100
-                    text-center
-                ">Annually</h2>
-                </ul>
-            </div>
+                    annualy
+                ">
+                    <!-- Header -->
+                    <h2 
+                    style="user-select: none;"
+                    class="
+                        fw-bold
+                        w-100
+                        text-center
+                    ">Annually</h2>
+                    </ul>
+                </div>
 
 
-            <!-- Monthly -->
-            <div class="
-                justify-content-start
-                w-100
-                monthly
-            ">
-                <!-- Header -->
-                <h2 class="
-                    fw-bold
+                <!-- Monthly -->
+                <div class="
+                    justify-content-start
                     w-100
-                    text-center
-                ">Monthly</h2>
+                    monthly
+                ">
+                    <!-- Header -->
+                    <h2 
+                    style="user-select: none;"
+                    class="
+                        fw-bold
+                        w-100
+                        text-center
+                    ">Monthly</h2>
+                </div>
             </div>
         </div>
+
+        <!-- Features -->
+        <div class='w-100 h-100 d-flex gap-2 p-2 flex-column justify-conten-center align-items-center mb-5'>
+
+           <!-- Feature -->
+           <div class='d-flex justify-conten-center w-auto align-items-center w-100'>
+                <i class='fa fa-check text-success mx-2'></i>
+                <h4 class='m-0'>15% Discount on all tickets</h4>
+            </div>
+
+            <!-- Feature -->
+            <div class='d-flex justify-conten-center w-auto align-items-center w-100'>
+                <i class='fa fa-check text-success mx-2'></i>
+                <h4 class='m-0'>View all past events for FREE</h4>
+            </div>
+
+            <!-- Feature -->
+            <div class='d-flex justify-conten-center w-auto align-items-center w-100'>
+                <i class='fa fa-check text-success mx-2'></i>
+                <h4 class='m-0'>1 Day early access to buy tickets</h4>
+            </div>
+
+            <!-- Feature -->
+            <div class='d-flex justify-conten-center w-auto align-items-center w-100'>
+                <i class='fa fa-check text-success mx-2'></i>
+                <h4 class='m-0'>And more!</h4>
+            </div>
+        </div>
+
+
+        <!-- Dropdown button -->
+        <button 
+            name="purchase-stream" 
+            data-ticket-id="sub-monthly"
+            data-item-name="StreamStage+ Monthly"
+            data-item-price="€10.0"
+            type="submit" 
+            class="
+                btn
+                btn-success
+                success
+                loader-btn
+                w-100
+                slim-btn
+            "
+            loader-state='default'
+        >   
+            <span>
+                <div class='spinner-border' role='status'>
+                    <span class='visually-hidden'>Loading...</span>
+                </div>
+            </span>
+            <p>Subscribe</p>
+        </button>
+
+        <hr>
+        <!-- Note -->
+            <p class="
+            text-muted
+            text-center
+            m-0
+            mt-3
+        ">
+            Note, You will NOT be charged immediately upon entering your payment information, we 
+            will ask you again to confirm your purchase before charging your payment method, Please also note that your card will 
+            be saved for future purchases (you can remove it at any time).
+        </p>
+        
+        <!-- Terms -->
+        <p class="
+            text-muted
+            text-center
+            m-0
+            mt-3
+        ">
+            By proceeding with this purchase, you agree to StreamStage's <a href='{% cross_app_reverse_tag 'StreamStage' 'render_terms' %}'>terms and conditions</a>,
+            which includes refund policies, and the <a href='{% cross_app_reverse_tag 'StreamStage' 'render_privacy' %}'>privacy policy</a>.
+            Additionally, you also agree to Stripe's which you can find here <a href='https://stripe.com/'>terms and conditions</a>.
+        </p>
     </div>
 
-    <!-- Dropdown button -->
-    <button 
-        type="submit" 
-        class="
-            mfa
-            btn 
-            btn-success
-            btn-lg
-            loader-btn
-            success
-            pay-now
-            saved-card
-            w-100
-        "
-        loader-state='default'
-    >
-        <span>
-            <div class='spinner-border' role='status'>
-                <span class='visually-hidden'>Loading...</span>
+
+    <div class='w-100 h-100' id='subscribed'>
+
+        <!-- unsubscribed message -->
+        <div class='w-100 h-100 my-4' id='unsubscribed' style='display: none;'>
+            <!-- Big warning -->
+            <h1 
+                style='color: #dc3545;'
+                class='text-center'>You have unsubscribed!</h1>
+            <p class='text-center'>You have till the end of your subscription to enjoy all the benefits of StreamStage+!</p>
+        </div>
+
+        <!-- Thank you -->
+        <div class='w-100 h-100' id='thank-you' style='display: none;'>
+            <h1 class='text-center'>Thank you for subscribing!</h1>
+            <p class='text-center'>You can now enjoy all the benefits of StreamStage+!</p>
+        </div>
+
+        <!-- Stats -->
+        <div class='w-100 h-100 d-flex flex-row justify-content-between align-items-center gap-2 my-5 flex-wrap p-2'>
+            
+            <!-- When you subscribed -->
+            <div class='d-flex justify-conten-center w-auto align-items-center'>
+                <h4 class='m-0 w-auto'>You subscribed on&nbsp;</h4>
+                <p class='m-0 w-auto' id='subscribed-on'>0/0/0</p>
             </div>
-        </span>
-        <p>Subscribe</p>
-    </button>
 
-    <hr>
-    <!-- Note -->
-        <p class="
-        text-muted
-        text-center
-        m-0
-        mt-3
-    ">
-        Note, You will NOT be charged immediately upon entering your payment information, we 
-        will ask you again to confirm your purchase before charging your payment method.
-    </p>
-    
-    <!-- Terms -->
-    <p class="
-        text-muted
-        text-center
-        m-0
-        mt-3
-    ">
-        By proceeding with this purchase, you agree to StreamStage's <a href='/terms'>terms and conditions</a>,
-        which includes refund policies, and the <a href='/privacy'>privacy policy</a>.
-        Additionally, you also agree to Stripe's <a href='https://stripe.com/'>terms and conditions</a>.
-    </p>
+            <!-- When your subscription ends -->
+            <div class='d-flex justify-conten-center w-auto align-items-center'>
+                <h4 class='m-0 w-auto'>Your subscription ends on&nbsp;</h4>
+                <p class='m-0 w-auto' id='subscribed-end'>0/0/0</p>
+            </div>
 
+            <!-- Your subscription plan -->
+            <div class='d-flex justify-conten-center w-auto align-items-center'>
+                <h4 class='m-0 w-auto'>You are on the&nbsp;</h4>
+                <p class='m-0 w-auto' id='plan'>n/a</p>
+                <h4 class='m-0 w-auto'>&nbsp;plan</h4>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class='w-100 h-100 d-flex gap-2 p-2 flex-column justify-conten-center align-items-center mb-5'>
+            <p class='w-100 text-center text-muted'>You can now enjoy all the benefits of StreamStage+!</p>
+            <!-- Feature -->
+            <div class='d-flex justify-conten-center w-auto align-items-center w-100'>
+                <i class='fa fa-check text-success mx-2'></i>
+                <h4 class='m-0'>15% Discount on all tickets</h4>
+            </div>
+
+            <!-- Feature -->
+            <div class='d-flex justify-conten-center w-auto align-items-center w-100'>
+                <i class='fa fa-check text-success mx-2'></i>
+                <h4 class='m-0'>View all past events for FREE</h4>
+            </div>
+
+            <!-- Feature -->
+            <div class='d-flex justify-conten-center w-auto align-items-center w-100'>
+                <i class='fa fa-check text-success mx-2'></i>
+                <h4 class='m-0'>1 Day early access to buy tickets</h4>
+            </div>
+
+            <!-- Feature -->
+            <div class='d-flex justify-conten-center w-auto align-items-center w-100'>
+                <i class='fa fa-check text-success mx-2'></i>
+                <h4 class='m-0'>And more!</h4>
+            </div>
+        </div>
+
+
+        
+        <!-- Cancel subscription -->
+        <div class='w-100 h-100'>
+            <!-- Sad to see you go -->
+            <p class='text-center m-2'>We're sad to see you go! Unless you're just reading this because you're curious.</p>
+
+            <!-- BTN -->
+            <button 
+                name="unsubscribe" 
+                type="submit" 
+                class="
+                    btn
+                    btn-danger
+                    error
+                    loader-btn
+                    w-100
+                    slim-btn
+                "
+                loader-state='default'
+            >   
+                <span>
+                    <div class='spinner-border' role='status'>
+                        <span class='visually-hidden'>Loading...</span>
+                    </div>
+                </span>
+                <p>Cancel subscription</p>
+            </button>
+
+            <!-- Note -->
+            <p class='text-center text-muted mt-2'>You can cancel your subscription at any time, but please note that you will not be refunded for the remaining days of your subscription.</p>
+        </div>
+    </div>
 </article>

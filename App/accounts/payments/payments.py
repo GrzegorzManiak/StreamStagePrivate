@@ -6,7 +6,7 @@
 # -- Imports
 from typing import List
 import uuid
-from store.processing import on_intent_success
+from store.processing import on_intent_success, on_subscription_success
 from store.processing import get_item_price
 from StreamStage.mail import send_template_email
 from accounts.models import Member
@@ -253,7 +253,12 @@ def remove_stripe_payment_method(user: Member, card_id: str):
     
 
 
-def create_stripe_payment_intent(user: Member, amount: int, payment_method: str = None): 
+def create_stripe_payment_intent(
+    user: Member, 
+    amount: int | str, 
+    payment_method: str,
+    subscription: bool = False,
+): 
     """
         :name: create_stripe_payment_intent
         :description: This function creates a payment intent for the user
@@ -267,13 +272,26 @@ def create_stripe_payment_intent(user: Member, amount: int, payment_method: str 
     customer = user.get_stripe_customer()
 
     # -- Create the payment intent
-    payment_intent = stripe.PaymentIntent.create(
-        amount=amount,
-        currency='eur',
-        customer=customer.id,
-        payment_method_types=["card"],
-        payment_method = payment_method
-    )
+    if subscription == False:
+        payment_intent = stripe.PaymentIntent.create(
+            amount=amount,
+            currency='eur',
+            customer=customer.id,
+            payment_method_types=["card"],
+            payment_method = payment_method
+        )
+
+    else:
+        stripe.Customer.modify(
+            customer.id,
+            invoice_settings={ 'default_payment_method': payment_method },
+        )
+
+        payment_intent = stripe.Subscription.create(
+            customer=customer.id,
+            items=[{ 'price': amount }],
+            expand=['latest_invoice.payment_intent'],
+        )
 
     # -- Return the payment intent
     return payment_intent
@@ -288,29 +306,68 @@ def create_cust_payment_intent(user: Member, listing_ids: List[str], payment_met
         Returns ID
     """
     price = 0
+    subscription = False
+    plan = None
+    
+    # -- If its ss_monthly, or ss_yearly we need to first check if they have a subscription
+    #    and if so return an error.
+    if listing_ids[0] == "ss_monthly" or listing_ids[0] == "ss_yearly":
+        if user.is_subscribed(): return { "error": "You already have a subscription." }
+        else: subscription = True
 
+        if listing_ids[0] == "ss_monthly": 
+            price = STRIPE['prices']['ss_monthly']
+            plan = 'monthly'
+        else: 
+            price = STRIPE['prices']['ss_yearly']
+            plan = 'yearly'
+
+    
 
     # -- Get the price of each item
     for listing_id in listing_ids:
+        if listing_id == "ss_monthly" or listing_id == "ss_yearly": continue
         item_price = get_item_price(listing_id)
-
         if item_price == None: return { "error": "Invalid listing ID given." }
         else: price += item_price
 
         
     # -- count how many cents are in price (Stripe only accepts integer val)
-    try: stripe_intent = create_stripe_payment_intent(user, int(price * 100), payment_method)
+    try: 
+        if subscription == False: price = int(price * 100)
+        stripe_intent = create_stripe_payment_intent(user, price, payment_method, subscription)
     except Exception as e: return { "error": "Could not create intent, " + str(e) }
     
     # -- Try to instantly confirm the intent
-    confirm_payment_intent(stripe_intent.id)
+    stripe_indent_id = None
+    next_action = None
+    if subscription == True: 
+        formated_intent = format_subscription(stripe_intent)
+        stripe_indent_id = formated_intent['id']
+        
+        na = stripe_intent['latest_invoice']['payment_intent']['next_action']
+        if na is None: pass
+        elif na["type"] == "redirect_to_url": next_action = na["redirect_to_url"]["url"]
+        elif na["type"] == "use_stripe_sdk": next_action = na["use_stripe_sdk"]["stripe_js"]
+
+    else: stripe_indent_id = stripe_intent['id']
+
+    try: 
+        if subscription == False: confirm_payment_intent(stripe_indent_id)
+    except Exception as e: return { "error": "Could not confirm intent, " + str(e) }
 
     # -- Store the stripe intent masked behind our own id
     intent_id = str(uuid.uuid4())
     customer_payment_intents[intent_id] = {
         "user": user,
         "items": listing_ids,
-        "stripe_intent": stripe_intent
+        "stripe_intent": stripe_intent,
+        "id": stripe_indent_id,
+        "subscription": subscription,
+        "payment_method": payment_method,
+        "price": price,
+        "next_action": next_action,
+        "plan": plan
     }
 
     # -- Return the external intent id
@@ -326,21 +383,36 @@ def confirm_payment_intent(intent_id: str):
 
 
 
-def check_stripe_payment_intent_status(intent: stripe.PaymentIntent):
+def check_stripe_payment_intent_status(
+    user: Member,
+    cust_intent: dict,
+):
     """
         Checks status of a stripe payment intent.
     """
+    intent = cust_intent["stripe_intent"]
     intent.refresh()
     match intent["status"]:
         case "succeeded": 
+            send_template_email(user, intent, 'payment_success')
             return { "status": "success" }
         
         case "canceled": 
+            send_template_email(user, intent, 'payment_canceled')
             return { "status": "canceled" }
         
+        case "active": 
+            send_template_email(user, intent, 'subscription_success')
+            return { "status": "success" }
 
         case "requires_payment_method": return { "status": "requires_payment_method" }
         case "requires_confirmation": pass
+        case "incomplete":
+            return { 
+                "status": "requires_action",
+                "next_action": cust_intent["next_action"]
+            }
+        
         case "requires_action":
             response = { "status": "requires_action" }
             next_action = intent["next_action"]
@@ -352,20 +424,33 @@ def check_stripe_payment_intent_status(intent: stripe.PaymentIntent):
                 response["next_action"] = next_action["use_stripe_sdk"]["stripe_js"]
             
             return response
+        
+    
+    return { "status": "canceled" }
 
 
 
-def check_cust_payment_intent(intent_id: str):
+def check_cust_payment_intent(
+    member: Member,
+    intent_id: str
+):
     cust_intent = customer_payment_intents.get(intent_id)
 
     if cust_intent is None:
         print("intent not found")
         return { "error": "Intent not found" }
     
-    response = check_stripe_payment_intent_status(cust_intent["stripe_intent"])
+    response = check_stripe_payment_intent_status(
+        member,
+        cust_intent
+    )
 
     if response["status"] == "success":
-        purchase_id = on_intent_success(cust_intent)
+
+        if cust_intent["subscription"] == True:
+            purchase_id = on_subscription_success(cust_intent)
+        else: purchase_id = on_intent_success(cust_intent)
+
         response["purchase_id"] = purchase_id
 
     return response

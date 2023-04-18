@@ -32,8 +32,60 @@
     </div>
 </article>
 
-<article class='panel' data-panel-type='cash_flow' data-panel-status='hidden'></article>
-<article class='panel' data-panel-type='tickets' data-panel-status='hidden'></article>
+<article class='panel' data-panel-type='cash_flow' data-panel-status='hidden'>
+    <div class="mb-5 justify-content-start">
+        <h1 class="fw-bold">Cash Flow Statistics</h1>
+        <p class="text-muted">All times are in UTC (+0)</p>
+        <hr>
+
+        <div class='graphs' data-stat-group='payment'>
+            <!-- gross, count, cancelled, complete, requires_action, unk -->
+            <div class='data-chart' data-stat-id='gross'           data-pretty='Gross'          data-description='Gross in the last timeframe'                   def-scale='5' def-frame='day'></div>
+            <div class='data-chart' data-stat-id='count'           data-pretty='Count'          data-description='Ammount of checkouts in the last timeframe'    def-scale='5' def-frame='day'></div>
+            <div class='data-chart' data-stat-id='cancelled'       data-pretty='Cancelled'      data-description='Cancelled purchases in the last timeframe'     def-scale='5' def-frame='day'></div>
+            <div class='data-chart' data-stat-id='complete'        data-pretty='Completed'      data-description='Completed purchases in the last timeframe'     def-scale='5' def-frame='day'></div>
+            <div class='data-chart' data-stat-id='requires_action' data-pretty='3DSecure'       data-description='3DSecure purchases in the last timeframe'      def-scale='5' def-frame='day'></div>
+            <div class='data-chart' data-stat-id='unk'             data-pretty='Unknown Errors' data-description='Unknown purchase errors in the last timeframe' def-scale='5' def-frame='day'></div>
+        </div> 
+    </div>
+</article>
+
+<article class='panel' data-panel-type='tickets' data-panel-status='hidden'>
+    <div class="mb-5 justify-content-start">
+        <h1 class="fw-bold">Ticket sales Statistics</h1>
+        <p class="text-muted">All times are in UTC (+0)</p>
+        <hr>
+
+        <div class='graphs' data-stat-group='tickets'>
+            <!-- gross count inperson online -->
+            <div class='data-chart' data-stat-id='gross'     data-pretty='Gross'     data-description='Gross in the last timeframe'                  def-scale='5' def-frame='day'></div>
+            <div class='data-chart' data-stat-id='count'     data-pretty='Count'     data-description='Ammount of ticket sold in the last timeframe' def-scale='5' def-frame='day'></div>
+            <div class='data-chart' data-stat-id='inperson'  data-pretty='In Person' data-description='In Person ticket sales in the last timeframe' def-scale='5' def-frame='day'></div>
+            <div class='data-chart' data-stat-id='online'    data-pretty='Online'    data-description='Online ticket sold in the last timeframe'     def-scale='5' def-frame='day'></div>
+        </div>
+    </div>
+</article>
+
+<article class='panel' data-panel-type='subscriptions' data-panel-status='hidden'>
+    <div class="mb-5 justify-content-start">
+        <h1 class="fw-bold">Subscription Statistics</h1>
+        <p class="text-muted">All times are in UTC (+0)</p>
+        <hr>
+
+        <div class='graphs' data-stat-group='subscription'>
+            <!-- gross yearly monthly count count_yearly count_monthly unbsub unsub_yearly unsub_monthly -->
+            <div class='data-chart' data-stat-id='gross'          data-pretty='Gross'          data-description='Gross in the last timeframe'                  def-scale='5' def-frame='day'></div>
+            <div class='data-chart' data-stat-id='yearly'         data-pretty='Yearly'         data-description='Yearly subscriptions in the last timeframe'    def-scale='5' def-frame='day'></div>
+            <div class='data-chart' data-stat-id='monthly'        data-pretty='Monthly'        data-description='Monthly subscriptions in the last timeframe'   def-scale='5' def-frame='day'></div>
+            <div class='data-chart' data-stat-id='count'          data-pretty='Count'          data-description='Ammount of subscriptions in the last timeframe' def-scale='5' def-frame='day'></div>
+            <div class='data-chart' data-stat-id='count_yearly'   data-pretty='Count Yearly'   data-description='Yearly subscriptions in the last timeframe'    def-scale='5' def-frame='day'></div>
+            <div class='data-chart' data-stat-id='count_monthly'  data-pretty='Count Monthly'  data-description='Monthly subscriptions in the last timeframe'   def-scale='5' def-frame='day'></div>
+            <div class='data-chart' data-stat-id='unsub'          data-pretty='Unsub'          data-description='Unsubscribed in the last timeframe'           def-scale='5' def-frame='day'></div>
+            <div class='data-chart' data-stat-id='unsub_yearly'   data-pretty='Unsub Yearly'   data-description='Yearly plans unsubscribed in the last timeframe'    def-scale='5' def-frame='day'></div>
+            <div class='data-chart' data-stat-id='unsub_monthly'  data-pretty='Unsub Monthly'  data-description='Monthly plans unsubscribed in the last timeframe'   def-scale='5' def-frame='day'></div>
+        </div>
+    </div>
+</article>
+
 <article class='panel' data-panel-type='reviews' data-panel-status='hidden'></article>
-<article class='panel' data-panel-type='subscriptions' data-panel-status='hidden'></article>
 <article class='panel' data-panel-type='viewers' data-panel-status='hidden'></article>

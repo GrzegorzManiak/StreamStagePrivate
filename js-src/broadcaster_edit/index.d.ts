@@ -1,3 +1,19 @@
+export type PanelType = 
+    'my_broadcasters' |
+    'applications' |
+    'invitations';
+
+export interface Panel {
+    element: Element;
+    type: PanelType;
+}
+
+export interface Pod {
+    element: Element,
+    panel: Panel,
+    type: PanelType
+}
+
 
 export interface BroadcasterDetails {
     id: string,
@@ -5,6 +21,7 @@ export interface BroadcasterDetails {
     name: string,
     biography: string,
     profile: string,
+    approved: boolean,
     banner: string,
     url: string,
 

@@ -61,4 +61,7 @@ const long_swiper = new Swiper('.longSwiper', review_settings);
 const rate = (rating) => {
   const rating_input = document.getElementById('id_rating')
   rating_input.value = rating
+  
+  var rs = rating_input.parentElement.parentElement.querySelector('.rating-list')
+  rs.setAttribute('data-value', rating)
 }

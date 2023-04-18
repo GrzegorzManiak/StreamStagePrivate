@@ -4,6 +4,7 @@
 
 # -- Imports
 from rest_framework.decorators import api_view
+from StreamStage.models import Statistics
 from accounts.com_lib import authenticated, invalid_response, required_data, success_response, impersonate, error_response
 from .payments import (
     add_stripe_payment_method,
@@ -78,10 +79,14 @@ def create_payment_intent(request, data):
 
     # -- Get the users cars
     cards = get_cards_formatted(request.user)
+    subscription = False
 
     # -- Create the payment intent 
     ids = data['buyable_id'].split(",")
     for i in range(len(ids)):
+        if ids[i] == "ss_monthly" or ids[i] == "ss_yearly":
+            subscription = True
+            continue
         try: ids[i] = uuid.UUID(ids[i])
         except: return invalid_response("Invalid UUID")
 
@@ -98,7 +103,10 @@ def create_payment_intent(request, data):
                 return invalid_response("Invalid payment method, missing " + entry)
             
         # -- Add the payment method
-        if data['payment_method']['save'] is True:
+        if (
+            data['payment_method']['save'] is True or
+            subscription is True
+        ):
             payment_method = add_stripe_payment_method(
                 request.user,
                 data['payment_method']['card'],
@@ -143,7 +151,11 @@ def create_payment_intent(request, data):
     )
 
     if response.get("error") is not None:
-        return invalid_response(response.get("error"))
+        # -- If the error has ':' in it, it's a card error
+        #    so we can split it and return the error
+        error = response.get("error")
+        if ":" in error: error = error.split(":")[1]
+        return invalid_response(error)
     
     # -- Return the payment intent
     return success_response("Intent created.", response)
@@ -155,24 +167,31 @@ def create_payment_intent(request, data):
 @authenticated()
 @required_data(['intent_id'])
 def check_payment_intent(request, data):
-    response = check_cust_payment_intent(data['intent_id'])
+    response = check_cust_payment_intent(request.user, data['intent_id'])
     
     if response.get("error"):
         return error_response(response["error"])
     
     match response["status"]:
-        case "success": return success_response("Purchase completed!", {
-            "status": "success",
-            "purchase_id": response["purchase_id"]
-        })
-        case "cancelled": return error_response("Payment cancelled", {
-            "status": "cancelled"
-        })
-        case "requires_action": return success_response("Additional action required.", {
-            "next_action": response["next_action"],
-            "status": "requires_action"
-        })
+        case "success": 
+            Statistics.log('payment', 'complete', 1)
+            return success_response("Purchase completed!", {
+                "status": "success",
+                "purchase_id": response["purchase_id"]
+            })
+        case "cancelled": 
+            Statistics.log('payment', 'cancelled', 1)
+            return error_response("Payment cancelled", {
+                "status": "cancelled"
+            })
+        case "requires_action": 
+            Statistics.log('payment', 'requires_action', 1)
+            return success_response("Additional action required.", {
+                "next_action": response["next_action"],
+                "status": "requires_action"
+            })
     
+    Statistics.log('payment', 'unk', 1)
     return error_response("Error in checking status of payment")
 
 

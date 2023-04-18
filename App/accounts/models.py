@@ -7,10 +7,12 @@ import datetime
 import random
 import string
 import pyotp
+import math
 import stripe
 import mimetypes
 import base64
 import io
+import time
 from PIL import Image
 
 from django.contrib.auth import get_user_model
@@ -19,6 +21,8 @@ from django.db import models
 from django_countries.fields import CountryField
 from django.db.models import Q
 from timezone_field import TimeZoneField
+
+from StreamStage.templatetags.tags import cross_app_reverse
 
 from .oauth import OAuthTypes
 
@@ -114,6 +118,13 @@ class Member(AbstractUser):
     is_streamer = models.BooleanField("Streamer Status", default=False)
     last_login = models.DateTimeField(auto_now=True)
     token = models.CharField("Token", max_length=100, blank=True, null=True)
+
+    has_subscription = models.BooleanField("Has Subscription", default=False)
+    subscription_id = models.CharField("Subscription ID", max_length=100, blank=True, null=True)
+    subscription_start = models.IntegerField("Subscription Start", blank=True, null=True)
+    subscription_end = models.IntegerField("Subscription End", blank=True, null=True)
+    subscription_status = models.CharField("Subscription Status", max_length=100, default='none', blank=True, null=True)
+
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email', 'first_name', 'last_name']
 
@@ -215,6 +226,54 @@ class Member(AbstractUser):
 
 
 
+    def is_subscribed(self):
+        """
+            Checks if a user is subscribed
+            to a plan
+        """
+
+        subscribed = False
+        WEEK = 604800 # -- 7 days in seconds floor(time.time() / 604800)
+        now_plus_week = math.floor(time.time()) + WEEK
+        end = self.subscription_end if self.subscription_end != None else 0
+
+
+        if self.has_subscription == True: subscribed = True
+        if end == None: subscribed = False
+        if end < now_plus_week: subscribed = False
+        
+
+        if (
+            self.subscription_status == "monthly" or
+            self.subscription_status == "yearly" and
+            end < now_plus_week
+        ):
+            """
+                If the user has a subscription, and
+                the subscription is still active
+                Check if the user has paid for the
+                subscription
+            """
+
+        return subscribed
+
+        
+    
+    def serialize_subscription(self):
+        """
+            Serializes the subscription
+            for the user
+        """
+        return {
+            'has_subscription': self.has_subscription,
+            'subscription_id': self.subscription_id,
+            'subscription_start': self.subscription_start,
+            'subscription_end': self.subscription_end,
+            'subscription_status': self.subscription_status
+        }
+    
+
+
     def get_stripe_customer(self):
         """
             Gets the stripe customer id for a
@@ -249,6 +308,13 @@ class Member(AbstractUser):
             self.save()
             return customer
 
+
+    def set_plan(self, plan: str):
+        """
+            Sets the plan for a user
+        """
+        self.subscription_status = plan
+        self.save()
 
 
     def set_recovery_codes(self):
@@ -492,6 +558,11 @@ class Broadcaster(models.Model):
             print(e)
             return False
         
+
+    def get_absolute_url(self):
+        return cross_app_reverse('homepage', 'broadcaster_profile', {
+            "username": self.handle
+        })
 
 
 class oAuth2(models.Model):
