@@ -88,13 +88,13 @@ def add_stripe_payment_method(
         )
 
         # -- Attach the payment method to the customer
-        stripe.PaymentMethod.attach(
+        pm = stripe.PaymentMethod.attach(
             payment_method.id,
             customer=customer.id,
         )
 
         if user.security_preferences.email_on_payment_change:
-            send_template_email(user, 'payment_method_added')
+            send_template_email(user, 'payment_method_added', pm)
 
         return [
             format_payment_method(payment_method),
@@ -237,13 +237,13 @@ def remove_stripe_payment_method(user: Member, card_id: str):
         clear_stripe_customer(user)
 
         # -- Detach the payment method from the customer
-        stripe.PaymentMethod.detach(
+        pm = stripe.PaymentMethod.detach(
             payment_method=card_id,
         )
 
         # -- Email the user
         if user.security_preferences.email_on_payment_change:
-            send_template_email(user, 'payment_method_removed')
+            send_template_email(user, 'payment_method_removed', pm)
             
         return True
     
@@ -394,15 +394,15 @@ def check_stripe_payment_intent_status(
     intent.refresh()
     match intent["status"]:
         case "succeeded": 
-            send_template_email(user, intent, 'payment_success')
+            send_template_email(user, 'payment_success', intent)
             return { "status": "success" }
         
         case "canceled": 
-            send_template_email(user, intent, 'payment_canceled')
+            send_template_email(user, 'payment_canceled', intent)
             return { "status": "canceled" }
         
         case "active": 
-            send_template_email(user, intent, 'subscription_success')
+            send_template_email(user, 'subscription_success', intent)
             return { "status": "success" }
 
         case "requires_payment_method": return { "status": "requires_payment_method" }

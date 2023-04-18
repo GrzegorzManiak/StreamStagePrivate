@@ -56,7 +56,8 @@ def on_intent_success(cust_payment_intent):
                 purchase_id,
                 cust_payment_intent['stripe_intent'],
                 cust_payment_intent["user"], 
-                billing_data, item
+                billing_data, 
+                item
             )
 
             create_ticket(

@@ -14,7 +14,6 @@ from django.urls import reverse
 from django_countries.fields import CountryField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from StreamStage.templatetags.tags import cross_app_reverse
-
 from StreamStage.settings import MEDIA_URL
 from datetime import datetime, timedelta, time
 from django.core.files import File
@@ -359,12 +358,38 @@ class Event(models.Model):
             'thumbnail': cover_pic,
         }
     
+
+
     def is_authorized(self, user):
         return (
             user.is_staff
             or  self.broadcaster.streamer == user
             or  self.broadcaster.contributors.filter(id=user.id).exists()
         )
+
+
+
+    def can_view(self, user) -> bool:
+        """
+            Simple function to check if a user can view an event
+        """
+        broadcaster = self.broadcaster
+        contributors = broadcaster.contributors.all()
+        is_staff = user.is_staff
+        is_subscribed = user.is_subscribed()
+        days_past_last_showing = (datetime.now() - self.get_last_showing().time.replace(tzinfo=None)).days
+        is_contributor = user in contributors
+        is_broadcaster = broadcaster.streamer == user
+
+        # -- Check if the user is authorized to view the event
+        if is_staff or is_contributor or is_broadcaster: return True
+
+        # -- If the last showing was more than 7 days ago, then the event is no longer live
+        #    and its available to anyone with a subscription
+        if days_past_last_showing > 7 and is_subscribed: return True
+
+        return False
+    
 
 
 

@@ -1,3 +1,5 @@
+{% load tags %}
+
 <!DOCTYPE html>
 <html lang="en">
     <!-- 
@@ -140,10 +142,10 @@
             <!-- Privacy Policy and Terms of Service -->
             <p>
                 Read our
-                <a href='https://streamstage.co/privacy-policy'>Privacy Policy</a> | 
-                <a href='https://streamstage.co/terms-of-service'>Terms of Service</a>.
+                <a href='{% cross_app_reverse_tag 'StreamStage' 'render_privacy' %}'>Privacy Policy</a> | 
+                <a href='{% cross_app_reverse_tag 'StreamStage' 'render_terms' %}'>Terms of Service</a>.
                 If you have any questions, please contact us <a href='mailto:
-                {{ support_email }}'>here.</a>
+                {{ support_email }}'>here or visit the <a href='{% cross_app_reverse_tag 'StreamStage' 'render_faq' %}'>FAQ page</a>.
             </p>
 
             <!-- Rights -->

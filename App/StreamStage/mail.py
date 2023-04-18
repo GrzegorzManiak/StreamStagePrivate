@@ -28,7 +28,7 @@ def send_template_email(
 ): 
     # -- Should we log the email?
     log = True
-    print(member)
+
     # -- Generate a new uuid
     email_id = str(uuid.uuid4())
     if template_id == 'verification': email = member
@@ -145,20 +145,45 @@ def send_template_email(
 
         case 'payment_method_added':
             subject = "Payment method added"
-            body = """
-                <h1>Payment method added</h1>
-            """
+            base_context['title'] = "Payment method added"
+            base_context['description'] = "You have successfully added a payment method"
+            body = render_to_string(
+                'email/payment_method_added.html',
+                base_context
+            )
 
         case 'payment_method_removed':
             subject = "Payment method removed"
-            body = """
-                <h1>Payment method removed</h1>
-            """
+            base_context['title'] = "Payment method removed"
+            base_context['description'] = "You have successfully removed a payment method"
+            body = render_to_string(
+                'email/payment_method_removed.html',
+                base_context
+            )
 
         case 'email_change':
-            subject = "Email change"
+            subject = "Email changed"
+            base_context['title'] = "Email changed"
+            base_context['description'] = "You have successfully changed your email address"
+            body = render_to_string(
+                'email/email_change.html',
+                base_context
+            )
+
+
+        case 'payment_success':
+            subject = "Payment success"
             body = """
-                <h1>Email change</h1>
+            """
+
+        case 'payment_canceled':
+            subject = "Payment canceled"
+            body = """
+            """
+
+        case 'subscription_success':
+            subject = "Subscription success"
+            body = """
             """
 
     # -- Add the email to the database
@@ -180,4 +205,4 @@ def send_template_email(
     )
 
     # -- Send out the email
-    # send_email(email, subject, body)
+    send_email(email, subject, body)

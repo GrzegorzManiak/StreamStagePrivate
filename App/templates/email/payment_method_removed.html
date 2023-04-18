@@ -41,22 +41,22 @@
     </style>
 
     <div class='container'>
-        <p>Hey, you have requested access to a perform an action that requires email ownership verification.</p>
-
-        <a 
-            href='{{ data.url }}'
-            class='btn'
-        >Verify</a>
+        <p>Hi {{ user.cased_username }},</p>
+        <p>
+            You have removed the below payment method from your account. If you did not request this,
+            please reset your password immediately.
+        </p>
+    
+        <div class='data'>
+            <div>
+                <p><strong>**** **** **** {{ data.card.last4 }}</strong></p>
+            </div>
+        </div>
 
         <p>
-            If this action was not performed by you, and you are not registered on our website, 
-            please ignore this email, If you are registered on our website, please contact us immediately
-            <a href='mailto:{{ support_email }}'>here</a>, or reset your password.
+            If you did not request this, please reset your password immediately, if any 
+            issues arise please contact us at <a href='mailto:{{ support_email }}'>here</a>,
+            Please provide the above information or the email id.
         </p>
-
-        <a 
-            href='https://me.streamstage.co/reset-password'
-            class='btn'
-        >Reset Password</a>
     </div>
 {% endblock %}
