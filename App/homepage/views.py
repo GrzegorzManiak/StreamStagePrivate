@@ -133,8 +133,8 @@ def broadcaster_profile(request, username):
     context = {
         'data': {
             'handle': broadcaster.handle,
-            'background': broadcaster.banner.url,
-            'avatar': broadcaster.profile_pic.url,
+            'background': broadcaster.get_picture('banner'),
+            'avatar': broadcaster.get_picture('profile_pic'),
             'description': broadcaster.biography,
             'approved': broadcaster.approved,
             'is_you': False,

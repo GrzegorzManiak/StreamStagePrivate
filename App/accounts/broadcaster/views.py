@@ -24,8 +24,11 @@ def broadcaster_panel(request):
     for broadcaster in request.user.get_authorized_broadcasters():
         broadcasters += str(broadcaster.id) + ","
 
-    # Trim trailing comma
-    broadcasters = broadcasters[:-1]
+    if len(broadcasters) == 0:
+        broadcasters = ':none:'
+    else:
+        # Trim trailing comma
+        broadcasters = broadcasters[:-1]
 
     update_form = BroadcasterUpdateForm()
 

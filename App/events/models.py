@@ -20,8 +20,6 @@ from django.core.files import File
 from PIL import Image
 import uuid
 import base64
-import io
-
 
 # Event/Broadcaster Category Model
 class Category(models.Model):
@@ -113,6 +111,25 @@ class TicketListing(models.Model):
     # 0 means no stocking.
     maximum_stock = models.IntegerField(default=0, validators=[MinValueValidator(-1)])
     remaining_stock = models.IntegerField(default=0, validators=[MinValueValidator(0)])
+
+    def serialize(self):
+        if self.ticket_type == 0: # streaming
+            return {
+                'id': self.listing_id,
+                'detail': self.ticket_detail,
+                'price': self.price,
+                'stock': self.remaining_stock,
+                'ticket_type': self.ticket_type
+            }
+        else:
+            return {
+                'id': self.listing_id,
+                'detail': self.ticket_detail,
+                'price': self.price,
+                'stock': self.remaining_stock,
+                'ticket_type': self.ticket_type,
+                'showing_id': self.showing.showing_id
+            }
 
 # Event Model
 class Event(models.Model):
