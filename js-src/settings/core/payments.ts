@@ -42,14 +42,19 @@ export function manage_add_card(pod: Pod) {
         //
         submit_button.addEventListener('click', async () => {
             // -- Attach the spinner
+            const card_inp = card_manager()
             const stop = attach(submit_button);
-
+            submit_button.disabled = true;
+            
             // -- Add the card
-            const response = await add_card(card_manager());
+            const response = await add_card(card_inp);
 
             // -- Check if the request was successful
-            if (response.code !== 200) return create_toast(
-                'error', 'Payments', response.message);
+            if (response.code !== 200) {
+                stop();
+                submit_button.disabled = false;
+                return create_toast('error', 'Payments', response.message);
+            }
             
             // -- Show the success toast
             create_toast('success', 'Payments', 'Success! We have added your card!');

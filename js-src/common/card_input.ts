@@ -61,8 +61,11 @@ export function read_card_modal(
         const cleaned = card_expiry.value.replace(/\D/g, '');
         card_expiry.value = cleaned.replace(/(^\d{2})/g, '$1/').slice(0, 6);
     });
-
     
+    // -- When the submit button is clicked
+    submit_button.addEventListener('click', () => {
+        submit_button.disabled = true;
+    });
 
     // -- Return the function
     return () => {
