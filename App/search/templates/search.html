@@ -36,6 +36,7 @@ Search Events | StreamStage
 
                 <!-- Display Search Results -->
                 {% for event in events_list %}
+                    {% if event.approved %}
                     <div class="event-listing">
 
                         <div class="event-cover-container">
@@ -136,7 +137,7 @@ Search Events | StreamStage
 
 
                     </div>
-
+                    {% endif %}
                     {% empty %}
                     <div class="row mx-auto">
                         <p class="text-center">No results found.</p>

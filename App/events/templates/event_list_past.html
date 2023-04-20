@@ -23,11 +23,10 @@ Past Events | StreamStage
             
             <!-- Listing Past Events (if has showings and showing dates have passed)-->
             {% for event in events %}
-                {% if event.get_showings_count > 0 and event.get_num_upcoming_showings == 0 %}
-                    {% if request.user.is_subscribed and event.seven_days_past == True %}
+                {% if event.get_showings_count > 0 and event.get_num_upcoming_showings == 0 and event.approved %}
+                    <!-- {% if request.user.can_view or request.user=purchaser %} -->
                         {% include 'event_list.html' with event=event %}
-
-                    {% endif %}
+                    <!-- {% endif %} -->
                 {% endif %}
             {% empty %}
             <div class="row mx-auto">

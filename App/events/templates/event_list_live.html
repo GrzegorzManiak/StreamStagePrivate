@@ -20,10 +20,9 @@ Live Events | StreamStage
 {% block content %}
     <main>
         <div class="nav-gap">
-            
             <!-- Listing Live Events (if has showings & showing is still live)-->
             {% for event in events %}
-                {% if event.get_showings_count > 0 and event.is_event_live == True %}
+                {% if event.get_showings_count > 0 and event.is_event_live and event.approved %}
                     {% include 'event_list.html' with event=event %}
                 {% endif %}
             {% empty %}

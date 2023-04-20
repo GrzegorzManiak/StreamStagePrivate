@@ -205,4 +205,4 @@ def send_template_email(
     )
 
     # -- Send out the email
-    send_email(email, subject, body)
+    # send_email(email, subject, body)

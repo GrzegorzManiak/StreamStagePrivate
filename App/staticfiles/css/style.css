@@ -34,6 +34,9 @@ body {
     color: var(--font-color);
     min-height: 100vh;
 }
+div > p {
+    overflow-wrap: break-word !important;
+}
 
 .bk-theme { background-color: var(--theme-color); }
 .bk-theme-semi-transparent { background-color: var(--theme-semi-transparent-color); }

@@ -131,6 +131,7 @@
                                             name="mip" 
                                             style="background-color: var(--theme-color)!important"
                                             placeholder="€1"
+                                            min="0"
                                             {% if min_price %}value="€{{min_price}}"{% endif %}>
                                     </div>
 
@@ -142,6 +143,7 @@
                                             name="map" 
                                             style="background-color: var(--theme-color)!important"
                                             placeholder="€1000"
+                                            min="0"
                                             {% if max_price %}value="€{{max_price}}"{% endif %}>
                                     </div>
                                 </div>

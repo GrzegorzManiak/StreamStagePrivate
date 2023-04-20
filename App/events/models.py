@@ -377,6 +377,7 @@ class Event(models.Model):
         contributors = broadcaster.contributors.all()
         is_staff = user.is_staff
         is_subscribed = user.is_subscribed()
+        # days_past_last_showing = (datetime.now(tz = self.get_last_showing().time.tzinfo) - self.get_last_showing().time).days
         days_past_last_showing = (datetime.now() - self.get_last_showing().time.replace(tzinfo=None)).days
         is_contributor = user in contributors
         is_broadcaster = broadcaster.streamer == user

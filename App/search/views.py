@@ -98,12 +98,19 @@ class SearchResultsListView(ListView):
         if start_date and end_date:
             start_date = datetime.strptime(start_date, '%d/%m/%Y').date()
             end_date = datetime.strptime(end_date, '%d/%m/%Y').date()
+            # Getting Showings between dates
+            showings = EventShowing.objects.filter(time__range=(start_date, end_date))
 
             if not start_date:
                 end_date = datetime.strptime(end_date, '%d/%m/%Y').date()
-            
-            # Getting Showings between dates
-            showings = EventShowing.objects.filter(time__range=(start_date, end_date))
+                # Getting Showings before end date    
+                showings = EventShowing.objects.filter(time__lte=(end_date))
+
+            if not end_date:
+                start_date = datetime.strptime(start_date, '%d/%m/%Y').date()
+                # Getting Showings after start date
+                showings = EventShowing.objects.filter(time__gte=(start_date))
+
             # Matching Events to Showings
             events = []
             for showing in showings:
@@ -115,11 +122,11 @@ class SearchResultsListView(ListView):
                 event_ids.append(event.event_id)
 
             results = results.filter(event_id__in=event_ids).distinct()
-
+        
     # Show upcoming events only
         if upcoming == 'y':
             today = datetime.now().date()
-            end_date = today + timedelta(365)
+            end_date = today + timedelta(days=365)
             # Getting Showings between dates
             showings = EventShowing.objects.filter(time__range=(today, end_date))
             # Matching Events to Showings
