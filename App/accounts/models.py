@@ -440,9 +440,10 @@ class Member(AbstractUser):
         return Broadcaster.objects.filter(Q(streamer = self) | Q(contributors__id=self.id))
 
 
-    def get_tickets(self):
+    def get_tickets(self, expired: bool = False):
         """
             Returns all the tickets that belong to the user
+            allows for a 24 hour grace period for expired tickets
         """
         purchases = Purchase.objects.filter(purchaser=self)
         tickets = []
@@ -452,9 +453,27 @@ class Member(AbstractUser):
             pid_tickets = FlexibleTicket.objects.filter(purchase_id=pid)
 
             for ticket in pid_tickets:
-                tickets.append(ticket.serialize())
+                tickets.append(ticket)
 
-        return tickets
+        # -- Sort the tickets by date
+        tickets_filtered = []
+        for ticket in tickets:
+            # -- models.DateTimeField() to seconds
+            event_start = ticket.listing.showing.time
+            event_start = event_start.timestamp()
+
+            # -- Get the current time
+            current_time = datetime.datetime.now(tz=timezone.utc)
+            current_time = current_time.timestamp()
+            current_time += 86400 # -- Add 24 hours
+
+            # -- Check if the ticket is expired
+            if event_start < current_time:
+                if expired: tickets_filtered.append(ticket)
+            else: tickets_filtered.append(ticket)
+
+
+        return tickets_filtered
     
 
 class MembershipStatus(models.Model):
