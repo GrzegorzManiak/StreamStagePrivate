@@ -304,11 +304,7 @@ class Event(models.Model):
     def get_last_showing(self):
         if self.get_showings_count() > 0:
             return self.get_showings().last()
-    
-    def seven_days_past(self):
-        if self.get_last_showing().time + timedelta(days=7) >= datetime.now(tz = self.get_last_showing().time.tzinfo):
-            return True
-    
+
     def is_event_live(self):
         showings = []
         for showing in self.get_showings():
@@ -317,8 +313,6 @@ class Event(models.Model):
                 showings.append(showing)
         if len(showings) > 0:        
             return True 
-
-
 
     def serialize(self):
         next_showing = self.get_next_showing()

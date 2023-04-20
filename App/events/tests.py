@@ -50,7 +50,7 @@ class EventTests(TestCase):
             country = 'AU',
             city = 'Sydney',
             venue = 'Opera House',
-            time = '2023-02-28T21:17:06.089Z',
+            time = '2024-01-28T21:17:06.089Z',
             max_duration = 180
         )
 
@@ -168,8 +168,8 @@ class EventTests(TestCase):
         self.assertEqual(f'{showing.country}', 'AU') 
         self.assertEqual(f'{showing.city}', 'Sydney') 
         self.assertEqual(f'{showing.venue}', 'Opera House') 
-        self.assertEqual(f'{showing.time}', '2023-02-28 21:17:06.089000+00:00') 
-        self.assertEqual(f'{showing.max_duration}', 180) 
+        self.assertEqual(f'{showing.time}', '2024-01-28 21:17:06.089000+00:00') 
+        self.assertEqual(f'{showing.max_duration}', '180') 
 
         # Defining HTTP response & testing if correct
         self.response = self.client.get(self.event.get_absolute_url())
@@ -185,7 +185,7 @@ class EventTests(TestCase):
         showing.city = 'City 2'
         showing.venue = 'Venue 2'
         showing.time = '2024-03-28T22:18:00.089Z'
-        showing.max_duration = 200
+        showing.max_duration = '200'
         showing.save()
 
         # Testing Updated details of Showing
@@ -193,7 +193,7 @@ class EventTests(TestCase):
         self.assertEqual(f'{showing.city}', 'City 2') 
         self.assertEqual(f'{showing.venue}', 'Venue 2') 
         self.assertEqual(f'{showing.time}', '2024-03-28T22:18:00.089Z') 
-        self.assertEqual(f'{showing.max_duration}', 200) 
+        self.assertEqual(f'{showing.max_duration}', '200') 
 
         # Defining HTTP response & testing if correct
         self.response = self.client.get(self.event.get_absolute_url())
@@ -220,11 +220,11 @@ class EventTests(TestCase):
             city = 'City',
             venue = 'Venue',
             time = '2024-02-28T21:17:06.089Z',
-            max_duration = 300
+            max_duration = '300'
         )
         showing = self.event.get_next_showing()
 
-        # Testing if correct "top" review is being returned
+        # Testing if correct next showing is being returned
         self.assertEqual(showing.showing_id, self.showing_next.showing_id)
 
     # *************************
@@ -237,8 +237,8 @@ class EventTests(TestCase):
         self.assertEqual(f'{review.author}', 'TestMember') 
         self.assertEqual(f'{review.title}', 'Unhappy Review Title') 
         self.assertEqual(f'{review.body}', 'Review Body') 
-        self.assertEqual(f'{review.rating}', 5) 
-        self.assertEqual(f'{review.likes}', 2) 
+        self.assertEqual(f'{review.rating}', '5') 
+        self.assertEqual(f'{review.likes}', '2') 
 
         # Defining HTTP response & testing if correct
         self.response = self.client.get(self.event.get_absolute_url())
@@ -252,13 +252,13 @@ class EventTests(TestCase):
         review = EventReview.objects.filter(event='TstEvnt0').first()
         review.title = 'Review Title 2'
         review.body = 'Review Body 2'
-        review.rating = '3'
+        review.rating = 3
         review.save()
 
         # Testing Updated details of Review
         self.assertEqual(f'{review.title}', 'Review Title 2') 
         self.assertEqual(f'{review.body}', 'Review Body 2') 
-        self.assertEqual(f'{review.rating}', 3) 
+        self.assertEqual(f'{review.rating}', '3') 
 
         # Defining HTTP response & testing if correct
         self.response = self.client.get(self.event.get_absolute_url())

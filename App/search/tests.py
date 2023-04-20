@@ -380,37 +380,37 @@ class EventTests(TestCase):
         self.assertListEqual(list(response.context['events_list']), match_events)
 
 
-    # def test_search_query_start_date_only_2023(self):
-    #     query = '01%2F01%2F2023'
-    #     match_events = [
-    #         self.event2,
-    #         self.event3
-    #     ]
+    def test_search_query_start_date_only_2023(self):
+        query = '01%2F01%2F2023'
+        match_events = [
+            self.event2,
+            self.event3
+        ]
 
-    #     response = self.client.get('/search/', QUERY_STRING = ('sd=' + query))
+        response = self.client.get('/search/', QUERY_STRING = ('sd=' + query))
 
-    #     self.assertEqual(response.status_code, 200)
-    #     # Testing if correct template used
-    #     self.assertTemplateUsed(response, 'search.html') 
+        self.assertEqual(response.status_code, 200)
+        # Testing if correct template used
+        self.assertTemplateUsed(response, 'search.html') 
 
-    #     # Testing if query set returns all events
-    #     self.assertListEqual(list(response.context['events_list']), match_events)
+        # Testing if query set returns all events
+        self.assertListEqual(list(response.context['events_list']), match_events)
 
 
-    # def test_search_query_end_date_only_2023(self):
-    #     query = '01%2F01%2F2023'
-    #     match_events = [
-    #         self.event1
-    #     ]
+    def test_search_query_end_date_only_2023(self):
+        query = '01%2F01%2F2023'
+        match_events = [
+            self.event1
+        ]
 
-    #     response = self.client.get('/search/', QUERY_STRING = ('ed=' + query))
+        response = self.client.get('/search/', QUERY_STRING = ('ed=' + query))
 
-    #     self.assertEqual(response.status_code, 200)
-    #     # Testing if correct template used
-    #     self.assertTemplateUsed(response, 'search.html') 
+        self.assertEqual(response.status_code, 200)
+        # Testing if correct template used
+        self.assertTemplateUsed(response, 'search.html') 
 
-    #     # Testing if query set returns all events
-    #     self.assertListEqual(list(response.context['events_list']), match_events)
+        # Testing if query set returns all events
+        self.assertListEqual(list(response.context['events_list']), match_events)
 
 
     def test_search_query_in_person_events_only(self):
