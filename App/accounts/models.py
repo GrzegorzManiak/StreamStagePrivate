@@ -21,7 +21,8 @@ from django.db import models
 from django_countries.fields import CountryField
 from django.db.models import Q
 from timezone_field import TimeZoneField
-
+from store.models import FlexibleTicket
+from orders.models import Purchase
 from StreamStage.templatetags.tags import cross_app_reverse
 
 from .oauth import OAuthTypes
@@ -439,6 +440,22 @@ class Member(AbstractUser):
         return Broadcaster.objects.filter(Q(streamer = self) | Q(contributors__id=self.id))
 
 
+    def get_tickets(self):
+        """
+            Returns all the tickets that belong to the user
+        """
+        purchases = Purchase.objects.filter(purchaser=self)
+        tickets = []
+
+        for purchase in purchases:
+            pid = purchase.purchase_id
+            pid_tickets = FlexibleTicket.objects.filter(purchase_id=pid)
+
+            for ticket in pid_tickets:
+                tickets.append(ticket.serialize())
+
+        return tickets
+    
 
 class MembershipStatus(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
