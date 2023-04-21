@@ -460,13 +460,12 @@ class Member(AbstractUser):
         tickets_filtered = {
             'upcoming': [],
             'expired': [],
-            'tbd': []
         }
         for ticket in tickets:
             # -- models.DateTimeField() to seconds
             event_start = ticket.listing.showing
             if event_start is None:
-                tickets_filtered['tbd'].append(ticket.serialize())
+                tickets_filtered['upcoming'].append(ticket.serialize())
                 continue
             event_start = event_start.time.timestamp()
 

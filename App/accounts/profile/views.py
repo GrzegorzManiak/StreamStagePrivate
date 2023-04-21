@@ -69,7 +69,8 @@ def profile(request):
         },
         'stripe': request.user.get_stripe_customer(),
         'stripe_key': STRIPE_PUB_KEY,
-        'oauth': format_providers()
+        'oauth': format_providers(),
+        'tickets': request.user.get_tickets(),
     }
 
     # -- Render the profile page

@@ -27,7 +27,8 @@
     </div>
 
     <!-- -----Online Tickets----- -->
-    <div class="
+    <div id="online-tickets-header"
+    class="
         my-3
         justify-content-start
         inline-breaker
@@ -39,12 +40,61 @@
         <div class='w-100 line'></div>
     </div>
 
+    <div class='w-100 h-100' id='online-tickets'>
+        {% for ticket in tickets.upcoming %}
+            {% if ticket.streaming_ticket %}
+                <div class='ticket'>
+
+                    <div class='ticket-body'>
+                        <div class='ticket-details'>
+                            <div class='ticket-title'>
+                                <h3 class='fw-bold'>{{ ticket.event.title }}</h3>
+                            </div>
+
+                            <div class='ticket-info'>
+                                <p class='text-muted'>
+                                    {{ ticket.date.day }} {{ ticket.date.day_num }} 
+                                    {{ ticket.date.month }} {{ ticket.date.year }}
+                                </p>
+                                <i class="text-muted fa-solid fa-circle"></i>
+                                <p class='text-muted'>
+                                    {{ ticket.date.time }}
+                                </p>
+                                <i class="text-muted fa-solid fa-circle"></i>
+                                <p class='text-muted'>
+                                    {{ ticket.event.venue }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class='ticket-actions'>
+                            <button type="submit" id="view" loader-state='default'
+                                class="mfa btn btn-outline btn-lg loader-btn transparent-btn w-100">
+                                <span><div class='spinner-border' role='status'>
+                                    <span class='visually-hidden'>Loading...</span></div>
+                                </span>
+                                <p>View</p>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Gradient background -->
+                    <div class='ticket-gradient'></div>
+                    <div 
+                        class='ticket-image'
+                        style='background-image: url("{{ ticket.event.splash }}");'
+                    ></div>
+                </div>
+            {% endif %}
+
+        {% endfor %}
     <div class='w-100 h-100' id='online-tickets'></div>
 
 
 
     <!-- -----Inperson Tickets----- -->
-    <div class="
+    <div id="inperson-tickets-header"
+    class="
         my-3
         justify-content-start
         inline-breaker
@@ -57,49 +107,59 @@
     </div>
 
     <div class='w-100 h-100' id='inperson-tickets'>
+        {% for ticket in tickets.upcoming %}
+            {% if ticket.streaming_ticket == False %}
+                <div class='ticket'>
 
-        <!-- TIcket -->
-        <div class='ticket'>
+                    <div class='ticket-body'>
+                        <div class='ticket-details'>
+                            <div class='ticket-title'>
+                                <h3 class='fw-bold'>{{ ticket.event.title }}</h3>
+                            </div>
 
-            <div class='ticket-body'>
-                <div class='ticket-details'>
-                    <div class='ticket-title'>
-                        <h3 class='fw-bold'>Kendrick Lamar</h3>
+                            <div class='ticket-info'>
+                                <p class='text-muted'>
+                                    {{ ticket.date.day }} {{ ticket.date.day_num }} 
+                                    {{ ticket.date.month }} {{ ticket.date.year }}
+                                </p>
+                                <i class="text-muted fa-solid fa-circle"></i>
+                                <p class='text-muted'>
+                                    {{ ticket.date.time }}
+                                </p>
+                                <i class="text-muted fa-solid fa-circle"></i>
+                                <p class='text-muted'>
+                                    {{ ticket.event.venue }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class='ticket-actions'>
+                            <button type="submit" id="view" loader-state='default'
+                                class="mfa btn btn-outline btn-lg loader-btn transparent-btn w-100">
+                                <span><div class='spinner-border' role='status'>
+                                    <span class='visually-hidden'>Loading...</span></div>
+                                </span>
+                                <p>Ticket</p>
+                            </button>
+                        </div>
                     </div>
 
-                    <div class='ticket-info'>
-                        <p class='text-muted'>Mon, 12 Oct 2020</p>
-                        <i class="text-muted fa-solid fa-circle"></i>
-                        <p class='text-muted'>2pm</p>
-                        <i class="text-muted fa-solid fa-circle"></i>
-                        <p class='text-muted'>The Olympia Theatre</p>
-                    </div>
+                    <!-- Gradient background -->
+                    <div class='ticket-gradient'></div>
+                    <div 
+                        class='ticket-image'
+                        style='background-image: url("{{ ticket.event.splash }}");'
+                    ></div>
                 </div>
-
-                <div class='ticket-actions'>
-                    <button type="submit" id="view" loader-state='default'
-                        class="mfa btn btn-outline btn-lg loader-btn transparent-btn w-100">
-                        <span><div class='spinner-border' role='status'>
-                            <span class='visually-hidden'>Loading...</span></div>
-                        </span>
-                        <p>Ticket</p>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Gradient background -->
-            <div class='ticket-gradient'></div>
-            <div 
-                class='ticket-image'
-                style='background-image: url("https://serve.mg.co.za/content/images/2013/08/14/kendrick5.jpg");'
-            ></div>
-        </div>
+            {% endif %}
+        {% endfor %}
     </div>
 
 
 
     <!-- -----Expired Tickets----- -->
-    <div class="
+    <div id="expired-tickets-header"
+    class="
         my-3
         justify-content-start
         inline-breaker
@@ -112,7 +172,39 @@
     </div>
 
     <div class='w-100 h-100' id='expired-tickets'>
-    </div>
+        {% for ticket in tickets.expired %}
+            <div class='ticket'>
+                <div class='ticket-body'>
+                    <div class='ticket-details'>
+                        <div class='ticket-title'>
+                            <h3 class='fw-bold'>{{ ticket.event.title }}</h3>
+                        </div>
 
+                        <div class='ticket-info'>
+                            <p class='text-muted'>
+                                {{ ticket.date.day }} {{ ticket.date.day_num }} 
+                                {{ ticket.date.month }} {{ ticket.date.year }}
+                            </p>
+                            <i class="text-muted fa-solid fa-circle"></i>
+                            <p class='text-muted'>
+                                {{ ticket.date.time }}
+                            </p>
+                            <i class="text-muted fa-solid fa-circle"></i>
+                            <p class='text-muted'>
+                                {{ ticket.event.venue }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gradient background -->
+                <div class='ticket-gradient'></div>
+                <div 
+                    class='ticket-image'
+                    style='background-image: url("{{ ticket.event.splash }}");'
+                ></div>
+            </div>
+        {% endfor %}
+    </div>
 
 </article>

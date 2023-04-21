@@ -24,6 +24,7 @@ class FlexibleTicket(models.Model):
         return self.purchase.purchaser
     
     def serialize(self):
+
         return {
             "ticket_id": self.ticket_id,
             "purchase_id": self.purchase_id,
@@ -38,6 +39,20 @@ class FlexibleTicket(models.Model):
                 "broadcaster_name": self.listing.event.broadcaster.handle,
                 "title": self.listing.event.title,
                 "event_id": self.listing.event.event_id,
-                "splash": self.listing.event.get_cover_picture()
+                "splash": self.listing.event.get_cover_picture(),
+                "venue": self.showing.venue if self.showing else "Venue TBD"
+            },
+            "date": {
+                "day": self.showing.time.strftime("%a") + ",",
+                "day_num": self.showing.time.strftime("%d"),
+                "month": self.showing.time.strftime("%b"),
+                "year": self.showing.time.strftime("%Y"),
+                "time": self.showing.time.strftime("%-I:%M%p")
+            } if self.showing else {
+                "day": "Date TBD",
+                "day_num": "",
+                "month": "",
+                "year": "",
+                "time": "Time TBD"       
             }
         }

@@ -18,6 +18,7 @@ export type PanelType =
     'security-linked-accounts' |
     'security-password' |
     'security-email' |
+    'tickets' |
     'security-history' |
     'security-delete';
 
