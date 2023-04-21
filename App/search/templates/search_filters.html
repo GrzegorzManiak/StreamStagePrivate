@@ -84,7 +84,7 @@
                                 style="background-color: var(--theme-color)!important"
                                 name="cat"
                             >
-                                <option value="">Category</option>
+                                <option value="">None</option>
 
                                 {% for cat in categories %}
                                     {% if cat.name == category_name %}
@@ -243,7 +243,7 @@
                             href="#datefilter" 
                             role="button"
                             type="button"
-                            data-bs-toggle="collapse" 
+                            data-bs-toggle="dropdown" 
                             aria-expanded="false"
                         >
                             <p><i class="fa-solid fa-caret-down px-2"></i>Date</p>
@@ -284,11 +284,20 @@
                                 
 
                             <!-- Upcoming Events only -->
-                            <div class="collapse d-flex w-100" id="datefilter">
+                            <div class="d-flex w-100" id="datefilter">
                                 {% if upcoming %} <input type="checkbox" name="u" value="y" checked>
                                 {% else %} <input type="checkbox" name="u" value="y"> {% endif %}
                                 <label for='u' class="d-block w-50"> 
                                     &nbsp; Upcoming Events Only
+                                </label>
+                            </div>
+
+                            <!-- Today's Events only -->
+                            <div class="d-flex w-100" id="datefilter">
+                                {% if todays_events %} <input type="checkbox" name="t" value="y" checked>
+                                {% else %} <input type="checkbox" name="t" value="y"> {% endif %}
+                                <label for='t' class="d-block w-50"> 
+                                    &nbsp; Today's Events Only
                                 </label>
                             </div>
                         </div>

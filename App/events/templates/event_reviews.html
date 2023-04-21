@@ -1,12 +1,21 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags%}
 {% load tags %}
+{% load static %}
+
+{% block title %}
+Event Reviews | StreamStage
+{% endblock title %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/events.css' %}">
+{% endblock %}
 
 {% block content %}
 <div class="nav-gap container">
     <a href="{{ event.get_absolute_url }}" alt="Back to Event Page">
         <button class="w-100 my-2 btn btn-primary">
-            Back to Event Page
+            Back to {{event.title}}
         </button>
     </a>
 

@@ -1,6 +1,7 @@
 from django.test import Client, TestCase
 from events.models import Category, Event, TicketListing, EventShowing
 from accounts.models import Member, Broadcaster
+from datetime import datetime
 
 
 class EventTests(TestCase):
@@ -70,6 +71,17 @@ class EventTests(TestCase):
         )
         self.event3.categories.add(self.comedy_category, self.theatre_category)
 
+        # Create Test Event 4 - Today 
+        # - Commented out as only used for last test
+        # self.event4 = Event.objects.create(
+        #     event_id = 'TstEvnt4',
+        #     title = 'Test Event 4', 
+        #     description = 'Today Event', 
+        #     broadcaster = self.broadcaster, 
+        #     approved = True
+        # )
+        # self.event3.categories.add(self.comedy_category)
+
         # Create showing for Test Event 1 (2022, Ireland)
         self.showing1 = EventShowing.objects.create(
             event = self.event1,
@@ -99,6 +111,17 @@ class EventTests(TestCase):
             time = '2028-12-12T15:15:03Z',
             max_duration = 120
         )
+        
+        # Create showing for Test Event 4 (Today, Austria)
+        #  - Commented out as only used for last test - must change date to today to work
+        # self.showing1 = EventShowing.objects.create(
+        #     event = self.event4,
+        #     country = 'AT',
+        #     city = 'Vienna',
+        #     venue = 'The Place',
+        #     time = '2023-04-21T15:15:03Z',
+        #     max_duration = 120
+        # )
 
                 # Create ticket listing for Test Event 1 (€1)
         self.ticket1 = TicketListing.objects.create(
@@ -592,3 +615,20 @@ class EventTests(TestCase):
 
         # Testing if query set returns all events
         self.assertListEqual(list(response.context['events_list']), match_events)
+
+
+    # def test_search_query_todays_events_only(self):
+    #     query = 'y'
+
+    #     match_events = [
+    #         self.event4
+    #     ]
+
+    #     response = self.client.get('/search/', QUERY_STRING = ('t=' + query))
+
+    #     self.assertEqual(response.status_code, 200)
+    #     # Testing if correct template used
+    #     self.assertTemplateUsed(response, 'search.html') 
+
+    #     # Testing if query set returns all events
+    #     self.assertListEqual(list(response.context['events_list']), match_events)

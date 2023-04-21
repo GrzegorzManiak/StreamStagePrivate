@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+{% load tags %}
+
+{% block metadescription %}
+Information about the StreamStage Team
+{% endblock %}
+
+{% block title %}
+About Us | StreamStage
+{% endblock %}
+
+{% block content %}
+<main>
+    <div class="nav-gap">
+        <h2 class="text-center page-title">Our Team of Geniuses</h2>
+        <div class="row mx-auto">
+            <div class="col-md-4 col-12" >
+                <div class="my-2 about">
+                    <hr />
+                    <img class="about_img" src="{% static 'images/about_bernhard.jpg' %}" alt="Photo of Ben Kiveris">
+                    <hr />
+                </div>
+                <div>
+                    <h2 class="sub-title">
+                        Ben Kiveris
+                    </h2>
+                    <p>
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Id voluptatem dolorem molestias
+                        doloribus
+                        fugit, sit autem dignissimos nam sed, repudiandae adipisci asperiores, reiciendis ducimus
+                        quisquam.
+                        Dolorem eum consequuntur minima tempora?
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-12" >
+                <div class="my-2 about">
+                    <hr />
+                    <img class="about_img" src="{% static 'images/about_grzegorz.jpg' %}" alt="Photo of Grzegorz Maniak">
+                    <hr />
+                </div>
+                <div>
+                    <h2 class="sub-title">
+                        Grzegorz Maniak
+                    </h2>
+                    <p>
+                        Second Year Full-Time Student at Technological University Dublin in Computing with Software Development Grzegorz is passionate about exploring new technologies & staying up-to-date with the latest developments in the field. He is also a genius when it comes to anything coding related.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-12" >
+                <div class="my-2 about">
+                    <hr />
+                    <img class="about_img" src="{% static 'images/about_cian.jpg' %}" alt="Photo of Cian McArdle">
+                    <hr />
+                </div>
+                <div>
+                    <h2 class="sub-title">
+                        Cian McArdle
+                    </h2>
+                    <p>
+                        Cian is a logical thinker with a flair for design. Currently in 2nd Year of a Software Development Course, he loves learning how things work and problem solving. His hobbies include hiking up mountains and travelling to new places. An avid Liverpool supporter, he loves watching them play. 
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

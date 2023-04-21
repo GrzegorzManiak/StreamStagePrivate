@@ -24,6 +24,7 @@ class SearchResultsListView(ListView):
         city = self.request.GET.get('c')
         country = self.request.GET.get('co')
         upcoming = self.request.GET.get('u')
+        todays_events = self.request.GET.get('t')
         in_person = self.request.GET.get('ip')
         sort = self.request.GET.get('s')
         min_price = self.request.GET.get('mip')
@@ -62,8 +63,15 @@ class SearchResultsListView(ListView):
         # Show upcoming events only
         if upcoming == 'y':
             today = datetime.now().date()
-            # Getting Showings between dates
+            # Getting Showings after today
             showings = (showings or EventShowing.objects).filter(time__gte=today)
+
+        # Show today's events only
+        if todays_events == 'y':
+            yesterday = datetime.now().date() - timedelta(days=1)
+            tomorrow = datetime.now().date() + timedelta(days=1)
+            # Getting Showings that are on today
+            showings = (showings or EventShowing.objects).filter(time__gte=(yesterday)).filter(time__lte=(tomorrow))
 
         # If showings affect the filtering
         if showings is not None:
@@ -178,6 +186,7 @@ class SearchResultsListView(ListView):
         context['city'] = self.request.GET.get('c')
         context['country'] = self.request.GET.get('co')
         context['upcoming'] = self.request.GET.get('u')
+        context['todays_events'] = self.request.GET.get('t')
         context['in_person'] = self.request.GET.get('ip')
         context['min_price'] = self.request.GET.get('mip')
         context['max_price'] = self.request.GET.get('map')

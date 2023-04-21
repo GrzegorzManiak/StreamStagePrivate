@@ -263,16 +263,6 @@ class Event(models.Model):
     # Get top review based on likes
     def get_top_review(self, reviews_in = None):
         return EventReview.objects.filter(event=self).aggregate(Max("likes"))["likes__max"]
-
-        # reviews = reviews_in or self.get_reviews()
-
-        # top_review = None
-        # likes = 0
-        # for review in reviews:
-        #     if review.likes >= likes:
-        #         likes = review.likes
-        #         top_review = review
-        # return top_review
     
     # Showings
 
@@ -285,7 +275,8 @@ class Event(models.Model):
     def get_upcoming_showings(self):
         if self.get_showings_count() > 0:
             showing = self.get_showings().first()
-            start_date = datetime.now(tz = showing.time.tzinfo)
+            # Get showings if less than 1 hour have passed since showing start
+            start_date = datetime.now(tz = showing.time.tzinfo) - timedelta(hours=1)
             end_date = datetime(2100, 1, 1)
             showings = EventShowing.objects.filter(event=self).filter(time__range=(start_date,end_date)).all().order_by('time')
             return showings
@@ -293,7 +284,7 @@ class Event(models.Model):
     def get_num_upcoming_showings(self):
         showings = []
         for showing in self.get_showings():
-            if showing.time + timedelta(hours=0.5) >= datetime.now(tz = showing.time.tzinfo):
+            if showing.time + timedelta(hours=1) >= datetime.now(tz = showing.time.tzinfo):
                 showings.append(showing)
         return len(showings)
       
