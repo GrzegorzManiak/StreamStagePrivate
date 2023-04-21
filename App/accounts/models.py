@@ -440,7 +440,7 @@ class Member(AbstractUser):
         return Broadcaster.objects.filter(Q(streamer = self) | Q(contributors__id=self.id))
 
 
-    def get_tickets(self, expired: bool = False):
+    def get_tickets(self, expired: bool = True):
         """
             Returns all the tickets that belong to the user
             allows for a 24 hour grace period for expired tickets
@@ -468,11 +468,11 @@ class Member(AbstractUser):
                 tickets_filtered['upcoming'].append(ticket.serialize())
                 continue
             event_start = event_start.time.timestamp()
+            event_start += 86400 # -- Add 24 hours
 
             # -- Get the current time
             current_time = datetime.datetime.now(tz=timezone.utc)
             current_time = current_time.timestamp()
-            current_time += 86400 # -- Add 24 hours
 
             # -- Check if the ticket is expired
             if event_start < current_time:

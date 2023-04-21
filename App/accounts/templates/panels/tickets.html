@@ -7,6 +7,8 @@
     data-panel-type='tickets'
     data-panel-status='hidden'
 >
+    <span id='ticket-template' class='d-none'
+    >{% include 'ticket.html' %}</span>
 
     <!-- Header -->
     <div class="
@@ -69,6 +71,7 @@
 
                         <div class='ticket-actions'>
                             <button type="submit" id="view" loader-state='default'
+                                onclick="window.location.href='{{ ticket.event.url }}'"
                                 class="mfa btn btn-outline btn-lg loader-btn transparent-btn w-100">
                                 <span><div class='spinner-border' role='status'>
                                     <span class='visually-hidden'>Loading...</span></div>
@@ -109,7 +112,15 @@
     <div class='w-100 h-100' id='inperson-tickets'>
         {% for ticket in tickets.upcoming %}
             {% if ticket.streaming_ticket == False %}
-                <div class='ticket'>
+                <div 
+                    class='ticket'
+                    data-ticket-id='{{ ticket.ticket_id }}'
+                    data-title='{{ ticket.event.title }}'
+                    data-date='{{ ticket.date.day_num }} {{ ticket.date.month }} {{ ticket.date.year }}'
+                    data-start-time='{{ ticket.date.time }}'
+                    data-venue='{{ ticket.event.venue }}'
+                    data-price='{{ ticket.price }}'
+                >
 
                     <div class='ticket-body'>
                         <div class='ticket-details'>

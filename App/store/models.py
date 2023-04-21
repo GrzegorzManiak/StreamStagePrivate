@@ -24,13 +24,15 @@ class FlexibleTicket(models.Model):
         return self.purchase.purchaser
     
     def serialize(self):
-
+        self.showing = self.listing.showing 
+        
         return {
             "ticket_id": self.ticket_id,
             "purchase_id": self.purchase_id,
             "listing": self.listing.serialize(),
             "purchased_date": self.purchased_date.strftime("%Y-%m-%d %H:%M:%S"),
             "showing": self.showing.serialize() if self.showing else None,
+            "price": self.listing.price,
             "streaming_ticket": self.listing.ticket_type == 0,
             "event": {
                 "url": cross_app_reverse('events', 'event_view', {
