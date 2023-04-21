@@ -23,12 +23,15 @@ def create_ticket(
     ticket_listing: TicketListing, 
     purchase_item: PurchaseItem
 ):
-    ticket = FlexibleTicket(
+
+    ticket = FlexibleTicket.objects.create(
         item = purchase_item,
         listing = ticket_listing,
+        purchase_id = purchase_id,
         showing = None
     )
     
+    ticket.save()
     return ticket
 
 """
@@ -50,6 +53,7 @@ def on_intent_success(cust_payment_intent):
     purchase_id = uuid.uuid4()
 
     for item in items:        
+
         # currently all items are TicketListings, but may not always be.
         if isinstance(item, TicketListing):
             purchase_item = create_purchase(

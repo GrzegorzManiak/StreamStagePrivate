@@ -47,7 +47,8 @@ from .other import (
     update_user_streamer,
     filter_purchases,
     get_subscription, 
-    cancel_subscription
+    cancel_subscription,
+    get_tickets
 )
 
 from .views import (
@@ -130,6 +131,7 @@ urlpatterns = [
     path('api/purchases/filter', filter_purchases, name='filter_purchases'),
     path('api/subscription/get', get_subscription, name='get_subscription'),
     path('api/subscription/cancel', cancel_subscription, name='cancel_subscription'),
+    path('api/tickets/get', get_tickets, name='get_tickets'),
 
     # -- Broadcaster
     path('broadcaster/', broadcaster_panel, name='broadcaster_panel'),

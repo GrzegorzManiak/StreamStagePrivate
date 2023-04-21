@@ -7,15 +7,13 @@ from django.core.files.temp import NamedTemporaryFile
 from PIL import Image
 
 from django.db import models
-from django.db.models import Q, Avg, Max, Min
+from django.db.models import Q, Avg
 
-from django.contrib.auth import get_user_model
-from django.urls import reverse
 from django_countries.fields import CountryField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from StreamStage.templatetags.tags import cross_app_reverse
 from StreamStage.settings import MEDIA_URL
-from datetime import datetime, timedelta, time
+from datetime import datetime, timedelta
 from django.core.files import File
 from PIL import Image
 import uuid
@@ -172,7 +170,7 @@ class Event(models.Model):
     broadcaster = models.ForeignKey(to="accounts.Broadcaster", on_delete=models.CASCADE)
     categories = models.ManyToManyField(to=Category)
     primary_media_idx = models.IntegerField(default=0) # Points to an item in the 'media' field - used as a cover photo 
-    contributors = models.ManyToManyField(get_user_model(), related_name="event_contributors", blank=True)
+    contributors = models.ManyToManyField('accounts.Member', related_name="event_contributors", blank=True)
     approved = models.BooleanField("Approved", default=False)
 
     created = models.DateTimeField(auto_now_add=True)
@@ -375,6 +373,7 @@ class Event(models.Model):
         """
             Simple function to check if a user can view an event
         """
+        return True
         broadcaster = self.broadcaster
         contributors = broadcaster.contributors.all()
         is_staff = user.is_staff
@@ -398,7 +397,7 @@ class Event(models.Model):
 # Event Review Model
 class EventReview(models.Model):
     review_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    author = models.ForeignKey(get_user_model(), related_name="Author", on_delete=models.CASCADE)
+    author = models.ForeignKey('accounts.Member', related_name="Author", on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     title = models.CharField("Review Title", max_length=50)
     body = models.TextField("Review Body", max_length=500)

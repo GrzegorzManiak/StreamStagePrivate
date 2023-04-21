@@ -330,7 +330,7 @@ def impersonate():
         def wrapper(request, *args, **kwargs):
 
             # -- Check if the user is an admin
-            if not request.user.is_superuser:
+            if not request.user.is_superuser or not request.user.is_staff:
                 request.impersonate = False
                 return view_func(request, *args, **kwargs)
             

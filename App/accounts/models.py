@@ -448,19 +448,27 @@ class Member(AbstractUser):
         purchases = Purchase.objects.filter(purchaser=self)
         tickets = []
 
+
         for purchase in purchases:
             pid = purchase.purchase_id
-            pid_tickets = FlexibleTicket.objects.filter(purchase_id=pid)
+            pid_tickets = FlexibleTicket.objects.filter(purchase_id=pid).all()
 
-            for ticket in pid_tickets:
+            for ticket in pid_tickets.all():
                 tickets.append(ticket)
 
         # -- Sort the tickets by date
-        tickets_filtered = []
+        tickets_filtered = {
+            'upcoming': [],
+            'expired': [],
+            'tbd': []
+        }
         for ticket in tickets:
             # -- models.DateTimeField() to seconds
-            event_start = ticket.listing.showing.time
-            event_start = event_start.timestamp()
+            event_start = ticket.listing.showing
+            if event_start is None:
+                tickets_filtered['tbd'].append(ticket.serialize())
+                continue
+            event_start = event_start.time.timestamp()
 
             # -- Get the current time
             current_time = datetime.datetime.now(tz=timezone.utc)
@@ -469,8 +477,8 @@ class Member(AbstractUser):
 
             # -- Check if the ticket is expired
             if event_start < current_time:
-                if expired: tickets_filtered.append(ticket)
-            else: tickets_filtered.append(ticket)
+                if expired: tickets_filtered['expired'].append(ticket.serialize())
+            else: tickets_filtered['upcoming'].append(ticket.serialize())
 
 
         return tickets_filtered

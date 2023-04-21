@@ -1,4 +1,5 @@
 from django.db import models
+from StreamStage.templatetags.tags import cross_app_reverse
 from events.models import EventShowing, TicketListing
 from orders.models import PurchaseItem
 from StreamStage.identifiers import new_ticket_id
@@ -27,6 +28,10 @@ class FlexibleTicket(models.Model):
             "ticket_id": self.ticket_id,
             "purchase_id": self.purchase_id,
             "listing": self.listing.serialize(),
-            "purchased_date": self.purchased_date,
-            "showing": self.showing.serialize() if self.showing else None
+            "purchased_date": self.purchased_date.strftime("%Y-%m-%d %H:%M:%S"),
+            "showing": self.showing.serialize() if self.showing else None,
+            "streaming_ticket": self.listing.ticket_type == 0,
+            "event_url": cross_app_reverse('events', 'event_view', {
+                'event_id': self.listing.event.event_id
+            }),
         }
