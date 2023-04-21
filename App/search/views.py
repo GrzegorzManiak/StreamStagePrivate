@@ -33,56 +33,67 @@ class SearchResultsListView(ListView):
         showings = None
         results = Event.objects.all()
 
-    # Regular Search (User Input)
-        if query:
-            results = results.filter(Q(title__icontains=query) | Q(description__icontains=query) | 
-                                     Q(broadcaster__handle__icontains=query) | Q(categories__name__icontains=query)).distinct()
-        
-    # Filter by Category
-        if category:
-            results = results.filter(Q(categories__name=category)).distinct()
-        
-    # Filter by Broadcaster
-        if broadcaster:
-            results = results.filter(Q(broadcaster__handle__icontains=broadcaster)).distinct()
-
-    # Filter by Venue
+        # Filter by Venue
         if venue:
             # Getting Venue from showings
-            showings = EventShowing.objects.filter(venue=venue)
+            showings = (showings or EventShowing.objects).filter(venue=venue)
 
-    # Filter by City
+        # Filter by City
         if city:
             # Getting City from showings
-            showings = EventShowing.objects.filter(city=city)
+            showings = (showings or EventShowing.objects).filter(city=city)
 
-    # Filter by Country
+        # Filter by Country
         if country:
             # Getting Country from showings
-            showings = EventShowing.objects.filter(country__name=country)
+            showings = (showings or EventShowing.objects).filter(country__name=country)
 
-    # Filter by Date
+        # Filter by Date
         if end_date:
             end_date = datetime.strptime(end_date, '%d/%m/%Y').date()
-            # Getting Showings before end date    
-            showings = EventShowing.objects.filter(time__lte=(end_date))
+            # Getting Showings before end date
+            showings = (showings or EventShowing.objects).filter(time__lte=(end_date))
 
         if start_date:
             start_date = datetime.strptime(start_date, '%d/%m/%Y').date()
             # Getting Showings after start date
-            showings = showings.filter(time__gte=(start_date))
+            showings = (showings or EventShowing.objects).filter(time__gte=(start_date))
         
-    # Show upcoming events only
+        # Show upcoming events only
         if upcoming == 'y':
             today = datetime.now().date()
-            end_date = today + timedelta(days=365)
             # Getting Showings between dates
-            showings = EventShowing.objects.filter(time__range=(today, end_date))
+            showings = (showings or EventShowing.objects).filter(time__gte=today)
 
+        # If showings affect the filtering
+        if showings is not None:
+            # Matching Events to Showings
+            events = []
+            for showing in showings:
+                events.append(showing.event)
 
-    # Show in-person events only
+            # Isolating event ID
+            event_ids = []
+            for event in events:
+                event_ids.append(event.event_id)
+
+            results = results.filter(event_id__in=event_ids).distinct()
+        
+        # Regular Search (User Input)
+        if query:
+            results = results.filter(Q(title__icontains=query) | Q(description__icontains=query) | 
+                                     Q(broadcaster__handle__icontains=query) | Q(categories__name__icontains=query)).distinct()
+        
+        # Filter by Category
+        if category:
+            results = results.filter(Q(categories__name=category)).distinct()
+        
+        # Filter by Broadcaster
+        if broadcaster:
+            results = results.filter(Q(broadcaster__handle__icontains=broadcaster)).distinct()
+        
+        # Show in-person events only
         if in_person == 'y':
-
             # Getting Tickets between for events
             tickets = TicketListing.objects.filter().all()
             # Matching Events to Showings
@@ -98,7 +109,7 @@ class SearchResultsListView(ListView):
 
             results = results.filter(event_id__in=event_ids).distinct()
 
-    # Filter by Price
+        # Filter by Price
         # Ascending
         if sort == 'price-asc':
             min_price_tickets = {}
@@ -116,7 +127,6 @@ class SearchResultsListView(ListView):
                 events.append(ticket[1])
 
             results = events
-
         # Descending
         elif sort == 'price-desc':
             min_price_tickets = {}
@@ -147,20 +157,7 @@ class SearchResultsListView(ListView):
             # Checking results between max and min price
             results = [ result for result in results if result.has_ticket_listings() and max_price >= result.get_min_ticket_price().price >= min_price 
             and max_price >= result.get_max_price_ticket().price >= min_price ]
-
-        # If showings effect the filtering
-        if showings is not None:
-            # Matching Events to Showings
-            events = []
-            for showing in showings:
-                events.append(showing.event)
-
-            # Isolating event ID
-            event_ids = []
-            for event in events:
-                event_ids.append(event.event_id)
-
-            results = results.filter(event_id__in=event_ids).distinct()
+        
         # Once filtering complete, return results
         return results
     
