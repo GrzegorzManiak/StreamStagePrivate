@@ -1,0 +1,118 @@
+{% load tags %}
+<!--
+    StreamStage+
+-->
+<article 
+    class='panel' 
+    data-panel-type='tickets'
+    data-panel-status='hidden'
+>
+
+    <!-- Header -->
+    <div class="
+        mb-5
+        justify-content-start
+    ">
+        <!-- Header -->
+        <h1 class="
+            fw-bold 
+        ">Tickets</h1>
+
+        <!-- Descriptiopn -->
+        <p class="
+            text-muted
+        ">
+            View all your inperson and online tickets here!
+        </p>
+    </div>
+
+    <!-- -----Online Tickets----- -->
+    <div class="
+        my-3
+        justify-content-start
+        inline-breaker
+    ">
+        <div class='w-100 line'></div>
+        <div class='w-50 text'>
+            <p class="text-muted m-0">Virtual Tickets</p>
+        </div>
+        <div class='w-100 line'></div>
+    </div>
+
+    <div class='w-100 h-100' id='online-tickets'></div>
+
+
+
+    <!-- -----Inperson Tickets----- -->
+    <div class="
+        my-3
+        justify-content-start
+        inline-breaker
+    ">
+        <div class='w-100 line'></div>
+        <div class='w-50 text'>
+            <p class="text-muted m-0">Inperson Tickets</p>
+        </div>
+        <div class='w-100 line'></div>
+    </div>
+
+    <div class='w-100 h-100' id='inperson-tickets'>
+
+        <!-- TIcket -->
+        <div class='ticket'>
+
+            <div class='ticket-body'>
+                <div class='ticket-details'>
+                    <div class='ticket-title'>
+                        <h3 class='fw-bold'>Kendrick Lamar</h3>
+                    </div>
+
+                    <div class='ticket-info'>
+                        <p class='text-muted'>Mon, 12 Oct 2020</p>
+                        <i class="text-muted fa-solid fa-circle"></i>
+                        <p class='text-muted'>2pm</p>
+                        <i class="text-muted fa-solid fa-circle"></i>
+                        <p class='text-muted'>The Olympia Theatre</p>
+                    </div>
+                </div>
+
+                <div class='ticket-actions'>
+                    <button type="submit" id="view" loader-state='default'
+                        class="mfa btn btn-outline btn-lg loader-btn transparent-btn w-100">
+                        <span><div class='spinner-border' role='status'>
+                            <span class='visually-hidden'>Loading...</span></div>
+                        </span>
+                        <p>Ticket</p>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Gradient background -->
+            <div class='ticket-gradient'></div>
+            <div 
+                class='ticket-image'
+                style='background-image: url("https://serve.mg.co.za/content/images/2013/08/14/kendrick5.jpg");'
+            ></div>
+        </div>
+    </div>
+
+
+
+    <!-- -----Expired Tickets----- -->
+    <div class="
+        my-3
+        justify-content-start
+        inline-breaker
+    ">
+        <div class='w-100 line'></div>
+        <div class='w-50 text'>
+            <p class="text-muted m-0">Expired Tickets</p>
+        </div>
+        <div class='w-100 line'></div>
+    </div>
+
+    <div class='w-100 h-100' id='expired-tickets'>
+    </div>
+
+
+</article>

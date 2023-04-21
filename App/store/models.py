@@ -31,7 +31,13 @@ class FlexibleTicket(models.Model):
             "purchased_date": self.purchased_date.strftime("%Y-%m-%d %H:%M:%S"),
             "showing": self.showing.serialize() if self.showing else None,
             "streaming_ticket": self.listing.ticket_type == 0,
-            "event_url": cross_app_reverse('events', 'event_view', {
-                'event_id': self.listing.event.event_id
-            }),
+            "event": {
+                "url": cross_app_reverse('events', 'event_view', {
+                    'event_id': self.listing.event.event_id
+                }),
+                "broadcaster_name": self.listing.event.broadcaster.handle,
+                "title": self.listing.event.title,
+                "event_id": self.listing.event.event_id,
+                "splash": self.listing.event.get_cover_picture()
+            }
         }

@@ -83,6 +83,7 @@
         data-cancel-subscription='{{ api.cancel_subscription }}'
 
         data-filter-purchases='{{ api.filter_purchases }}'
+        data-get-tickets='{% cross_app_reverse_tag "accounts" "get_tickets" %}'
     ></span>
     <div 
     id = 'main-container'
@@ -274,6 +275,45 @@
                         </div>
                         <!-- 
                             End of Pod - StreamStage+
+                        -->
+
+
+
+                        <!-- 
+                            Pod - Tickets
+                        -->
+                        <div 
+                            data-pod-status=''
+                            data-pod='tickets'
+                        class='
+                            side-panel-pod
+                            text-light d-flex
+                            align-items-center
+                            justify-content-start
+                        '>
+                            <!-- Icon -->
+                            <div 
+                                class='
+                                    side-panel-pod-icon
+                                    d-flex
+                                    align-items-center
+                                    justify-content-center
+                                '
+                            >
+                                <i class="fa-solid text-justify accordion
+                                    fa-ticket
+                                "></i>
+                            </div>
+
+                            <!-- Text -->
+                            <div class='side-panel-pod-text'>
+                                <p class='side-panel-pod-text-text m-0 mb-0'>
+                                    Tickets
+                                </p>
+                            </div>
+                        </div>
+                        <!-- 
+                            End of Pod - Tickets
                         -->
                         
                     </div>
@@ -656,6 +696,9 @@
 
                                 <!-- StreamStage+ -->
                                 {% include 'panels/streamstageplus.html' %}
+
+                                <!-- Tickets -->
+                                {% include 'panels/tickets.html' %}
 
                                 <!-- Reviews -->
                                 {% include 'panels/reviews.html' %}

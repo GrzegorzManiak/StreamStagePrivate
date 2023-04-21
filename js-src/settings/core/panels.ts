@@ -81,6 +81,17 @@ export function get_active_pod(): Pod | undefined {
 
 
 /**
+ * @name set_sidebar_state
+ * @param state: 'open' | 'closed' - The state of the sidebar
+ * @returns void
+ */
+export let set_sidebar_state = (state: 'open' | 'closed') => { 
+    Error('set_sidebar_state has not been initialized');
+};
+
+
+
+/**
   * @name attach_to_sidepanel
  * @returns void
  * 
@@ -157,6 +168,18 @@ export function attach_to_sidepanel() {
     // -- Attach the event listener
     sidepanel_button.addEventListener('change', async() => manage_panel());
     sidepanel_button.addEventListener('close', async() => manage_panel('close'));
+
+    // -- Set the function to the global variable
+    set_sidebar_state = (state: 'open' | 'closed') => {
+        if (state === 'open') {
+            sidepanel_button.checked = true;
+            manage_panel();
+        }
+        else {
+            sidepanel_button.checked = false;
+            manage_panel('close');
+        }
+    }
 }
 
 

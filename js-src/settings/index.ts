@@ -1,4 +1,4 @@
-import { attach_event_listeners, get_pod } from './core/panels';
+import { attach_event_listeners, get_pod, set_sidebar_state } from './core/panels';
 import { manage_security_panel } from './core/security';
 import { manage_payments_panel } from './core/payments';
 import { manage_subscription_panel } from './core/subscription';
@@ -51,11 +51,13 @@ export const configuration = build_configuration<Configuration>({
     get_subscription: new Type('data-get-subscription', 'string'),
     cancel_subscription: new Type('data-cancel-subscription', 'string'),
     filter_purchases: new Type('data-filter-purchases', 'string'),
+
+    get_tickets: new Type('data-get-tickets', 'string'),
 });
 
-// -- Attach the event listeners
+// -- Attach the event listeners and open the left panel
 attach_event_listeners();
-
+set_sidebar_state('open');
 
 // -- Attach to all panels
 const security_panel = get_pod('security');
