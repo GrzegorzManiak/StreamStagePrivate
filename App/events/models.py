@@ -236,7 +236,9 @@ class Event(models.Model):
     # Trailer 
     def get_trailer(self): 
         return EventTrailer.objects.filter(event=self).all()
-    
+
+    def get_trailer_count(self):
+        return EventTrailer.objects.filter(event=self).all().count()    
     # Reviews
 
     def get_reviews(self):
@@ -262,8 +264,15 @@ class Event(models.Model):
     
     # Get top review based on likes
     def get_top_review(self, reviews_in = None):
-        return EventReview.objects.filter(event=self).aggregate(Max("likes"))["likes__max"]
-    
+            reviews = reviews_in or self.get_reviews()
+
+            top_review = None
+            likes = 0
+            for review in reviews:
+                if review.likes > likes:
+                    likes = review.likes
+                    top_review = review
+            return top_review
     # Showings
 
     def get_showings(self):
@@ -471,7 +480,7 @@ class EventMedia(models.Model):
 # Event Trailer Model
 class EventTrailer(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    videofile= models.FileField(upload_to='videos/', verbose_name="")
+    videofile= models.FileField(upload_to='videos/', verbose_name="video")
     description = models.TextField("Trailer Description", max_length=300, blank=True, null=False)
     
     class Meta:

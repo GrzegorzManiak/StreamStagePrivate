@@ -222,10 +222,33 @@
                     {% endfor %}
                 </div>
             </div>
+        <!-- Event Trailer -->
+            <div class="row mx-auto">
+                <div class="col-12 mx-auto">
+                    <div class="mx-2 my-4">
+                        <h4><b>Trailer</b></h4>
+                    </div>
+                    <!-- If No Trailer -->
+                    {% if event.get_trailer_count == 0 %}
+                    <div class="text-center">
+                        <p>No Trailers Available</p>                
+                    </div>
+                    <!-- Trailer -->
+                    {% else %}
+                    <div class="d-flex justify-content-center">
+                        {% for trailer in event.get_trailer %}
+                        <video class="mx-auto" width="60%" controls>
+                            <source src="{{ trailer.videofile.url }}">
+                            Your browser does not support the video tag.
+                        </video>
+                        {% endfor %}
+                    </div>
 
-            <!-- Media for Event -->
+                    {% endif %}
+                </div>
+            </div>
+        <!-- Event Reviews -->
             <div class="row">
-                <!-- Event Reviews -->
                 <div class="col-12">
                     <div class="mx-2 my-4">
                         <h4 ><b>Reviews</b></h4>
@@ -254,7 +277,7 @@
                     </div>
                     <a href="{% cross_app_reverse_tag 'events' 'reviews_view' event_id=event.event_id %}" alt="All Reviews">
                         <button class="w-100 my-2 btn btn-primary">
-                            All Reviews
+                            All Reviews for {{ event.title }}
                         </button>
                     </a>
                 </div>

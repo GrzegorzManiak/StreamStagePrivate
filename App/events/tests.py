@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-from .models import Category, Event, EventReview, EventShowing, EventMedia
+from .models import Category, Event, EventReview, EventShowing, TicketListing, EventMedia, EventTrailer
 from accounts.models import Member, Broadcaster
 
 
@@ -15,14 +15,21 @@ class EventTests(TestCase):
             country = 'IE',
         )
 
-        # Create Test Category
-        self.category = Category.objects.create(
-            name = 'Test Category',
+        # Create Test Category Comedy
+        self.category1 = Category.objects.create(
+            name = 'Comedy',
             description = 'Category Description',
             splash_photo = 'events/Comedy.jfif',
         )
+        # Create Test Category Theatre
+        self.category2 = Category.objects.create(
+            name = 'Theatre',
+            description = 'Category Description',
+            splash_photo = 'events/Theatre.jfif',
+        )
         # Making a variable for calling many-to-many set in later tests
-        test_category = Category.objects.all().filter(name='Test Category').first()
+        self.comedy_category = Category.objects.all().filter(name='Comedy').first()
+        self.theatre_category = Category.objects.all().filter(name='Theatre').first()
 
         # Create Test Broadcaster
         self.broadcaster = Broadcaster.objects.create(
@@ -34,7 +41,7 @@ class EventTests(TestCase):
             approved = True
         )
 
-        # Create Test Event
+        # Create Test Event 0
         self.event = Event.objects.create(
             event_id = 'TstEvnt0',
             title = 'Test Event', 
@@ -42,7 +49,37 @@ class EventTests(TestCase):
             broadcaster = self.broadcaster, 
             approved = True
         )
-        self.event.categories.add(test_category)
+        self.event.categories.add(self.comedy_category)
+
+        # Create Test Event 1
+        self.event1 = Event.objects.create(
+            event_id = 'TstEvnt1',
+            title = 'Test Event', 
+            description = 'Comedy Event', 
+            broadcaster = self.broadcaster, 
+            approved = True
+        )
+        self.event1.categories.add(self.comedy_category)
+                
+        # Create Test Event 2
+        self.event2 = Event.objects.create(
+            event_id = 'TstEvnt2',
+            title = 'Test Event 2', 
+            description = 'Theatre Event', 
+            broadcaster = self.broadcaster, 
+            approved = True
+        )
+        self.event2.categories.add(self.theatre_category)
+                
+        # Create Test Event 3
+        self.event3 = Event.objects.create(
+            event_id = 'TstEvnt3',
+            title = 'Test Event 3', 
+            description = 'Theatre & Comedy Event', 
+            broadcaster = self.broadcaster, 
+            approved = True
+        )
+        self.event3.categories.add(self.comedy_category, self.theatre_category)
 
         # Create Test Showing 1 - Earlier
         self.showing_next = EventShowing.objects.create(
@@ -64,25 +101,46 @@ class EventTests(TestCase):
             likes = 2
         )
 
-        # # Create Test Media
-        # self.media = EventMedia.objects.create(
-        #     event = self.event,
-        #     picture = 'events/Comedy.jfif',
-        #     description = 'Media Picture Description'
-        # )
+        # Create ticket listing for Test Event 1 (€1)
+        self.ticket1 = TicketListing.objects.create(
+            event = self.event1,
+            price = 1,
+        )
+
+        # Create ticket listing for Test Event 2 (€10)
+        self.ticket1 = TicketListing.objects.create(
+            event = self.event2,
+            price = 10,
+        )
+
+        # Create ticket listing for Test Event 3 (€100, in-person)
+        self.ticket1 = TicketListing.objects.create(
+            event = self.event3,
+            price = 100,
+            ticket_type = 1
+        )
+        
+        # Create Test Media
+        self.media = EventMedia.objects.create(
+            event = self.event1,
+            picture = 'events/Comedy.jfif',
+            description = 'Media Picture Description'
+        )
 
 
-    # *******************
-    # *** Event Tests ***
-    # *******************
+# *******************
+# *** Event Tests ***
+# *******************
 
-    # Testing Creation of Event
+    # CRUD
+
+    # Testing Creation of Event 0
     def test_event_create(self):
         self.assertEqual(f'{self.event.event_id}', 'TstEvnt0') 
         self.assertEqual(f'{self.event.title}', 'Test Event') 
         self.assertEqual(f'{self.event.description}', 'description') 
         self.assertEqual(f'{self.event.broadcaster}', '@TestBroadcaster') 
-        self.assertEqual(f'{self.event.categories.first().name}', 'Test Category') 
+        self.assertEqual(f'{self.event.categories.first().name}', 'Comedy') 
         self.assertEqual(f'{self.event.approved}', 'True') 
 
         # Defining HTTP response & testing if correct
@@ -158,10 +216,12 @@ class EventTests(TestCase):
         # # Testing if correct template used
         self.assertTemplateUsed(self.response, 'profile.html')
 
-    # **************************
-    # *** Showing CRUD Tests ***
-    # **************************
-    
+# *********************
+# *** Showing Tests ***
+# *********************
+
+    # CRUD
+
     # Testing Creation of Showing
     def test_showing_create_showing_created(self):
         showing = EventShowing.objects.filter(event='TstEvnt0').first()
@@ -220,16 +280,18 @@ class EventTests(TestCase):
             city = 'City',
             venue = 'Venue',
             time = '2024-02-28T21:17:06.089Z',
-            max_duration = '300'
+            max_duration = 300
         )
         showing = self.event.get_next_showing()
 
         # Testing if correct next showing is being returned
         self.assertEqual(showing.showing_id, self.showing_next.showing_id)
 
-    # *************************
-    # *** Review CRUD Tests ***
-    # *************************
+# ********************
+# *** Review Tests ***
+# ********************
+
+    # CRUD
 
     # Testing Creation of Review
     def test_review_create_review_created(self):
@@ -288,15 +350,102 @@ class EventTests(TestCase):
             likes = 10 
         )
         review = self.event.get_top_review()
-
+        print(review)
         # Testing if correct "top" review is being returned
         self.assertEqual(review.review_id, self.review_high.review_id)
 
 
-    # *******************
-    # *** Media Tests ***
-    # *******************
+# *******************
+# *** Media Tests ***
+# *******************
+
+    # CRUD
+
+    # Testing Creation of Media
+    def test_media_create_media_created(self):
+        media = EventMedia.objects.filter(event='TstEvnt1').first()
+        self.assertEqual(f'{media.picture}', 'events/Comedy.jfif') 
+        self.assertEqual(f'{media.description}', 'Media Picture Description') 
+
+        # Defining HTTP response & testing if correct
+        self.response = self.client.get(self.event.get_absolute_url())
+        self.assertEqual(self.response.status_code, 200)
+        # Testing if correct template used
+        self.assertTemplateUsed(self.response, 'event.html') 
+
+    # Testing Updating of Media
+    def test_media_update_media_updated(self):
+        # Updating Media
+        media = EventMedia.objects.filter(event='TstEvnt1').first()
+        media.picture = 'events/Theatre.jfif'
+        media.description = 'New Description'
+        media.save()
+
+        # Testing Updated details of Media
+        media = EventMedia.objects.filter(event='TstEvnt1').first()
+        self.assertEqual(f'{media.picture}', 'events/Theatre.jfif') 
+        self.assertEqual(f'{media.description}', 'New Description') 
+
+        # Defining HTTP response & testing if correct
+        self.response = self.client.get(self.event.get_absolute_url())
+        self.assertEqual(self.response.status_code, 200)
+        # Testing if correct template used        
+        self.assertTemplateUsed(self.response, 'event.html')
+
+    # Testing Deleting of Media
+    def test_media_delete_media_deleted(self):
+        EventMedia.objects.get(event='TstEvnt1').delete()
+
+        # Defining HTTP response & testing if correct
+        self.response = self.client.get(self.event.get_absolute_url())
+        self.assertEqual(self.response.status_code, 200)
+        # Testing if correct template used
+        self.assertTemplateUsed(self.response, 'event.html')
 
 
+# *********************
+# *** Trailer Tests ***
+# *********************
 
+    # CRUD
 
+    # Testing Creation of Trailer
+    def test_trailer_create_trailer_created(self):
+        trailer = EventTrailer.objects.filter(event='TstEvnt1').first()
+        self.assertEqual(f'{trailer.videofile}', 'events/Comedy.jfif') 
+        self.assertEqual(f'{trailer.description}', 'Trailer Description') 
+
+        # Defining HTTP response & testing if correct
+        self.response = self.client.get(self.event.get_absolute_url())
+        self.assertEqual(self.response.status_code, 200)
+        # Testing if correct template used
+        self.assertTemplateUsed(self.response, 'event.html') 
+
+    # Testing Updating a Trailer
+    def test_trailer_update_trailer_updated(self):
+        # Updating Trailer
+        trailer = EventTrailer.objects.filter(event='TstEvnt1').first()
+        trailer.videofile = 'events/Trailer1.jfif'
+        trailer.description = 'Trailer Description'
+        trailer.save()
+
+        # Testing Updated details of Trailer
+        trailer = EventTrailer.objects.filter(event='TstEvnt1').first()
+        self.assertEqual(f'{trailer.videofile}', 'events/Trailer1.jfif') 
+        self.assertEqual(f'{trailer.description}', 'New Description') 
+
+        # Defining HTTP response & testing if correct
+        self.response = self.client.get(self.event.get_absolute_url())
+        self.assertEqual(self.response.status_code, 200)
+        # Testing if correct template used        
+        self.assertTemplateUsed(self.response, 'event.html')
+
+    # Testing Deleting a Trailer
+    def test_trailer_delete_trailer_deleted(self):
+        EventTrailer.objects.get(event='TstEvnt1').delete()
+
+        # Defining HTTP response & testing if correct
+        self.response = self.client.get(self.event.get_absolute_url())
+        self.assertEqual(self.response.status_code, 200)
+        # Testing if correct template used
+        self.assertTemplateUsed(self.response, 'event.html')
