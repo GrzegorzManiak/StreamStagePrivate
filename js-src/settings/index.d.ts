@@ -148,27 +148,6 @@ export interface FilterdPurchases {
     pages: number,
 }
 
-
-export interface Ticket {
-    ticket_id: string,
-    purchase_id: string,
-    listing: {
-        id: string,
-        details: string,
-        price: number,
-        stock: number,
-        ticket_type: string,
-    },
-    purchase_date: string,
-    streaming_ticket: boolean,  
-    event: {
-        url: string,
-        broadcaster_name: string,
-        title: string,
-        event_id: string,
-        splash: string,
-    }
-}
 //
 // Custom Responses
 //

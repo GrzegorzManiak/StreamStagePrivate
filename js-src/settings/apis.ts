@@ -338,4 +338,3 @@ export const filter_purchases = async (
     configuration.filter_purchases,
     { page, sort, order, search }
 );
-

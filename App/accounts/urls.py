@@ -48,7 +48,9 @@ from .other import (
     filter_purchases,
     get_subscription, 
     cancel_subscription,
-    get_tickets
+    get_tickets,
+    filter_reports,
+    update_report
 )
 
 from .views import (
@@ -150,6 +152,8 @@ urlpatterns = [
     path('site_panel/delete_user/', delete_user, name='delete_user'),
     path('site_panel/update_user_email/', update_user_email, name='update_user_email'),
     path('site_panel/update_streamer_status/', update_user_streamer, name='update_streamer_status'),
+    path('site_panel/filter_reports/', filter_reports, name='filter_reports'),
+    path('site_panel/update_report/', update_report, name='update_report'),
 
     path('events/', include('events.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

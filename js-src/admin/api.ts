@@ -1,7 +1,7 @@
 import { configuration } from '.';
 import { DefaultResponse } from '../api/index.d';
 import { base_request } from '../api';
-import { BroadcasterResponse, BroadcasterSorts, CategoryResponse, CategorySorts, EventSorts, FaqSorts, FilterPosition, FilterSort, FilterdBroadcastersResponse, FilterdCategoriesResponse, FilterdEventsResponse, FilterdFaqsResponse, FilterdPrivacyResponse, FilterdTermsResponse, FilterdUsersResponse, Frame, PrivacyResponse, StatisticsResponse, TermsPrivacySorts, TermsResponse, UserResponse } from './index.d';
+import { BroadcasterResponse, BroadcasterSorts, CategoryResponse, CategorySorts, EventSorts, FaqSorts, FilterPosition, FilterSort, FilterdBroadcastersResponse, FilterdCategoriesResponse, FilterdEventsResponse, FilterdFaqsResponse, FilterdPrivacyResponse, FilterdTermsResponse, FilterdUsersResponse, Frame, GetFilteredReportsResponse, PrivacyResponse, ReportSorts, StatisticsResponse, TermsPrivacySorts, TermsResponse, UserResponse } from './index.d';
 import { FilterOrder } from '../common/index.d';
 
 /**
@@ -502,4 +502,39 @@ export const delete_faq = async (
     'DELETE',
     configuration.faq_delete,
     { id },
+);
+
+
+
+/**
+ * @name filter_reports
+ * @param {number} page - The page to get
+ * @param {ReportSorts} sort - The sort to use (name, email, etc)
+ * @param {FilterOrder} order - The order to use (asc, desc)
+ * @param {string} search - The search query
+ * @returns {Promise<GetFilteredReportsResponse>}
+ */
+export const filter_reports = async (
+    page: number,
+    sort: ReportSorts,
+    order: FilterOrder,
+    search: string,
+): Promise<GetFilteredReportsResponse> => base_request(
+    'GET',
+    configuration.filter_reports,
+    { page, sort, order, search }
+);
+
+
+
+/**
+ * @name solve_report
+ * @param {string} id - The report id
+*/
+export const solve_report = async (
+    id: string
+): Promise<DefaultResponse> => base_request(
+    'POST',
+    configuration.update_report,
+    { id }
 );

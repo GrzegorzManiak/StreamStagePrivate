@@ -53,6 +53,9 @@ export const configuration = build_configuration<Configuration>({
     faq_filter: new Type('data-faq-filter', 'string'),
     faq_delete: new Type('data-faq-delete', 'string'),
     faq_update: new Type('data-faq-update', 'string'),
+
+    filter_reports: new Type('data-filter-reports', 'string'),
+    update_report: new Type('data-update-report', 'string'),
 }); 
 
 // -- Attach the event listeners

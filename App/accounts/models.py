@@ -481,7 +481,15 @@ class Member(AbstractUser):
 
 
         return tickets_filtered
-    
+
+
+    def basic_serialize(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'profile_pic': self.get_profile_pic(),
+            'url': cross_app_reverse('homepage', 'user_profile', kwargs={'username': self.username}),
+        }
 
 class MembershipStatus(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
@@ -658,14 +666,30 @@ class Report(models.Model):
     time = models.TimeField(auto_now_add=True)
     date = models.DateField(auto_now_add=True)
 
+    solved = models.BooleanField("Solved", default=False)
+    solved_by = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="solved_by", null=True, blank=True)
+
     def serialize(self):
         return {
             "id": self.id,
-            "reporter": self.reporter,
-            "reported": self.reported,
+            "reporter": self.reporter.basic_serialize(),
             "reason": self.reason,
             "time": self.time,
             "date": self.date,
+            "reported": {
+                "user": self.r_user.basic_serialize(),
+                # "broadcaster": self.r_broadcaster,
+                # "review": self.r_review,
+                # "event": self.r_event,
+            },
+            "solved": self.solved,
+            "reported_fields": {
+                "user": True if self.r_user is not None else False,
+                # "broadcaster": True if self.r_broadcaster is not None else False,
+                # "review": True if self.r_review is not None else False,
+                # "event": True if self.r_event is not None else False,
+            },
+            "solved_by": self.solved_by.basic_serialize() if self.solved_by is not None else None,
         }
 
 class BroadcasterContributeInvite(models.Model):

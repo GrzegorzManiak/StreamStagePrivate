@@ -83,6 +83,9 @@ export interface Configuration {
     faq_delete: string,
     faq_update: string,
     faq_filter: string,
+
+    filter_reports: string,
+    update_report: string,
 }
 
 
@@ -226,6 +229,67 @@ export interface Faq {
     updated: string,
 }
 
+
+export interface Ticket {
+    ticket_id: string,
+    purchase_id: string,
+    listing: {
+        id: string,
+        details: string,
+        price: number,
+        stock: number,
+        ticket_type: string,
+    },
+    purchase_date: string,
+    streaming_ticket: boolean,  
+    event: {
+        url: string,
+        broadcaster_name: string,
+        title: string,
+        event_id: string,
+        splash: string,
+    }
+}
+
+export interface FilterdReports {
+    reports:  Report[];
+    page: number;
+    per_page: number;
+    total: number;
+    pages: number;
+}
+
+export interface Report {
+    id: string;
+    reporter: Reporter;
+    reason: string;
+    time: string;
+    date: Date;
+    reported: Reported;
+    solved: boolean;
+    reported_fields: ReportedFields;
+    solved_by: null;
+}
+
+export interface Reported {
+    user: Reporter;
+}
+
+export interface Reporter {
+    id: string;
+    username: string;
+    profile_pic: string;
+    url: string;
+}
+
+export interface ReportedFields {
+    user: boolean;
+}
+
+export type ReportSorts = 'id' | 'reason' | 'question' | 'time' | 'date' | 'solved'
+
+
+
 export type FilterdFaqs = Filterd & { faq: Array<Faq> }
 export type FilterdTerms = Filterd & { terms: Array<Terms> }
 export type FilterdPrivacy = Filterd & { privacy: Array<Privacy> }
@@ -265,3 +329,6 @@ export type PrivacyResponse = PrivacySuccess | DefaultResponse;
 
 export type FilterdFaqsSuccess = DefaultResponseData & { data: FilterdFaqs }
 export type FilterdFaqsResponse = FilterdFaqsSuccess | DefaultResponse;
+
+export type GetFilteredReportsSuccess = DefaultResponseData & { data: FilterdReports }
+export type GetFilteredReportsResponse = GetFilteredReportsSuccess | DefaultResponse;
