@@ -143,6 +143,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_hosts',
     'stripe',
+
+    'django.contrib.sitemaps',
 ]
 
 WEBPACK_LOADER = {

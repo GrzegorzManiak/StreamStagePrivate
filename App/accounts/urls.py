@@ -85,6 +85,7 @@ urlpatterns = [
     path('login/', login, name='login'),
     path('logout/', logout, name='logout'),
     path('register/', register, name='register'),
+    path('forgot/', register, name='forgot'),
 
     # -- Profile
     path('api/send_verification/', send_verification, name='send_verification'),

@@ -198,6 +198,10 @@ def not_authenticated():
     def decorator(view_func):
         @wraps(view_func)
         def wrapper(request, *args, **kwargs):
+            # -- If the method is GET, redirect to the login page
+            if request.method == 'GET' and request.user.is_authenticated:
+                return redirect(cross_app_reverse('accounts', 'member_profile'))
+            
             # -- Check if user is authenticated
             if request.user.is_authenticated:
                 return error_response('You are already logged in')

@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.sitemaps.views import sitemap
 
 from .api.terms import get_latest_terms, create_terms, filter_terms, render_terms, render_terms_specific
 from .api.privacy import get_latest_privacy, create_privacy, filter_privacy, render_privacy, render_privacy_specific
@@ -50,5 +51,10 @@ urlpatterns = [
     path('api/faq/delete', delete_faq, name='delete_faq'),
     path('api/faq/update', update_faq, name='update_faq'),
     path('faq', render_faq, name='render_faq'),
+
+    path("sitemap.xml", sitemap, {
+        "sitemaps": {}
+    }, name="django.contrib.sitemaps.views.sitemap",
+)
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

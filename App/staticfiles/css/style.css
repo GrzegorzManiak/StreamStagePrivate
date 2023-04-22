@@ -846,7 +846,7 @@ footer hr {
 
     .links {
         flex-wrap: wrap;
-        justify-content: center;
+        justify-content: space-between!important;
         flex-direction: column;
         gap: 0.5rem !important;
         margin: 0;
