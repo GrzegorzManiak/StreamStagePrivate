@@ -71,8 +71,11 @@ class EventTests(TestCase):
         )
         self.event3.categories.add(self.comedy_category, self.theatre_category)
 
+        '''
+        Commented out as only used for last test
+        '''
+
         # Create Test Event 4 - Today 
-        # - Commented out as only used for last test
         # self.event4 = Event.objects.create(
         #     event_id = 'TstEvnt4',
         #     title = 'Test Event 4', 
@@ -111,9 +114,11 @@ class EventTests(TestCase):
             time = '2028-12-12T15:15:03Z',
             max_duration = 120
         )
-        
+
+        '''
+        Commented out as only used for last test - must change date to today to work
+        '''       
         # Create showing for Test Event 4 (Today, Austria)
-        #  - Commented out as only used for last test - must change date to today to work
         # self.showing1 = EventShowing.objects.create(
         #     event = self.event4,
         #     country = 'AT',
@@ -617,6 +622,9 @@ class EventTests(TestCase):
         self.assertListEqual(list(response.context['events_list']), match_events)
 
 
+    ''' 
+    Commented out to make other tests run ok 
+    '''
     # def test_search_query_todays_events_only(self):
     #     query = 'y'
 

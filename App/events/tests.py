@@ -242,13 +242,6 @@ class EventTests(TestCase):
         # Testing if correct template used
         self.assertTemplateUsed(self.response, 'event.html')
 
-    # Other
-
-    # # Get all categories
-    # def test_get_all_categories_return_all_categories(self):
-
-    #     categories = [self.category1, self.category2]
-    #     self.assertEqual(f'{event.get_all_categories()}', categories) 
 
 
 # *******************
@@ -430,10 +423,10 @@ class EventTests(TestCase):
 
     # Testing if showings for event, returns showings
     def test_get_showings_return_showings(self):
-        self.assertEqual(self.event.get_showings().first(), self.showing_next)
+        self.assertEqual(self.event.get_showings().first(), self.showing_late)
 
     # Testing if no showings for event, get_showings_count returns 0
-    def test_get_media_count_no_media_return_count(self):
+    def test_get_showings_count_no_showings_return_count(self):
         self.assertEqual(self.event3.get_showings_count(), 0)
         
     # Testing if 2 showing for event, get_showings_count returns 2
@@ -448,6 +441,10 @@ class EventTests(TestCase):
     def test_get_upcoming_showings_return_upcoming_showings(self):
         self.assertEqual(self.event2.get_upcoming_showings().first(), self.showing_upcoming)
 
+    # Testing get_next_showing with no showings, returns None
+    def test_get_next_showing_next_event_showing_returned(self):
+        self.assertEqual(self.event3.get_next_showing(), None)
+
     # Testing get_next_showing with 2 showings, returns earlier showing
     def test_get_next_showing_next_event_showing_returned(self):
         # Create Test Showing 2 - Later
@@ -461,10 +458,6 @@ class EventTests(TestCase):
         )
         # Testing if correct next showing is being returned
         self.assertEqual(self.event.get_next_showing().showing_id, self.showing_early.showing_id)
-
-    # Testing get_next_showing with no showings, returns None
-    def test_get_next_showing_next_event_showing_returned(self):
-        self.assertEqual(self.event3.get_next_showing(), None)
 
     # Testing get_last_showing with no showing, returns None
     def test_get_last_showing_return_None(self):
@@ -547,11 +540,11 @@ class EventTests(TestCase):
     # Testing getting reviews
 
     # Testing if no reviews for event, get_reviews returns None
-    def test_get_review_no_review_return_None(self):
+    def test_get_reviews_no_review_return_None(self):
         self.assertEqual(self.event3.get_reviews().first(), None)
 
     # Testing if reviews for event, returns reviews
-    def test_get_review_return_review(self):
+    def test_get_reviews_return_review(self):
         self.assertEqual(self.event.get_reviews().first(), self.review_low)
 
     # Testing if no reviews for event, get_review_count returns 0
@@ -567,7 +560,7 @@ class EventTests(TestCase):
         self.assertEqual(self.event3.get_average_rating(), 0)
 
     # Testing getting average review of an event based on no review ratings
-    def test_get_avg_rating_no_ratings_return_0(self):
+    def test_get_avg_rating_3_rating_return_rating(self):
         self.assertEqual(self.event2.get_average_rating(), 3)
 
 
@@ -583,7 +576,6 @@ class EventTests(TestCase):
             likes = 10
         )
         review = self.event.get_top_review()
-        print(review)
         # Testing if correct "top" review is being returned
         self.assertEqual(review.review_id, self.review_high.review_id)
 
