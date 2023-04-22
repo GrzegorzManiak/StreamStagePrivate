@@ -669,6 +669,9 @@ class Report(models.Model):
     solved = models.BooleanField("Solved", default=False)
     solved_by = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="solved_by", null=True, blank=True)
 
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True, null=True, blank=True)
+
     def serialize(self):
         return {
             "id": self.id,
@@ -690,6 +693,8 @@ class Report(models.Model):
                 # "event": True if self.r_event is not None else False,
             },
             "solved_by": self.solved_by.basic_serialize() if self.solved_by is not None else None,
+            "created": self.created,
+            "updated": self.updated,
         }
 
 class BroadcasterContributeInvite(models.Model):

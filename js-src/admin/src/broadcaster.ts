@@ -179,6 +179,19 @@ async function manage_modal(update: Function, button: HTMLButtonElement, entry: 
         stop();
     }
 
+    more_btn.addEventListener('click', () => {
+        const url = `https://me.streamstage.co/broadcaster/?bid=${broadcaster.id}`;
+        const stop = attach(more_btn);
+        
+        // -- Open a popup
+        window.open(
+            url, 'popUpWindow',
+            '_blank, width=900, height=700, left=10, top=10, resizable=yes, scrollbars=yes, toolbar=yes, menubar=no, location=no, directories=no, status=yes'
+        );
+        
+        stop();
+    });
+
     handle_save.addEventListener('click', async () => update_server(handle_save));
     name_save.addEventListener('click', async () => update_server(name_save));
     over_18.addEventListener('change', async () => update_server());

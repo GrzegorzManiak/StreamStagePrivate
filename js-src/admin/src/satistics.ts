@@ -26,14 +26,7 @@ export async function manage_statistical_panels(
     ];
 
     pods.forEach(async (pod: Pod) => {
-        let loaded = false;
-        add_callback((panel_type) => {
-            if (loaded) return;
-            if (panel_type === pod.type) loaded = true;
-
-            // -- Build the graphs
-            build_graphs(pod);
-        });
+        build_graphs(pod);
     });
 }
 

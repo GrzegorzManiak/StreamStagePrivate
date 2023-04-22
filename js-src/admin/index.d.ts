@@ -269,6 +269,8 @@ export interface Report {
     solved: boolean;
     reported_fields: ReportedFields;
     solved_by: null;
+    created: string;
+    updated: string;
 }
 
 export interface Reported {

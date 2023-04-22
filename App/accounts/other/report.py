@@ -54,7 +54,7 @@ def submit_report(request, data):
 @paginate(
     page_size=10,
     search_fields=['id', 'reason', 'reporter__username', 'r_user__username'], #'r_event__event_id', 'r_review__review_id', 'r_broadcaster__id'],
-    order_fields=['id', 'reason', 'question', 'time', 'date', 'solved'],
+    order_fields=['id', 'reason', 'time', 'date', 'solved', 'created', 'updated'],
     model=Report
 )
 def filter_reports(request, models, total_pages, page):
