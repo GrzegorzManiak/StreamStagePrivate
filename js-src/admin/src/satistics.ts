@@ -26,7 +26,16 @@ export async function manage_statistical_panels(
     ];
 
     pods.forEach(async (pod: Pod) => {
-        build_graphs(pod);
+        let built = false;
+
+        // -- Attach the event listeners
+        add_callback((panel_type) => {
+            if (panel_type == pod.panel.type && !built) {
+                console.log('building graphs', pod.panel.type);
+                build_graphs(pod);
+                built = true;
+            }
+        });
     });
 }
 
