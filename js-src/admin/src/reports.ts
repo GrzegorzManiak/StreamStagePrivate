@@ -98,14 +98,13 @@ function create_terms_report_elm(refresh: () => void, parent: HTMLElement, data:
         `;
 
         // -- Create the element
-        const div = document.createElement('div');
-        document.body.appendChild(div);
-        div.innerHTML = construct_modal(
+        const div = construct_modal(
             'Manage report',
             'Manage the report, and mark it as solved or unsolved.',
             false, 'success',
             modal_template
         );
+        document.body.appendChild(div);
 
         const solved = div.querySelector('#solved') as HTMLButtonElement,
             close = div.querySelector('#close') as HTMLButtonElement;

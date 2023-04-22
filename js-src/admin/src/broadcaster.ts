@@ -117,7 +117,7 @@ async function manage_modal(update: Function, button: HTMLButtonElement, entry: 
     }
 
     // -- Create the modal
-    const modal = construct_modal(
+    const modal_div = construct_modal(
         'Manage Broadcaster',
         'Delete, Manage, and more!',
         false, 'success',
@@ -125,8 +125,6 @@ async function manage_modal(update: Function, button: HTMLButtonElement, entry: 
     );
 
     // -- Add the modal to the page
-    const modal_div = document.createElement('div');
-    modal_div.innerHTML = modal;
     document.body.appendChild(modal_div);
 
     // -- Get the buttons and inputs

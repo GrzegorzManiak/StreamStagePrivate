@@ -190,16 +190,12 @@ async function manage_modal(button: HTMLButtonElement, entry: HTMLElement, id: s
     }
 
     // -- Create the modal
-    const modal = construct_modal(
+    const modal_div = construct_modal(
         'Manage User',
         'Delete, Impersonate, and more!',
         false, 'success',
         modal_template(res.data),
     );
-
-    // -- Add the modal to the page
-    const modal_div = document.createElement('div');
-    modal_div.innerHTML = modal;
     document.body.appendChild(modal_div);
 
     // -- Get the buttons and inputs

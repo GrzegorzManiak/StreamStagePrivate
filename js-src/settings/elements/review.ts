@@ -95,16 +95,13 @@ export async function create_review_edit(
     `;
 
     // -- Create Modal
-    const modal = construct_modal(
+    const modal_elm = construct_modal(
         'Edit Review',
         'Edit review',
         true,
         'success',
         modal_template
     );
-
-    const modal_elm = document.createElement('div');
-    modal_elm.innerHTML = modal;
     document.body.appendChild(modal_elm);
 
     // -- yes / no buttons

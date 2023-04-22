@@ -1174,18 +1174,21 @@ footer hr {
 /* 
     Modal
 */
-
 @keyframes modal-fade-in {
     0% { background-color: rgba(0, 0, 0, 0); } 
-    100% { background-color: rgba(0, 0, 0, 0.35); }
+    100% { background-color: rgba(0, 0, 0, 0.55); }
+}
+
+@keyframes modal-fade-out {
+    0% { background-color: rgba(0, 0, 0, 0.55); } 
+    100% { background-color: rgba(0, 0, 0, 0); }
 }
 
 .main-modal-container {
-    background-color: transparent;
-    animation: modal-fade-in 0.5s ease-in-out 1 forwards;
-    transition: all 0.5s ease-in-out;
+    background-color: rgba(0, 0, 0, 0);
+    animation: modal-fade-in 1s ease-in-out 1 forwards;
+    transition: all 1s ease-in-out;
 }
-
 
 @keyframes modal-slide-in {
     0% {
@@ -1197,6 +1200,17 @@ footer hr {
         opacity: 1;
     }
 }
+
+@keyframes modal-slide-out {
+    0% {
+        transform: translateY(0%);
+        opacity: 1;
+    } 
+    100% { 
+        transform: translateY(-100%); 
+        opacity: 0;
+    }
+}
     
 .modal-content {
     animation: modal-slide-in 1s ease-in-out 1 forwards;
@@ -1205,4 +1219,12 @@ footer hr {
     padding: 1rem;
     border-radius: 0.5rem;
     width: 30rem!important;
+}
+
+.modal-out .main-modal-container {
+    animation: modal-fade-out 1s ease-in-out 1 forwards;
+}
+
+.modal-out .modal-content {
+    animation: modal-slide-out 1s ease-in-out 1 forwards;
 }

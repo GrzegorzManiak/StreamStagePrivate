@@ -70,7 +70,7 @@ function load_broadcasters() {
     }
 }
 
-function on_successful_update(modal: HTMLDivElement) {
+function on_successful_update(modal: HTMLElement) {
     create_toast('success', "Broadcaster", `Successfully updated broadcaster details for @${editing_broadcaster.handle}`);
     modal.remove();
 
@@ -79,7 +79,7 @@ function on_successful_update(modal: HTMLDivElement) {
     load_broadcasters();
 }
 
-function init_form(update_form: HTMLFormElement, modal: HTMLDivElement) {
+function init_form(update_form: HTMLFormElement, modal: HTMLElement) {
     pfp = update_form.querySelector('.profile-picture') as HTMLElement;
     banner_img = update_form.querySelector('.profile-banner') as HTMLElement;
     var banner_img_img = update_form.querySelector('.profile-banner-img') as HTMLElement;
@@ -153,25 +153,18 @@ function edit(broadcaster: BroadcasterDetails) {
     
     update_url(editing_broadcaster);
 
-    var modal_html = construct_modal(
+    // -- Create a div element
+    const modal_wrap = construct_modal(
         "Update Broadcaster Details",
         `Adjust settings for @${broadcaster.handle}`,
         false,
         "success",
         form_template.outerHTML
     );
-    
-    // -- Create a div element
-    const modal_wrap = document.createElement('div');
-
-    // -- Set the innerHTML of the div to the modal
-    modal_wrap.innerHTML = modal_html;
 
     // -- Append the modal to the body
     document.body.appendChild(modal_wrap);
-
-    var form = modal_wrap.querySelector("#bc-update-form") as HTMLFormElement;
-
+    let form = modal_wrap.querySelector("#bc-update-form") as HTMLFormElement;
     form.style.display = "block";
 
     init_form(form, modal_wrap)

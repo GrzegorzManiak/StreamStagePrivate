@@ -196,8 +196,7 @@ export async function instant_paynow(
     }
     
     // -- Create the modal and append it to the document body
-    const modal = document.createElement('div');
-    modal.innerHTML = pay_now(title, description, item_name, item_price);
+    const modal = pay_now(title, description, item_name, item_price);
     document.body.appendChild(modal);
 
     // -- Get the elements
