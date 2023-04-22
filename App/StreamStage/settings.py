@@ -122,7 +122,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+    'django.contrib.sitemaps',
+
     # Local
     'accounts',
     'events',
@@ -143,8 +144,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_hosts',
     'stripe',
-
-    'django.contrib.sitemaps',
 ]
 
 WEBPACK_LOADER = {
