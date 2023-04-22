@@ -1157,3 +1157,40 @@ footer hr {
     padding: 10px;
     width: 100%;
 }
+
+
+/* 
+    Modal
+*/
+
+@keyframes modal-fade-in {
+    0% { background-color: rgba(0, 0, 0, 0); } 
+    100% { background-color: rgba(0, 0, 0, 0.35); }
+}
+
+.main-modal-container {
+    background-color: transparent;
+    animation: modal-fade-in 0.5s ease-in-out 1 forwards;
+    transition: all 0.5s ease-in-out;
+}
+
+
+@keyframes modal-slide-in {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+    } 
+    100% { 
+        transform: translateY(0%); 
+        opacity: 1;
+    }
+}
+    
+.modal-content {
+    animation: modal-slide-in 1s ease-in-out 1 forwards;
+    transition: all 1s ease-in-out;
+
+    padding: 1rem;
+    border-radius: 0.5rem;
+    width: 30rem!important;
+}

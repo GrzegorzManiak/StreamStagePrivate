@@ -122,7 +122,9 @@ export function construct_modal(
     return `
         <div
             style="z-index: 9999; position: fixed; top: 0; left: 0; width: 100vw;
-                height: 100vh; background-color: rgba(0, 0, 0, 0.5);">
+                height: 100vh;"
+                class="main-modal-container"
+            >
 
             <style>
                 body {
@@ -130,18 +132,13 @@ export function construct_modal(
                 }
             </style>
 
-              
             <!-- Modal -->
             <div class="modal d-flex justify-content-center align-items-center"
                 style="z-index: 9999; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
                 background-color: rgba(0, 0, 0, 0.5);">
 
                 <!-- Modal content -->
-                <div 
-                    class="modal-content bg-dark text-light rounded
-                    p-xxl-5 p-xl-5 p-lg-5 p-md-3 p-sm-3 p-2"
-                    style="width: 500px;"
-                >
+                <div class="modal-content bg-dark text-light">
 
                     <!-- Header -->
                     <div class="mb-2 justify-content-start header">
