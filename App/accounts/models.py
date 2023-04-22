@@ -21,7 +21,8 @@ from django.db import models
 from django_countries.fields import CountryField
 from django.db.models import Q
 from timezone_field import TimeZoneField
-
+from store.models import FlexibleTicket
+from orders.models import Purchase
 from StreamStage.templatetags.tags import cross_app_reverse
 
 from .oauth import OAuthTypes
@@ -439,6 +440,56 @@ class Member(AbstractUser):
         return Broadcaster.objects.filter(Q(streamer = self) | Q(contributors__id=self.id))
 
 
+    def get_tickets(self, expired: bool = True):
+        """
+            Returns all the tickets that belong to the user
+            allows for a 24 hour grace period for expired tickets
+        """
+        purchases = Purchase.objects.filter(purchaser=self)
+        tickets = []
+
+
+        for purchase in purchases:
+            pid = purchase.purchase_id
+            pid_tickets = FlexibleTicket.objects.filter(purchase_id=pid).all()
+
+            for ticket in pid_tickets.all():
+                tickets.append(ticket)
+
+        # -- Sort the tickets by date
+        tickets_filtered = {
+            'upcoming': [],
+            'expired': [],
+        }
+        for ticket in tickets:
+            # -- models.DateTimeField() to seconds
+            event_start = ticket.listing.showing
+            if event_start is None:
+                tickets_filtered['upcoming'].append(ticket.serialize())
+                continue
+            event_start = event_start.time.timestamp()
+            event_start += 86400 # -- Add 24 hours
+
+            # -- Get the current time
+            current_time = datetime.datetime.now(tz=timezone.utc)
+            current_time = current_time.timestamp()
+
+            # -- Check if the ticket is expired
+            if event_start < current_time:
+                if expired: tickets_filtered['expired'].append(ticket.serialize())
+            else: tickets_filtered['upcoming'].append(ticket.serialize())
+
+
+        return tickets_filtered
+
+
+    def basic_serialize(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'profile_pic': self.get_profile_pic(),
+            'url': cross_app_reverse('homepage', 'user_profile', kwargs={'username': self.username}),
+        }
 
 class MembershipStatus(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
@@ -615,14 +666,35 @@ class Report(models.Model):
     time = models.TimeField(auto_now_add=True)
     date = models.DateField(auto_now_add=True)
 
+    solved = models.BooleanField("Solved", default=False)
+    solved_by = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="solved_by", null=True, blank=True)
+
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True, null=True, blank=True)
+
     def serialize(self):
         return {
             "id": self.id,
-            "reporter": self.reporter,
-            "reported": self.reported,
+            "reporter": self.reporter.basic_serialize(),
             "reason": self.reason,
             "time": self.time,
             "date": self.date,
+            "reported": {
+                "user": self.r_user.basic_serialize(),
+                # "broadcaster": self.r_broadcaster,
+                # "review": self.r_review,
+                # "event": self.r_event,
+            },
+            "solved": self.solved,
+            "reported_fields": {
+                "user": True if self.r_user is not None else False,
+                # "broadcaster": True if self.r_broadcaster is not None else False,
+                # "review": True if self.r_review is not None else False,
+                # "event": True if self.r_event is not None else False,
+            },
+            "solved_by": self.solved_by.basic_serialize() if self.solved_by is not None else None,
+            "created": self.created,
+            "updated": self.updated,
         }
 
 class BroadcasterContributeInvite(models.Model):

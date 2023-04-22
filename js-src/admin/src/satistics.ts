@@ -16,6 +16,8 @@ export async function manage_statistical_panels(
     subscriptions: Pod,
     viewers: Pod
 ) {
+    // -- The settle down period for the window resize event
+    const RESIZE_TIMEOUT = 1000;
 
     // -- group the pods
     const pods = [
@@ -26,13 +28,31 @@ export async function manage_statistical_panels(
     ];
 
     pods.forEach(async (pod: Pod) => {
-        let loaded = false;
-        add_callback((panel_type) => {
-            if (loaded) return;
-            if (panel_type === pod.type) loaded = true;
+        let built = false;
 
-            // -- Build the graphs
-            build_graphs(pod);
+        // -- Attach the event listeners
+        add_callback(async(panel_type) => {
+            let resize = () => {}
+            if (panel_type == pod.panel.type && !built) {
+                console.log('building graphs', pod.panel.type);
+                resize = await build_graphs(pod);
+                built = true;
+            }
+
+            // -- Attach a windows resize listener
+            //    And wait till the window is done resizing 
+            //    before rebuilding the graphs
+            let last_resize = 0;
+            window.addEventListener('resize', async () => {
+                last_resize = Date.now();
+                setTimeout(async () => {
+                    // -- If the last resize was more than 1 second ago
+                    //    Then rebuild the graphs
+                    if (Date.now() - last_resize < RESIZE_TIMEOUT) return;
+                    console.log('rebuilding graphs', pod.panel.type);
+                    resize();
+                }, RESIZE_TIMEOUT);
+            });
         });
     });
 }
@@ -40,12 +60,14 @@ export async function manage_statistical_panels(
 
 export async function build_graphs(
     pod: Pod,
-) {
+): Promise<() => void> {
 
     // -- Get the graphs element
     const graphs = pod.panel.element.querySelector('.graphs'),
         stat_group = graphs.getAttribute('data-stat-group'),
         stats = graphs.querySelectorAll('.data-chart');
+
+    let built_graphs: Array<Chart<"line", any[], any>> = [];
 
     // -- Get the statistics
     Array.from(stats).forEach(async (stat: HTMLDivElement) => {
@@ -176,7 +198,7 @@ export async function build_graphs(
                 }
             }
         });
-
+        built_graphs.push(chart);
 
         // -- Make sure that the request came back good
         if ((await statistics).code === 200) {
@@ -229,6 +251,12 @@ export async function build_graphs(
             get_sleep_interval(frame.value as Frame)
         );
     });
+
+
+    // -- This function when called just resizes the chart to fit the container
+    return () => {
+        built_graphs.forEach(chart => chart.resize());
+    }
 }
 
 

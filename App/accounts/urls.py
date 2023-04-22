@@ -17,7 +17,8 @@ from .profile import (
     extend_session,
     close_session,
     change_email_view,
-    upload_image
+    upload_image,
+    delete_account
 )
 
 from .mfa import (
@@ -47,7 +48,10 @@ from .other import (
     update_user_streamer,
     filter_purchases,
     get_subscription, 
-    cancel_subscription
+    cancel_subscription,
+    get_tickets,
+    filter_reports,
+    update_report
 )
 
 from .views import (
@@ -81,6 +85,7 @@ urlpatterns = [
     path('login/', login, name='login'),
     path('logout/', logout, name='logout'),
     path('register/', register, name='register'),
+    path('forgot/', register, name='forgot'),
 
     # -- Profile
     path('api/send_verification/', send_verification, name='send_verification'),
@@ -89,6 +94,7 @@ urlpatterns = [
     path('api/extend_session/', extend_session, name='extend_session'),
     path('api/close_session/', close_session, name='close_session'),
     path('api/change_img/', upload_image, name='change_pfp'),
+    path('api/delete_account/', delete_account, name='delete_account'),
 
     # -- Authentication
     path('api/token/', validate_token, name='token'),
@@ -130,6 +136,7 @@ urlpatterns = [
     path('api/purchases/filter', filter_purchases, name='filter_purchases'),
     path('api/subscription/get', get_subscription, name='get_subscription'),
     path('api/subscription/cancel', cancel_subscription, name='cancel_subscription'),
+    path('api/tickets/get', get_tickets, name='get_tickets'),
 
     # -- Broadcaster
     path('broadcaster/', broadcaster_panel, name='broadcaster_panel'),
@@ -148,6 +155,8 @@ urlpatterns = [
     path('site_panel/delete_user/', delete_user, name='delete_user'),
     path('site_panel/update_user_email/', update_user_email, name='update_user_email'),
     path('site_panel/update_streamer_status/', update_user_streamer, name='update_streamer_status'),
+    path('site_panel/filter_reports/', filter_reports, name='filter_reports'),
+    path('site_panel/update_report/', update_report, name='update_report'),
 
     path('events/', include('events.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -69,6 +69,9 @@
         data-faq-filter='{% cross_app_reverse_tag "StreamStage" "filter_faq" %}'
         data-faq-delete='{% cross_app_reverse_tag "StreamStage" "delete_faq" %}'
         data-faq-update='{% cross_app_reverse_tag "StreamStage" "update_faq" %}'
+
+        data-filter-reports='{% cross_app_reverse_tag "accounts" "filter_reports" %}'
+        data-update-report='{% cross_app_reverse_tag "accounts" "update_report" %}'
     ></span>
     <div 
     id = 'main-container'
@@ -360,33 +363,6 @@
                         <!-- 
                             End of Pod - Events
                         -->
-
-
-                        <!-- 
-                            Pod - Reviews
-                        -->
-                        <div 
-                            data-pod-status=''
-                            data-pod='reviews'
-                        class='
-                            side-panel-pod
-                            text-light d-flex
-                            align-items-center
-                            justify-content-start
-                        '>
-                            <!-- Icon -->
-                            <div class='side-panel-pod-icon d-flex align-items-center justify-content-center'>
-                                <i class="fa-solid text-justify accordion fa-star-sharp-half-stroke"></i>
-                            </div>
-
-                            <!-- Text -->
-                            <div class='side-panel-pod-text'><p class='side-panel-pod-text-text m-0 mb-0'>
-                                Review Statistics
-                            </p></div>
-                        </div>
-                        <!-- 
-                            End of Pod - Reviews
-                        -->
                     </div>
                 </section>
 
@@ -465,9 +441,7 @@
             <div class = '
                 size-limiter
             '>
-                <div class = '
-                    rounded
-                '>
+                <div>
                     <div class = '
                         row 
                         g-0
@@ -480,13 +454,6 @@
                             -->
                             <div class = "
                                 card-body 
-                                rounded
-                                p-xxl-5
-                                p-xl-5
-                                p-lg-5
-                                p-md-3
-                                p-sm-3
-                                p-2
                                 text-light
                                 smoother
                             ">
@@ -497,7 +464,7 @@
                                 {% include 'admin/events.html' %}
                                 {% include 'admin/terms_privacy.html' %}
                                 {% include 'admin/faq.html' %}
-                
+                                {% include 'admin/reports.html' %}
                             </div>
                         </main>
                     </div>

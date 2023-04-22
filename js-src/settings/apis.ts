@@ -339,3 +339,17 @@ export const filter_purchases = async (
     { page, sort, order, search }
 );
 
+
+
+/**
+ * @name delete_account
+ * @param {string} token - PAK token
+ * @returns {Promise<DefaultResponse>}
+ */
+export const delete_account = async (
+    token: string
+): Promise<DefaultResponse> => base_request(
+    'POST',
+    configuration.delete_account,
+    { token }
+);

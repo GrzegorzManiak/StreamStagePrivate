@@ -116,13 +116,16 @@ export function construct_modal(
         </button>
     `;
 
-
+    const id = "modal-id" + Math.random().toString(16).slice(2)
 
     // -- String template for the modal
-    return `
+    const template = `
         <div
+            id="${id}"
             style="z-index: 9999; position: fixed; top: 0; left: 0; width: 100vw;
-                height: 100vh; background-color: rgba(0, 0, 0, 0.5);">
+                height: 100vh;"
+                class="main-modal-container"
+            >
 
             <style>
                 body {
@@ -130,18 +133,12 @@ export function construct_modal(
                 }
             </style>
 
-              
             <!-- Modal -->
             <div class="modal d-flex justify-content-center align-items-center"
-                style="z-index: 9999; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
-                background-color: rgba(0, 0, 0, 0.5);">
+                style="z-index: 9999; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;">
 
                 <!-- Modal content -->
-                <div 
-                    class="modal-content bg-dark text-light rounded
-                    p-xxl-5 p-xl-5 p-lg-5 p-md-3 p-sm-3 p-2"
-                    style="width: 500px;"
-                >
+                <div class="modal-content bg-dark text-light">
 
                     <!-- Header -->
                     <div class="mb-2 justify-content-start header">
@@ -165,6 +162,30 @@ export function construct_modal(
             </div>
         </div>
     `;
+    
+    // -- New div element
+    const modal = document.createElement('div');
+    modal.innerHTML = template;
+
+    // -- Intercept and .remove() calls
+    let in_remove_state = false;
+    const original_remove = modal.remove;
+    modal.remove = () => {
+        if (in_remove_state) return;
+        in_remove_state = true;
+        console.log('Removing modal: ' + id);
+
+        // -- Gracefully remove the modal
+        (async () => {
+            // -- Assign the 'modal-out' class to the modal
+            modal.classList.add('modal-out');
+            await sleep(1000);
+            original_remove.call(modal);
+            console.log('Removed modal: ' + id);
+        })();
+    };
+
+    return modal;
 }
 
 
@@ -188,14 +209,8 @@ export function confirmation_modal(
     message: string,
     title: string = 'Are you sure?',
 ) {
-    // -- String template for the modal
-    const modal = construct_modal(title, message, true, 'danger');
-
     // -- Create a div element
-    const div = document.createElement('div');
-
-    // -- Set the innerHTML of the div to the modal
-    div.innerHTML = modal;
+    const div = construct_modal(title, message, true, 'danger');
 
     // -- Get the buttons
     const yes_btn = div.querySelector('.yes') as HTMLButtonElement,

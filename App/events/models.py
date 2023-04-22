@@ -164,7 +164,7 @@ class Event(models.Model):
     broadcaster = models.ForeignKey(to="accounts.Broadcaster", on_delete=models.CASCADE)
     categories = models.ManyToManyField(to=Category)
     primary_media_idx = models.IntegerField(default=0) # Points to an item in the 'media' field - used as a cover photo 
-    contributors = models.ManyToManyField(get_user_model(), related_name="event_contributors", blank=True)
+    contributors = models.ManyToManyField('accounts.Member', related_name="event_contributors", blank=True)
     approved = models.BooleanField("Approved", default=False)
 
     created = models.DateTimeField(auto_now_add=True)
@@ -183,6 +183,9 @@ class Event(models.Model):
     # Tickets
     def get_ticket_listings(self):
         return TicketListing.objects.filter(event=self).all()
+    
+    def get_streaming_ticket_listings(self):
+        return TicketListing.objects.filter(event=self,ticket_type=0).all()
     
     def has_ticket_listings(self):
         return self.get_ticket_listings().count()
@@ -344,6 +347,7 @@ class Event(models.Model):
             } for showing in EventShowing.objects.filter(event=self).all()],
             'earliest_showing': next_showing,
             'thumbnail': cover_pic,
+            'url': self.get_absolute_url(),
         }
     
     def is_authorized(self, user):
@@ -357,6 +361,7 @@ class Event(models.Model):
         """
             Simple function to check if a user can view an event
         """
+        return True
         broadcaster = self.broadcaster
         contributors = broadcaster.contributors.all()
         is_staff = user.is_staff
@@ -379,7 +384,7 @@ class Event(models.Model):
 # Event Review Model
 class EventReview(models.Model):
     review_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    author = models.ForeignKey(get_user_model(), related_name="Author", on_delete=models.CASCADE)
+    author = models.ForeignKey('accounts.Member', related_name="Author", on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     title = models.CharField("Review Title", max_length=50)
     body = models.TextField("Review Body", max_length=500)
@@ -492,6 +497,9 @@ class EventShowing(models.Model):
     class Meta:
         verbose_name = 'Event Showing'
         verbose_name_plural = 'Event Showings'
+
+    def get_ticket_listings(self):
+        return TicketListing.objects.filter(showing=self).all()
 
     def __str__(self):
         return self.time.strftime("%H:%M %d-%m-%Y")

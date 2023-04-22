@@ -18,6 +18,7 @@ export type PanelType =
     'security-linked-accounts' |
     'security-password' |
     'security-email' |
+    'tickets' |
     'security-history' |
     'security-delete';
 
@@ -203,4 +204,6 @@ export interface Configuration {
     get_subscription: string,
     cancel_subscription: string,
     filter_purchases: string,
+    get_tickets: string,
+    delete_account: string,
 }

@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{% static 'css/payments.css' %}">
     <link rel="stylesheet" href="{% static 'css/auth.css' %}">
     <link rel="stylesheet" href="{% static 'css/events.css' %}">
+    <link rel="stylesheet" href="{% static 'css/event.css' %}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
 {% endblock %}
 
@@ -44,13 +45,10 @@
 
             data-stripe-pub='{{ stripe_key }}'
         ></span>
-
         <div class="nav-gap container">
             <!-- Main Details -->
             <div class="row text-light">
-
                 <div class="col-md-3 col-sm-12 mx-auto p-2 third-page">
-
                     <!-- Update Event Button -->
                     {% if can_edit %}
                     <a href="update/" class="text-muted">Edit Event</a>
@@ -84,6 +82,130 @@
                             </div>
                         {% endif %}
                     </div>
+                </div>
+
+                <div class="col-md-6 col-sm-12 mx-auto p-2 half-page">
+                    <!-- 
+                        Event Title 
+                    -->
+                    <div class="mx-2 my-4">
+                        <h2 class="page-title">{{ event.title }}</h2>
+                    </div>
+
+
+                    <hr>
+                    <!-- 
+                        Event Description 
+                        -->
+                    <div class="mx-2 my-4">
+                        <p>{{ event.description | slice:':380' }}. . .</p>
+                    </div>
+                    <hr>
+                    
+                    <!-- 
+                        Showings & Tickets 
+                    -->
+                    <div class="mx-2 my-4">
+                        <div class="mx-2 my-4">
+                            <h4><b>Showings</b></h4>
+                            {% if event.get_streaming_ticket_listings.count > 0 %}
+                            <button class="ticket-dropdown text-start" href="#show-tickets" role="button" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <p><i class="fa-solid fa-caret-down px-2"></i>Streaming Tickets</p>
+                            </button>
+
+                            <!-- Dropdown Menu -->
+                            <div class="dropdown-menu" id="show-tickets">
+                                {% for ticket in event.get_streaming_ticket_listings %}
+                                <div class="row m-1 bk-theme-backdrop p-2 rounded">
+                                    <div class="d-flex justify-content-between w-100 mb-2 fs-5">
+                                        <div class="m-0">{{ ticket.ticket_detail }}</div>
+                                        <div class='text-muted m-0'>€{{ ticket.price }}</div>
+                                    </div>
+
+                                    <div class='btn-group w-100 d-flex justify-content-between slim-btn'>    
+                                        <button 
+                                            name="purchase-stream" 
+                                            data-ticket-id="{{ ticket.listing_id }}" 
+                                            data-item-name="{{ ticket.ticket_detail }}" 
+                                            data-item-price="€{{ ticket.price }}"
+                                            type="submit" 
+                                            class="btn btn-success success loader-btn w-100 slim-btn "
+                                            loader-state='default'
+                                        >   
+                                            <span>
+                                                <div class='spinner-border' role='status'>
+                                                    <span class='visually-hidden'>Loading...</span>
+                                                </div>
+                                            </span>
+                                            <p>Buy now</p>
+                                        </button>
+                                    </div>
+
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% for showing in event.get_showings %}
+                        <div class="mx-2 my-4 row">
+                            <div class="col-7">
+                                <p class="m-0">{{showing.time }}</p>
+                                <p class="m-0">
+                                    {% if showing.venue and showing.city %}
+                                    {{ showing.venue }} - {{ showing.city }}
+                                    {% elif showing.city %}
+                                    {{ showing.city }}
+                                    {% endif %}
+                                </p>
+                                <p>{{showing.country.name}}</p>
+                            </div>
+                            <div class="col-5">
+                                    <!-- Dropdown Button -->
+                                <button class="ticket-dropdown text-start" href="#show-tickets" role="button" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <p><i class="fa-solid fa-caret-down px-2"></i>View Tickets</p>
+                                </button>
+
+                                <!-- Dropdown Menu -->
+                                <div class="dropdown-menu" id="show-tickets">
+                                    {% for ticket in showing.get_ticket_listings %}
+                                    <div class="row m-1 bk-theme-backdrop p-2 rounded">
+                                        <div class="d-flex justify-content-between w-100 mb-2 fs-5">
+                                            <div class="m-0">{{ ticket.ticket_detail }}</div>
+                                            <div class='text-muted m-0'>€{{ ticket.price }}</div>
+                                        </div>
+    
+                                        <div class='btn-group w-100 d-flex justify-content-between slim-btn'>    
+                                            <button 
+                                                name="purchase-stream" 
+                                                data-ticket-id="{{ ticket.listing_id }}" 
+                                                data-item-name="{{ ticket.ticket_detail }}" 
+                                                data-item-price="€{{ ticket.price }}"
+                                                type="submit" 
+                                                class="btn btn-success success loader-btn w-100 slim-btn "
+                                                loader-state='default'
+                                            >   
+                                                <span>
+                                                    <div class='spinner-border' role='status'>
+                                                        <span class='visually-hidden'>Loading...</span>
+                                                    </div>
+                                                </span>
+                                                <p>Buy now</p>
+                                            </button>
+                                        </div>
+    
+                                    </div>
+                                {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <!--
+                        Showings & Tickets END
+                    -->
+                </div>
+                <!-- Event Info -->
+                <div class="col-md-3 col-sm-12 mx-auto third-page">
                     <!-- Streamer Name -->
                     <div class="mx-2 my-4">
                         <h4><b>Streamer</b></h4>
@@ -100,95 +222,26 @@
                             <span class="fa fa-star {% if event.get_average_rating > 3 %} checked {% endif %}"></span>
                             <span class="fa fa-star {% if event.get_average_rating > 4 %} checked {% endif %}"></span>
                     </div>
-                </div>
-
-                <div class="col-md-6 col-sm-12 mx-auto p-2 half-page">
-                    <!-- 
-                        Event Title 
-                    -->
-                    <div class="mx-2 my-4">
-                        <h2 class="page-title">{{ event.title }}</h2>
-                    </div>
-                    <hr/>
-
-                    <!-- 
-                        Event Description 
-                        -->
-                    <div class="mx-2 my-4">
-                        <p>{{ event.description | slice:':380' }}. . .</p>
-                    </div>
-                    <hr/>
-
-                    <!-- 
-                        Tickets 
-                    -->
-                    <div class="mx-2 my-4">
-                        <h4><b>Tickets</b></h4>
-                        <div>
-                            {% if event.has_ticket_listings > 0 %}
-                                {% for ticket in event.get_ticket_listings %}
+                    <!--<h4><b>Tickets</b></h4>
+                    <div>
+                        {% if event.has_ticket_listings > 0 %}
+                            {% for ticket in event.get_ticket_listings %}
+                                <div class="
+                                    row 
+                                    m-1
+                                    bk-theme-backdrop
+                                    p-2
+                                    rounded
+                                ">
                                     <div class="
-                                        row 
-                                        m-1
-                                        bk-theme-backdrop
-                                        p-2
-                                        rounded
+                                        d-flex 
+                                        justify-content-between 
+                                        w-100
+                                        mb-2
+                                        fs-5
                                     ">
-                                        <div class="
-                                            d-flex 
-                                            justify-content-between 
-                                            w-100
-                                            mb-2
-                                            fs-5
-                                        ">
-                                            <div class="m-0">{{ ticket.ticket_detail }}</div>
-                                            <div class='text-muted m-0'>€{{ ticket.price }}</div>
-                                        </div>
-
-                                        <div class='btn-group w-100 d-flex justify-content-between slim-btn'>
-                                            {% comment %} <button 
-                                                class="w-25 h-100 btn btn-primary info loader-btn"
-                                                id='dec-{{ ticket.listing_id }}'
-                                                loader-state='default'>   
-                                                <span> <div class='spinner-border' role='status'> 
-                                                <span class='visually-hidden'>Loading...</span> </div> </span>
-                                                <p><i class="fas fa-minus"></i></p>
-                                            </button> {% endcomment %}
-
-                                            <button 
-                                                name="purchase-stream" 
-                                                data-ticket-id="{{ ticket.listing_id }}" 
-                                                data-item-name="{{ ticket.ticket_detail }}" 
-                                                data-item-price="€{{ ticket.price }}"
-                                                type="submit" 
-                                                class="
-                                                    btn
-                                                    btn-success
-                                                    success
-                                                    loader-btn
-                                                    w-100
-                                                    slim-btn
-                                                "
-                                                loader-state='default'
-                                            >   
-                                                <span>
-                                                    <div class='spinner-border' role='status'>
-                                                        <span class='visually-hidden'>Loading...</span>
-                                                    </div>
-                                                </span>
-                                                <p>Buy now</p>
-                                            </button>
-
-                                            {% comment %} <button 
-                                                class="w-25 h-100 btn btn-primary info loader-btn slim-btn"
-                                                id='inc-{{ ticket.listing_id }}'
-                                                loader-state='default'>   
-                                                <span> <div class='spinner-border' role='status'> 
-                                                <span class='visually-hidden'>Loading...</span> </div> </span>
-                                                <p><i class="fas fa-plus"></i></p>
-                                            </button> {% endcomment %}
-                                        </div>
-
+                                        <div class="m-0">{{ ticket.ticket_detail }}</div>
+                                        <div class='text-muted m-0'>€{{ ticket.price }}</div>
                                     </div>
                                 {% endfor %}
                             {% else %}
@@ -200,26 +253,54 @@
                         Tickets END
                     -->
 
+                                    <div class='btn-group w-100 d-flex justify-content-between slim-btn'>
+                                        {% comment %} <button 
+                                            class="w-25 h-100 btn btn-primary info loader-btn"
+                                            id='dec-{{ ticket.listing_id }}'
+                                            loader-state='default'>   
+                                            <span> <div class='spinner-border' role='status'> 
+                                            <span class='visually-hidden'>Loading...</span> </div> </span>
+                                            <p><i class="fas fa-minus"></i></p>
+                                        </button> {% endcomment %}
 
-                </div>
-                <!-- Showings -->
-                <div class="col-md-3 col-sm-12 mx-auto third-page">
-                    <div class="mx-2 my-4">
-                        <h4><b>Showings</b></h4>
+                                        <button 
+                                            name="purchase-stream" 
+                                            data-ticket-id="{{ ticket.listing_id }}" 
+                                            data-item-name="{{ ticket.ticket_detail }}" 
+                                            data-item-price="€{{ ticket.price }}"
+                                            type="submit" 
+                                            class="
+                                                btn
+                                                btn-success
+                                                success
+                                                loader-btn
+                                                w-100
+                                                slim-btn
+                                            "
+                                            loader-state='default'
+                                        >   
+                                            <span>
+                                                <div class='spinner-border' role='status'>
+                                                    <span class='visually-hidden'>Loading...</span>
+                                                </div>
+                                            </span>
+                                            <p>Buy now</p>
+                                        </button>
+
+                                        {% comment %} <button 
+                                            class="w-25 h-100 btn btn-primary info loader-btn slim-btn"
+                                            id='inc-{{ ticket.listing_id }}'
+                                            loader-state='default'>   
+                                            <span> <div class='spinner-border' role='status'> 
+                                            <span class='visually-hidden'>Loading...</span> </div> </span>
+                                            <p><i class="fas fa-plus"></i></p>
+                                        </button> {% endcomment %}
+                                    </div>
+
+                                </div>
+                            {% endfor %}
+                        {% endif %}
                     </div>
-                    {% for showing in event.get_showings %}
-                    <div class="mx-2 my-4">
-                        <p class="m-0">{{showing.time }}</p>
-                        <p class="m-0">
-                            {% if showing.venue and showing.city %}
-                            {{ showing.venue }} - {{ showing.city }}
-                            {% elif showing.city %}
-                            {{ showing.city }}
-                            {% endif %}
-                        </p>
-                        <p>{{showing.country.name}}</p>
-                    </div>
-                    {% endfor %}
                 </div>
             </div>
         <!-- Event Trailer -->

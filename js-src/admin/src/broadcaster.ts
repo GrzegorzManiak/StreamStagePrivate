@@ -117,7 +117,7 @@ async function manage_modal(update: Function, button: HTMLButtonElement, entry: 
     }
 
     // -- Create the modal
-    const modal = construct_modal(
+    const modal_div = construct_modal(
         'Manage Broadcaster',
         'Delete, Manage, and more!',
         false, 'success',
@@ -125,8 +125,6 @@ async function manage_modal(update: Function, button: HTMLButtonElement, entry: 
     );
 
     // -- Add the modal to the page
-    const modal_div = document.createElement('div');
-    modal_div.innerHTML = modal;
     document.body.appendChild(modal_div);
 
     // -- Get the buttons and inputs
@@ -178,6 +176,19 @@ async function manage_modal(update: Function, button: HTMLButtonElement, entry: 
         create_toast('success', 'Success!', 'Broadcaster updated!');
         stop();
     }
+
+    more_btn.addEventListener('click', () => {
+        const url = `https://me.streamstage.co/broadcaster/?bid=${broadcaster.id}`;
+        const stop = attach(more_btn);
+        
+        // -- Open a popup
+        window.open(
+            url, 'popUpWindow',
+            '_blank, width=900, height=700, left=10, top=10, resizable=yes, scrollbars=yes, toolbar=yes, menubar=no, location=no, directories=no, status=yes'
+        );
+        
+        stop();
+    });
 
     handle_save.addEventListener('click', async () => update_server(handle_save));
     name_save.addEventListener('click', async () => update_server(name_save));

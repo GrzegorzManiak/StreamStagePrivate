@@ -198,6 +198,10 @@ def not_authenticated():
     def decorator(view_func):
         @wraps(view_func)
         def wrapper(request, *args, **kwargs):
+            # -- If the method is GET, redirect to the login page
+            if request.method == 'GET' and request.user.is_authenticated:
+                return redirect(cross_app_reverse('accounts', 'member_profile'))
+            
             # -- Check if user is authenticated
             if request.user.is_authenticated:
                 return error_response('You are already logged in')
@@ -330,7 +334,7 @@ def impersonate():
         def wrapper(request, *args, **kwargs):
 
             # -- Check if the user is an admin
-            if not request.user.is_superuser:
+            if not request.user.is_superuser or not request.user.is_staff:
                 request.impersonate = False
                 return view_func(request, *args, **kwargs)
             

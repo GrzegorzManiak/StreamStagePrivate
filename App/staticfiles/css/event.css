@@ -1,0 +1,33 @@
+
+.ticket-dropdown {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--theme-backdrop-color);
+    border-radius: 0.5rem;
+    width: 100%;
+    border: 0px;
+    margin-top: auto;
+}
+
+.ticket-dropdown > p {
+    font-size: 1rem;
+    font-weight: 400;
+    width: 100%;
+    color: var(--font-color);
+    margin: 0;
+    padding: 0.25rem;
+}
+
+.dropdown-menu {
+    background-color: var(--theme-backdrop-color);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+}
+
+.dropdown-menu * {
+    color: var(--font-color);
+    border: 0;
+}

@@ -1,4 +1,5 @@
 from django.db import models
+from StreamStage.templatetags.tags import cross_app_reverse
 from events.models import EventShowing, TicketListing
 from orders.models import PurchaseItem
 from StreamStage.identifiers import new_ticket_id
@@ -23,10 +24,37 @@ class FlexibleTicket(models.Model):
         return self.purchase.purchaser
     
     def serialize(self):
+        self.showing = self.listing.showing 
+        
         return {
             "ticket_id": self.ticket_id,
             "purchase_id": self.purchase_id,
             "listing": self.listing.serialize(),
-            "purchased_date": self.purchased_date,
-            "showing": self.showing.serialize() if self.showing else None
+            "purchased_date": self.purchased_date.strftime("%Y-%m-%d %H:%M:%S"),
+            "showing": self.showing.serialize() if self.showing else None,
+            "price": self.listing.price,
+            "streaming_ticket": self.listing.ticket_type == 0,
+            "event": {
+                "url": cross_app_reverse('events', 'event_view', {
+                    'event_id': self.listing.event.event_id
+                }),
+                "broadcaster_name": self.listing.event.broadcaster.handle,
+                "title": self.listing.event.title,
+                "event_id": self.listing.event.event_id,
+                "splash": self.listing.event.get_cover_picture(),
+                "venue": self.showing.venue if self.showing else "Venue TBD"
+            },
+            "date": {
+                "day": self.showing.time.strftime("%a") + ",",
+                "day_num": self.showing.time.strftime("%d"),
+                "month": self.showing.time.strftime("%b"),
+                "year": self.showing.time.strftime("%Y"),
+                "time": self.showing.time.strftime("%-I:%M%p")
+            } if self.showing else {
+                "day": "Date TBD",
+                "day_num": "",
+                "month": "",
+                "year": "",
+                "time": "Time TBD"       
+            }
         }

@@ -188,14 +188,14 @@ export async function create_category_panel(
     `;
 
     // -- Create the element
-    const div = document.createElement('div');
-    document.body.appendChild(div);
-    div.innerHTML = construct_modal(
+    const div = construct_modal(
         id === null ? 'Create Category' : 'Update Category',
         id === null ? 'Create a new category' : 'Update the category',
         false, 'success',
         template
     );
+    document.body.appendChild(div);
+
 
     // -- Get the elements
     const create = div.querySelector('#create') as HTMLButtonElement,

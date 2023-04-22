@@ -1,11 +1,9 @@
 from django.db import models
-from accounts.models import Member
 from django.core.validators import MaxValueValidator, MinValueValidator
-from StreamStage.identifiers import new_purchase_id
 import uuid
 
 class Purchase(models.Model):
-    purchaser = models.ForeignKey(Member, null=True, blank=True, on_delete=models.SET_NULL)
+    purchaser = models.ForeignKey('accounts.Member', null=True, blank=True, on_delete=models.SET_NULL)
 
     purchase_timestamp = models.DateTimeField(auto_now_add=True)
 

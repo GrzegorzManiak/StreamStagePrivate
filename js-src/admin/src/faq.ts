@@ -144,14 +144,13 @@ async function manage_faq_modal(
     `;
 
     // -- Create the element
-    const div = document.createElement('div');
-    document.body.appendChild(div);
-    div.innerHTML = construct_modal(
+    const div = construct_modal(
         faq === null ? 'Create a new FAQ' : 'Update this FAQ',
         faq === null ? 'Create' : 'Update',
         false, 'success',
         template
     );
+    document.body.appendChild(div);
 
     // -- Get the elements
     const question = div.querySelector('#question') as HTMLInputElement,

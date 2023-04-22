@@ -21,29 +21,27 @@
 
                 <ul class="list-unstyled">
                     <li class='title'>Account</li>
-                    <li><a href="{% cross_app_reverse_tag 'accounts' 'login' %}">Login</a></li>
-                    <li><a href="{% cross_app_reverse_tag 'accounts' 'register' %}">Register</a></li>
-                    <li><a href="{% cross_app_reverse_tag 'accounts' 'member_profile' %}">Profile</a></li>
-                    <li><a href="{% cross_app_reverse_tag 'accounts' 'login' %}">Settings</a></li>
+                    {% if user.is_authenticated %}
+                        <li><a href="{% cross_app_reverse_tag 'accounts' 'logout' %}">Logout</a></li>
+                        <li><a href="{% cross_app_reverse_tag 'homepage' 'user_profile' username=request.user.username %}">Profile</a></li>
+                        <li><a href="{% cross_app_reverse_tag 'accounts' 'login' %}">Settings</a></li>
+                    {% else %}
+                        <li><a href="{% cross_app_reverse_tag 'accounts' 'login' %}">Login</a></li>
+                        <li><a href="{% cross_app_reverse_tag 'accounts' 'register' %}">Register</a></li>
+                        <li><a href="{% cross_app_reverse_tag 'accounts' 'forgot' %}">Forgot details</a></li>
+                    {% endif %}
                 </ul>
 
                 <ul class="list-unstyled">
                     <li class='title'>Support</li>
-                    <li><a href="#">Contact Us</a></li>
                     <li><a href="{% cross_app_reverse_tag 'StreamStage' 'render_faq' %}">FAQ</a></li>
                 </ul>
 
                 <ul class="list-unstyled">
-                    <li class='title'>Company</li>
+                    <li class='title'>Other</li>
                     <li><a href="{% url 'about_us' %}">About Us</a></li>
-                    <li><a href="{% cross_app_reverse_tag 'StreamStage' 'render_terms' %}">Terms</a></li>
-                    <li><a href="{% cross_app_reverse_tag 'StreamStage' 'render_privacy' %}">Privacy</a></li>
-                </ul>
-
-                <ul class="list-unstyled">
-                    <li class='title'>Broadcaster</li>
-                    <li><a href="#">Dashboard</a></li>
-                    <li><a href="#">Support</a></li>
+                    <li><a href="{% cross_app_reverse_tag 'accounts' 'broadcaster_panel' %}">Broadcasters</a></li>
+                    <li><a href="{% cross_app_reverse_tag 'StreamStage' 'sitemap' %}">Site Map</a></li>
                 </ul>
             </div>
         </div>

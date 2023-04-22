@@ -24,16 +24,15 @@ export function manage_add_live_ticket_btn(
 ) {
 
     btn.addEventListener("click", () => {
-        const modal = construct_modal("Add In Person Ticket", "Fill in ticket details below.", true, 'success', add_live_ticket_form);
-
-        // -- Create a div element
-        const modal_wrap = document.createElement('div');
-
-        // -- Set the innerHTML of the div to the modal
-        modal_wrap.innerHTML = modal;
+        const modal_wrap = construct_modal(
+            "Add In Person Ticket", 
+            "Fill in ticket details below.", 
+            true, 
+            'success', 
+            add_live_ticket_form
+        );
 
         // Set up price formatting
-
         var detail_field = modal_wrap.querySelector("#id_ticket_detail") as HTMLInputElement;
         var price_field = modal_wrap.querySelector("#id_ticket_price") as HTMLInputElement;
         var stock_field = modal_wrap.querySelector("#id_ticket_stock") as HTMLInputElement;
@@ -71,16 +70,15 @@ function manage_add_listing_btn(
 ) {
 
     btn.addEventListener("click", () => {
-        const modal = construct_modal("Add Streaming Ticket", "Fill in ticket details below.", true, 'success', add_stream_ticket_form);
-
-        // -- Create a div element
-        const modal_wrap = document.createElement('div');
-
-        // -- Set the innerHTML of the div to the modal
-        modal_wrap.innerHTML = modal;
+        const modal_wrap = construct_modal(
+            "Add Streaming Ticket", 
+            "Fill in ticket details below.", 
+            true, 
+            'success', 
+            add_stream_ticket_form
+        );
 
         // Set up price formatting
-
         var detail_field = modal_wrap.querySelector("#id_ticket_detail") as HTMLInputElement;
         var price_field = modal_wrap.querySelector("#id_ticket_price") as HTMLInputElement;
 
