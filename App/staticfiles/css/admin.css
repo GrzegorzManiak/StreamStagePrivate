@@ -203,6 +203,46 @@
     }
 }
 
+
+/* Graphs */
+@media (max-width: 900px) and (min-width: 700px) {
+    .graphs { flex-direction: column; }
+    .data-chart { 
+        width: 100%; 
+        display: grid;
+        grid-template-columns: 2fr;
+        grid-template-rows: 4fr;
+        gap: 1rem;
+    }
+
+    .data-chart-container {
+        grid-column: 1;
+        grid-row: 1 / 4;
+    }
+
+    .data-chart-info {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .graph-filters {
+        grid-column: 2;
+        grid-row: 2;
+    }
+
+    .data-chart .btn-group {
+        grid-column: 2;
+        grid-row: 3;
+    }
+}
+
+@media (max-width: 700px) {
+    .graphs { flex-direction: column; }
+    .data-chart { 
+        width: 100%; 
+    }
+}
+
 .slider-grid {
     width: 100%;
     display: grid;

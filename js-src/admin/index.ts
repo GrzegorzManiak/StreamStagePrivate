@@ -1,6 +1,9 @@
+import { single } from '../common/single';
+single('admin');
+
 import { Configuration } from './index.d';
 import { Type, build_configuration } from '../api/config';
-import { attach_event_listeners, get_pod } from './src/panels';
+import { attach_event_listeners, get_pod, set_sidebar_state } from './src/panels';
 import { manage_statistical_panels } from './src/satistics';
 import { manage_users_panel } from './src/users';
 import { manage_category_panel } from './src/categorys';
@@ -9,10 +12,7 @@ import { manage_event_panel } from './src/events';
 import { manage_terms_panel } from './src/terms';
 import { manage_privacy_panel } from './src/privacy';
 import { manage_faq_panel } from './src/faq';
-import { single } from '../common/single';
 import { manage_reports_panel } from './src/reports';
-
-single('admin');
 
 // -- Build the configuration
 export const configuration = build_configuration<Configuration>({
@@ -61,7 +61,7 @@ export const configuration = build_configuration<Configuration>({
 
 // -- Attach the event listeners
 attach_event_listeners();
-
+set_sidebar_state('open');
 
 // -- Get the statistics pods
 const accounts = get_pod('accounts'),

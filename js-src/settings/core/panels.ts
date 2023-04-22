@@ -139,7 +139,7 @@ export function attach_to_sidepanel() {
         
         // -- Set the status of the checkbox
         sidepanel_button.checked = checked;
-        console.log(sidepanel_button.checked);
+
         // -- Check the status of the checkbox
         switch(checked) {
             case true: 
