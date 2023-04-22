@@ -23,8 +23,8 @@ body {
 
 .card-body {
     background-color: var(--theme-secondary-color)!important;
-    border-radius: 1rem;
-    margin-bottom: 1rem;
+    border-radius: 0.5rem!important;
+    padding: 1rem;
 }
 
 

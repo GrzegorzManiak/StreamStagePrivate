@@ -995,6 +995,18 @@ footer hr {
     transition: all 1s ease-in-out;
 }
 
+/* 450 start breaking */
+@media only screen and (max-width: 450px) {
+    #toasts {
+        margin: 0;
+        margin-top: 0.5rem;
+    }
+
+    .toast {
+        width: 100vw!important;
+    }
+}
+
 .toast-out {
     animation: toast-out 1s ease-in-out 1 forwards;
 }
