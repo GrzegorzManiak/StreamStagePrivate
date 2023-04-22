@@ -158,6 +158,9 @@ class Event(models.Model):
     def get_ticket_listings(self):
         return TicketListing.objects.filter(event=self).all()
     
+    def get_streaming_ticket_listings(self):
+        return TicketListing.objects.filter(event=self,ticket_type=0).all()
+    
     def has_ticket_listings(self):
         return self.get_ticket_listings().count()
     
@@ -437,6 +440,9 @@ class EventShowing(models.Model):
     class Meta:
         verbose_name = 'Event Showing'
         verbose_name_plural = 'Event Showings'
+
+    def get_ticket_listings(self):
+        return TicketListing.objects.filter(showing=self).all()
 
     def __str__(self):
         return self.time.strftime("%H:%M %d-%m-%Y")
