@@ -6,7 +6,6 @@ import { attach } from "../common";
 
 single('events');
 
-
 // -- Build the configuration
 export const configuration = build_configuration<{
     event_id: string,
@@ -16,12 +15,10 @@ export const configuration = build_configuration<{
     csrf_token: new Type('data-csrf-token', 'string'),
 });
 
-
 // -- Get the ticketing buttons
 const buttons = Array.from(
     document.querySelectorAll("[data-ticket-id]") as NodeListOf<HTMLButtonElement>
 );
-
 
 // -- Loop trough the buttons and
 //    attach the payment handler

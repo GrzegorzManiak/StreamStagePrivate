@@ -37,8 +37,6 @@ def index(request):
         context
     )
 
-
-
 @api_view(['GET'])
 def email(request):
     
