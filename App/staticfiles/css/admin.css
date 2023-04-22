@@ -178,7 +178,7 @@
     }
 
     .profile-info {
-        flex-direction: row;
+        flex-direction: column;
         width: 100%;
         justify-content: space-between;
     }
@@ -199,6 +199,27 @@
     }
     
     .modal-banner {
+        width: 100%!important;
+    }
+
+    .events-scale {
+        flex-direction: column;
+    }
+
+    .events-scale .profile-info {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .event-details-flex {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin-bottom: 0.5rem;
+    }
+
+    .event-details-flex h3 {
         width: 100%!important;
     }
 }
@@ -336,3 +357,5 @@
 .width-limiter {
     margin-bottom: 5rem;
 }
+
+

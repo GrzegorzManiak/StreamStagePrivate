@@ -60,7 +60,7 @@ export function create_event_modal(
 
     const template = ` 
     <div>
-        <div class='w-100 d-flex justify-content-between align-items-center p-2'>
+        <div class='w-100 d-flex justify-content-between align-items-center events-scale p-2'>
             <div class='profile-info flex-wrap'>
                 <p class='m-0 text-muted'><span class='bold'> Created:</span> ${date(event.created)}</p>
                 <p class='m-0 text-muted'><span class='bold'> Updated:</span> ${date(event.updated)}</p>
@@ -91,13 +91,14 @@ export function create_event_modal(
 
         <div class='w-100 d-flex justify-content-between align-items-center p-2'>
             <div class='profile-info cat-info'>
-                <div class='m-0 text-muted d-flex justify-content-between w-100'>
+
+                <div class='m-0 text-muted d-flex justify-content-between w-100 event-details-flex'>
                     <h3 class='m-0 w-25'>Broadcaster</h3>
                     <span class='w-25'>${event.broadcaster.handle}</span>
                     <span class='w-50'>ID: ${event.broadcaster.id}</span>
                 </div>
 
-                <div class='m-0 text-muted d-flex justify-content-between w-100'>
+                <div class='m-0 text-muted d-flex justify-content-between w-100 event-details-flex'>
                     <h3 class='m-0 w-25'>Title</h3>
                     <span class='w-25'>${event.title}</span>
                     <span class='w-50'>ID: ${event.id}</span>
