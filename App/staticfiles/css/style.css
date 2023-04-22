@@ -253,6 +253,124 @@ nav {
     transition: all 0.5s ease-in-out;
 }
 
+.sidepanel-button { 
+    margin-right: 1rem;
+}
+
+/* 785 Start breaking */
+@media screen and (max-width: 785px) {
+    :root {
+        --header-height: 6rem;
+    }
+
+    .nav-limiter {
+        display: grid!important;
+        /* [ ] [    ] [     ] */
+        grid-template-columns: 4fr 1fr 1fr;
+        grid-template-rows: 3fr;
+    }
+
+    .logo-text {
+        grid-row: 1;
+        grid-column: 1;
+    }
+
+    .nav-items {
+        grid-row: 1;
+        grid-column: 3;
+        width: 200%!important;
+    }
+
+    .nav-search-bar {
+        grid-row: 2;
+        grid-column: 3;
+    }
+
+    .user-dropdown {
+        grid-row: 2;
+        grid-column: 4;
+    }
+
+    .sidepanel-button {
+        grid-row: 2;
+        grid-column: 1;
+        margin-right: 0;
+    }
+
+    .sidepanel-button > div {
+        padding: 0!important;
+    }
+}
+
+/* 550 break further */
+@media screen and (max-width: 550px) {
+    :root {
+        --header-height: 6rem;
+    }
+
+    .nav-limiter {
+        display: grid!important;
+        /* [ ] [    ] [     ] */
+        grid-template-columns: 1fr 4fr 1fr 1fr;
+        grid-template-rows: 3fr;
+    }
+
+    .logo-text {
+        grid-row: 1;
+        grid-column: 1 / 4;
+    }
+
+    .nav-items {
+        grid-row: 2;
+        grid-column: 3;
+        width: 200%!important;
+    }
+
+    .nav-search-bar {
+        grid-row: 1;
+        grid-column: 3;
+    }
+
+    .user-dropdown {
+        grid-row: 1;
+        grid-column: 4;
+    }
+
+    .sidepanel-button {
+        grid-row: 2;
+        grid-column: 1;
+    }
+
+    .sidepanel-button > div {
+        padding: 0!important;
+    }
+
+    /* 
+        if .sidepanel-button has elem-status='hidden' 
+        change the .nav-items
+    */
+    .sidepanel-button[elem-status='hidden'] ~ .nav-items {
+        grid-column: 1 / 5;
+        width: 100%!important;
+    }
+
+    .sidepanel-button[elem-status='hidden'] ~ .nav-items > ul {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+}
+
+/* 333 just change font sizing */
+@media screen and (max-width: 333px) {
+    .logo-text {
+        font-size: 1.5rem!important;
+    }
+}
+    
+
 .nav-bg {
     position: fixed;
     width: 100%;
@@ -465,7 +583,7 @@ nav input {
     visibility: hidden;
     border-radius: 0.25rem;
     padding: 1rem;
-    z-index: 100;
+    z-index: 8000;
     transition: all 0.5s ease-in-out;
 }
 
@@ -498,7 +616,7 @@ nav input {
     align-items: center;
     padding: 0;
     margin: 0;
-    z-index: 100;
+    z-index: 8000;
 }
 
 .nav-dropdown-menu li {
