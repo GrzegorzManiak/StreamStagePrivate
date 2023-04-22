@@ -311,3 +311,21 @@ def upload_image(request, data):
     return success_response(f'Updated {data["type"]} succesfully', {
         'image': request.user.get_profile_pic(),
     })
+
+
+
+@api_view(['POST'])
+@impersonate()
+@authenticated()
+@required_data(['token'])
+def delete_account(request, data):
+    """
+        Deletes the user's account
+    """
+    pat = revoke_pat(data['token'], request.user)
+    if pat[0] == False: return invalid_response(pat[1])
+
+    Statistics.log('accounts', 'account_delete')
+
+    request.user.delete()
+    return success_response('Account deleted successfully')

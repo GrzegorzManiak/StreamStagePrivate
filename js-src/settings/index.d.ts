@@ -205,4 +205,5 @@ export interface Configuration {
     cancel_subscription: string,
     filter_purchases: string,
     get_tickets: string,
+    delete_account: string,
 }

@@ -21,5 +21,6 @@ from .views import (
     update_profile_view,
     change_email_view,
     close_session,
-    upload_image
+    upload_image,
+    delete_account
 )

@@ -1,11 +1,11 @@
 import { PanelType, Pod, SecurityInfo, SecurityInfoSuccess, VerifyAccessSuccess} from "../index.d";
 import create_linked_account, { attach_lister } from '../elements/oauth';
-import { attach, create_toast, handle_tfa_input } from "../../common";
+import { attach, confirmation_modal, create_toast, handle_tfa_input } from "../../common";
 import { add_callback, get_active_pod, hide_pod, open_panel, show_pod } from './panels';
 
 import create_login_history from '../elements/history';
 import mfa from "../elements/mfa";
-import { change_email, close_session, extend_session, get_security_info, remove, send_verification, update_profile } from "../apis";
+import { change_email, close_session, delete_account, extend_session, get_security_info, remove, send_verification, update_profile } from "../apis";
 import { create_preference_toggles } from "../elements/security";
 import { password_monitor, rp_password_monitor } from "../../register/src/validation";
 import { check_email_verification } from "../../api";
@@ -500,7 +500,22 @@ function fill_data(
     const DA_ID = 'delete-account-container',
         da_elm = panel.querySelector(`#${DA_ID}`) as HTMLDivElement;
 
-    
+    da_elm.addEventListener('click', async (e) => {
+        confirmation_modal(
+            async () => {
+                const res = await delete_account(access_key);
+                if (res.code !== 200) return create_toast('error', 'Oops, there appears to be an error', res.message);
+                create_toast('success', 'Success', 'Your account has been deleted');
+
+                // -- Wait for 2 seconds and redirect to the home page
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                window.location.href = '/';
+            },
+            async () => {},
+            'Are you sure you want to delete your account? This action cannot be undone.',
+            'Delete Account',
+        )
+    });
 
     //
     // -- Security preferences

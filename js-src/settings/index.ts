@@ -54,6 +54,7 @@ export const configuration = build_configuration<Configuration>({
     filter_purchases: new Type('data-filter-purchases', 'string'),
 
     get_tickets: new Type('data-get-tickets', 'string'),
+    delete_account: new Type('data-delete-account', 'string'),
 });
 
 // -- Attach the event listeners and open the left panel

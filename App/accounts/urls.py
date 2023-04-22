@@ -17,7 +17,8 @@ from .profile import (
     extend_session,
     close_session,
     change_email_view,
-    upload_image
+    upload_image,
+    delete_account
 )
 
 from .mfa import (
@@ -92,6 +93,7 @@ urlpatterns = [
     path('api/extend_session/', extend_session, name='extend_session'),
     path('api/close_session/', close_session, name='close_session'),
     path('api/change_img/', upload_image, name='change_pfp'),
+    path('api/delete_account/', delete_account, name='delete_account'),
 
     # -- Authentication
     path('api/token/', validate_token, name='token'),
