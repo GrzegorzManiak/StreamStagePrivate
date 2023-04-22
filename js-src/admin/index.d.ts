@@ -168,6 +168,7 @@ export interface Event {
     title: string,
     description: string,
     over_18: boolean,
+    url: string,
     categories: Array<{
         id: string,
         name: string,

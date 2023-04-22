@@ -118,12 +118,13 @@ export function create_event_modal(
     // -- Add the event listeners
     const edit = div.querySelector('.edit') as HTMLButtonElement;
     edit.addEventListener('click', async() => {
+        const url = event.url + 'update';
         const stop = attach(edit);
-        // await create_category_panel(
-        //     refresh_categories,
-        //     category.image,
-        //     category.id,
-        // )
+        const popup = window.open(
+            url, 'popUpWindow',
+            '_blank, width=900, height=700, left=10, top=10, resizable=yes, scrollbars=yes, toolbar=yes, menubar=no, location=no, directories=no, status=yes'
+        );
+        if (popup) popup.focus();
         stop();
     });
 }

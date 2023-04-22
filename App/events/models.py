@@ -356,6 +356,7 @@ class Event(models.Model):
             } for showing in EventShowing.objects.filter(event=self).all()],
             'earliest_showing': next_showing,
             'thumbnail': cover_pic,
+            'url': self.get_absolute_url(),
         }
     
 
