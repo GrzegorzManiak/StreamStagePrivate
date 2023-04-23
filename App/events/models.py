@@ -239,6 +239,12 @@ class Event(models.Model):
     def get_reviews(self):
         return EventReview.objects.filter(event=self).all().order_by('likes')
     
+    def get_review_authors(self):
+        authors = []
+        for review in self.get_reviews():
+            authors.append(review.author)
+        return authors
+
     def get_medium_reviews(self):
         reviews = EventReview.objects.filter(event=self).all().order_by('likes')
         for review in reviews:
