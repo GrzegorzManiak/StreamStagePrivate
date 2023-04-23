@@ -1,49 +1,141 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load static %}
+{% load tags %}
+{% block metadescription %}
+    Event up to become a broadcaster on StreamStage.
+{% endblock %}
 
-{% load crispy_forms_tags %}
+{% block title %}
+    Review application - StreamStage
+{% endblock %}
 
-{% block title %}Review Event Application{% endblock title %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+    <link rel="stylesheet" href="{% static 'css/application.css' %}">
+{% endblock %}
 
 {% block content %}
-<div id="application-container" class="m-4">
-<p>Event Application <b>#{{app.application_id}}</b>, submitted by member <b>{{app.applicant.username}} under broadcaster @{{app.event.broadcaster.handle}}</b></p>
+    
+    <div class = '
+        container 
+        mt-4
+        d-flex
+        justify-content-center
+        align-items-center
+    '>
 
-Title: <b>{{app.event.title}}</b>
+        <div class = '
+            size-limiter
+        '>
+            <div>
+                <div class = '
+                    row 
+                    g-0
+                    main-content
+                '>
+                    <main>
+                        <div class = "
+                            card-body 
+                            text-light
+                            smoother
+                        ">
 
-<div>Description:</div>
-<div class="submission-statement">
-    <p>{{app.event.description}}</p>
-</div>
-<div>Categories:</div>
-<div class="mx-2 my-4">
-    {% for category in app.event.categories.all %}
-    <span class="badge bg-primary">{{category.name}}</span>
-    {% endfor %}
-</div>
+                            <!-- Header -->
+                            <div class="
+                                mb-5
+                                justify-content-start
+                            ">
+                                <!-- Header -->
+                                <h1 class="
+                                    fw-bold 
+                                ">Stream Stage</h1>
 
-<p>Is adults only: {{ app.broadcaster.over_18 }}</p>
+                                <!-- Slogan -->
+                                <p class="
+                                    text-muted
+                                ">
+                                    <p>Event Application <b>#{{app.application_id}}</b>, submitted by member <b>{{app.applicant.username}} 
+                                    </b> under broadcaster <b>@{{app.event.broadcaster.handle}}</b></p>
 
-<p>{{app.broadcaster.bio}}</p>
+                                </p>
+                            </div>
 
-<div>Submission Statement:</div>
-<div class="submission-statement">
-    <p>{{app.submission_statement}}</p>
-</div>
+                    
 
-{% if app.status == "A" %}
-    This application been approved by <b>{{ app.processed_by.username }}</b>
-{% elif app.status == "R" %}
-    This application has been rejected by <b>{{ app.processed_by.username }}</b>
-{% else %}
-<form class="form-layout" action="" method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="d-flex content_center my-4">
-        <button class="btn btn-success ml-2 m-1" name="approve" type="submit">Approve</button>
-        <button formnovalidate class="btn btn-danger ml-2 m-1" name="reject" type="submit">Reject</button>
+                            <article class='panel' data-panel-type='email-wait'>
+                                <div class="
+                                    text-center
+                                ">  
+                                    <label class='mt-2 w-100 text-start' for="submission-title">Title</label>
+                                    <textarea class="form-control" id="submission-title" rows="1" readonly>{{app.event.title}}</textarea>
+
+                                    <label class='mt-2 w-100 text-start' for="submission-desc">Description</label>
+                                    <textarea class="form-control" id="submission-desc" rows="3" readonly>{{app.event.description}}</textarea>
+
+                                    <label class='mt-2 w-100 text-start' for="submission-statment">Statement</label>
+                                    <textarea class="form-control" id="submission-statment" rows="3" readonly>{{app.submission_statement}}</textarea>
+
+                                    <label class='mt-2 w-100 text-start' for="submission-category">Categorys</label>
+                                    <textarea class="form-control" id="submission-category" rows="1" readonly>{% for category in app.event.categories.all %}{{category.name}}{% if not forloop.last %}, {% endif %}{% endfor %}</textarea>
+
+                                    <p class='
+                                        mb-4
+                                        fs-5
+                                    '>
+                                        
+                                        {% if app.status == "A" %}
+                                            <p class='mt-2' style='color: green'>This application has been approved by <b>{{ app.processed_by.username }}</b></p>
+                                        {% elif app.status == "R" %}
+                                            <p class='mt-2' style='color: red'>This application has been rejected by <b>{{ app.processed_by.username }}</b></p>
+                                        {% else %}
+                                        
+                                        <form class="" action="" method="POST" enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <div class="d-flex content_center my-4 btn-group">
+                                                <button class="btn btn-success success" name="approve" type="submit">Approve</button>
+                                                <button formnovalidate class="btn btn-danger error" name="reject" type="submit">Reject</button>
+                                            </div>
+                                        </form>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <script>
+                                    // -- Get .errorlist from form
+                                    const errorlist = document.querySelector('.errorlist');
+
+                                    // -- If there is an error, move it out of the form
+                                    if (errorlist) {
+                                        const clone = errorlist.cloneNode(true);
+                                        errorlist.remove();
+
+                                        const panel = document.querySelector('.panel');
+                                        panel.insertBefore(clone, panel.firstChild);
+                                    }
+                                </script>
+                            </article>
+
+
+                            <!-- Divider -->
+                            <hr>
+
+                            <div class="
+                                text-center
+                                text-muted
+                            ">
+
+                                <!-- Tos, Privacy policy -->
+                                <p>
+                                    By proceeding with the application proccess, you acknowledge and agree to abide by the
+                                    <a href='{% cross_app_reverse_tag 'StreamStage' 'render_terms' %}'>Terms of Service</a> and 
+                                    <a href='{% cross_app_reverse_tag 'StreamStage' 'render_privacy' %}'>Privacy Policy</a>.
+                                </p>
+
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </div>
     </div>
-</form>
-{% endif %}
 
-</div>
 {% endblock %}
