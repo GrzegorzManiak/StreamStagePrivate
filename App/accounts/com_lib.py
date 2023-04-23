@@ -198,6 +198,10 @@ def not_authenticated():
     def decorator(view_func):
         @wraps(view_func)
         def wrapper(request, *args, **kwargs):
+            # -- If the method is GET, redirect to the login page
+            if request.method == 'GET' and request.user.is_authenticated:
+                return redirect(cross_app_reverse('accounts', 'member_profile'))
+            
             # -- Check if user is authenticated
             if request.user.is_authenticated:
                 return error_response('You are already logged in')
@@ -330,7 +334,7 @@ def impersonate():
         def wrapper(request, *args, **kwargs):
 
             # -- Check if the user is an admin
-            if not request.user.is_superuser:
+            if not request.user.is_superuser or not request.user.is_staff:
                 request.impersonate = False
                 return view_func(request, *args, **kwargs)
             
@@ -384,6 +388,10 @@ def paginate(
     search_fields: list,
     page_size: int,
     model: object,
+
+    # -- This lambda function is called to validate that the
+    #    should be returned, we pass (request, model)
+    validate: lambda request, model: bool = lambda request, model: True
 ):
     def decorator(view_func):
 
@@ -398,7 +406,7 @@ def paginate(
             except ValueError: return invalid_response('Page must be an integer')
             
             orders = ['asc', 'desc']
-            if data['sort'] not in order_fields: 
+            if data['sort'] not in order_fields and data['sort'] != '':
                 return invalid_response(f'Invalid sort field: {data["sort"]}, must be one of {", ".join(order_fields)}')
             if data['order'] not in orders: 
                 return invalid_response(f'Invalid order: {data["order"]}, must be one of {", ".join(orders)}')
@@ -408,15 +416,17 @@ def paginate(
             if data['order'] == 'desc': sort = '-' + sort
 
             # -- Check if we are searching
-            filter
             search = data['search'].strip().lower()
             query_list = [Q(**{f'{field}__icontains': search}) for field in search_fields]
 
             # -- Get the data
             models = model.objects.filter(reduce(or_, query_list))
 
+            # -- Validate the data
+            models = [model for model in models if validate(request, model)]
+
             # -- Get the page
-            total_pages = int(models.count() / page_size)
+            total_pages = int(len(models) / page_size)
             models = models[page * page_size:page * page_size + page_size]
 
             # -- Pass the models to the view

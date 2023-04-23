@@ -17,13 +17,7 @@ export function manage_tickets_btn(
 function create_panel(
 ) : HTMLElement {
     // -- String template for the modal
-    const modal = construct_modal("Tickets", "Message blah", false, 'danger');
-
-    // -- Create a div element
-    const div = document.createElement('div');
-
-    // -- Set the innerHTML of the div to the modal
-    div.innerHTML = modal;
+    const div = construct_modal("Tickets", "Message blah", false, 'danger');
 
     // -- Append the modal to the body
     document.body.appendChild(div);

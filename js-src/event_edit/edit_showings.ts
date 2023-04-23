@@ -23,13 +23,13 @@ function manage_add_showing_btn(
     btn: HTMLElement
 ) {
     btn.addEventListener("click", () => {
-        const modal = construct_modal("Add Showing", "Enter event showing details", true, 'success', add_showing_form);
-
-        // -- Create a div element
-        const modal_wrap = document.createElement('div');
-
-        // -- Set the innerHTML of the div to the modal
-        modal_wrap.innerHTML = modal;
+        const modal_wrap = construct_modal(
+            "Add Showing", 
+            "Enter event showing details", 
+            true, 
+            'success', 
+            add_showing_form
+        );
 
         // -- Get the buttons
         const yes_btn = modal_wrap.querySelector('.yes') as HTMLButtonElement,

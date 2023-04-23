@@ -40,7 +40,6 @@
     border-radius: 0.5rem;
     margin-bottom: 0.5rem;
 
-    background-image: url('https://picsum.photos/300/300');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -567,7 +566,6 @@
 
 .showcase-inner {
     position: absolute;
-    border-radius: 0.5rem;
     top: 0;
     left: 0;
     width: 100%;
@@ -632,12 +630,13 @@
 .showcase-slide {
     background-color: var(--theme-backdrop-color);
 
-    display: grid;
+    display: grid!important;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
+    border-radius: 0!important;
 }
 
 .showcase-cover {
@@ -665,5 +664,11 @@
 swiper-container {
     --swiper-navigation-color: #fff; 
     --swiper-pagination-color: #fff;
+    --swiper-navigation-size: 1.5rem;
+}
+
+
+.swiper-button-prev, .swiper-button-next {
+    --swiper-navigation-color: #ffffff73;
     --swiper-navigation-size: 1.5rem;
 }

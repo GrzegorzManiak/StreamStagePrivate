@@ -18,6 +18,7 @@ export type PanelType =
     'security-linked-accounts' |
     'security-password' |
     'security-email' |
+    'tickets' |
     'security-history' |
     'security-delete';
 
@@ -107,6 +108,46 @@ export type DefaultResponse = DefaultResponseNoData | DefaultResponseNoData;
 
 
 
+export interface Subscription {
+    has_subscription: boolean,
+    subscription_id: string,
+    subscription_start: string,
+    subscription_end: string,
+    subscription_status: string,
+}
+
+
+export type PurchaseSorts = 'purchase_timestamp' | 'billingAddress1' | 'billingCity' | 'billingPostcode' | 'billingCountry' | 'purchase_id' | 'total_multiplier'
+
+export interface PurchaseItem {
+    item_name: string,
+    price: string,
+    other_data: string
+}
+
+export interface Purchase {
+    purchase_id: string,
+    purchase_timestamp: string,
+    billingName: string,
+    billingAddress1: string,
+    billingCity: string,
+    billingPostcode: string,
+    billingCountry: string,
+    total: number,
+    total_multiplier: number,
+    stripe_id: string,
+    payment_id: string,
+    items: Array<PurchaseItem>
+}
+
+export interface FilterdPurchases {
+    purchases: Array<Purchase>,
+    page: number,
+    per_page: number,
+    total: number,
+    pages: number,
+}
+
 //
 // Custom Responses
 //
@@ -122,6 +163,12 @@ export type StartSubscriptionResponse = StartSubscriptionSuccess | DefaultRespon
 
 export type UpdateProiflePictureSuccess = DefaultResponseData & { data: { image: string } }
 export type UpdateProiflePictureResponse = UpdateProiflePictureSuccess | DefaultResponse;
+
+export type GetSubscriptionSuccess = DefaultResponseData & { data: Subscription }
+export type GetSubscriptionResponse = GetSubscriptionSuccess | DefaultResponse;
+
+export type GetPurchasesSuccess = DefaultResponseData & { data: FilterdPurchases }
+export type GetPurchasesResponse = GetPurchasesSuccess | DefaultResponse;
 
 export interface Configuration {
     admin: boolean, 
@@ -153,4 +200,10 @@ export interface Configuration {
     delete_review: string, 
     verify_mfa: string,
     change_img: string,
+    is_subscribed: boolean,
+    get_subscription: string,
+    cancel_subscription: string,
+    filter_purchases: string,
+    get_tickets: string,
+    delete_account: string,
 }

@@ -24,15 +24,12 @@ export const report = (
         </div>
     `;
 
-    const modal = construct_modal(
+    // -- Add the element to the body
+    const div = construct_modal(
         'Report',
         'Why do you want to report this?',
         true, 'primary', template
     );
-
-    // -- Add the element to the body
-    const div = document.createElement('div');
-    div.innerHTML = modal;
     document.body.appendChild(div);
 
     // -- Submit the report

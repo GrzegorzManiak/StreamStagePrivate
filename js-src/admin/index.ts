@@ -1,6 +1,9 @@
+import { single } from '../common/single';
+single('admin');
+
 import { Configuration } from './index.d';
 import { Type, build_configuration } from '../api/config';
-import { attach_event_listeners, get_pod } from './src/panels';
+import { attach_event_listeners, get_pod, set_sidebar_state } from './src/panels';
 import { manage_statistical_panels } from './src/satistics';
 import { manage_users_panel } from './src/users';
 import { manage_category_panel } from './src/categorys';
@@ -9,9 +12,7 @@ import { manage_event_panel } from './src/events';
 import { manage_terms_panel } from './src/terms';
 import { manage_privacy_panel } from './src/privacy';
 import { manage_faq_panel } from './src/faq';
-import { single } from '../common/single';
-
-single('admin');
+import { manage_reports_panel } from './src/reports';
 
 // -- Build the configuration
 export const configuration = build_configuration<Configuration>({
@@ -53,11 +54,14 @@ export const configuration = build_configuration<Configuration>({
     faq_filter: new Type('data-faq-filter', 'string'),
     faq_delete: new Type('data-faq-delete', 'string'),
     faq_update: new Type('data-faq-update', 'string'),
+
+    filter_reports: new Type('data-filter-reports', 'string'),
+    update_report: new Type('data-update-report', 'string'),
 }); 
 
 // -- Attach the event listeners
 attach_event_listeners();
-
+set_sidebar_state('open');
 
 // -- Get the statistics pods
 const accounts = get_pod('accounts'),
@@ -82,23 +86,50 @@ if (
 );
 
 
-const users = get_pod('users');
-if (users) manage_users_panel(users);
+try {
+    const users = get_pod('users');
+    if (users) manage_users_panel(users);
+    console.log('users', users);
+} catch (e) { console.log(e); }
 
-const categories = get_pod('categories');
-if (categories) manage_category_panel(categories);
+try {
+    const categories = get_pod('categories');
+    if (categories) manage_category_panel(categories);
+    console.log('categories', categories);
+} catch (e) { console.log(e); }
 
-const broadcasters = get_pod('broadcasters');
-if (broadcasters) manage_broadcaster_panel(broadcasters);
+try {
+    const broadcasters = get_pod('broadcasters');
+    if (broadcasters) manage_broadcaster_panel(broadcasters);
+    console.log('broadcasters', broadcasters);
+} catch (e) { console.log(e); }
 
-const events = get_pod('events');
-if (events) manage_event_panel(events);
+try {
+    const events = get_pod('events');
+    if (events) manage_event_panel(events);
+    console.log('events', events);
+} catch (e) { console.log(e); }
 
-const terms = get_pod('terms');
-if (terms) manage_terms_panel(terms);
+try {
+    const terms = get_pod('terms');
+    if (terms) manage_terms_panel(terms);
+    console.log('terms', terms);
+} catch (e) { console.log(e); }
 
-const privacy = get_pod('privacy');
-if (privacy) manage_privacy_panel(privacy);
+try {
+    const privacy = get_pod('privacy');
+    if (privacy) manage_privacy_panel(privacy);
+    console.log('privacy', privacy);
+} catch (e) { console.log(e); }
 
-const faq = get_pod('faq');
-if (faq) manage_faq_panel(faq);
+try {
+    const faq = get_pod('faq');
+    if (faq) manage_faq_panel(faq);
+    console.log('faq', faq);
+} catch (e) { console.log(e); }
+
+try {
+    const reports = get_pod('reports');
+    if (reports) manage_reports_panel(reports);
+    console.log('reports', reports);
+} catch (e) { console.log(e); }

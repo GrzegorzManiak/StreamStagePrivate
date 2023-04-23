@@ -124,7 +124,7 @@ export async function add_listner(
 
     // -- Construct the mfa url
     const tfa = construct_qr_url(token, 'StreamStage', data.email),
-        modal = construct_modal(
+        modal_div = construct_modal(
         'Add two factor authentication',
         'Scan the QR Code below with your authenticator app. If you are on mobile, click the link below the QR Code. Then enter the code below to complete the process.',
         true,
@@ -135,8 +135,7 @@ export async function add_listner(
     );
 
     // -- Add the modal to the body
-    const modal_div = document.createElement('div');
-    modal_div.innerHTML = modal;
+
     document.body.appendChild(modal_div);
 
     // -- Get the inpus

@@ -17,13 +17,16 @@ from .profile import (
     extend_session,
     close_session,
     change_email_view,
-    upload_image
+    upload_image,
+    delete_account
 )
+
 from .mfa import (
     setup_mfa,
     verify_mfa,
     disable_mfa
 )
+
 from .payments.views import (
     add_payment_method,
     get_payment_methods,
@@ -42,23 +45,40 @@ from .other import (
     get_user,
     delete_user,
     update_user_email,
-    update_user_streamer
+    update_user_streamer,
+    filter_purchases,
+    get_subscription, 
+    cancel_subscription,
+    get_tickets,
+    filter_reports,
+    update_report
 )
-from .views import get_token, login, logout, register, validate_token
+
+from .views import (
+    get_token, 
+    login, 
+    logout, 
+    reset,
+    register, 
+    validate_token
+)
 
 from .broadcaster.views import (
     broadcaster_panel,
     get_broadcaster_details,
     update_broadcaster_details,
-
     fetch_invites,
     send_contribute_invite,
     respond_to_invite
 )
 
+from .forgot import (
+    init_change_password,
+    change_password
+)
+
 from django.conf import settings
 from django.conf.urls.static import static
-
 from .site import site_panel, get_statistics
 
 # -- Should probably simplify this into GET/POST/PUT/DELETE instead of having multiple paths
@@ -71,6 +91,11 @@ urlpatterns = [
     path('login/', login, name='login'),
     path('logout/', logout, name='logout'),
     path('register/', register, name='register'),
+    path('forgot/', reset, name='forgot'),
+
+    # -- Forgot api
+    path('api/forgot/', init_change_password, name='forgot_api'),
+    path('api/forgot/change/', change_password, name='change_password'),
 
     # -- Profile
     path('api/send_verification/', send_verification, name='send_verification'),
@@ -79,6 +104,7 @@ urlpatterns = [
     path('api/extend_session/', extend_session, name='extend_session'),
     path('api/close_session/', close_session, name='close_session'),
     path('api/change_img/', upload_image, name='change_pfp'),
+    path('api/delete_account/', delete_account, name='delete_account'),
 
     # -- Authentication
     path('api/token/', validate_token, name='token'),
@@ -117,6 +143,10 @@ urlpatterns = [
     path('api/other/update_review', update_review, name='update_review'),
     path('api/other/delete_review', delete_review, name='delete_review'),
     path('api/other/submit_report', submit_report, name='submit_report'),
+    path('api/purchases/filter', filter_purchases, name='filter_purchases'),
+    path('api/subscription/get', get_subscription, name='get_subscription'),
+    path('api/subscription/cancel', cancel_subscription, name='cancel_subscription'),
+    path('api/tickets/get', get_tickets, name='get_tickets'),
 
     # -- Broadcaster
     path('broadcaster/', broadcaster_panel, name='broadcaster_panel'),
@@ -135,6 +165,8 @@ urlpatterns = [
     path('site_panel/delete_user/', delete_user, name='delete_user'),
     path('site_panel/update_user_email/', update_user_email, name='update_user_email'),
     path('site_panel/update_streamer_status/', update_user_streamer, name='update_streamer_status'),
+    path('site_panel/filter_reports/', filter_reports, name='filter_reports'),
+    path('site_panel/update_report/', update_report, name='update_report'),
 
     path('events/', include('events.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

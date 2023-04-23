@@ -60,7 +60,7 @@ export function create_event_modal(
 
     const template = ` 
     <div>
-        <div class='w-100 d-flex justify-content-between align-items-center p-2'>
+        <div class='w-100 d-flex justify-content-between align-items-center events-scale p-2'>
             <div class='profile-info flex-wrap'>
                 <p class='m-0 text-muted'><span class='bold'> Created:</span> ${date(event.created)}</p>
                 <p class='m-0 text-muted'><span class='bold'> Updated:</span> ${date(event.updated)}</p>
@@ -91,13 +91,14 @@ export function create_event_modal(
 
         <div class='w-100 d-flex justify-content-between align-items-center p-2'>
             <div class='profile-info cat-info'>
-                <div class='m-0 text-muted d-flex justify-content-between w-100'>
+
+                <div class='m-0 text-muted d-flex justify-content-between w-100 event-details-flex'>
                     <h3 class='m-0 w-25'>Broadcaster</h3>
                     <span class='w-25'>${event.broadcaster.handle}</span>
                     <span class='w-50'>ID: ${event.broadcaster.id}</span>
                 </div>
 
-                <div class='m-0 text-muted d-flex justify-content-between w-100'>
+                <div class='m-0 text-muted d-flex justify-content-between w-100 event-details-flex'>
                     <h3 class='m-0 w-25'>Title</h3>
                     <span class='w-25'>${event.title}</span>
                     <span class='w-50'>ID: ${event.id}</span>
@@ -118,12 +119,13 @@ export function create_event_modal(
     // -- Add the event listeners
     const edit = div.querySelector('.edit') as HTMLButtonElement;
     edit.addEventListener('click', async() => {
+        const url = event.url + 'update';
         const stop = attach(edit);
-        // await create_category_panel(
-        //     refresh_categories,
-        //     category.image,
-        //     category.id,
-        // )
+        const popup = window.open(
+            url, 'popUpWindow',
+            '_blank, width=900, height=700, left=10, top=10, resizable=yes, scrollbars=yes, toolbar=yes, menubar=no, location=no, directories=no, status=yes'
+        );
+        if (popup) popup.focus();
         stop();
     });
 }
@@ -231,14 +233,14 @@ export async function create_category_panel(
     `;
 
     // -- Create the element
-    const div = document.createElement('div');
-    document.body.appendChild(div);
-    div.innerHTML = construct_modal(
+    const div = construct_modal(
         id === null ? 'Create Category' : 'Update Category',
         id === null ? 'Create a new category' : 'Update the category',
         false, 'success',
         template
     );
+    document.body.appendChild(div);
+
 
     // -- Get the elements
     const create = div.querySelector('#create') as HTMLButtonElement,

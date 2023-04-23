@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load tags %}
 {% load render_bundle from webpack_loader %} 
 
 {% block metadescription %}
@@ -47,9 +48,7 @@
         <div class = '
             size-limiter
         '>
-            <div class = '
-                rounded
-            '>
+            <div>
                 <div class = '
                     row 
                     g-0
@@ -58,13 +57,6 @@
                     <main>
                         <div class = "
                             card-body 
-                            rounded
-                            p-xxl-5
-                            p-xl-5
-                            p-lg-5
-                            p-md-3
-                            p-sm-3
-                            p-2
                             text-light
                             smoother
                         ">
@@ -357,8 +349,8 @@
                                 <!-- Tos, Privacy policy -->
                                 <p>
                                     By proceeding with the "Loging in" or "Creation" of an account, you acknowledge and agree to abide by the
-                                    <a href="">Terms of Service</a> and 
-                                    <a href="#!">Privacy Policy</a>.
+                                    <a href='{% cross_app_reverse_tag 'StreamStage' 'render_terms' %}'>Terms of Service</a> and 
+                                    <a href='{% cross_app_reverse_tag 'StreamStage' 'render_privacy' %}'>Privacy Policy</a>.
                                 </p>
 
                             </div>

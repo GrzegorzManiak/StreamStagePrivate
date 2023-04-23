@@ -1,0 +1,342 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,600;1,500;0,700&display=swap');
+.styled-ticket * {
+    user-select: none;
+}
+
+.styled-ticket {
+    --height: 1rem;
+    --dash-height: 2px;
+    --color: #fff;
+    --ticket-id-color: #bdbdbd;
+
+    --scroll-speed: 20s;
+    --scroll-gap: 1rem;
+    --scroll-font-size: 0.85rem;
+    --scroll-font-color: #ffffff78;
+
+    --text-color: #3b3b3b;
+    --divider-color: #d7d7d7;
+    --highlight-color: #E5BA73;
+
+    /* Gradient */
+    --gc-1: #5cfa4b;
+    --gc-2: #4dbbff;
+    --gc-3: #9d4dff;
+    --gc-4: #ff4d65;
+    --gc-5: #fcca53;
+
+    --border-radius: calc(var(--height) / 2);
+    
+    max-width: 20rem;
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+
+    font-family: 'Montserrat', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.ticket-header {
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+    background-color: var(--color);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+
+    position: relative;
+    width: 100%;
+}
+
+.ticket-cut-body {
+    height: var(--height);
+    position: relative;
+    width: 100%;
+}
+
+.big-ticket-body {
+    width: 100%;
+    height: 25rem;
+    border-bottom-left-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+    background-color: var(--color);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.big-ticket-body img {
+    width: 70%;
+    height: auto;
+    aspect-ratio: 1/1;
+}
+
+.big-ticket-body .ticket-text {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--ticket-id-color);
+}
+
+/* Ticket Cut Styles */
+.ticket-cut {
+    width: var(--height);
+    height: var(--height);
+    position: absolute;
+}   
+
+.ticket-cut-middle {
+    height: var(--height);
+    width: calc(100% - (var(--height) * 2) + var(--height));
+    margin: 0 calc(var(--height) / 2);
+    background-color: var(--color);
+}
+
+.ticket-cut-dash {
+    width: calc(100% - (var(--height) * 2) + var(--height) - (var(--dash-height) * 2));
+    margin: 0 calc(var(--height) / 2);
+    top: calc((var(--height) / 2) - (var(--dash-height) / 2));
+    left: 0;
+    position: absolute;
+    border: dashed var(--dash-height) #d7d7d7;
+    z-index: 15;
+}
+
+.ticket-cut.top-left { bottom: var(--height); left: calc((var(--height) / 2) * -1); }
+.ticket-cut.top-left::before {
+    top: var(--height);
+    border-top-right-radius: var(--border-radius);
+    box-shadow: var(--border-radius) 0 0 0 var(--color);
+}
+
+.ticket-cut.top-right { bottom: var(--height); right: calc((var(--height) / 2) * -1); }
+.ticket-cut.top-right::before {
+    top: var(--height);
+    border-top-left-radius: var(--border-radius);
+    box-shadow: calc(var(--border-radius) * -1) 0 0 0 var(--color);
+}
+
+.ticket-cut.bottom-left { top: var(--height); left: calc((var(--height) / 2) * -1); }
+.ticket-cut.bottom-left::before {
+    bottom: var(--height);
+    border-bottom-right-radius: var(--border-radius);
+    box-shadow: var(--border-radius) 0 0 0 var(--color);
+}
+
+.ticket-cut.bottom-right { top: var(--height); right: calc((var(--height) / 2) * -1); }
+.ticket-cut.bottom-right::before {
+    bottom: var(--height);
+    border-bottom-left-radius: var(--border-radius);
+    box-shadow: calc(var(--border-radius) * -1) 0 0 0 var(--color);
+}
+
+
+.ticket-cut.top-left::before, .ticket-cut.top-right::before,
+.ticket-cut.bottom-left::before, .ticket-cut.bottom-right::before {
+    content: "";
+    position: absolute;
+    background-color: transparent;
+    height: var(--border-radius);
+    width: var(--height);
+}
+
+
+/* Service band scroller */
+@keyframes scroller {
+    from {
+        -moz-transform: translateX(-100%);
+        -webkit-transform: translateX(-100%);
+        transform: translateX(-100%);
+    }
+    to {
+        -moz-transform: translateX(100%);
+        -webkit-transform: translateX(100%);
+        transform: translateX(100%);
+    }
+}
+
+@keyframes moving_gradient {
+    /* gradient visits each corner of the element */
+    0% { background-position: 0 0; }
+    50% { background-position: 50% 100%; }
+    100% { background-position: 0 0; }
+}
+
+.ticket-service-band {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: calc(var(--scroll-font-size) * 2);
+    overflow: hidden;
+    padding-bottom: 0.5rem;
+
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+
+    background: linear-gradient(90deg, 
+        var(--gc-1) 0%,
+        var(--gc-2) 25%,
+        var(--gc-3) 50%,
+        var(--gc-4) 75%,
+        var(--gc-5) 100%
+    );
+    background-size: 500% 500%;
+    background-position: 0 0;
+
+    -moz-animation: moving_gradient 15s ease infinite;
+    -webkit-animation: moving_gradient 15s ease infinite;
+    animation: moving_gradient 15s ease infinite;
+}
+
+.ticket-service-band p {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 0;
+    font-weight: 600;
+    margin-top: calc(var(--scroll-font-size) / 4);
+    font-size: var(--scroll-font-size);
+    color: var(--scroll-font-color);
+    white-space: nowrap;
+    font-style: italic;
+    user-select: none;
+}
+
+.ticket-service-band p[data-provider-scroller='1'], 
+.ticket-service-band p[data-provider-scroller='2'] {
+    -moz-transform: translateX(-100%);
+    -webkit-transform: translateX(-100%);
+    transform: translateX(-100%);
+    
+    -moz-animation: scroller var(--scroll-speed) linear infinite;
+    -webkit-animation: scroller var(--scroll-speed) linear infinite;
+    animation: scroller var(--scroll-speed) linear infinite;
+}
+
+.ticket-service-band p[data-provider-scroller='2'] {
+    animation-delay: calc(var(--scroll-speed) / 2);
+    padding-right: var(--scroll-gap);
+}
+
+
+/* unroll */
+@keyframes unroll {
+    from {
+        -moz-transform: translatey(-100%);
+        -webkit-transform: translatey(-100%);
+        transform: translatey(-100%);
+    }
+    to {
+        -moz-transform: translatey(0);
+        -webkit-transform: translatey(0);
+        transform: translatey(0);
+    }
+}
+
+.unroll {
+    --unroll-speed: 2s;
+    position: relative;
+    scroll-behavior: smooth;
+    overflow-y: scroll;
+}
+
+.unroll > * {
+    -moz-animation: unroll var(--unroll-speed) ease-in-out forwards;
+    -webkit-animation: unroll var(--unroll-speed) ease-in-out forwards;
+    animation: unroll var(--unroll-speed) ease-in-out forwards;
+}
+
+
+/* Ticket */
+.ticket-header { padding: 1rem; margin-top: 5rem; }
+.ticket-content {
+    position: relative;
+    width: 100%;
+    margin-top: calc((var(--scroll-font-size) / 4) + var(--scroll-font-size));
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.ticket-content p {
+    margin: 0;
+}
+
+.ticket-divider {
+    width: 100%;
+    margin: 0.5rem 0;
+    border: none;
+    border-top: 1px solid var(--divider-color);
+}
+
+.vertical-divider {
+    width: 1px!important;
+    height: 100%;
+    margin: 0 1rem;
+    display: block;
+    border: none;
+    flex-grow: 1;
+    border-left: 1px solid var(--divider-color);
+}
+
+.vertical-divider p {
+    user-select: none;
+    color: transparent;
+    height: 100%;
+}
+
+.split {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.split > * {
+    width: 100%;
+    text-align: left;
+}
+
+.highlight {
+    color: var(--highlight-color);
+    font-size: 0.85rem;
+}
+
+.ticket-text {
+    color: var(--text-color);
+    font-size: 1rem;
+}
+
+.ticket-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    background-color: #00000046;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

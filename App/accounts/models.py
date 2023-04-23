@@ -7,10 +7,12 @@ import datetime
 import random
 import string
 import pyotp
+import math
 import stripe
 import mimetypes
 import base64
 import io
+import time
 from PIL import Image
 
 from django.contrib.auth import get_user_model
@@ -19,6 +21,9 @@ from django.db import models
 from django_countries.fields import CountryField
 from django.db.models import Q
 from timezone_field import TimeZoneField
+from store.models import FlexibleTicket
+from orders.models import Purchase
+from StreamStage.templatetags.tags import cross_app_reverse
 
 from .oauth import OAuthTypes
 
@@ -114,6 +119,13 @@ class Member(AbstractUser):
     is_streamer = models.BooleanField("Streamer Status", default=False)
     last_login = models.DateTimeField(auto_now=True)
     token = models.CharField("Token", max_length=100, blank=True, null=True)
+
+    has_subscription = models.BooleanField("Has Subscription", default=False)
+    subscription_id = models.CharField("Subscription ID", max_length=100, blank=True, null=True)
+    subscription_start = models.IntegerField("Subscription Start", blank=True, null=True)
+    subscription_end = models.IntegerField("Subscription End", blank=True, null=True)
+    subscription_status = models.CharField("Subscription Status", max_length=100, default='none', blank=True, null=True)
+
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email', 'first_name', 'last_name']
 
@@ -215,6 +227,54 @@ class Member(AbstractUser):
 
 
 
+    def is_subscribed(self):
+        """
+            Checks if a user is subscribed
+            to a plan
+        """
+
+        subscribed = False
+        WEEK = 604800 # -- 7 days in seconds floor(time.time() / 604800)
+        now_plus_week = math.floor(time.time()) + WEEK
+        end = self.subscription_end if self.subscription_end != None else 0
+
+
+        if self.has_subscription == True: subscribed = True
+        if end == None: subscribed = False
+        if end < now_plus_week: subscribed = False
+        
+
+        if (
+            self.subscription_status == "monthly" or
+            self.subscription_status == "yearly" and
+            end < now_plus_week
+        ):
+            """
+                If the user has a subscription, and
+                the subscription is still active
+                Check if the user has paid for the
+                subscription
+            """
+
+        return subscribed
+
+        
+    
+    def serialize_subscription(self):
+        """
+            Serializes the subscription
+            for the user
+        """
+        return {
+            'has_subscription': self.has_subscription,
+            'subscription_id': self.subscription_id,
+            'subscription_start': self.subscription_start,
+            'subscription_end': self.subscription_end,
+            'subscription_status': self.subscription_status
+        }
+    
+
+
     def get_stripe_customer(self):
         """
             Gets the stripe customer id for a
@@ -249,6 +309,13 @@ class Member(AbstractUser):
             self.save()
             return customer
 
+
+    def set_plan(self, plan: str):
+        """
+            Sets the plan for a user
+        """
+        self.subscription_status = plan
+        self.save()
 
 
     def set_recovery_codes(self):
@@ -373,6 +440,56 @@ class Member(AbstractUser):
         return Broadcaster.objects.filter(Q(streamer = self) | Q(contributors__id=self.id))
 
 
+    def get_tickets(self, expired: bool = True):
+        """
+            Returns all the tickets that belong to the user
+            allows for a 24 hour grace period for expired tickets
+        """
+        purchases = Purchase.objects.filter(purchaser=self)
+        tickets = []
+
+
+        for purchase in purchases:
+            pid = purchase.purchase_id
+            pid_tickets = FlexibleTicket.objects.filter(purchase_id=pid).all()
+
+            for ticket in pid_tickets.all():
+                tickets.append(ticket)
+
+        # -- Sort the tickets by date
+        tickets_filtered = {
+            'upcoming': [],
+            'expired': [],
+        }
+        for ticket in tickets:
+            # -- models.DateTimeField() to seconds
+            event_start = ticket.listing.showing
+            if event_start is None:
+                tickets_filtered['upcoming'].append(ticket.serialize())
+                continue
+            event_start = event_start.time.timestamp()
+            event_start += 86400 # -- Add 24 hours
+
+            # -- Get the current time
+            current_time = datetime.datetime.now(tz=timezone.utc)
+            current_time = current_time.timestamp()
+
+            # -- Check if the ticket is expired
+            if event_start < current_time:
+                if expired: tickets_filtered['expired'].append(ticket.serialize())
+            else: tickets_filtered['upcoming'].append(ticket.serialize())
+
+
+        return tickets_filtered
+
+
+    def basic_serialize(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'profile_pic': self.get_profile_pic(),
+            'url': cross_app_reverse('homepage', 'user_profile', kwargs={'username': self.username}),
+        }
 
 class MembershipStatus(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
@@ -493,6 +610,11 @@ class Broadcaster(models.Model):
             return False
         
 
+    def get_absolute_url(self):
+        return cross_app_reverse('homepage', 'broadcaster_profile', {
+            "username": self.handle
+        })
+
 
 class oAuth2(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -544,14 +666,35 @@ class Report(models.Model):
     time = models.TimeField(auto_now_add=True)
     date = models.DateField(auto_now_add=True)
 
+    solved = models.BooleanField("Solved", default=False)
+    solved_by = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="solved_by", null=True, blank=True)
+
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True, null=True, blank=True)
+
     def serialize(self):
         return {
             "id": self.id,
-            "reporter": self.reporter,
-            "reported": self.reported,
+            "reporter": self.reporter.basic_serialize(),
             "reason": self.reason,
             "time": self.time,
             "date": self.date,
+            "reported": {
+                "user": self.r_user.basic_serialize(),
+                # "broadcaster": self.r_broadcaster,
+                # "review": self.r_review,
+                # "event": self.r_event,
+            },
+            "solved": self.solved,
+            "reported_fields": {
+                "user": True if self.r_user is not None else False,
+                # "broadcaster": True if self.r_broadcaster is not None else False,
+                # "review": True if self.r_review is not None else False,
+                # "event": True if self.r_event is not None else False,
+            },
+            "solved_by": self.solved_by.basic_serialize() if self.solved_by is not None else None,
+            "created": self.created,
+            "updated": self.updated,
         }
 
 class BroadcasterContributeInvite(models.Model):

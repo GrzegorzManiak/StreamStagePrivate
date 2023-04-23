@@ -20,14 +20,11 @@ export function picture_upload_modal(
     on_upload: (image: string) => boolean | Promise<boolean>,
     extra_html: string = '',
 ) {
-    const modal = construct_modal(
+    // -- Add the modal to the body
+    const modal_elm = construct_modal(
         title, description, false,
         'success', extra_html + upload_template(initial_image)
     );
-
-    // -- Add the modal to the body
-    const modal_elm = document.createElement('div');
-    modal_elm.innerHTML = modal;
     document.body.appendChild(modal_elm);
 
     

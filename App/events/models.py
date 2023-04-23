@@ -1,21 +1,19 @@
 import base64
 import io
+import random
 
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from PIL import Image
 
 from django.db import models
-from django.db.models import Q, Avg, Max, Min
+from django.db.models import Q, Avg
 
-from django.contrib.auth import get_user_model
-from django.urls import reverse
 from django_countries.fields import CountryField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from StreamStage.templatetags.tags import cross_app_reverse
-
 from StreamStage.settings import MEDIA_URL
-from datetime import datetime, timedelta, time
+from datetime import datetime, timedelta
 from django.core.files import File
 from PIL import Image
 import uuid
@@ -95,6 +93,38 @@ class Category(models.Model):
         }
 
 
+    def get_random_categories(amount: int):
+        """
+            Returns a random amount of categories
+        """
+        return Category.objects.all().order_by('?')[:amount]
+    
+
+    def get_random_events(self, amount: int):
+        """
+            Returns a random amount of events
+            from the category
+        """
+        events = Event.objects.filter(categories=self).order_by('?')[:amount]
+        processed_events = []
+
+        for event in events:
+            processed_events.append(event.serialize())
+
+        # -- If theres 0 events, return an empty list
+        if len(processed_events) == 0:
+            return []
+        
+        # -- If theres not enough events, just duplicate some
+        while(len(processed_events) < amount):
+            # -- Pick a random event from the list
+            random_int = random.randint(0, len(events) - 1)   
+            processed_events.append(processed_events[random_int])
+
+        return processed_events
+    
+
+
 class TicketListing(models.Model):
     listing_id = models.UUIDField(default=uuid.uuid4)
     event = models.ForeignKey(to="events.Event", on_delete=models.CASCADE)
@@ -140,7 +170,7 @@ class Event(models.Model):
     broadcaster = models.ForeignKey(to="accounts.Broadcaster", on_delete=models.CASCADE)
     categories = models.ManyToManyField(to=Category)
     primary_media_idx = models.IntegerField(default=0) # Points to an item in the 'media' field - used as a cover photo 
-    contributors = models.ManyToManyField(get_user_model(), related_name="event_contributors", blank=True)
+    contributors = models.ManyToManyField('accounts.Member', related_name="event_contributors", blank=True)
     approved = models.BooleanField("Approved", default=False)
 
     created = models.DateTimeField(auto_now_add=True)
@@ -149,7 +179,9 @@ class Event(models.Model):
     # Event
     
     def get_absolute_url(self):
-        return cross_app_reverse('events', 'event_view', kwargs=[self.event_id])
+        return cross_app_reverse('events', 'event_view', {
+            "event_id": self.event_id
+        })
     
     def __str__(self):
         return self.title
@@ -185,8 +217,8 @@ class Event(models.Model):
     def get_cover_picture(self):
         media = EventMedia.objects.filter(event=self).all()
 
-        if media.count() == 0:
-            return None
+        if len(media) == 0:
+            return "https://picsum.photos/300/200.jpg"
         else:
             return media[self.primary_media_idx]
 
@@ -299,7 +331,15 @@ class Event(models.Model):
 
 
     def serialize(self):
+        next_showing = self.get_next_showing()
+        if next_showing: next_showing = str(next_showing.time).split(" ")[0]
+        else: next_showing = "TBC"
+
+        cover_pic = self.get_cover_picture()
+        if isinstance(cover_pic, EventMedia): cover_pic = cover_pic.picture.url
+
         return {
+            'full_url': self.get_absolute_url(),
             'title': self.title,
             'description': self.description,
             'over_18s': self.over_18s,
@@ -308,8 +348,10 @@ class Event(models.Model):
                 'name': category.name,
             } for category in self.categories.all()],
             'broadcaster': {
+                'pfp': self.broadcaster.get_picture(),
                 'id': self.broadcaster.id,
                 'handle': self.broadcaster.handle,
+                'url': self.broadcaster.get_absolute_url(),
             },
             'created': self.created,
             'updated': self.updated,
@@ -322,8 +364,13 @@ class Event(models.Model):
             'showings': [{
                 'id': showing.showing_id,
             } for showing in EventShowing.objects.filter(event=self).all()],
+            'earliest_showing': next_showing,
+            'thumbnail': cover_pic,
+            'url': self.get_absolute_url(),
         }
     
+
+
     def is_authorized(self, user):
         return (
             user.is_staff
@@ -333,10 +380,35 @@ class Event(models.Model):
 
 
 
+    def can_view(self, user) -> bool:
+        """
+            Simple function to check if a user can view an event
+        """
+        return True
+        broadcaster = self.broadcaster
+        contributors = broadcaster.contributors.all()
+        is_staff = user.is_staff
+        is_subscribed = user.is_subscribed()
+        days_past_last_showing = (datetime.now() - self.get_last_showing().time.replace(tzinfo=None)).days
+        is_contributor = user in contributors
+        is_broadcaster = broadcaster.streamer == user
+
+        # -- Check if the user is authorized to view the event
+        if is_staff or is_contributor or is_broadcaster: return True
+
+        # -- If the last showing was more than 7 days ago, then the event is no longer live
+        #    and its available to anyone with a subscription
+        if days_past_last_showing > 7 and is_subscribed: return True
+
+        return False
+    
+
+
+
 # Event Review Model
 class EventReview(models.Model):
     review_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    author = models.ForeignKey(get_user_model(), related_name="Author", on_delete=models.CASCADE)
+    author = models.ForeignKey('accounts.Member', related_name="Author", on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     title = models.CharField("Review Title", max_length=50)
     body = models.TextField("Review Body", max_length=500)
@@ -453,3 +525,13 @@ class EventShowing(models.Model):
 
     def __str__(self):
         return self.time.strftime("%H:%M %d-%m-%Y")
+    
+    def serialize(self):
+        return {
+            'id': self.showing_id,
+            'country': self.country,
+            'city': self.city,
+            'venue': self.venue,
+            'time': self.time,
+            'max_duration': self.max_duration,
+        }

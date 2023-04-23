@@ -447,7 +447,10 @@ def change_email(
             
             # -- Inform the user that the email was changed
             if member.security_preferences.email_on_email_change:
-                send_template_email(member, 'email_change')
+                send_template_email(member, 'email_change', {
+                    'new_email': new_email,
+                    'old_email': cur_email,
+                })
 
             
             # -- Change the email

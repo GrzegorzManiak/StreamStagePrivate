@@ -1,0 +1,81 @@
+<div class='unroll'>
+    <div class='styled-ticket'>
+
+        <div class='ticket-header'>
+            <div class='ticket-service-band'>
+                <p data-provider-scroller='1'>StreamStage StreamStage StreamStage StreamStage StreamStage StreamStage</p>
+                <p data-provider-scroller='2'>StreamStage StreamStage StreamStage StreamStage StreamStage StreamStage</p>
+            </div>
+
+            <div class='ticket-content'>
+                <div 
+                data-id='ticket-title'
+                class='ticket-title'>{{ event.title }}</div>
+
+                <hr class='ticket-divider'>
+
+                <div class='ticket-showing split'>
+                    <!-- Showing -->
+                    <div class='ticket-showing-title'>
+                        <p class='highlight'>Showing</p>
+                        <p 
+                        data-id='ticket-showing'
+                        class='ticket-text'>{{ event.venue }}</p>
+                    </div>
+
+                    <div class='vertical-divider'><p>.</p></div>
+
+                    <!-- Date -->
+                    <div class='ticket-showing-date'>
+                        <p class='highlight'>Date</p>
+                        <p 
+                        data-id='ticket-date'
+                        class='ticket-text'>{{ event.date }}</p>
+                    </div>
+                </div>
+
+                <hr class='ticket-divider'>
+
+                <!-- Gates -->
+                <div class='ticket-gates split'>
+                    <div class='ticket-gates-title'>
+                        <p class='highlight'>Starts</p>
+                        <p 
+                        data-id='ticket-gates'
+                        class='ticket-text'>{{ event.starts }}</p>
+                    </div>
+
+                    <div class='vertical-divider'><p>.</p></div>
+
+                    <div class='ticket-price-title'>
+                        <p class='highlight'>Price</p>
+                        <p 
+                        data-id='ticket-price'
+                        class='ticket-text'>{{ event.price }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class='ticket-cut-body'>
+            <div class='ticket-cut top-left'></div>
+            <div class='ticket-cut top-right'></div>
+
+            <div class='ticket-cut-middle'>
+                <div class='ticket-cut-dash'></div>
+            </div>
+
+            <div class='ticket-cut bottom-left'></div>
+            <div class='ticket-cut bottom-right'></div>
+        </div>
+
+        <div class='big-ticket-body'>
+            <img 
+            data-id='ticket-qr'
+            src='https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl={{ event.ticket }}&choe=UTF-8' />
+            <div 
+            data-id='ticket-id'
+            class='ticket-text'><h1>{{ event.ticket }}</h1></div>
+        </div>
+    </div>
+</div>

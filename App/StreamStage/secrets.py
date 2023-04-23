@@ -15,7 +15,8 @@ STRIPE_MODES = {
         'pri': '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',
         
         'prices': {
-            'SSP': 'price_1Mn8TfKeLSBX93CvYi3x6RLu'
+            'ss_monthly': 999,
+            'ss_yearly': 9999
         }
     },
 
@@ -24,7 +25,8 @@ STRIPE_MODES = {
         'pri': 'sk_test_51MluK8KeLSBX93CvdELL57Uvj6z3vI8Yhk9xw7I35wDDTOhN8vDEdahTnSX8sqADnA9iwDsWKDzI6p4LrmLEsiRQ00JcaN5yQG',
 
         'prices': {
-            'SSP': 'price_1MmcXIKeLSBX93CvwgTOkru0'
+            'ss_monthly': 'price_1MxyxYKeLSBX93CvnO4YelKB',
+            'ss_yearly': 'price_1MxyxYKeLSBX93CvqY0muTMQ'
         }
     }
 }

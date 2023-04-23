@@ -63,10 +63,14 @@ def profile(request):
             'update_review': reverse_lazy('update_review'),
             'delete_review': reverse_lazy('delete_review'),
             'change_pfp': reverse_lazy('change_pfp'),
+            'get_subscription': reverse_lazy('get_subscription'),
+            'cancel_subscription': reverse_lazy('cancel_subscription'),
+            'filter_purchases': reverse_lazy('filter_purchases'),
         },
         'stripe': request.user.get_stripe_customer(),
         'stripe_key': STRIPE_PUB_KEY,
-        'oauth': format_providers()
+        'oauth': format_providers(),
+        'tickets': request.user.get_tickets(),
     }
 
     # -- Render the profile page
@@ -307,3 +311,21 @@ def upload_image(request, data):
     return success_response(f'Updated {data["type"]} succesfully', {
         'image': request.user.get_profile_pic(),
     })
+
+
+
+@api_view(['POST'])
+@impersonate()
+@authenticated()
+@required_data(['token'])
+def delete_account(request, data):
+    """
+        Deletes the user's account
+    """
+    pat = revoke_pat(data['token'], request.user)
+    if pat[0] == False: return invalid_response(pat[1])
+
+    Statistics.log('accounts', 'account_delete')
+
+    request.user.delete()
+    return success_response('Account deleted successfully')

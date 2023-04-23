@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load tags %}
 {% load render_bundle from webpack_loader %}
 
 {% block metadescription %}
@@ -15,6 +16,7 @@
     <link rel="stylesheet" href="{% static 'css/auth.css' %}">
     <link rel="stylesheet" href="{% static 'css/payments.css' %}">
     <link rel="stylesheet" href="{% static 'css/cropper.css' %}">
+    <link rel="stylesheet" href="{% static 'css/ticket.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -63,6 +65,27 @@
 
         data-stripe-pub='{{ stripe_key }}'
         data-stripe-customer='{{ stripe }}'
+
+        data-add-payment='{{ api.add_payment }}'
+        data-get-payments='{{ api.get_payments }}'
+        data-remove-payment='{{ api.remove_payment }}',
+
+        data-get-payment-methods='{% cross_app_reverse_tag "accounts" "get_payments" %}'
+        data-add-payment-method='{% cross_app_reverse_tag "accounts" "add_payment" %}'
+        data-remove-payment-method='{% cross_app_reverse_tag "accounts" "remove_payment" %}'
+        data-create-payment-intent='{% cross_app_reverse_tag "accounts" "create_payment" %}'
+        data-check-payment-intent='{% cross_app_reverse_tag "accounts" "check_payment" %}'
+        
+        data-create-payment='{{ api.create_payment }}'
+        data-check-payment='{{ api.check_payment }}'
+
+        data-is-subscribed='{{ user.is_subscribed }}'
+        data-get-subscription='{{ api.get_subscription }}'
+        data-cancel-subscription='{{ api.cancel_subscription }}'
+
+        data-filter-purchases='{{ api.filter_purchases }}'
+        data-get-tickets='{% cross_app_reverse_tag "accounts" "get_tickets" %}'
+        data-delete-account='{% cross_app_reverse_tag "accounts" "delete_account" %}'
     ></span>
     <div 
     id = 'main-container'
@@ -254,6 +277,45 @@
                         </div>
                         <!-- 
                             End of Pod - StreamStage+
+                        -->
+
+
+
+                        <!-- 
+                            Pod - Tickets
+                        -->
+                        <div 
+                            data-pod-status=''
+                            data-pod='tickets'
+                        class='
+                            side-panel-pod
+                            text-light d-flex
+                            align-items-center
+                            justify-content-start
+                        '>
+                            <!-- Icon -->
+                            <div 
+                                class='
+                                    side-panel-pod-icon
+                                    d-flex
+                                    align-items-center
+                                    justify-content-center
+                                '
+                            >
+                                <i class="fa-solid text-justify accordion
+                                    fa-ticket
+                                "></i>
+                            </div>
+
+                            <!-- Text -->
+                            <div class='side-panel-pod-text'>
+                                <p class='side-panel-pod-text-text m-0 mb-0'>
+                                    Tickets
+                                </p>
+                            </div>
+                        </div>
+                        <!-- 
+                            End of Pod - Tickets
                         -->
                         
                     </div>
@@ -598,9 +660,7 @@
             <div class = '
                 size-limiter
             '>
-                <div class = '
-                    rounded
-                '>
+                <div>
                     <div class = '
                         row 
                         g-0
@@ -613,13 +673,6 @@
                             -->
                             <div class = "
                                 card-body 
-                                rounded
-                                p-xxl-5
-                                p-xl-5
-                                p-lg-5
-                                p-md-3
-                                p-sm-3
-                                p-2
                                 text-light
                                 smoother
                             ">
@@ -637,8 +690,14 @@
                                 <!-- StreamStage+ -->
                                 {% include 'panels/streamstageplus.html' %}
 
+                                <!-- Tickets -->
+                                {% include 'panels/tickets.html' %}
+
                                 <!-- Reviews -->
                                 {% include 'panels/reviews.html' %}
+
+                                <!-- Purchases -->
+                                {% include 'panels/purchases.html' %}
                                 
                                 <!--
                                     Events Panel

@@ -40,7 +40,7 @@ def username_taken(username) -> bool:
             return True
 
     # -- Check the database
-    if Member.objects.filter(cased_username=username.lower()).first() is not None:
+    if Member.objects.filter(username=username.lower()).first() is not None:
         return True
 
     return False
@@ -68,11 +68,28 @@ def email_taken(email) -> bool:
             return True
 
     # -- Check the database
-    if Member.objects.filter(email=email).first() is not None:
+    if Member.objects.filter(email=email).first() is not None: 
         return True
 
     return False
 
+
+def strong_password(password: str) -> bool:
+    """
+    <li class='length'>Must be between 8 and 64 characters</li>
+    <li class='spaces'>Must not contain spaces</li>
+    <li class='number'>Must contain at least one number</li>
+    <li class='uppercase'>Must contain at least one uppercase letter</li>
+    <li class='lowercase'>Must contain at least one lowercase letter</li>                                      
+    """
+
+    if len(password) < 8 or len(password) > 64: return False
+    if ' ' in password: return False
+    if not any(char.isdigit() for char in password): return False
+    if not any(char.isupper() for char in password): return False
+    if not any(char.islower() for char in password): return False
+
+    return True
 
 
 """
@@ -104,6 +121,12 @@ def create_account_email(
             'message': 'An account with that username already exists',
         }, status=status.HTTP_400_BAD_REQUEST)
 
+    # -- Check if the password is strong
+    if not strong_password(password):
+        return JsonResponse({
+            'status': 'error',
+            'message': 'The password is not strong enough',
+        }, status=status.HTTP_400_BAD_REQUEST)
 
     email = email.lower()
     username = username.lower()
