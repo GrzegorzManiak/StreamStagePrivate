@@ -65,3 +65,34 @@ const rate = (rating) => {
   var rs = rating_input.parentElement.parentElement.querySelector('.rating-list')
   rs.setAttribute('data-value', rating)
 }
+
+// Show More Button Function
+var buttons = document.querySelectorAll(".show-more-btn")
+
+buttons.forEach(button => {
+  var id = button.getAttribute("data-showmore-id")
+
+  var more_elem = document.querySelector(
+    `.show-more-elem[data-showmore-id="${id}"]`
+  )
+  var less_elem = document.querySelector(
+    `.show-less-elem[data-showmore-id="${id}"]`
+  )
+
+  more_elem.style.display = "none"
+
+  button.addEventListener("click", event => {
+    var visible = more_elem.style.display != "none";
+    console.log( more_elem.style.display != "none")
+
+    if (visible) {
+      button.innerHTML = "Show More";
+      more_elem.style.display = "none"
+      less_elem.style.display = "inherit"
+    } else {
+        button.innerHTML = "Show Less";
+      more_elem.style.display = "inherit"
+      less_elem.style.display = "none"
+    }
+  })
+})

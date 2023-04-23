@@ -180,6 +180,9 @@ class Event(models.Model):
     def __str__(self):
         return self.title
     
+    def get_desc_length(self):
+        return len(self.description)
+    
     # Tickets
     def get_ticket_listings(self):
         return TicketListing.objects.filter(event=self).all()

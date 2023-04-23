@@ -29,17 +29,17 @@ from .views import about_us_view
 
 from accounts.sitemap import sitemap_entries as acc_se
 from applications.sitemap import sitemap_entries as app_se
-from events.sitemap import sitemap_entries as ev_se
-from homepage.sitemap import sitemap_entries as hp_se
-from search.sitemap import sitemap_entries as sr_se
+# from events.sitemap import sitemap_entries as ev_se
+# from homepage.sitemap import sitemap_entries as hp_se
+# from search.sitemap import sitemap_entries as sr_se
 
-# -- Combine all the sitemaps
+# # -- Combine all the sitemaps
 sitemap_entries = [
     *acc_se,
     *app_se,
-    *ev_se,
-    *hp_se,
-    *sr_se
+#     *ev_se,
+#     *hp_se,
+#     *sr_se
 ]
 
 formated_sitemap = f"""<?xml version="1.0" encoding="UTF-8"?>
