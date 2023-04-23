@@ -352,7 +352,7 @@ class Event(models.Model):
             'contributors': [{
                 'id': contributor.id,
                 'handle': contributor.username,
-            } for contributor in self.contributors.all()],
+            } for contributor in self.broadcaster.contributors.all()],
             'approved': self.approved,
             'id': self.event_id,
             'showings': [{
