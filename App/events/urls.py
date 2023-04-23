@@ -50,6 +50,11 @@ from .ext_api import (
     update_event
 )
 
+from .chat.api import (
+    send_new_message,
+    fetch_new_messages
+)
+
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -80,6 +85,10 @@ urlpatterns = [
     path('api/get_media', get_media, name='get_media'),
     path('api/add_media', add_media, name='add_media'),
     path('api/del_media', del_media, name='del_media'),
+
+    # Chat
+    path('api/chat/send', send_new_message, name='send_message'),
+    path('api/chat/get', fetch_new_messages, name='fetch_messages'),
 
     # path('api/get_details', get_event_details, name='get_event_details'),
     # path('api/update_details', update_event_details, name='update_event_details'),
