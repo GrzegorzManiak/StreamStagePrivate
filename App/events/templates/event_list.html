@@ -22,8 +22,8 @@
         <a class="col-lg-6 col-md-8 col-sm-12" href="{% url 'event_view' event.event_id %}">
             <!-- Event title & description -->
             <h4 class="sub-title">{{ event.title }}</h4>
-            {% if event.description.get_desc_length > 250 %}
-                <p>{{ event.description | slice:':250'}}...</p>
+            {% if event.get_desc_length > 245 %}
+                <p>{{ event.description | slice:':245'}}...</p>
             {% else %}
                 <p>{{ event.description}}</p>
             {% endif %}
