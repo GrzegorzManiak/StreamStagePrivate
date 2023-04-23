@@ -318,7 +318,7 @@ class Event(models.Model):
         names = []
 
         for category in self.categories.values():
-            names.append(category.name)
+            names.append(category['name'])
 
         return names
     
