@@ -106,7 +106,7 @@ function invite_template() {
                 <textarea name="message" cols="40" rows="10" maxlength="512" class="textarea form-control" required="" id="id_message"></textarea>
             </div>
     </div>
-        <span id="invite-member-btn" class="btn success">Send Invite</span>
+        <span id="invite-member-btn" class="btn success">Send Inv ite</span>
         <span id="close-modal" class="btn info">Cancel</span>
     </form>`;
 }
@@ -116,17 +116,19 @@ function contrib_modal(broadcaster: BroadcasterDetails) {
 
     console.log(broadcaster);
     for (var contributor of broadcaster.contributors) {
-        contributors += `        
-            <div class='profile-images'>
+        contributors += `
+        <div class="row">
+            <div class='col-3'>
                 <img src='${contributor.profile}' />
             </div>
-            <div class='profile-info'>
+            <div class='col-6'>
                 <a class='h3 m-0' href="${contributor.url}">${contributor.username}</a>
             </div>
-            <div class='profile-actions'>
-                <button data-user="${contributor.username}" class="w-100 h-100 btn btn-primary info remove-contributor">
+            <div class='col-2'>
+                <button data-user="${contributor.username}" class="btn error remove-contributor">
                     <p>Remove</p>
                 </button>
+            </div>
             </div>
         `;
     }
