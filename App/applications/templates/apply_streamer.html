@@ -1,23 +1,108 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load static %}
+{% load tags %}
+{% block metadescription %}
+    Become a streamer to be able to apply for events.
+{% endblock %}
 
-{% load crispy_forms_tags %}
+{% block title %}
+    Streamer Application - StreamStage
+{% endblock %}
 
-{% block title %}Apply for Streamer{% endblock title %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+    <link rel="stylesheet" href="{% static 'css/application.css' %}">
+{% endblock %}
 
 {% block content %}
-<div id="application-container" class="m-4">
+    
+    <div class = '
+        container 
+        mt-4
+        d-flex
+        justify-content-center
+        align-items-center
+    '>
 
-<b>Apply To Become A Streamer!</b>
+        <div class = '
+            size-limiter
+        '>
+            <div>
+                <div class = '
+                    row 
+                    g-0
+                    main-content
+                '>
+                    <main>
+                        <div class = "
+                            card-body 
+                            text-light
+                            smoother
+                        ">
 
-<div id="app-streamer">
-    <form class="form-layout" action="" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
+                            <!-- Header -->
+                            <div class="
+                                mb-5
+                                justify-content-start
+                            ">
+                                <!-- Header -->
+                                <h1 class="
+                                    fw-bold 
+                                ">Stream Stage</h1>
 
-        <div class="d-flex content_center my-4">
-            <button class="btn btn-success ml-2 m-1" name="next" type="submit">Next</button>
+                                <!-- Slogan -->
+                                <p class="
+                                    text-muted
+                                ">
+                                    Event Application
+                                </p>
+                            </div>
+
+                    
+
+                            <article class='panel' data-panel-type='email-wait'>
+                                <div class="
+                                    text-center
+                                ">
+                                    <p class='
+                                        mb-4
+                                        fs-5
+                                    '>
+                                        <form class="form-layout streamer" action="" method="POST" enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            {{ form.as_p }}
+                                            <div class="d-flex content_center my-4">
+                                                <button class="btn btn-success success" name="next" type="submit">Next</button>
+                                            </div>
+                                        </form>
+                                    </p>
+                                </div>
+                                <script>
+                                </script>
+                            </article>
+
+
+                            <!-- Divider -->
+                            <hr>
+
+                            <div class="
+                                text-center
+                                text-muted
+                            ">
+
+                                <!-- Tos, Privacy policy -->
+                                <p>
+                                    By proceeding with the "Loging in" or "Creation" of an account, you acknowledge and agree to abide by the
+                                    <a href='{% cross_app_reverse_tag 'StreamStage' 'render_terms' %}'>Terms of Service</a> and 
+                                    <a href='{% cross_app_reverse_tag 'StreamStage' 'render_privacy' %}'>Privacy Policy</a>.
+                                </p>
+
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
         </div>
-    </form>
-</div>
+    </div>
+
 {% endblock %}

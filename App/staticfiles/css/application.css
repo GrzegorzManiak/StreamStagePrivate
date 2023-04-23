@@ -1,0 +1,92 @@
+.form-layout {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(8, 1fr); 
+    grid-column-gap: 0.5rem;
+    grid-row-gap: 1.5rem;
+}
+
+.streamer {
+    display: flex!important;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.streamer div {
+    width: 100%;
+}
+
+.form-layout > p {
+    margin-bottom: 0.5rem;
+    width: 100%;
+    text-align: left;
+    border: none;
+}
+
+p > [for] {
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+}
+
+
+[for="id_handle"] { font-weight: 400; }
+#id_handle, #id_broadcaster { padding: .5rem 1rem; border: none; }
+.form-layout > :nth-child(2) { 
+    grid-area: 1 / 1 / 2 / 2;
+    margin: 0;
+}
+#id_broadcaster, #id_title {
+    height: 2.5rem;
+}
+
+
+[for="id_name"] { font-weight: 400; }
+#id_name, #id_title { padding: .5rem 1rem; border: none; }
+.form-layout > :nth-child(3) { 
+    grid-area: 1 / 2 / 2 / 3;
+    margin: 0;
+}
+
+
+[for="id_biography"] { font-weight: 400; }
+#id_biography, #id_description { padding: .5rem 1rem; height: 95%; }
+.form-layout > :nth-child(4) { 
+    grid-area: 2 / 1 / 6 / 3;
+    margin: 0;
+}
+
+
+[for="id_submission_statement"] { font-weight: 400; }
+#id_submission_statement, #id_categories { padding: .5rem 1rem; height: 95%; }
+.form-layout > :nth-child(5) { 
+    grid-area: 6 / 1 / 8 / 3;
+    margin: 0;
+}
+
+.button-group {
+    grid-area: 8 / 1 / 9 / 3;
+}
+
+
+.form-layout > :nth-child(6) { 
+    width: 100%;
+    grid-area: 8 / 1 / 9 / 3;
+    display: flex;
+    height: 2rem;
+    padding-top: 0.5rem;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+/* -- if :nth-child(6) exists, add a margin to button-grip */
+.form-layout > :nth-child(6) + .button-group { height: 5rem; }
+
+/* -- On mobile < 550, move everything to a single column -- */
+@media (max-width: 550px) {
+    .form-layout {
+        display: flex;
+        flex-direction: column;
+    }
+}

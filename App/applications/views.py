@@ -1,11 +1,7 @@
 from django.shortcuts import render, redirect
-
 from StreamStage.templatetags.tags import cross_app_reverse
-
 from .forms import *
-
 from .models import STATUS_WAITING, STATUS_APPROVED, STATUS_REJECTED, status_friendly_list
-
 from accounts.com_lib import authenticated, is_admin
 
 from .processing import (
@@ -37,22 +33,22 @@ def apply_broadcaster(request):
     # user must either have a streamer application submitted, or be a streamer
     # to apply for a broadcaster profile.
     if get_streamer_applications(request.user).count() == 0 and not request.user.is_streamer:
-        return redirect('homepage_index')
+        return redirect(cross_app_reverse('applications', 'apply_streamer'))
     
     # if the skip button was pressed
     if request.POST.get('skip') is not None:
-        return redirect('apply_event')
+        return redirect(cross_app_reverse('applications', 'apply_event'))
         
     form = BroadcasterAppForm(request.POST or None)
     
     if form.is_valid():
         submit_broadcaster_application(user, form.data)
-
-        return redirect('apply_event') # temporary
+        return redirect(cross_app_reverse('applications', 'apply_event'))# temporary
 
     context = { 'form': form }
-    
     return render(request, "apply_broadcaster.html", context)
+
+
 
 @authenticated()
 def apply_streamer(request):
@@ -62,12 +58,11 @@ def apply_streamer(request):
     
     if form.is_valid():
         submit_streamer_application(user, form.data)
-
-        return redirect('apply_broadcaster') # temporary
+        return redirect(cross_app_reverse('applications', 'apply_broadcaster'))
 
     context = { 'form': form }
-
     return render(request, "apply_streamer.html", context)
+
 
 @authenticated()
 def apply_event(request):
@@ -76,11 +71,11 @@ def apply_event(request):
     # user must either have a broadcaster application submitted, or be a streamer
     # to apply for an event.
     if get_streamer_applications(request.user).count() == 0 and not request.user.is_streamer:
-        return redirect('homepage_index')
+        return redirect(cross_app_reverse('applications', 'apply_streamer'))
     
     # if the skip button was pressed
     if request.POST.get('skip') is not None:
-        return redirect('landing')
+        return redirect(cross_app_reverse('applications', 'landing'))
     
     user_broadcasters = Broadcaster.objects.filter(streamer=user).values_list('handle', flat=True)
     form = EventAppForm(request.POST or None, streamer=user)
@@ -91,7 +86,6 @@ def apply_event(request):
             form.cleaned_data['is_18s'] = False
 
         event = submit_event_application(user, form.cleaned_data)
-
         return redirect(cross_app_reverse('events', 'event_view', { "event_id": event.event_id })) # temporary
 
     context = {
