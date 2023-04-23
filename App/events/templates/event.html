@@ -162,100 +162,23 @@ Event | StreamStage
     -->
                 <div class="row px-2">
                     <div class="col-lg-6 col-md-12 mx-auto mx-2 my-lg-4 my-md-0 my-sm-2">
-                        <div class="col-12 px-3">
-                        <h4 class="pb-lg-3 pb-md-1 grad-title"><b>Showings & Tickets</b></h4>
-                        {% if event.get_streaming_ticket_listings.count > 0 %}
-                            <button class="ticket-dropdown text-start" href="#show-tickets" role="button" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <p><i class="fa-solid fa-caret-down px-2"></i>Streaming Tickets</p>
-                            </button>
-
-                            <!-- Dropdown Menu -->
-                            <div class="dropdown-menu" id="show-tickets">
-                                {% for ticket in event.get_streaming_ticket_listings %}
-                                    <div class="row m-1 bk-theme-backdrop p-2 rounded">
-                                        <div class="d-flex justify-content-between w-100 mb-2 fs-5">
-                                            <div class="m-0">{{ ticket.ticket_detail }}</div>
-                                            <div class='text-muted m-0'>€{{ ticket.price }}</div>
-                                        </div>
-
-                                        <div class='btn-group w-100 d-flex justify-content-between slim-btn'>    
-                                            <button 
-                                                name="purchase-stream" 
-                                                data-ticket-id="{{ ticket.listing_id }}" 
-                                                data-item-name="{{ ticket.ticket_detail }}" 
-                                                data-item-price="€{{ ticket.price }}"
-                                                type="submit" 
-                                                class="btn btn-success success loader-btn w-100 slim-btn "
-                                                loader-state='default'
-                                            >   
-                                                <span>
-                                                    <div class='spinner-border' role='status'>
-                                                        <span class='visually-hidden'>Loading...</span>
-                                                    </div>
-                                                </span>
-                                                <p>Buy now</p>
-                                            </button>
-                                        </div>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                        </div>
-                        <div class="col-12">
-                            {% for showing in event.get_showings %}
-                                <div class="row mx-2">
-                                    <div class="col-6 my-4">
-                                        <p class="m-0">{{showing.time }}</p>
-                                        <p class="m-0">
-                                        {% if showing.venue and showing.city %}
-                                            {{ showing.venue }} - {{ showing.city }}
-                                        {% elif showing.city %}
-                                            {{ showing.city }}
-                                        {% endif %}
-                                        </p>
-                                        <p>{{showing.country.name}}</p>
-                                    </div>
-                                    <div class="col-6 my-4">
-                                        <!-- Dropdown Button -->
-                                        <button class="ticket-dropdown text-start" href="#show-tickets" role="button" 
-                                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <p><i class="fa-solid fa-caret-down px-2"></i>View Tickets</p>
-                                        </button>
-
-                                        <!-- Dropdown Menu -->
-                                        <div class="dropdown-menu" id="show-tickets">
-                                            {% for ticket in showing.get_ticket_listings %}
-                                                <div class="row m-1 bk-theme-backdrop p-2 rounded">
-                                                    <div class="d-flex justify-content-between w-100 mb-2 fs-5">
-                                                        <div class="m-0">{{ ticket.ticket_detail }}</div>
-                                                        <div class='text-muted m-0'>€{{ ticket.price }}</div>
-                                                    </div>
-                
-                                                    <div class='btn-group w-100 d-flex justify-content-between slim-btn'>    
-                                                        <button 
-                                                            name="purchase-stream" 
-                                                            data-ticket-id="{{ ticket.listing_id }}" 
-                                                            data-item-name="{{ ticket.ticket_detail }}" 
-                                                            data-item-price="€{{ ticket.price }}"
-                                                            type="submit" 
-                                                            class="btn btn-success success loader-btn w-100 slim-btn "
-                                                            loader-state='default'
-                                                        >   
-                                                            <span>
-                                                                <div class='spinner-border' role='status'>
-                                                                    <span class='visually-hidden'>Loading...</span>
-                                                                </div>
-                                                            </span>
-                                                            <p>Buy now</p>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
+                    {% if event.get_showings_count > 3 %}
+                        <div class="show-more-elem" data-showmore-id="2">{% include 'all_showings.html' %}</div>
+                        <div class="show-less-elem" data-showmore-id="2">{% include 'first_2_showings.html' %}</div>
+                        <button 
+                        type="resend" name="resend" id="resend" data-showmore-id="2" 
+                        class="
+                            show-more-btn
+                            btn 
+                            btn-primary
+                            btn-sm
+                            info"
+                        >   
+                            Show More
+                        </button>
+                    {% else %}
+                        {% include 'all_showings.html' %}
+                    {% endif %}
                     </div>
     <!--
         Showings & Tickets END

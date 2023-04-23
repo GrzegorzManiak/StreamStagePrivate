@@ -296,6 +296,13 @@ class Event(models.Model):
     def get_next_showing(self):
         if self.get_showings_count() > 0:
             return self.get_upcoming_showings().first()
+        
+    def get_first_2_showings(self):
+        if self.get_showings_count() > 3:
+            next_3_showings = list(EventShowing.objects.filter(event=self).all())
+            for showing in next_3_showings[2:]:
+                    next_3_showings.remove(showing)
+        return next_3_showings
 
     def get_last_showing(self):
         if self.get_showings_count() > 0:
