@@ -138,7 +138,7 @@ export function construct_modal(
                 style="z-index: 9999; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;">
 
                 <!-- Modal content -->
-                <div class="modal-content bg-dark text-light">
+                <div class="modal-content text-light">
 
                     <!-- Header -->
                     <div class="mb-2 justify-content-start header">
