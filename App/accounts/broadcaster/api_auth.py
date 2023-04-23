@@ -1,7 +1,7 @@
 from accounts.com_lib import error_response
 from functools import wraps
 from django.shortcuts import redirect
-
+from StreamStage.templatetags import cross_app_reverse
 from accounts.models import Broadcaster
 
 def can_edit_broadcaster():
@@ -29,17 +29,17 @@ def can_edit_broadcaster():
                     return error_response("You do not have the permission to access this resource.")
             else:
                 if not broadcaster:
-                    return redirect('homepage_index')
+                    return redirect(cross_app_reverse('homepage', 'homepage_index'))
                 
                 if not request.user.is_authenticated:
-                    return redirect('login')
+                    return redirect(cross_app_reverse('accounts', 'login'))
                 
                
             if not request.user.is_staff:
                 is_contributor = broadcaster.contributors.filter(id=request.user.id).exists()
 
                 if not broadcaster.streamer != request.user and not request.user.is_streamer and not is_contributor:
-                    return redirect('homepage_index')
+                    return redirect(cross_app_reverse('homepage', 'homepage_index'))
             
             # -- Call the original function with the request object
             return view_func(request, broadcaster, *args, **kwargs)

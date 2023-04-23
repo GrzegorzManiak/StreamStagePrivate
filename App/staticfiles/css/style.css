@@ -2,10 +2,10 @@
 /* Root Variables */
 /* ************** */
 :root {
-    --theme-color: #0d1116;
+    --theme-color: #090c0f;
     --theme-semi-transparent-color: rgba(13, 17, 22, 0.9);
-    --theme-secondary-color: #161a1f;
-    --theme-backdrop-color: #1e242b;
+    --theme-secondary-color: #101316;
+    --theme-backdrop-color: #171b20;
     --accent-color: #E5BA73;
     --font-color: #ffffff;
     --greyed-out-font-color: #b3b3b3;
@@ -1233,6 +1233,8 @@ footer hr {
     padding: 1rem;
     border-radius: 0.5rem;
     width: 30rem!important;
+
+    background-color: var(--theme-secondary-color)!important;
 }
 
 .modal-out .main-modal-container {

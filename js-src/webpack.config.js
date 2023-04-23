@@ -27,6 +27,7 @@ module.exports = {
         profiles: './profiles/index.ts',
         broadcaster_profiles: './broadcaster_profiles/index.ts',
         admin: './admin/index.ts',
+        forgot: './forgot/index.ts',
     },
     module: {
         rules: [

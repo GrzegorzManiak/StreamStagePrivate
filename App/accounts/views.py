@@ -84,6 +84,36 @@ def register(request):
 
 
 
+@api_view(['GET'])
+@not_authenticated()
+def reset(request):
+    """
+        This is used to render the reset password page
+    """
+
+    # -- Render the register page
+    return render(
+        request, 
+        'reset.html', 
+        context={
+            'providers': format_providers(),
+            'token': reverse('token'),
+            'get_token': reverse('get_token'),
+            'register': reverse('send_reg_verification'),
+            'login': reverse('login'),
+            'email_recent': reverse('recent_key'),
+            'email_verify': reverse('verify_key'),
+            'email_resend': reverse('resend_key'),
+            'email_remove': reverse('remove_key'),
+
+            'add_payment': reverse_lazy('add_payment'),
+            'get_payments': reverse_lazy('get_payments'),
+            'remove_payment': reverse_lazy('remove_payment'),
+        }
+    )
+
+
+
 @api_view(['POST'])
 @not_authenticated()
 @required_headers(['Authorization'])

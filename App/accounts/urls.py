@@ -58,6 +58,7 @@ from .views import (
     get_token, 
     login, 
     logout, 
+    reset,
     register, 
     validate_token
 )
@@ -69,6 +70,11 @@ from .broadcaster.views import (
     fetch_invites,
     send_contribute_invite,
     respond_to_invite
+)
+
+from .forgot import (
+    init_change_password,
+    change_password
 )
 
 from django.conf import settings
@@ -85,7 +91,11 @@ urlpatterns = [
     path('login/', login, name='login'),
     path('logout/', logout, name='logout'),
     path('register/', register, name='register'),
-    path('forgot/', register, name='forgot'),
+    path('forgot/', reset, name='forgot'),
+
+    # -- Forgot api
+    path('api/forgot/', init_change_password, name='forgot_api'),
+    path('api/forgot/change/', change_password, name='change_password'),
 
     # -- Profile
     path('api/send_verification/', send_verification, name='send_verification'),

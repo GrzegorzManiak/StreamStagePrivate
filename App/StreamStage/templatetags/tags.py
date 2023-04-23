@@ -32,6 +32,7 @@ def cross_app_reverse(app, view, kwargs=None, use_subdomain=True):
             conf = 'homepage.urls'
 
         case 'StreamStage':
+            app = ''
             subdomain = ''
             conf = 'StreamStage.urls'
 

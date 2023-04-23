@@ -393,13 +393,8 @@ def check_stripe_payment_intent_status(
     intent = cust_intent["stripe_intent"]
     intent.refresh()
     match intent["status"]:
-        case "succeeded": 
-            send_template_email(user, 'payment_success', intent)
-            return { "status": "success" }
-        
-        case "canceled": 
-            send_template_email(user, 'payment_canceled', intent)
-            return { "status": "canceled" }
+        case "succeeded": return { "status": "success" }
+        case "canceled": return { "status": "canceled" }
         
         case "active": 
             send_template_email(user, 'subscription_success', intent)

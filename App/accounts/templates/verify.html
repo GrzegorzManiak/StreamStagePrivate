@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-
+{% load tags %}
 {% block metadescription %}
   Register and start streaming.
 {% endblock %}
@@ -113,9 +113,9 @@
 
                                 <!-- Tos, Privacy policy -->
                                 <p>
-                                    By proceeding with the "Loging in" or "Creation" of an account, you acknowledge and agree to abide by the
-                                    <a href="">Terms of Service</a> and 
-                                    <a href="#!">Privacy Policy</a>.
+                                    By proceeding with the "Loging in", "Creation" or "Creation of content", you acknowledge and agree to abide by the
+                                    <a href='{% cross_app_reverse_tag 'StreamStage' 'render_terms' %}'>Terms of Service</a> and 
+                                    <a href='{% cross_app_reverse_tag 'StreamStage' 'render_privacy' %}'>Privacy Policy</a>.
                                 </p>
 
                             </div>

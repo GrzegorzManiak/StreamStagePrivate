@@ -1,0 +1,372 @@
+{% extends "base.html" %}
+{% load static %}
+{% load tags %}
+{% load render_bundle from webpack_loader %} 
+
+{% block metadescription %}
+  Register and start streaming.
+{% endblock %}
+
+{% block title %}
+    Forgot Password - StreamStage
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+    <span
+        class='config'
+        data-page='login'
+        data-csrf-token='{{ csrf_token }}'
+        data-token-url='{{ token }}'
+        data-get-token-url='{{ get_token }}'
+        data-register-url='{{ register }}'
+        data-login-url='{{ login }}'
+
+        data-recent-verification='{{ email_recent }}'
+        data-email-verify='{{ email_verify }}'
+        data-resend-verification='{{ email_resend }}'
+
+        data-add-payment='{{ add_payment }}'
+        data-get-payments='{{ get_payments }}'
+        data-remove-payment='{{ remove_payment }}'
+
+        data-forgot-init='{% cross_app_reverse_tag "accounts" "forgot_api" %}'
+        data-change-password='{% cross_app_reverse_tag "accounts" "change_password" %}'
+    >
+    </span>
+
+    </div>
+    
+    <div class = '
+        container 
+        mt-4
+        d-flex
+        justify-content-center
+        align-items-center
+    '>
+
+        <div class = '
+            size-limiter
+        '>
+            <div>
+                <div class = '
+                    row 
+                    g-0
+                    main-content
+                '>
+                    <main>
+                        <div class = "
+                            card-body 
+                            text-light
+                            smoother
+                        ">
+
+
+                            <!-- Header -->
+                            <div class="
+                                mb-5
+                                justify-content-start
+                            ">
+                                <!-- Header -->
+                                <h1 class="
+                                    fw-bold 
+                                ">Stream Stage</h1>
+
+                                <!-- Slogan -->
+                                <p class="
+                                    text-muted
+                                ">
+                                    Dont ever miss out on another live event ever again.
+                                </p>
+                            </div>
+
+                            <div class='login-area-panels w-100'>
+                                <article 
+                                    class='h-100 
+                                    w-100
+                                    login-area-panel
+                                    d-flex
+                                    justify-content-center
+                                    align-items-center
+                                    flex-column
+                                    login-area-panel-in' 
+                                data-panel-type='forgot'>
+
+                                    <!-- 
+                                        This snipped here is to discourage the browser 
+                                        from auto filling the username field, as it
+                                        blocks the username requirments
+                                    -->
+                                    <input style="display:none">
+                                    <input type="password" style="display:none">
+
+                                    <!-- eom input -->
+                                    <div class="mb-4 w-100">
+                                        <label class="form-label" for="eom">Email or Username</label>
+                                        <input name="eom" id="eom" placeholder="you@StreamStage.co" class="
+                                            form-control 
+                                            form-control-lg
+                                            inp
+                                        ">
+                                    </div>
+
+
+                                    <!-- Buttons -->
+                                    <div class="
+                                        d-flex 
+                                        justify-content-lg-start
+                                        justify-content-center
+                                        flex-column
+                                        mb-5
+                                        w-100
+                                    ">
+
+                                        <button 
+                                            type="submit" 
+                                            id="register-btn" 
+                                            class="
+                                                btn 
+                                                btn-primary
+                                                mb-3
+                                                btn-lg
+                                                loader-btn
+                                                info
+                                                w-100
+                                            "
+                                            loader-state='default'
+                                        >   
+                                            <span>
+                                                <div class='spinner-border' role='status'>
+                                                    <span class='visually-hidden'>Loading...</span>
+                                                </div>
+                                            </span>
+                                            <p>Reset</p>
+                                        </button>
+
+                                        <p class="
+                                            text-center
+                                            text-muted
+                                            mx-3
+                                            my-auto
+                                        ">Just want to login?
+                                            <a href="{% url 'login' %}" class="text-primary">Click here</a>
+                                        </p>
+                                    </div>
+
+                                    <!-- Or -->
+                                    <div class="
+                                        text-center
+                                    ">
+                                        <p class="
+                                            text-muted
+                                        ">
+                                            Other sign up options
+                                        </p>
+                                    </div>
+
+                                    <!-- Loop trough all OAUTH Providers -->
+                                    <div class="
+                                        text-center
+                                    ">
+                                        {% for provider in providers %}
+                                            <span
+                                                id='{{ provider.id }}_sso'
+                                                aria-label='{{ provider.name }}'
+                                                aria-id='{{ provider.id }}'
+                                                aria-url='{{ provider.url }}'
+                                                class='sso'
+                                            >
+                                                <!-- Login with {{provider.name}}-->
+                                                <a 
+                                                    href='{{ provider.url }}'
+                                                    style="
+                                                        text-decoration: none;
+                                                    "
+                                                >
+                                                    <p class='
+                                                        fab 
+                                                        fa-{{ provider.id }}
+                                                        fa-2x
+                                                        text-light
+                                                        p-1
+                                                    '></p>
+                                                </a>
+                                                
+                                            </span>
+                                        {% endfor %}
+                                    </div>
+
+                                </article>
+
+
+                                <article class='
+                                    h-100 
+                                    login-area-panel
+                                    d-flex
+                                    justify-content-center
+                                    align-items-center
+                                    flex-column
+                                ' data-panel-type='email-wait'>
+                             
+                                    <!-- Header -->
+                                    <div class='flex-grow-0 h-100 text-center'>
+                                        <div class="mb-5 w-100">  
+                                            <h1 class='fw-bold clock'>00:00</h1>
+                                        </div>
+
+                                        <p class='
+                                            mb-4
+                                        '>
+                                            Please check your email and click the link to verify account ownership,
+                                            If you don't see the email, check your spam folder.
+                                        </p>
+        
+                                    </div>
+                                    
+                                    <!-- Buttons -->
+                                    <div class="
+                                        d-flex 
+                                        justify-content-lg-start
+                                        justify-content-center
+                                        flex-column
+                                        mb-5
+                                        w-100
+                                    ">
+        
+                                        <button 
+                                            style='display:none'
+                                            type="resend" 
+                                            name="resend"
+                                            id="resend" 
+                                            class="
+                                                btn 
+                                                btn-primary
+                                                mb-3
+                                                btn-lg
+                                                loader-btn
+                                                info
+                                            "
+                                            loader-state='default'
+                                        >   
+                                            <span>
+                                                <div class='spinner-border' role='status'>
+                                                    <span class='visually-hidden'>Loading...</span>
+                                                </div>
+                                            </span>
+                                            <p>Resend</p>
+                                        </button>
+
+                                    </div>
+                                </article>
+
+                                <article class='
+                                    h-100 
+                                    login-area-panel
+                                    d-flex
+                                    justify-content-center
+                                    align-items-center
+                                    flex-column
+                                ' data-panel-type='reset-pass'
+                                >
+                                    <!-- Password input -->
+                                    <div class="mb-4 w-100">
+                                        <label class="form-label" for="password">Password</label>
+                                        <input name="password" autocomplete="new-password" id="password" placeholder="Super Secret Password" type="password" class="
+                                            form-control 
+                                            form-control-lg
+                                            inp
+                                            mb-2
+                                            password
+                                        ">
+
+                                        <input name="rp-password" id="rp-password" placeholder="What was my Password?" type="password" class="
+                                            form-control 
+                                            form-control-lg
+                                            inp
+                                        ">
+
+                                        <!-- Password requirements -->
+                                        <div class="
+                                            text-muted
+                                            small
+                                            p-2
+                                            requirements
+                                        ">
+                                            <ul class="
+                                                text-muted
+                                            ">
+                                                <li class='length'>Must be between 8 and 64 characters</li>
+                                                <li class='spaces'>Must not contain spaces</li>
+                                                <li class='number'>Must contain at least one number</li>
+                                                <li class='uppercase'>Must contain at least one uppercase letter</li>
+                                                <li class='lowercase'>Must contain at least one lowercase letter</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <!-- Buttons -->
+                                    <div class="
+                                        d-flex 
+                                        justify-content-lg-start
+                                        justify-content-center
+                                        flex-column
+                                        mb-5
+                                        w-100
+                                    ">
+
+                                        <button 
+                                            type="submit" 
+                                            id="reset-btn" 
+                                            class="
+                                                btn 
+                                                btn-primary
+                                                mb-3
+                                                btn-lg
+                                                loader-btn
+                                                info
+                                                w-100
+                                            "
+                                            loader-state='default'
+                                        >   
+                                            <span>
+                                                <div class='spinner-border' role='status'>
+                                                    <span class='visually-hidden'>Loading...</span>
+                                                </div>
+                                            </span>
+                                            <p>Reset</p>
+                                        </button>
+                                </article>
+                            </div>
+
+
+
+
+                            <!-- Divider -->
+                            <hr>
+
+                            <div class="
+                                text-center
+                                text-muted
+                            ">
+
+                                <!-- Tos, Privacy policy -->
+                                <p>
+                                    By proceeding with the "Loging in" or "Creation" of an account, you acknowledge and agree to abide by the
+                                    <a href='{% cross_app_reverse_tag 'StreamStage' 'render_terms' %}'>Terms of Service</a> and 
+                                    <a href='{% cross_app_reverse_tag 'StreamStage' 'render_privacy' %}'>Privacy Policy</a>.
+                                </p>
+
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Load the autentication script -->
+    {% render_bundle 'forgot' %}
+{% endblock %}
