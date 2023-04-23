@@ -8,9 +8,11 @@ from rest_framework.decorators import api_view
 from .models import TicketListing, EventShowing, Event, EventMedia
 
 from .ticketing import create_ticket_listing, TicketType
+from django.views.decorators.csrf import csrf_exempt
 
 # TICKET LISTING APIs
 
+@csrf_exempt
 @api_view(['POST'])
 @authenticated()
 @required_data(['event_id'])
@@ -19,7 +21,6 @@ def get_ticket_listings(request, data):
         This view is used to get ticket listings
         for a particular event
     """
-
     event = Event.objects.filter(event_id=data['event_id']).first()
 
     if not event:
@@ -38,6 +39,8 @@ def get_ticket_listings(request, data):
         'listings': encoded_listings
     })
 
+
+@csrf_exempt
 @api_view(['POST'])
 @required_data(['event_id', 'ticket_type', 'detail', 'price', 'stock'])
 @can_edit_event()
@@ -81,6 +84,8 @@ def add_ticket_listing(request, event, data):
         'listing': encoded_listing
     })
 
+
+@csrf_exempt
 @api_view(['POST'])
 @authenticated()
 @required_data(['event_id', 'listing_id'])
@@ -109,7 +114,7 @@ def del_ticket_listing(request, data):
 
 
 # SHOWING APIs
-
+@csrf_exempt
 @api_view(['POST'])
 @authenticated()
 @required_data(['event_id'])
@@ -143,6 +148,8 @@ def get_showings(request, data):
         'showings': encoded_showings
     })
 
+
+@csrf_exempt
 @api_view(['POST'])
 @authenticated()
 @required_data(['event_id', 'time', 'venue', 'city', 'country'])
@@ -187,6 +194,8 @@ def add_showing(request, data):
         'showing': encoded_showing
     })
 
+
+@csrf_exempt
 @api_view(['POST'])
 @authenticated()
 @required_data(['event_id', 'showing_id'])
@@ -217,6 +226,7 @@ def del_showing(request, data):
 
 
 # MEDIA APIs
+@csrf_exempt
 @api_view(['POST'])
 @authenticated()
 @required_data(['event_id'])
@@ -243,6 +253,8 @@ def get_media(request, data):
         'media': encoded_media
     })
 
+
+@csrf_exempt
 @api_view(['POST'])
 @authenticated()
 @required_data(['event_id', 'picture', 'description'])
@@ -280,6 +292,8 @@ def add_media(request, data):
         'media': encoded_media
     })
 
+
+@csrf_exempt
 @api_view(['POST'])
 @authenticated()
 @required_data(['event_id', 'media_id'])

@@ -94,6 +94,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://www.streamstage.co',
     'https://master.streamstage.co',
     'https://localhost:8000',
+    '*://*.streamstage.co/*',
 ]
 
 X_FRAME_OPTIONS = 'ALLOW-FROM *://*.streamstage.co/*'
@@ -110,6 +111,7 @@ CORS_ALLOW_HEADERS = [
     'user-agent',
     'x-csrftoken',
     'x-requested-with',
+    'ss-csrf-token',
 ]
 
 #
@@ -156,6 +158,7 @@ WEBPACK_LOADER = {
 }
 
 MIDDLEWARE = [
+    'accounts.com_lib.csrf_rewriter_middleware',
     'django_hosts.middleware.HostsRequestMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

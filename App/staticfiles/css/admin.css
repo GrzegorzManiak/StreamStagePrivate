@@ -1,23 +1,65 @@
-[data-pod='server'] .side-panel-pod-icon { background-color: #4de061; }
-[data-pod='cash_flow'] .side-panel-pod-icon { background-color: #4de061; }
-[data-pod='tickets'] .side-panel-pod-icon { background-color: #4de061; }
-[data-pod='subscriptions'] .side-panel-pod-icon { background-color: #4de061; }
-[data-pod='viewers'] .side-panel-pod-icon { background-color: #4de061; }
+.side-panel-pod-icon {
+    --statistics-selected: #4de061;
+    --user-management-selected: #4daae0;
+    --content-management-selected: #634de0;
+    --miscellaneous-selected: #e04d4d;
+    
+    --not-selected: #00000036;
+}
 
-[data-pod='accounts'] .side-panel-pod-icon { background-color: #4daae0; }
-[data-pod='users'] .side-panel-pod-icon { background-color: #4daae0; }
+[data-pod='server'] .side-panel-pod-icon { background-color: var(--not-selected); }
+[data-pod='server'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--statistics-selected); }
 
-[data-pod='categories'] .side-panel-pod-icon { background-color: #634de0; }
-[data-pod='venues'] .side-panel-pod-icon { background-color: #634de0; }
-[data-pod='broadcasters'] .side-panel-pod-icon { background-color: #634de0; }
-[data-pod='events'] .side-panel-pod-icon { background-color: #634de0; }
-[data-pod='reviews'] .side-panel-pod-icon { background-color: #634de0; }
-[data-pod='review_statistics'] .side-panel-pod-icon { background-color: #634de0; }
+[data-pod='cash_flow'] .side-panel-pod-icon { background-color: var(--not-selected); }
+[data-pod='cash_flow'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--statistics-selected); }
 
-[data-pod='reports'] .side-panel-pod-icon { background-color: #e04d4d; }
-[data-pod='privacy'] .side-panel-pod-icon { background-color: #e04d4d; }
-[data-pod='terms'] .side-panel-pod-icon { background-color: #e04d4d; }
-[data-pod='faq'] .side-panel-pod-icon { background-color: #e04d4d; }
+[data-pod='tickets'] .side-panel-pod-icon { background-color: var(--not-selected); }
+[data-pod='tickets'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--statistics-selected); }
+
+[data-pod='subscriptions'] .side-panel-pod-icon { background-color: var(--not-selected); }
+[data-pod='subscriptions'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--statistics-selected); }
+
+[data-pod='viewers'] .side-panel-pod-icon { background-color: var(--not-selected); }
+[data-pod='viewers'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--statistics-selected); }
+
+
+[data-pod='accounts'] .side-panel-pod-icon { background-color: var(--not-selected); }
+[data-pod='accounts'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--user-management-selected); }
+
+[data-pod='users'] .side-panel-pod-icon { background-color: var(--not-selected); }
+[data-pod='users'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--user-management-selected); }
+
+
+[data-pod='categories'] .side-panel-pod-icon { background-color: var(--not-selected); }
+[data-pod='categories'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--content-management-selected); }
+
+[data-pod='venues'] .side-panel-pod-icon { background-color: var(--not-selected); }
+[data-pod='venues'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--content-management-selected); }
+
+[data-pod='broadcasters'] .side-panel-pod-icon { background-color: var(--not-selected); }
+[data-pod='broadcasters'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--content-management-selected); }
+
+[data-pod='events'] .side-panel-pod-icon { background-color: var(--not-selected); }
+[data-pod='events'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--content-management-selected); }
+
+[data-pod='reviews'] .side-panel-pod-icon { background-color: var(--not-selected); }
+[data-pod='reviews'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--content-management-selected); }
+
+[data-pod='review_statistics'] .side-panel-pod-icon { background-color: var(--not-selected); }
+[data-pod='review_statistics'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--content-management-selected); }
+
+
+[data-pod='reports'] .side-panel-pod-icon { background-color: var(--not-selected); }
+[data-pod='reports'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--miscellaneous-selected); }
+
+[data-pod='privacy'] .side-panel-pod-icon { background-color: var(--not-selected); }
+[data-pod='privacy'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--miscellaneous-selected); }
+
+[data-pod='terms'] .side-panel-pod-icon { background-color: var(--not-selected); }
+[data-pod='terms'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--miscellaneous-selected); }
+
+[data-pod='faq'] .side-panel-pod-icon { background-color: var(--not-selected); }
+[data-pod='faq'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--miscellaneous-selected); }
 
 .graphs {
     display: flex;

@@ -138,6 +138,40 @@ def api_session_helper():
 
 
 """
+    :name: csrf_rewriter_middleware
+    :description: This middleware is used to rewrite the csrf token
+    from the x-csrftoken header to the cookie, this is used to allow
+    authenticated cross subdomain requests to the api
+"""
+def csrf_rewriter_middleware(get_request):
+    
+    def middleware(request):
+        # -- Get the request
+        request = get_request(request)  
+        # print(request.headers)
+
+        # # -- Check for the 'ss-csrf-token' header
+        # #    or 'x-csrftoken' header
+        # if 'ss-csrf-token' in request.headers:
+        #     # -- Set the cookie
+        #     request.COOKIES['csrftoken'] = request.headers['ss-csrf-token']
+
+        # # -- Check if we have a token
+        # if 'x-csrftoken' in request.headers:
+        #     # -- Set the cookie
+        #     request.COOKIES['csrftoken'] = request.headers['x-csrftoken']
+
+        # -- Return the request
+        return request
+
+    return middleware
+
+
+
+
+
+
+"""
     :name: api_session_middleware
     :description: This middleware is used to set the 
     StreamStage-Token header on all requests, this is used

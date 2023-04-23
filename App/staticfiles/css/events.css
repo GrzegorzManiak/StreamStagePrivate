@@ -8,6 +8,11 @@
     margin: 1rem auto;
     object-fit: cover;
 }
+@media screen and (max-width: 992px) {
+    .event-cover-list img{
+        width: 50%;
+    }
+}
 /* Hide Reviews on Medium & Smaller Screens */
 @media screen and (max-width: 992px) {
     .hide_md * {
@@ -25,8 +30,8 @@
     object-fit: cover;
 }
 @media screen and (max-width: 992px) {
-    .event-cover {
-        max-width: 50%;
+    .event-cover img{
+        width: 50%;
     }
 }
 /* Event Trailer */
@@ -35,6 +40,15 @@
     width: 100vw;
     max-height: 100%;
     margin: 1rem auto; 
+}
+
+/***** Event Update Page *****/
+.media-elem div img{
+    border-radius: 0.5rem;
+    height: 10rem;
+}
+.media-elem div span{
+    margin: 0 1rem;
 }
 
 /*****

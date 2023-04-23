@@ -66,37 +66,72 @@
     justify-content: center;
 }
 
+.side-panel-pod-icon {
+    --proifle-selected: #8cff6fcb;
+    --security-selected: #f77575de;
+    --other-selected: #6a99ff;
+
+    --proifle: #00000036;
+    --security: #00000036;
+    --other: #00000036;
+
+    transition: background-color 0.5s ease-in-out;
+}
+
 /* General */
-[data-pod='profile'] .side-panel-pod-icon { background-color: #88d464; }
-[data-pod='payment'] .side-panel-pod-icon { background-color: #88d464; }
-[data-pod='notifications'] .side-panel-pod-icon { background-color: #88d464; }
-[data-pod='streamstageplus'] .side-panel-pod-icon { background-color: #88d464; }
-[data-pod='tickets'] .side-panel-pod-icon { background-color: #88d464; }
+[data-pod='profile'] .side-panel-pod-icon { background-color: var(--proifle); }
+[data-pod='profile'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--proifle-selected); }
+
+[data-pod='payment'] .side-panel-pod-icon { background-color: var(--proifle); }
+[data-pod='payment'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--proifle-selected); }
+
+[data-pod='notifications'] .side-panel-pod-icon { background-color: var(--proifle); }
+[data-pod='notifications'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--proifle-selected); }
+
+[data-pod='streamstageplus'] .side-panel-pod-icon { background-color: var(--proifle); }
+[data-pod='streamstageplus'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--proifle-selected); }
+
+[data-pod='tickets'] .side-panel-pod-icon { background-color: var(--proifle); }
+[data-pod='tickets'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--proifle-selected); }
+
 
 /* Security */
-[data-pod='exit'] .side-panel-pod-icon { background-color: #ff6a6a; }
-[data-pod='security'] .side-panel-pod-icon { background-color: #ff6a6a; }
-[data-pod='security-preferences'] .side-panel-pod-icon { background-color: #ff6a6a; }
-[data-pod='security-mfa'] .side-panel-pod-icon { background-color: #ff6a6a; }
-[data-pod='security-linked-accounts'] .side-panel-pod-icon { background-color: #ff6a6a; }
-[data-pod='security-password'] .side-panel-pod-icon { background-color: #ff6a6a; }
-[data-pod='security-email'] .side-panel-pod-icon { background-color: #ff6a6a; }
-[data-pod='security-history'] .side-panel-pod-icon { background-color: #ff6a6a; }
-[data-pod='security-delete'] .side-panel-pod-icon { background-color: #ff6a6a; }
+[data-pod='exit'] .side-panel-pod-icon { background-color: var(--security-selected); }
+[data-pod='exit'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--security-selected); }
+
+[data-pod='security'] .side-panel-pod-icon { background-color: var(--security); }
+[data-pod='security'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--security-selected); }
+
+[data-pod='security-preferences'] .side-panel-pod-icon { background-color: var(--security); }
+[data-pod='security-preferences'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--security-selected); }
+
+[data-pod='security-mfa'] .side-panel-pod-icon { background-color: var(--security); }
+[data-pod='security-mfa'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--security-selected); }
+
+[data-pod='security-linked-accounts'] .side-panel-pod-icon { background-color: var(--security); }
+[data-pod='security-linked-accounts'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--security-selected); }
+
+[data-pod='security-password'] .side-panel-pod-icon { background-color: var(--security); }
+[data-pod='security-password'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--security-selected); }
+
+[data-pod='security-email'] .side-panel-pod-icon { background-color: var(--security); }
+[data-pod='security-email'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--security-selected); }
+
+[data-pod='security-history'] .side-panel-pod-icon { background-color: var(--security); }
+[data-pod='security-history'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--security-selected); }
+
+[data-pod='security-delete'] .side-panel-pod-icon { background-color: var(--security); }
+[data-pod='security-delete'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--security-selected); }
 
 /* Other */
-[data-pod='help'] .side-panel-pod-icon { background-color: #4d74e0; }
-[data-pod='purchases'] .side-panel-pod-icon { background-color: #4d74e0; }
-[data-pod='reviews'] .side-panel-pod-icon { background-color: #4d74e0; }
+[data-pod='help'] .side-panel-pod-icon { background-color: var(--other); }  
+[data-pod='help'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--other-selected); }
 
-/* Broadcaster */
-[data-pod='events'] .side-panel-pod-icon { background-color: #4de0e0; }
-[data-pod='broadcaster'] .side-panel-pod-icon { background-color: #4de0e0; }
+[data-pod='purchases'] .side-panel-pod-icon { background-color: var(--other); }
+[data-pod='purchases'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--other-selected); }
 
-/* Admin */
-[data-pod='event-request'] .side-panel-pod-icon { background-color: #4de09b; }
-[data-pod='broadcaster-request'] .side-panel-pod-icon { background-color: #4de09b; }
-[data-pod='venues'] .side-panel-pod-icon { background-color: #4de09b; }
+[data-pod='reviews'] .side-panel-pod-icon { background-color: var(--other); }
+[data-pod='reviews'][data-pod-status='active'] .side-panel-pod-icon { background-color: var(--other-selected); }
 
 .sec-pod .side-panel-pod-icon  { background-color: #ff6a6a; }
 .sec-pod { width: 45%; }

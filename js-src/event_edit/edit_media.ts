@@ -111,12 +111,12 @@ function media_html(
     media: Media
 ) : HTMLElement {
     var sq = document.createElement('div');
-    sq.className = "m-2 media-elem";
+    sq.className = "media-elem text-center col-lg-3 col-md-4 col-sm-6";
     sq.setAttribute("data-mid", media.media_id);
 
     sq.innerHTML = `
-        <div class="col-6">
-            <img class="event-cover " src="${media.picture}"></div>
+        <div>
+            <img class="event-cover" src="${media.picture}"></div>
             <span>${media.description}</span>
         </div>
         <div class="remove-media-btn btn btn-danger" data-mid="${media.media_id}">

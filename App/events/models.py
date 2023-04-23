@@ -124,14 +124,10 @@ class TicketListing(models.Model):
     event = models.ForeignKey(to="events.Event", on_delete=models.CASCADE)
     ticket_detail = models.CharField(max_length=100, blank=True)
     price = models.DecimalField(max_digits=1000, decimal_places=2, validators=[MinValueValidator(0)])
-    
-    # seat = models.CharField(max_length=25, blank=True)
-    
-    ticket_type = models.IntegerField(default=0) # streaming ticket ID
-
+    # Ticket Type Id - 0 = Streaming, 1 = In-person
+    ticket_type = models.IntegerField(default=0)
     # If this is an in-person ticket, a showing must be specified.
     showing = models.ForeignKey(to="events.EventShowing", null=True, on_delete=models.CASCADE)
-
     # 0 means no stocking.
     maximum_stock = models.IntegerField(default=0, validators=[MinValueValidator(-1)])
     remaining_stock = models.IntegerField(default=0, validators=[MinValueValidator(0)])
@@ -164,7 +160,6 @@ class Event(models.Model):
     broadcaster = models.ForeignKey(to="accounts.Broadcaster", on_delete=models.CASCADE)
     categories = models.ManyToManyField(to=Category)
     primary_media_idx = models.IntegerField(default=0) # Points to an item in the 'media' field - used as a cover photo 
-    contributors = models.ManyToManyField('accounts.Member', related_name="event_contributors", blank=True)
     approved = models.BooleanField("Approved", default=False)
 
     created = models.DateTimeField(auto_now_add=True)

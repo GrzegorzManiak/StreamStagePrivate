@@ -8,8 +8,6 @@ class EventAdmin(admin.ModelAdmin):
     list_display = [ 'event_id', 'title', 'description', 'over_18s', 'broadcaster', 'approved']
     list_editable = [ 'title', 'description', 'over_18s', 'broadcaster', 'approved']
     list_display_links = []
-    filter_horizontal = ['contributors']
-
 @admin.register(TicketListing)
 class TicketListing(admin.ModelAdmin):
     list_display = [ 'event', 'price', 'ticket_detail', 'ticket_type', 'maximum_stock', 'remaining_stock' ]

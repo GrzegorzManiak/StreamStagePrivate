@@ -1,5 +1,5 @@
 from django import forms
-from .models import Event, EventReview, EventShowing, EventMedia, EventTrailer
+from .models import Event, EventReview, Category, EventMedia, EventTrailer
                                         # ***************
                                         # *** Events  ***                                        # ***************
                                         # *************** 
@@ -19,6 +19,7 @@ class EventUpdateForm(forms.ModelForm):
 
     title = forms.CharField(widget=forms.Textarea(attrs={'name':'title', 'rows':1, 'cols':100}))
     description = forms.CharField(widget=forms.Textarea(attrs={'name':'body', 'rows':10, 'cols':100}))
+    categories = forms.ModelMultipleChoiceField(queryset=Category.objects.all(), widget=forms.CheckboxSelectMultiple)
 
 # Deleting an Event
 class EventDeleteForm(forms.ModelForm):

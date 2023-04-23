@@ -1,12 +1,9 @@
 from django.shortcuts import render, redirect
-
 from StreamStage.templatetags.tags import cross_app_reverse
-
 from .forms import *
-
 from .models import STATUS_WAITING, STATUS_APPROVED, STATUS_REJECTED, status_friendly_list
-
 from accounts.com_lib import authenticated, is_admin
+from django.views.decorators.csrf import csrf_exempt
 
 from .processing import (
     submit_streamer_application,
@@ -29,7 +26,7 @@ from .processing import (
 # User views
 
 
-
+@csrf_exempt
 @authenticated()
 def apply_broadcaster(request):
     user = request.user
@@ -37,23 +34,23 @@ def apply_broadcaster(request):
     # user must either have a streamer application submitted, or be a streamer
     # to apply for a broadcaster profile.
     if get_streamer_applications(request.user).count() == 0 and not request.user.is_streamer:
-        return redirect('homepage_index')
+        return redirect(cross_app_reverse('applications', 'apply_streamer'))
     
     # if the skip button was pressed
     if request.POST.get('skip') is not None:
-        return redirect('apply_event')
+        return redirect(cross_app_reverse('applications', 'apply_event'))
         
     form = BroadcasterAppForm(request.POST or None)
     
     if form.is_valid():
         submit_broadcaster_application(user, form.data)
-
-        return redirect('apply_event') # temporary
+        return redirect(cross_app_reverse('applications', 'apply_event'))# temporary
 
     context = { 'form': form }
-    
     return render(request, "apply_broadcaster.html", context)
 
+
+@csrf_exempt
 @authenticated()
 def apply_streamer(request):
     user = request.user
@@ -62,13 +59,12 @@ def apply_streamer(request):
     
     if form.is_valid():
         submit_streamer_application(user, form.data)
-
-        return redirect('apply_broadcaster') # temporary
+        return redirect(cross_app_reverse('applications', 'apply_broadcaster'))
 
     context = { 'form': form }
-
     return render(request, "apply_streamer.html", context)
 
+@csrf_exempt
 @authenticated()
 def apply_event(request):
     user = request.user
@@ -76,11 +72,11 @@ def apply_event(request):
     # user must either have a broadcaster application submitted, or be a streamer
     # to apply for an event.
     if get_streamer_applications(request.user).count() == 0 and not request.user.is_streamer:
-        return redirect('homepage_index')
+        return redirect(cross_app_reverse('applications', 'apply_streamer'))
     
     # if the skip button was pressed
     if request.POST.get('skip') is not None:
-        return redirect('landing')
+        return redirect(cross_app_reverse('applications', 'landing'))
     
     user_broadcasters = Broadcaster.objects.filter(streamer=user).values_list('handle', flat=True)
     form = EventAppForm(request.POST or None, streamer=user)
@@ -91,7 +87,6 @@ def apply_event(request):
             form.cleaned_data['is_18s'] = False
 
         event = submit_event_application(user, form.cleaned_data)
-
         return redirect(cross_app_reverse('events', 'event_view', { "event_id": event.event_id })) # temporary
 
     context = {
@@ -102,7 +97,7 @@ def apply_event(request):
     return render(request, "apply_event.html", context)
 
 # Admin views
-
+@csrf_exempt
 @authenticated()
 @is_admin()
 def list_applications(request):
@@ -118,6 +113,7 @@ def list_applications(request):
 
     return render(request, "admin/applications.html", context)
 
+@csrf_exempt
 @authenticated()
 @is_admin()
 def review_streamer_application(request, id):
@@ -138,6 +134,7 @@ def review_streamer_application(request, id):
 
     return render(request, "admin/review_streamer.html", { 'app' : application })
 
+@csrf_exempt
 @authenticated()
 @is_admin()
 def review_broadcaster_application(request, id):
@@ -158,6 +155,7 @@ def review_broadcaster_application(request, id):
 
     return render(request, "admin/review_broadcaster.html", { 'app' : application })
 
+@csrf_exempt
 @authenticated()
 @is_admin()
 def review_event_application(request, id):
@@ -178,6 +176,7 @@ def review_event_application(request, id):
 
     return render(request, "admin/review_event.html", { 'app' : application })
 
+@csrf_exempt
 @authenticated()
 def landing_url(request):
     user = request.user

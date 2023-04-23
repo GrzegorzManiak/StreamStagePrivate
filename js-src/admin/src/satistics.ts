@@ -12,9 +12,7 @@ export async function manage_statistical_panels(
     server: Pod,
     cash_flow: Pod,
     tickets: Pod,
-    reviews: Pod,
     subscriptions: Pod,
-    viewers: Pod
 ) {
     // -- The settle down period for the window resize event
     const RESIZE_TIMEOUT = 1000;
@@ -29,7 +27,7 @@ export async function manage_statistical_panels(
 
     pods.forEach(async (pod: Pod) => {
         let built = false;
-
+        console.log('building graphs', pod.panel.type);
         // -- Attach the event listeners
         add_callback(async(panel_type) => {
             let resize = () => {}

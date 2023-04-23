@@ -14,6 +14,7 @@ export async function base_request (
             headers: {
                 "Content-Type": "application/json",
                 "X-CSRFToken": configuration.csrf_token,
+                "ss-CSRF-token": configuration.csrf_token,
                 ...headers,
             },
             body: mehod === 'GET' ? undefined : JSON.stringify(data),

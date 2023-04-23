@@ -14,6 +14,7 @@ from ast import Tuple
 import secrets
 import time
 
+from StreamStage.templatetags.tags import cross_app_reverse
 from .models import Member
 from .oauth import (
     check_oauth_key,

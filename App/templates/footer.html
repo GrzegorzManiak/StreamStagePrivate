@@ -38,8 +38,15 @@
                 </ul>
 
                 <ul class="list-unstyled">
+                    <li class='title'>Applications</li>
+                    <li><a href="{% cross_app_reverse_tag 'applications' 'apply_broadcaster' %}">Broadcaster</a></li>
+                    <li><a href="{% cross_app_reverse_tag 'applications' 'apply_streamer' %}">Streamer</a></li>
+                    <li><a href="{% cross_app_reverse_tag 'applications' 'apply_event' %}">Event</a></li>
+                </ul>
+
+                <ul class="list-unstyled">
                     <li class='title'>Other</li>
-                    <li><a href="{% url 'about_us' %}">About Us</a></li>
+                    <li><a href="{% cross_app_reverse_tag 'StreamStage' 'about_us' %}">About Us</a></li>
                     <li><a href="{% cross_app_reverse_tag 'accounts' 'broadcaster_panel' %}">Broadcasters</a></li>
                     <li><a href="{% cross_app_reverse_tag 'StreamStage' 'sitemap' %}">Site Map</a></li>
                 </ul>
