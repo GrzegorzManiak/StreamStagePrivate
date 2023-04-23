@@ -127,6 +127,10 @@
                             <i class="fa-solid fa-lock pe-2"></i>
                             <a href="{% cross_app_reverse_tag 'accounts' 'site_panel' %}">Site Panel</a>
                         </li>
+                        <li class='nav-selectable' nav-id='site_panel'>
+                            <i class="fa-solid fa-inbox-in pe-2"></i>
+                            <a href="{% cross_app_reverse_tag 'applications' 'landing' %}">Applications</a>
+                        </li>
                     {% endif %}
                     <li class='nav-selectable' nav-id='help'>
                         <i class="fa-solid fa-question-circle pe-2"></i>

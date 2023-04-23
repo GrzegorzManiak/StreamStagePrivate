@@ -94,6 +94,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://www.streamstage.co',
     'https://master.streamstage.co',
     'https://localhost:8000',
+    '*://*.streamstage.co/*',
 ]
 
 X_FRAME_OPTIONS = 'ALLOW-FROM *://*.streamstage.co/*'
