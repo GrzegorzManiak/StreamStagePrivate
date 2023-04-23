@@ -3,7 +3,9 @@
 {% load tags %}
 {% load render_bundle from webpack_loader %}
 
-{% block title %}Event{% endblock title %}
+{% block title %}
+Event | StreamStage
+{% endblock title %}
 
 {% block head %}
     <link rel="stylesheet" href="{% static 'css/payments.css' %}">
@@ -46,28 +48,34 @@
             data-stripe-pub='{{ stripe_key }}'
         ></span>
         <div class="nav-gap container">
-            <!-- Main Details -->
-            <div class="row text-light">
-                <div class="col-md-3 col-sm-12 mx-auto p-2 third-page">
-                    <!-- Update Event Button -->
-                    {% if can_edit %}
-                    <a href="update/" class="text-muted">Edit Event</a>
-                    {% endif %}
 
-                    <!-- Category -->
-                    <div class="mx-2 my-4">
+        <!-- Update Event Button -->
+            {% if can_edit %}
+                <a href="update/" class="text-muted">
+                    <button class="btn btn-primary">
+                        Edit Event
+                    </button>
+                </a>
+            {% endif %}
+    <!-- 
+        Event Categories & Media
+    -->
+            <div class="row text-light">
+                <div class="col-lg-3 col-md-4 col-sm-12 mx-auto p-2">
+                <!-- Category -->
+                    <div class="mx-2 my-2">
                         {% for category in event.categories.all %}
-                        <span class="badge bg-primary">{{category.name}}</span>
+                            <span class="badge bg-secondary">{{category.name}}</span>
                         {% endfor %}
                     </div>
 
-                    <!-- Event Poster -->
+                <!-- Event Poster -->
                     <div class="d-flex flex-row mx-2 my-4">
-                        <!-- If No Media, Use Default Event Cover Image -->
+                <!-- If No Media, Use Default Event Cover Image -->
                         {% if event.get_media_count == 0 %}
-                        <img class="event-cover" src="{% static 'images/default_event_cover.png' %}" alt="No Event Cover Photo">
+                            <img class="event-cover" src="{% static 'images/default_event_cover.png' %}" alt="No Event Cover Photo">
                         {% else %}
-                        <!-- Media Carousel -->
+                <!-- Media Carousel -->
                             <div class="swiper mySwiper">
                                 <div class="swiper-wrapper">
                                     {% for media in event.get_media %}
@@ -83,32 +91,70 @@
                         {% endif %}
                     </div>
                 </div>
-
-                <div class="col-md-6 col-sm-12 mx-auto p-2 half-page">
-                    <!-- 
-                        Event Title 
-                    -->
-                    <div class="mx-2 my-4">
+    <!-- 
+        Event Title & Description
+    -->
+                <div class="col-lg-6 col-md-8 col-sm-12 mx-auto p-2">
+                <!-- Event Title -->
+                <div class="mx-2 my-4">
                         <h2 class="page-title">{{ event.title }}</h2>
                     </div>
-
-
                     <hr>
-                    <!-- 
-                        Event Description 
-                        -->
-                    <div class="mx-2 my-4">
-                        <p>{{ event.description | slice:':380' }}. . .</p>
+                <!-- Event Description -->
+                    <div class="mx-2 my-lg-4 my-md-0">
+                        {% if event.get_desc_length > 550 %}
+                            <div class="show-more-elem" data-showmore-id="1"><p>{{ event.description}}</p></div>
+                            <div class="show-less-elem" data-showmore-id="1"><p>{{ event.description | slice:':430' }}...</p></div>
+                
+                        {% else %}
+                            <p>{{ event.description}}</p>
+                        {% endif %}
                     </div>
                     <hr>
-                    
-                    <!-- 
-                        Showings & Tickets 
-                    -->
-                    <div class="mx-2 my-4">
-                        <div class="mx-2 my-4">
-                            <h4><b>Showings</b></h4>
-                            {% if event.get_streaming_ticket_listings.count > 0 %}
+                </div>
+    <!-- 
+        Stream Event Button, Event Streamer & Average Rating 
+    -->         
+                <div class="col-lg-3 col-md-12 mx-auto">
+                    <div class="row mx-auto">
+                        <div class="col-lg-12 col-md-4 col-sm-4 col-xs-4 mx-auto">
+                    <!-- Stream Event -->
+                            <div class="my-lg-4 my-md-1">
+                                <a href="">
+                                    <button class="btn btn-primary btn-lg">Stream Event</button>
+                                </a>
+                            </div>
+                        </div>         
+                        <div class="col-lg-12 col-md-4 col-sm-4 col-xs-4 mx-auto">
+                    <!-- Streamer Name -->
+                            <div class="my-lg-4 my-md-1">
+                                <h4 class="grad-title"><b>Streamer</b></h4>
+                                <a href="">
+                                    <p>@{{ event.broadcaster.handle }}</p>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-md-4 col-sm-4 col-xs-4 mx-auto">
+                    <!-- Overall Event Rating -->
+                            <div class="my-lg-4 my-md-0">
+                                <h4 class="w-100 grad-title"><b>Event Rating</b></h4>         
+                                <span class="fa fa-star {% if event.get_average_rating > 0 %} checked {% endif %}"></span>
+                                <span class="fa fa-star {% if event.get_average_rating > 1 %} checked {% endif %}"></span>
+                                <span class="fa fa-star {% if event.get_average_rating > 2 %} checked {% endif %}"></span>
+                                <span class="fa fa-star {% if event.get_average_rating > 3 %} checked {% endif %}"></span>
+                                <span class="fa fa-star {% if event.get_average_rating > 4 %} checked {% endif %}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    <!-- 
+        Showings & Tickets 
+    -->
+                <div class="row px-2">
+                    <div class="col-lg-6 col-md-12 mx-auto mx-2 my-lg-4 my-md-0">
+                        <div class="col-12 px-3">
+                        <h4 class="pb-lg-3 pb-md-1 grad-title"><b>Showings & Tickets</b></h4>
+                        {% if event.get_streaming_ticket_listings.count > 0 %}
                             <button class="ticket-dropdown text-start" href="#show-tickets" role="button" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <p><i class="fa-solid fa-caret-down px-2"></i>Streaming Tickets</p>
                             </button>
@@ -116,64 +162,12 @@
                             <!-- Dropdown Menu -->
                             <div class="dropdown-menu" id="show-tickets">
                                 {% for ticket in event.get_streaming_ticket_listings %}
-                                <div class="row m-1 bk-theme-backdrop p-2 rounded">
-                                    <div class="d-flex justify-content-between w-100 mb-2 fs-5">
-                                        <div class="m-0">{{ ticket.ticket_detail }}</div>
-                                        <div class='text-muted m-0'>€{{ ticket.price }}</div>
-                                    </div>
-
-                                    <div class='btn-group w-100 d-flex justify-content-between slim-btn'>    
-                                        <button 
-                                            name="purchase-stream" 
-                                            data-ticket-id="{{ ticket.listing_id }}" 
-                                            data-item-name="{{ ticket.ticket_detail }}" 
-                                            data-item-price="€{{ ticket.price }}"
-                                            type="submit" 
-                                            class="btn btn-success success loader-btn w-100 slim-btn "
-                                            loader-state='default'
-                                        >   
-                                            <span>
-                                                <div class='spinner-border' role='status'>
-                                                    <span class='visually-hidden'>Loading...</span>
-                                                </div>
-                                            </span>
-                                            <p>Buy now</p>
-                                        </button>
-                                    </div>
-
-                                </div>
-                                {% endfor %}
-                            </div>
-                            {% endif %}
-                        </div>
-                        {% for showing in event.get_showings %}
-                        <div class="mx-2 my-4 row">
-                            <div class="col-7">
-                                <p class="m-0">{{showing.time }}</p>
-                                <p class="m-0">
-                                    {% if showing.venue and showing.city %}
-                                    {{ showing.venue }} - {{ showing.city }}
-                                    {% elif showing.city %}
-                                    {{ showing.city }}
-                                    {% endif %}
-                                </p>
-                                <p>{{showing.country.name}}</p>
-                            </div>
-                            <div class="col-5">
-                                    <!-- Dropdown Button -->
-                                <button class="ticket-dropdown text-start" href="#show-tickets" role="button" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <p><i class="fa-solid fa-caret-down px-2"></i>View Tickets</p>
-                                </button>
-
-                                <!-- Dropdown Menu -->
-                                <div class="dropdown-menu" id="show-tickets">
-                                    {% for ticket in showing.get_ticket_listings %}
                                     <div class="row m-1 bk-theme-backdrop p-2 rounded">
                                         <div class="d-flex justify-content-between w-100 mb-2 fs-5">
                                             <div class="m-0">{{ ticket.ticket_detail }}</div>
                                             <div class='text-muted m-0'>€{{ ticket.price }}</div>
                                         </div>
-    
+
                                         <div class='btn-group w-100 d-flex justify-content-between slim-btn'>    
                                             <button 
                                                 name="purchase-stream" 
@@ -192,143 +186,134 @@
                                                 <p>Buy now</p>
                                             </button>
                                         </div>
-    
                                     </div>
                                 {% endfor %}
-                                </div>
                             </div>
+                        {% endif %}
                         </div>
-                        {% endfor %}
-                    </div>
-                    <!--
-                        Showings & Tickets END
-                    -->
-                </div>
-                <!-- Event Info -->
-                <div class="col-md-3 col-sm-12 mx-auto third-page">
-                    <!-- Streamer Name -->
-                    <div class="mx-2 my-4">
-                        <h4><b>Streamer</b></h4>
-                        <a href="">
-                            <p>@{{ event.broadcaster.handle }}</p>
-                        </a>
-                    </div>
-                    <!-- Overall Event Rating -->
-                    <div class="mx-2 my-4">
-                        <h4 class="w-100"><b>Event Rating</b></h4>         
-                            <span class="fa fa-star {% if event.get_average_rating > 0 %} checked {% endif %}"></span>
-                            <span class="fa fa-star {% if event.get_average_rating > 1 %} checked {% endif %}"></span>
-                            <span class="fa fa-star {% if event.get_average_rating > 2 %} checked {% endif %}"></span>
-                            <span class="fa fa-star {% if event.get_average_rating > 3 %} checked {% endif %}"></span>
-                            <span class="fa fa-star {% if event.get_average_rating > 4 %} checked {% endif %}"></span>
-                    </div>
-                    <!--<h4><b>Tickets</b></h4>
-                    <div>
-                        {% if event.has_ticket_listings > 0 %}
-                            {% for ticket in event.get_ticket_listings %}
-                                <div class="
-                                    row 
-                                    m-1
-                                    bk-theme-backdrop
-                                    p-2
-                                    rounded
-                                ">
-                                    <div class="
-                                        d-flex 
-                                        justify-content-between 
-                                        w-100
-                                        mb-2
-                                        fs-5
-                                    ">
-                                        <div class="m-0">{{ ticket.ticket_detail }}</div>
-                                        <div class='text-muted m-0'>€{{ ticket.price }}</div>
+                        <div class="col-12">
+                            {% for showing in event.get_showings %}
+                                <div class="row mx-2">
+                                    <div class="col-6 my-4">
+                                        <p class="m-0">{{showing.time }}</p>
+                                        <p class="m-0">
+                                        {% if showing.venue and showing.city %}
+                                            {{ showing.venue }} - {{ showing.city }}
+                                        {% elif showing.city %}
+                                            {{ showing.city }}
+                                        {% endif %}
+                                        </p>
+                                        <p>{{showing.country.name}}</p>
                                     </div>
-
-                                    <div class='btn-group w-100 d-flex justify-content-between slim-btn'>
-                                        {% comment %} <button 
-                                            class="w-25 h-100 btn btn-primary info loader-btn"
-                                            id='dec-{{ ticket.listing_id }}'
-                                            loader-state='default'>   
-                                            <span> <div class='spinner-border' role='status'> 
-                                            <span class='visually-hidden'>Loading...</span> </div> </span>
-                                            <p><i class="fas fa-minus"></i></p>
-                                        </button> {% endcomment %}
-
-                                        <button 
-                                            name="purchase-stream" 
-                                            data-ticket-id="{{ ticket.listing_id }}" 
-                                            data-item-name="{{ ticket.ticket_detail }}" 
-                                            data-item-price="€{{ ticket.price }}"
-                                            type="submit" 
-                                            class="
-                                                btn
-                                                btn-success
-                                                success
-                                                loader-btn
-                                                w-100
-                                                slim-btn
-                                            "
-                                            loader-state='default'
-                                        >   
-                                            <span>
-                                                <div class='spinner-border' role='status'>
-                                                    <span class='visually-hidden'>Loading...</span>
-                                                </div>
-                                            </span>
-                                            <p>Buy now</p>
+                                    <div class="col-6 my-4">
+                                        <!-- Dropdown Button -->
+                                        <button class="ticket-dropdown text-start" href="#show-tickets" role="button" 
+                                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <p><i class="fa-solid fa-caret-down px-2"></i>View Tickets</p>
                                         </button>
 
-                                        {% comment %} <button 
-                                            class="w-25 h-100 btn btn-primary info loader-btn slim-btn"
-                                            id='inc-{{ ticket.listing_id }}'
-                                            loader-state='default'>   
-                                            <span> <div class='spinner-border' role='status'> 
-                                            <span class='visually-hidden'>Loading...</span> </div> </span>
-                                            <p><i class="fas fa-plus"></i></p>
-                                        </button> {% endcomment %}
+                                        <!-- Dropdown Menu -->
+                                        <div class="dropdown-menu" id="show-tickets">
+                                            {% for ticket in showing.get_ticket_listings %}
+                                                <div class="row m-1 bk-theme-backdrop p-2 rounded">
+                                                    <div class="d-flex justify-content-between w-100 mb-2 fs-5">
+                                                        <div class="m-0">{{ ticket.ticket_detail }}</div>
+                                                        <div class='text-muted m-0'>€{{ ticket.price }}</div>
+                                                    </div>
+                
+                                                    <div class='btn-group w-100 d-flex justify-content-between slim-btn'>    
+                                                        <button 
+                                                            name="purchase-stream" 
+                                                            data-ticket-id="{{ ticket.listing_id }}" 
+                                                            data-item-name="{{ ticket.ticket_detail }}" 
+                                                            data-item-price="€{{ ticket.price }}"
+                                                            type="submit" 
+                                                            class="btn btn-success success loader-btn w-100 slim-btn "
+                                                            loader-state='default'
+                                                        >   
+                                                            <span>
+                                                                <div class='spinner-border' role='status'>
+                                                                    <span class='visually-hidden'>Loading...</span>
+                                                                </div>
+                                                            </span>
+                                                            <p>Buy now</p>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
                                     </div>
-
                                 </div>
                             {% endfor %}
+                        </div>
+                    </div>
+    <!--
+        Showings & Tickets END
+    -->
+    <!-- 
+        Event Trailer
+    -->
+                    <div class="col-lg-6 col-md-12 mx-auto mx-2 my-lg-4 my-md-0">
+                        <div class="px-3">    
+                            <h4 class="pb-lg-3 pb-md-1 grad-title"><b>Trailer</b></h4>
+                        </div>                               
+                        <!-- If No Trailer -->
+                        {% if event.get_trailer_count == 0 %}
+                        <div class="text-center">
+                            <p>No Trailers Available</p>                
+                        </div>
+                        <!-- Trailer -->
+                        {% else %}
+                        <div class="d-flex justify-content-center">
+                            {% for trailer in event.get_trailer %}
+                            <video class="mx-auto" width="95%" controls>
+                                <source src="{{ trailer.videofile.url }}">
+                                Your browser does not support the video tag.
+                            </video>
+                            {% endfor %}
+                        </div>
+
                         {% endif %}
                     </div>
-                -->
                 </div>
-            </div>
-
-            <!-- Media for Event -->
-            <div class="row">
-                <!-- Event Reviews -->
-                <div class="col-12">
-                    <div class="mx-2 my-4">
-                        <h4 ><b>Reviews</b></h4>
-                    </div>
-                    <!-- Review Carousel -->
-                    <div class="swiper longSwiper">
-                        <div class="swiper-wrapper">
-                        <!-- Allow users to add review -->
-                            {% if user.is_authenticated %}
-                            <div class="swiper-slide">
-                                {% include 'reviews/review_new.html' %}
-                            </div>
-                            {% endif %}
-                            <!-- If more reviews, display in carousel -->
-                            {% if event.get_review_count > 0 %}
+<!-- 
+    Event Reviews 
+-->
+        <div class="row">
+            <div class="col-12">
+                <div class="mx-2 my-lg-4 my-md-0">
+                    <h4 class="grad-title"><b>Reviews</b></h4>
+                </div>
+                <!-- Review Carousel -->
+                <div class="swiper longSwiper">
+                    <div class="swiper-wrapper">
+                    <!-- Allow users to add review -->
+                        {% if user.is_authenticated %}
+                        <div class="swiper-slide">
+                            {% include 'reviews/review_new.html' %}
+                        </div>
+                        {% endif %}
+                        <!-- If more reviews, display in carousel -->
+                        {% if event.get_review_count > 0 %}
                             {% for review in event.get_medium_reviews %}
                             <div class="swiper-slide">
                                 {% include 'reviews/review.html' %}
                             </div>
                             {% endfor %}
-                            {% endif %}
-                        </div>
-                        <div class="swiper-pagination"></div>
-                        <div class="s-btn swiper-button-prev"></div>
-                        <div class="s-btn swiper-button-next"></div>
+                        {% endif %}
                     </div>
+                    <div class="swiper-pagination"></div>
+                    <div class="s-btn swiper-button-prev"></div>
+                    <div class="s-btn swiper-button-next"></div>
                 </div>
+                <a href="{% cross_app_reverse_tag 'events' 'reviews_view' event_id=event.event_id %}" alt="All Reviews">
+                    <button class="w-100 my-2 btn btn-primary">
+                        All Reviews for {{ event.title }}
+                    </button>
+                </a>
             </div>
-
-</div>
+        </div>
+    </main>
 <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
 <script src="/static/js/events.js"></script>
 {% render_bundle 'events' %}

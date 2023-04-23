@@ -1,18 +1,80 @@
-<div>
-    {% for event in events %}
-        {% if event.event_id = event_id %}
-            {{ event.get_reviews }}
-        {% endif %}
-    {% endfor %} 
-    
-    {% for review in reviews %}.
-    
-    {{ review.title }}<br/>
-    {{ event.description }}<br/>
-    {{ event.streamer }}<br/>
-    {{ event.categories }}<br/>
-    {{ event.showings }}<br/>
-    <hr/>
+{% extends 'base.html' %}
+{% load crispy_forms_tags%}
+{% load tags %}
+{% load static %}
 
-    {% endfor %}
+{% block title %}
+Event Reviews | StreamStage
+{% endblock title %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/events.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="nav-gap container">
+    <a href="{{ event.get_absolute_url }}" alt="Back to Event Page">
+        <button class="w-100 my-2 btn btn-primary">
+            Back to {{event.title}}
+        </button>
+    </a>
+
+    <div class="row">
+        {% for review in event.get_reviews %}
+        <div class="col-md-6 col-12">
+            <div class="card bg-dark p-3 mb-1">
+                <div>
+                    <b class="card-title">{{ review.title }} </b>
+                    <span class="float-end">by {{review.author.username}}</span>
+                </div>
+
+                <p class="card-text">
+                    {{ review.body }}
+                </p>
+                <div>
+                    <!-- Giving a star rating out of 5 -->
+                    <ul class="btn btn-light list-inline rating-list">
+                        <li onclick="rate(5, '{{ event.event_id }}')">
+                            <i class="fa fa-star {% if review.rating > 4 %} checked {% endif %}" title="Rate 5"></i>
+                        </li>
+                        <li onclick="rate(4, '{{ event.event_id }}')">
+                            <i class="fa fa-star {% if review.rating > 3 %} checked {% endif %}" title="Rate 4"></i>
+                        </li>
+                        <li onclick="rate(3, '{{ event.event_id }}')">
+                            <i class="fa fa-star {% if review.rating > 2 %} checked {% endif %}" title="Rate 3"></i>
+                        </li>
+                        <li onclick="rate(2, '{{ event.event_id }}')">
+                            <i class="fa fa-star {% if review.rating > 1 %} checked {% endif %}" title="Rate 2"></i>
+                        </li>
+                        <li onclick="rate(1, '{{ event.event_id }}')">
+                            <i class="fa fa-star {% if review.rating > 0 %} checked {% endif %}" title="Rate 1"></i>
+                        </li>
+                    </ul>
+
+                    <a href="#">
+                        <span data-id="{{ review.review_id}}" data-likes="{{ review.likes }}" user-liked="{% for id in review.get_likers_list %}
+                            {% if id == user.id %}true{% endif %}
+                            {% endfor %}" class="like-button float-end btn btn-primary btn-sm m-1">
+
+                            <i class="fa fa-thumbs-o-up" aria-hidden="true">&nbsp;{{ review.likes }}</i>
+                        </span>
+                    </a>
+                </div>
+
+                {% if review.author == user %}
+                <div>
+                    <a href="{% cross_app_reverse_tag 'events' 'review_delete' event_id=event.event_id review_id=review.review_id %}"
+                        class="float-start btn btn-danger btn-sm m-1">Delete</a>
+                    <a href="{% cross_app_reverse_tag 'events' 'review_update' event_id=event.event_id review_id=review.review_id %}"
+                        class="float-start btn btn-primary btn-sm m-1">Update</a>
+                </div>
+                {% endif %}
+
+            </div>
+            <hr />
+        </div>
+        {% endfor %}
+    </div>
 </div>
+<script src="/static/js/events.js"></script>
+{% endblock %}

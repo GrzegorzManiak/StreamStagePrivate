@@ -26,12 +26,12 @@ sitemap_entries = [
     }
 ]
 
-# -- Add all events to the sitemap
-for event in Event.objects.all():
-    sitemap_entries.append({
-        'loc': event.get_absolute_url(),
-        'description': event.description,
-        'changefreq': 'daily',
-        'priority': 0.85,
-        'lastmod': event.updated,
-    })
+# # -- Add all events to the sitemap
+# for event in Event.objects.all():
+#     sitemap_entries.append({
+#         'loc': event.get_absolute_url(),
+#         'description': event.description,
+#         'changefreq': 'daily',
+#         'priority': 0.85,
+#         'lastmod': event.updated,
+#     })

@@ -1,8 +1,10 @@
 {% load static %}
-{% load crispy_forms_tags%}
+{% load crispy_forms_tags %}
+{% load static %}
+
 {% block content %}
     <div class="row my-2 px-4 mx-auto">
-        <div class="col-md-3 col-sm-12">
+        <div class="col-lg-3 col-md-4 col-sm-12">
             <!-- Event Categories -->
             {% for category in event.categories.all %}
             <span class="badge bg-primary">{{category.name}}</span>
@@ -17,10 +19,15 @@
                 alt="{{ event.get_cover_picture.description }}">
             {% endif %}
         </div>
-        <a class="col-md-6 col-sm-12" href="{% url 'event_view' event.event_id %}">
+        <a class="col-lg-6 col-md-8 col-sm-12" href="{% url 'event_view' event.event_id %}">
             <!-- Event title & description -->
             <h4 class="sub-title">{{ event.title }}</h4>
-            <p>{{ event.description | slice:':250'}}...</p>
+            {% if event.description.get_desc_length > 250 %}
+                <p>{{ event.description | slice:':250'}}...</p>
+            {% else %}
+                <p>{{ event.description}}</p>
+            {% endif %}
+
 
             <!-- Displaying next showing (if any) -->
             <div class="row">
@@ -43,13 +50,13 @@
                 {% if event.get_showings_count > 0 and event.has_ticket_listings > 0 %}
                 <div class="col-6">
                     <h6 class="sub-title"><b>Tickets From</b></h6>
-                </div>
-                <div class="col-6">
                     <p>€{{ event.get_min_ticket_price.price }}</p>
                 </div>
-                <div class="col-12">
+                <div class="col-6">
+                    <p></p>
                     <p>See event page for more details</p>
                 </div>
+
                 {% else %}
                 <div class="col-12">
                     <h6><b>No tickets available</b></h6>
@@ -58,7 +65,7 @@
             </div>
         </a>
         <!-- Reviews for Event -->
-        <div class="col-md-3 col-sm-12">
+        <div class="hide_md col-lg-3">
             <div class="my-4 mx-1">
                 {% if event.get_review_count > 0 %}
                 <h6 class="text-center"><b>Reviews</b></h6>

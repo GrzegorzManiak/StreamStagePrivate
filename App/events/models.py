@@ -1,6 +1,7 @@
 import base64
 import io
 import random
+import uuid
 
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
@@ -9,6 +10,7 @@ from PIL import Image
 from django.db import models
 from django.db.models import Q, Avg
 
+from django.contrib.auth import get_user_model
 from django_countries.fields import CountryField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from StreamStage.templatetags.tags import cross_app_reverse
@@ -16,8 +18,6 @@ from StreamStage.settings import MEDIA_URL
 from datetime import datetime, timedelta
 from django.core.files import File
 from PIL import Image
-import uuid
-import base64
 
 # Event/Broadcaster Category Model
 class Category(models.Model):
@@ -37,8 +37,6 @@ class Category(models.Model):
     
     def get_all_categories(self):
         return Category.objects.all().order_by('name')
-    
-
 
     def add_pic_from_base64(self, base64_data: str):
         """
@@ -67,7 +65,6 @@ class Category(models.Model):
             print(e)
             return False
 
-
     def get_splash_photo(self):
         """
             Returns the splash photo for the category
@@ -76,7 +73,6 @@ class Category(models.Model):
         if self.splash_photo is not None or self.splash_photo != "":
             return f'/{MEDIA_URL}{self.splash_photo}'
         else: return "/static/img/placeholder.png"
-
 
     def serialize(self):
         """
@@ -92,14 +88,12 @@ class Category(models.Model):
             'image': self.get_splash_photo()
         }
 
-
     def get_random_categories(amount: int):
         """
             Returns a random amount of categories
         """
         return Category.objects.all().order_by('?')[:amount]
     
-
     def get_random_events(self, amount: int):
         """
             Returns a random amount of events
@@ -124,7 +118,7 @@ class Category(models.Model):
         return processed_events
     
 
-
+# Ticket Listing Model
 class TicketListing(models.Model):
     listing_id = models.UUIDField(default=uuid.uuid4)
     event = models.ForeignKey(to="events.Event", on_delete=models.CASCADE)
@@ -186,6 +180,9 @@ class Event(models.Model):
     def __str__(self):
         return self.title
     
+    def get_desc_length(self):
+        return len(self.description)
+    
     # Tickets
     def get_ticket_listings(self):
         return TicketListing.objects.filter(event=self).all()
@@ -196,7 +193,7 @@ class Event(models.Model):
     def has_ticket_listings(self):
         return self.get_ticket_listings().count()
     
-    def get_max_price_ticket(self):
+    def get_max_ticket_price(self):
         tickets = self.get_ticket_listings().all()
         max_price = 0
         for ticket in tickets:
@@ -235,9 +232,13 @@ class Event(models.Model):
         return EventMedia.objects.filter(event=self).all().count()
     
     # Trailer 
+
     def get_trailer(self): 
         return EventTrailer.objects.filter(event=self).all()
-    
+
+    def get_trailer_count(self):
+        return EventTrailer.objects.filter(event=self).all().count()    
+
     # Reviews
 
     def get_reviews(self):
@@ -258,68 +259,60 @@ class Event(models.Model):
     def get_review_count(self):
         return EventReview.objects.filter(event=self).all().count()
     
-    def get_average_rating(self, reviews_in = None):
-        # avg_rating = 0
-
-        # reviews = reviews_in or self.get_reviews()
-        # count = reviews.count()
-
-        # if count > 0:
-        #     for review in reviews:
-        #         avg_rating += review.rating
-            
-        #     avg_rating /= count
-        
-        # return round(avg_rating,1)
+    def get_average_rating(self):
         return EventReview.objects.filter(event=self).aggregate(Avg("rating"))["rating__avg"] or 0
     
     # Get top review based on likes
     def get_top_review(self, reviews_in = None):
-        reviews = reviews_in or self.get_reviews()
+            reviews = reviews_in or self.get_reviews()
 
-        top_review = None
-        likes = 0
-        for review in reviews:
-            if review.likes >= likes:
-                likes = review.likes
-                top_review = review
-        return top_review
+            top_review = None
+            likes = 0
+            for review in reviews:
+                if review.likes > likes:
+                    likes = review.likes
+                    top_review = review
+            return top_review
     
     # Showings
 
     def get_showings(self):
         return EventShowing.objects.filter(event=self).all().order_by('time')
-
-    # def get_showings(self):
-    #     showings = EventShowing.objects.filter(event=self).all().order_by('time')
-    #     for showing in showings:
-    #         showing.time = showing.time(tz = showing.time.tzinfo)
-    #     return showings
-
-    def get_next_showing(self):
-        return self.get_showings().first()
-
-    def get_last_showing(self):
-        return self.get_showings().last()
     
+    def get_showings_count(self):
+        return EventShowing.objects.filter(event=self).all().count()
+    
+    def get_upcoming_showings(self):
+        if self.get_showings_count() > 0:
+            showing = self.get_showings().first()
+            # Get showings if less than 1 hour have passed since showing start
+            start_date = datetime.now(tz = showing.time.tzinfo) - timedelta(hours=1)
+            end_date = datetime(2100, 1, 1)
+            showings = EventShowing.objects.filter(event=self).filter(time__range=(start_date,end_date)).all().order_by('time')
+            return showings
+
     def get_num_upcoming_showings(self):
         showings = []
         for showing in self.get_showings():
             if showing.time + timedelta(hours=1) >= datetime.now(tz = showing.time.tzinfo):
                 showings.append(showing)
         return len(showings)
-    
-    def get_showings_count(self):
-        return EventShowing.objects.filter(event=self).all().count()
-    
+      
+    def get_next_showing(self):
+        if self.get_showings_count() > 0:
+            return self.get_upcoming_showings().first()
+
+    def get_last_showing(self):
+        if self.get_showings_count() > 0:
+            return self.get_showings().last()
+
     def is_event_live(self):
         showings = []
         for showing in self.get_showings():
             time_left = datetime.now(tz = showing.time.tzinfo) - showing.time
             if time_left < timedelta(minutes=showing.max_duration) and time_left.total_seconds() > 0:
                 showings.append(showing)
-        if len(showings) > 0:        
-            return True 
+        return len(showings) > 0   
 
     def get_category_names(self):
         names = []
@@ -328,8 +321,7 @@ class Event(models.Model):
             names.append(category.name)
 
         return names
-
-
+    
     def serialize(self):
         next_showing = self.get_next_showing()
         if next_showing: next_showing = str(next_showing.time).split(" ")[0]
@@ -369,16 +361,12 @@ class Event(models.Model):
             'url': self.get_absolute_url(),
         }
     
-
-
     def is_authorized(self, user):
         return (
             user.is_staff
             or  self.broadcaster.streamer == user
             or  self.broadcaster.contributors.filter(id=user.id).exists()
         )
-
-
 
     def can_view(self, user) -> bool:
         """
@@ -389,6 +377,7 @@ class Event(models.Model):
         contributors = broadcaster.contributors.all()
         is_staff = user.is_staff
         is_subscribed = user.is_subscribed()
+        # days_past_last_showing = (datetime.now(tz = self.get_last_showing().time.tzinfo) - self.get_last_showing().time).days
         days_past_last_showing = (datetime.now() - self.get_last_showing().time.replace(tzinfo=None)).days
         is_contributor = user in contributors
         is_broadcaster = broadcaster.streamer == user
@@ -402,8 +391,6 @@ class Event(models.Model):
 
         return False
     
-
-
 
 # Event Review Model
 class EventReview(models.Model):
@@ -431,9 +418,6 @@ class EventReview(models.Model):
     def get_rating(self):
         return self.rating
 
-    def get_review_likes(self):
-        return EventReview.objects.filter(event=self).filter(review_id=self.review_id).count()
-    
     def toggle_like(self, member):
         if member in self.likers.all():
             self.likers.remove(member)
@@ -451,6 +435,8 @@ class EventReview(models.Model):
             list.append(liker.id)
         return list
 
+    def get_review_likes(self):
+        return len(self.likers)
 
 # Event Media Model
 class EventMedia(models.Model):
@@ -493,10 +479,12 @@ class EventMedia(models.Model):
             print("ERROR")
             print(e)
             return False
+
+
 # Event Trailer Model
 class EventTrailer(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    videofile= models.FileField(upload_to='videos/', verbose_name="")
+    videofile= models.FileField(upload_to='videos/', verbose_name="video")
     description = models.TextField("Trailer Description", max_length=300, blank=True, null=False)
     
     class Meta:
@@ -506,6 +494,7 @@ class EventTrailer(models.Model):
     def __str__(self):
         return self.description[:30]
     
+
 # Event Showing Model
 class EventShowing(models.Model):
     showing_id = (models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False))

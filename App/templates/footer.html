@@ -35,13 +35,11 @@
                 <ul class="list-unstyled">
                     <li class='title'>Support</li>
                     <li><a href="{% cross_app_reverse_tag 'StreamStage' 'render_faq' %}">FAQ</a></li>
-                    <li><a href="{% cross_app_reverse_tag 'StreamStage' 'render_terms' %}">Terms</a></li>
-                    <li><a href="{% cross_app_reverse_tag 'StreamStage' 'render_privacy' %}">Privacy</a></li>
                 </ul>
 
                 <ul class="list-unstyled">
                     <li class='title'>Other</li>
-                    <li><a href="#">About Us</a></li>
+                    <li><a href="{% url 'about_us' %}">About Us</a></li>
                     <li><a href="{% cross_app_reverse_tag 'accounts' 'broadcaster_panel' %}">Broadcasters</a></li>
                     <li><a href="{% cross_app_reverse_tag 'StreamStage' 'sitemap' %}">Site Map</a></li>
                 </ul>

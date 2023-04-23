@@ -17,6 +17,9 @@ class EventUpdateForm(forms.ModelForm):
             "primary_media_idx"
         ]
 
+    title = forms.CharField(widget=forms.Textarea(attrs={'name':'title', 'rows':1, 'cols':100}))
+    description = forms.CharField(widget=forms.Textarea(attrs={'name':'body', 'rows':10, 'cols':100}))
+
 # Deleting an Event
 class EventDeleteForm(forms.ModelForm):
  
@@ -24,52 +27,9 @@ class EventDeleteForm(forms.ModelForm):
         model = Event
         fields = []
 
-
-                                        # ****************
-                                        # *** Showings ***                                        # ***************
-                                        # ****************
-
-
-class ShowingCreateForm(forms.ModelForm):
-    
-    class Meta:
-        model = EventShowing
-        fields = [
-            'time', 
-            'venue', 
-            'city',
-            'country'
-        ]
-
-        widgets = {
-            'time': forms.DateTimeInput(
-            attrs={
-                'type': 'datetime-local',
-                'class': 'form-control'},
-            format='%H:%M %d/%m/%Y')
-        }
-
-class ShowingUpdateForm(forms.ModelForm):
-    
-    class Meta:
-        model = EventShowing
-        fields = [
-            'time', 
-            'venue', 
-            'city',
-            'country'
-        ]
-
-class ShowingDeleteForm(forms.ModelForm):
-    
-    class Meta:
-        model = EventShowing
-        fields = []
-
-
-                                        # ***************
-                                        # *** Reviews ***                                        # ***************
-                                        # ***************
+                            # ***************
+                            # *** Reviews *** 
+                            # ***************
 
 # Creating an Event Review
 class ReviewCreateForm(forms.ModelForm):
@@ -81,6 +41,10 @@ class ReviewCreateForm(forms.ModelForm):
             'body', 
             'rating'
         ]
+    title = forms.CharField(label='', widget=forms.Textarea(attrs={'name':'', 'rows':1, 'cols':100, 'placeholder':'Title'}))
+    body = forms.CharField(label='', widget=forms.Textarea(attrs={'name':'body', 'rows':4, 'cols':100, 'placeholder':'Review'}))
+    rating = forms.CharField(label='')
+
 
 # Updating an Event Review
 class ReviewUpdateForm(forms.ModelForm):
@@ -97,6 +61,8 @@ class ReviewUpdateForm(forms.ModelForm):
             'likes',
             'likers'
         ]
+    title = forms.CharField(widget=forms.Textarea(attrs={'name':'title', 'rows':1, 'cols':100}))
+    body = forms.CharField(widget=forms.Textarea(attrs={'name':'body', 'rows':4, 'cols':100}))
 
 # Deleting an Event Review
 class ReviewDeleteForm(forms.ModelForm):
