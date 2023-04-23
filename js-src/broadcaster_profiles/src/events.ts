@@ -2,6 +2,7 @@ import { GetBroadcasterEventsResponse, GetBroadcasterEventsSuccess, Event } from
 import { create_toast } from "../../common";
 import { get_events } from "../api";
 import { configuration } from "..";
+import { Review } from "../../common/index.d";
 
 function create_events(
     events: Event[]
@@ -14,49 +15,55 @@ function create_events(
 export function create_event(
     event: Event
 ): HTMLDivElement {
+    var categories = ""
+
+    console.log(event);
+    for (var category of event.categories){
+        categories +=`<span class="badge bg-secondary">${category}</span>`
+    }
+
+    var reviews_html = "";
+
+    if (event.reviews.length > 0) {
+        reviews_html += `
+        <h6 class="text-center"><b>Reviews</b></h6>
+        <!-- Review Carousel -->
+        <div class="swiper mySwiper">
+            <div class="swiper-wrapper">`;
+        
+        for (var review of event.reviews){ 
+            reviews_html += create_review_html(review);
+        }
+
+        reviews_html += `</div>
+            <div class="swiper-pagination"></div>
+            <div class="s-btn swiper-button-prev"></div>
+            <div class="s-btn swiper-button-next"></div>
+        </div>`;
+
+    } else {
+        reviews_html = `<h6 class="text-center"><b>No reviews yet</b></h6>`;
+    }
+
     const template = `
         <div class="row my-2 px-4 mx-auto">
             <div class="col-md-3 col-sm-12">
                 <!-- Event Categories -->
-                {% for category in event.categories.all %}
-                <span class="badge bg-primary">{{category.name}}</span>
-                {% endfor %}
+                ${categories}
                 <!-- Event Broadcaster -->
-                <h6 class="my-2">@{{ event.broadcaster.handle }}</h6>
+                <h6 class="my-2">@${configuration.handle}</h6>
                 <!-- Event Cover Picture (if any) -->
-                {% if event.get_media_count == 0 %}
-                <img class="event-cover" src="{% static 'images/default_event_cover.png' %}" alt="No Event Cover Photo">
-                {% else %}
-                <img class="event-cover" src="{{ event.get_cover_picture.picture.url }}"
-                    alt="{{ event.get_cover_picture.description }}">
-                {% endif %}
+                <img class="event-cover" src="${event.cover_pic}">
             </div>
-            <a class="col-md-6 col-sm-12" href="{% url 'event_view' event.event_id %}">
+            <a class="col-md-6 col-sm-12" href="${event.url}">
                 <!-- Event title & description -->
-                <h4 class="sub-title">{{ event.title }}</h4>
-                <p>{{ event.description | slice:':250'}}...</p>
+                <h4 class="sub-title">${event.title}</h4>
+                <p>${event.description}</p>
             </a>
             <!-- Reviews for Event -->
             <div class="col-md-3 col-sm-12">
                 <div class="my-4 mx-1">
-                    {% if event.get_review_count > 0 %}
-                    <h6 class="text-center"><b>Reviews</b></h6>
-                    <!-- Review Carousel -->
-                    <div class="swiper mySwiper">
-                        <div class="swiper-wrapper">
-                            {% for review in event.get_short_reviews %}
-                            <div class="swiper-slide">
-                                {% include 'reviews/review.html' %}
-                            </div>
-                            {% endfor %}
-                        </div>
-                        <div class="swiper-pagination"></div>
-                        <div class="s-btn swiper-button-prev"></div>
-                        <div class="s-btn swiper-button-next"></div>
-                    </div>
-                    {% else %}
-                    <h6 class="text-center"><b>No reviews yet</b></h6>
-                    {% endif %}
+                   ${reviews_html}
                 </div>
             </div>
         </div>
@@ -67,6 +74,52 @@ export function create_event(
     div.innerHTML = template;
 
     return div;
+}
+
+function create_review_html(review: Review) {
+  return `
+  <div class="swiper-slide"><div class="card bg-dark p-3 mb-1">
+    <div>
+        <b class="card-title">${review.title} </b>
+        <span class="float-end">by ${review.username}</span>
+    </div>
+    
+    <p class="card-text">
+        ${review.body}
+    </p>
+    <div>
+        <!-- Giving a star rating out of 5 -->
+        <ul class="btn btn-light list-inline rating-list">
+          <li>
+              <i class="fa fa-star {% if review.rating > 4 %} checked {% endif %}" title="Rate 5"></i></li>
+          <li>
+              <i class="fa fa-star {% if review.rating > 3 %} checked {% endif %}" title="Rate 4"></i></li>
+          <li>
+              <i class="fa fa-star {% if review.rating > 2 %} checked {% endif %}" title="Rate 3"></i></li>
+          <li>
+              <i class="fa fa-star {% if review.rating > 1 %} checked {% endif %}" title="Rate 2"></i></li>
+          <li>
+              <i class="fa fa-star {% if review.rating > 0 %} checked {% endif %}" title="Rate 1"></i></li>
+        </ul>
+
+        <a href="#" >
+            <span data-id="${review.id}" data-likes="${review.likes}" 
+            user-liked="" 
+            class="like-button float-end btn btn-primary btn-sm m-1">
+                <i class="fa fa-thumbs-o-up" aria-hidden="true">&nbsp;{{ review.likes }}</i>
+            </span>
+        </a>
+    </div>
+
+    {% if review.author == user %}
+    <div>
+        <a href="{% cross_app_reverse_tag 'events' 'review_delete' event_id=event.event_id review_id=review.review_id %}" class="float-start btn btn-danger btn-sm m-1">Delete</a>
+        <a href="{% cross_app_reverse_tag 'events' 'review_update' event_id=event.event_id review_id=review.review_id %}" class="float-start btn btn-primary btn-sm m-1">Update</a>
+    </div>
+
+    {% endif %}
+
+</div></div>`
 }
 
 export function manage_events_panel() {
@@ -81,23 +134,23 @@ export function manage_events_panel() {
     // -- Get the pagenation controlls
     const prev = panel.querySelector('.prev') as HTMLButtonElement,
         next = panel.querySelector('.next') as HTMLButtonElement,
-        page_number = panel.querySelector('#review-page') as HTMLInputElement,
+        page_number = panel.querySelector('#events-page') as HTMLInputElement,
         out_of = panel.querySelector('.out-of') as HTMLSpanElement;
     
     let page = 0, toatl_pages = 0;
     async function reload_events() {
-        // -- Get the reviews
-        const reviews = await get_events(
+        // -- Get the events
+        const events = await get_events(
             filter.value as 'rating',
             order.value as 'asc' | 'desc', page,
             configuration.broadcaster_id
         );
         
         // -- Check if the request was successful
-        if (reviews.code !== 200) return create_toast(
+        if (events.code !== 200) return create_toast(
             'error', 'Oops!', 'There was an error while trying to load events.')
         
-        const data = (reviews as GetBroadcasterEventsSuccess).data,
+        const data = (events as GetBroadcasterEventsSuccess).data,
             rendered_events = create_events(data.events);
         
         // -- Clear the review container
@@ -117,7 +170,7 @@ export function manage_events_panel() {
 
         // -- Check if there are no reviews
         if (data.events.length === 0) event_container.innerHTML = `
-            <div class="no-reviews w-100 h-100 d-flex justify-content-center align-items-center">
+            <div class="no-events w-100 h-100 d-flex justify-content-center align-items-center">
                 <h3 class="text-center text-muted">@${configuration.handle} has events yet.</h3>
             </div>
         `;
