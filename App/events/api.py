@@ -364,7 +364,7 @@ def get_bc_events(request, data):
             'event_id': event.event_id,
             'rating': event.get_average_rating(),
             'categories': event.get_category_names(),
-            'cover_pic': event.get_cover_picture() or '/static/images/default_event_cover.png',
+            'cover_pic': event.get_cover_picture().picture.url if event.get_cover_picture() else '/static/images/default_event_cover.png',
             'url': cross_app_reverse('events', 'event_view', { "event_id": event.event_id }),
             'description': event.description,
             'title': event.title,

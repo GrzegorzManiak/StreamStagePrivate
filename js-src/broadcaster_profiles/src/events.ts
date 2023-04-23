@@ -106,8 +106,6 @@ function create_review_html(review: Review) {
         ${rating}
     </div>
 
-    {% endif %}
-
 </div></div>`
 }
 
