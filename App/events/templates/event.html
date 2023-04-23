@@ -102,10 +102,20 @@ Event | StreamStage
                     <hr>
                 <!-- Event Description -->
                     <div class="mx-2 my-lg-4 my-md-0">
-                        {% if event.get_desc_length > 550 %}
+                        {% if event.get_desc_length > 355 %}
                             <div class="show-more-elem" data-showmore-id="1"><p>{{ event.description}}</p></div>
-                            <div class="show-less-elem" data-showmore-id="1"><p>{{ event.description | slice:':430' }}...</p></div>
-                
+                            <div class="show-less-elem" data-showmore-id="1"><p>{{ event.description | slice:':355' }}...</p></div>
+                            <button 
+                            type="resend" name="resend" id="resend" data-showmore-id="1" 
+                            class="
+                                show-more-btn
+                                btn 
+                                btn-primary
+                                btn-sm
+                                info"
+                            >   
+                                Show More
+                            </button>
                         {% else %}
                             <p>{{ event.description}}</p>
                         {% endif %}
@@ -262,8 +272,8 @@ Event | StreamStage
                         <div class="text-center">
                             <p>No Trailers Available</p>                
                         </div>
-                        <!-- Trailer -->
-                        {% else %}
+                        <!-- 1 Trailer -->
+                        {% elif event.get_trailer_count == 1 %}
                         <div class="d-flex justify-content-center">
                             {% for trailer in event.get_trailer %}
                             <video class="mx-auto" width="95%" controls>
@@ -272,6 +282,27 @@ Event | StreamStage
                             </video>
                             {% endfor %}
                         </div>
+                        <!-- 2 or More Trailers -->
+                        {% else %}
+                        <div class="swiper mySwiper">
+                            <div class="swiper-wrapper">
+                                {% for trailer in event.get_trailer %}
+                                <tr>
+                                    <td>
+                                        <video class="mx-auto" width="95%" controls>
+                                            <source src="{{ trailer.videofile.url }}">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </td>
+                                </tr>
+
+                                {% endfor %}
+                            </div>
+                            <div class="swiper-pagination"></div>
+                            <div class="s-btn swiper-button-prev"></div>
+                            <div class="s-btn swiper-button-next"></div>
+                        </div>
+
 
                         {% endif %}
                     </div>
@@ -306,8 +337,8 @@ Event | StreamStage
                     <div class="s-btn swiper-button-prev"></div>
                     <div class="s-btn swiper-button-next"></div>
                 </div>
-                <a href="{% cross_app_reverse_tag 'events' 'reviews_view' event_id=event.event_id %}" alt="All Reviews">
-                    <button class="w-100 my-2 btn btn-primary">
+                <a href="{% cross_app_reverse_tag 'events' 'reviews_view' event_id=event.event_id %}" alt="All Reviews" class="d-flex justify-content-center">
+                    <button class="my-2 btn btn-primary">
                         All Reviews for {{ event.title }}
                     </button>
                 </a>
