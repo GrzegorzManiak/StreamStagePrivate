@@ -1,5 +1,5 @@
 import { configuration } from "./index";
-import { DefaultResponse, DefaultResponseData, GetBroadcasterDetailsResponse, GetInvitationsResponse, SendInvitationResponse, UpdateBroadcasterDetailsResponse } from "./index.d";
+import { DefaultResponse, DefaultResponseData, GetBroadcasterDetailsResponse, GetInvitationsResponse, RemoveContributorResponse, SendInvitationResponse, UpdateBroadcasterDetailsResponse } from "./index.d";
 
 export async function base_request (
     mehod: string,
@@ -82,6 +82,18 @@ export const send_invite = async (
         id: broadcaster_id,
         invitee: invitee,
         message: message
+    }
+);
+    
+export const remove_contributor = async (
+    broadcaster_id: string,
+    contributor: string
+): Promise<RemoveContributorResponse> => base_request(
+    'POST',
+    configuration.remove_contributor,
+    {
+        id: broadcaster_id,
+        contributor:contributor
     }
 );
     

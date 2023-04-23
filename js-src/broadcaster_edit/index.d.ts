@@ -14,6 +14,12 @@ export interface Pod {
     type: PanelType
 }
 
+export interface Contributor {
+    username: string,
+    url: string,
+    profile: string
+}
+
 export interface BroadcasterDetails {
     id: string,
     handle: string,
@@ -23,6 +29,7 @@ export interface BroadcasterDetails {
     approved: boolean,
     banner: string,
     url: string,
+    contributors: Contributor[]
 
     profile_updated: boolean,
     banner_updated: boolean
@@ -37,6 +44,7 @@ export interface Config {
 
     fetch_invites: string,
     send_invite: string,
+    remove_contributor: string,
     respond_invite: string
 }
 
@@ -86,3 +94,5 @@ export type GetInvitationsResponse = GetInvitationsSuccess | DefaultResponse;
 export type RespondToInviteResponse = DefaultResponseData | DefaultResponse;
 
 export type SendInvitationResponse = DefaultResponseData | DefaultResponse
+
+export type RemoveContributorResponse = DefaultResponseData | DefaultResponse;

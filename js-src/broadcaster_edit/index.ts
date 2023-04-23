@@ -16,6 +16,7 @@ export const configuration = build_configuration<Config>({
 
     fetch_invites: new Type('data-fetch-invites', 'string'),
     send_invite: new Type('data-send-invite', 'string'),
+    remove_contributor: new Type('data-remove-contributor', 'string'),
     respond_invite: new Type('data-respond-invite', 'string')
 });
 

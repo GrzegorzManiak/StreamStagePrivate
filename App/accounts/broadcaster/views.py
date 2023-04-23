@@ -41,7 +41,8 @@ def broadcaster_panel(request):
 
                 "fetch_invites": cross_app_reverse('accounts', 'fetch_contribute_invites'),
                 "send_invite": cross_app_reverse('accounts', 'send_contribute_invite'),
-                "respond_invite": cross_app_reverse('accounts', 'respond_contribute_invite')
+                "respond_invite": cross_app_reverse('accounts', 'respond_contribute_invite'), 
+                "remove_contributor": cross_app_reverse('accounts', 'remove_contributor')
             },
             "update_form": update_form
         }
@@ -78,6 +79,16 @@ def update_broadcaster_details(request, broadcaster:Broadcaster, data):
 @can_edit_broadcaster()
 def get_broadcaster_details(request, broadcaster:Broadcaster, data):
 
+    contributors = []
+
+    for contributor in broadcaster.contributors.all():
+        print(contributor.get_profile_pic() )
+        contributors.append({
+            "username": contributor.username,
+            "url": cross_app_reverse('homepage', 'user_profile', {"username": contributor.username}),
+            "profile": contributor.get_profile_pic() or '/static/images/default_event_cover.png',
+        })
+
     encoded_broadcaster = {
         "id": broadcaster.id,
         "handle": broadcaster.handle,
@@ -86,7 +97,8 @@ def get_broadcaster_details(request, broadcaster:Broadcaster, data):
         "profile": broadcaster.get_picture("profile_pic"),
         "banner": broadcaster.get_picture("banner"),
         "url": cross_app_reverse('homepage', 'broadcaster_profile', {"username": broadcaster.handle}),
-        "approved": broadcaster.approved
+        "approved": broadcaster.approved,
+        "contributors": contributors
     }
 
     return success_response("Retrieved broadcaster details", { "details": encoded_broadcaster })
@@ -118,12 +130,35 @@ def send_contribute_invite(request, broadcaster:Broadcaster, data):
     except:
         return error_response("Couldn't find user by that username.")
     
+    if broadcaster.streamer == user:
+        return error_response("Given user is this broadcaster's founder.")
+
     if broadcaster.contributors.contains(user):
         return error_response("This user is already a contributor.")
     
     send_invite(request.user, user, broadcaster, data['message'])
 
     return success_response("Invitation to contribute has been sent!")
+
+@api_view(['POST'])
+@authenticated()
+@required_data(['id', 'contributor'])
+@can_edit_broadcaster()
+def remove_contributor(request, broadcaster:Broadcaster, data):
+    try:
+        user = Member.objects.get(username=data['contributor'])
+    except:
+        return error_response("Couldn't find user by that username.")
+    
+    if broadcaster.streamer == user:
+        return error_response("Given user is this broadcaster's founder.")
+
+    if not broadcaster.contributors.contains(user):
+        return error_response("This user is not a contributor.")
+    
+    broadcaster.contributors.remove(user)
+    
+    return success_response("Removed contributor.")
 
 @api_view(['POST'])
 @authenticated()

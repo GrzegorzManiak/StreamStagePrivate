@@ -131,7 +131,7 @@ def get_showings(request, data):
     
     for showing in showings:
         encoded_showings.append({
-            'showing_id': showing.showing_id,
+            'showing_id': showing.showing_id if showing else None,
             'country': showing.country.name,
             'city': showing.city,
             'venue': showing.venue,

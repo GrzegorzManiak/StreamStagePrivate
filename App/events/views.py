@@ -4,6 +4,8 @@ from django.urls import reverse_lazy
 from accounts.com_lib import authenticated
 from .api_auth import can_edit_event
 
+from .models import EventShowing
+
 from StreamStage.templatetags.tags import cross_app_reverse
 
 from .models import Event, EventReview

@@ -4,6 +4,7 @@ import { get_broadcaster_details, update_broadcaster_details } from "./api";
 import { configuration } from "./index";
 import { construct_modal } from "../common/index";
 import { picture_upload_modal } from "../common/picture";
+import { show_contrib } from "./contrib";
 
 let form_template:HTMLFormElement;
 let pfp, banner_img : HTMLElement;
@@ -62,7 +63,7 @@ function load_broadcasters() {
     }
 
     var ids = configuration.broadcaster_ids.split(",");
-
+    
     for (var id of ids) {
         query_and_append(id);
     }
@@ -164,6 +165,7 @@ function edit(broadcaster: BroadcasterDetails) {
     document.body.appendChild(modal_wrap);
     let form = modal_wrap.querySelector("#bc-update-form") as HTMLFormElement;
     form.style.display = "block";
+    (modal_wrap.querySelector('.modal-content') as HTMLElement).setAttribute("style",  "width:45rem!important");
 
     init_form(form, modal_wrap)
 }
@@ -178,6 +180,7 @@ async function query_and_append(id: string) {
     const data = (response as GetBroadcasterDetailsSuccess).data
     
     broadcasters.push(data.details);
+    console.log(data.details);
     append(data.details);
 
     // Check if this is the broadcaster the user 
@@ -197,37 +200,51 @@ function append(broadcaster: BroadcasterDetails) {
     bc_elem.querySelector(".broadcaster-edit-btn").addEventListener('click', function() {
         edit(broadcaster);
     });
+
+    bc_elem.querySelector(".broadcaster-contrib-btn").addEventListener('click', function() {
+        show_contrib(broadcaster);
+    })
 }
 
 function bc_html(details: BroadcasterDetails) : HTMLElement {
     var row = document.createElement('div');
-    row.className = "broadcaster-entry";
+    row.className = "broadcaster-entry-edit";
     row.setAttribute("data-broadcaster-id", details.id);
 
-    row.setAttribute("style", "background-image: url('" + details.banner + "'); background-");
+    row.setAttribute("style", "background-image: url('" + details.banner + "'); ");
     
     row.style.backgroundImage = details.banner;
 
     var approval_html = "";
 
     if (!details.approved) {
-        approval_html = `<div class="float-end text-danger">Awaiting Approval</div>`
+        approval_html = `<div class="float-end text-danger"> Awaiting Approval </div>`
     }
 
     row.innerHTML = `
-        <img alt="Profile Picture" class="profile-picture-edit" src="${details.profile}">
-        <div class='profile-info'>
-            <h1>${details.name}</h1>
-            <a href="${details.url}" class='h3 t/media/broadcaster/banners/e8d3acef-77fc-4dc4-9829-2216d110aa28.webpext-muted'>@${details.handle}</a>
+        <div class="row">
+            <div class="col-9">
+                <img alt="Profile Picture" class="profile-picture-edit" src="${details.profile}">
+                <div class='profile-info'>
+                    <h1>${details.name}</h1>
+                    <a href="${details.url}" class='h3 t/media/broadcaster/banners/e8d3acef-77fc-4dc4-9829-2216d110aa28.webpext-muted'>@${details.handle}</a>
+                </div>
+                <p class='text-muted' style="max-width: 50%;">
+                    ${details.biography}
+                </p>
+            </div>
+                
+            <div class="col-3">
+                <div class="float-end" style="width:100%;">
+                    ${approval_html}
+                    <div data-broadcaster-id="${details.id}" class="broadcaster-edit-btn edit-details float-end"> Edit Details <i class="fas fa-chevron-right"></i> </div>
+                    
+                </div>
+                <div data-broadcaster-id="${details.id}" class="broadcaster-contrib-btn float-end"> Contributors <i class="fas fa-chevron-right"></i> </div>
+                
+            </div>
         </div>
-        <p class='text-muted' style="max-width: 50%;">
-            ${details.biography}
-        </p>
-        <div class="float-end" style="width:100%;">
-            ${approval_html}
-            <div data-broadcaster-id="${details.id}" class="broadcaster-edit-btn edit-details float-end"> Edit Details <i class="fas fa-chevron-right"></i> </div>
-        </div>
-    `
+        `
 
     return row;
 }

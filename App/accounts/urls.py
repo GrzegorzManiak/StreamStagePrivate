@@ -69,7 +69,8 @@ from .broadcaster.views import (
     update_broadcaster_details,
     fetch_invites,
     send_contribute_invite,
-    respond_to_invite
+    respond_to_invite,
+    remove_contributor
 )
 
 from .forgot import (
@@ -155,6 +156,7 @@ urlpatterns = [
 
     path('broadcaster/api/send_invite', send_contribute_invite, name='send_contribute_invite'),
     path('broadcaster/api/respond_invite', respond_to_invite, name='respond_contribute_invite'),
+    path('broadcaster/api/remove_contributor', remove_contributor, name='remove_contributor'),
     path('broadcaster/api/fetch_invites', fetch_invites, name='fetch_contribute_invites'),
 
     # -- Admin

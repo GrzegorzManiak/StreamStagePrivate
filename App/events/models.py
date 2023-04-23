@@ -152,7 +152,7 @@ class TicketListing(models.Model):
                 'price': self.price,
                 'stock': self.remaining_stock,
                 'ticket_type': self.ticket_type,
-                'showing_id': self.showing.showing_id
+                'showing_id': self.showing.showing_id or ""
             }
 
 # Event Model

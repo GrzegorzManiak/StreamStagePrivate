@@ -77,6 +77,20 @@ export function create_event(
 }
 
 function create_review_html(review: Review) {
+    var rating = `<ul class="btn btn-light list-inline rating-list">
+    <li>
+        <i class="fa fa-star ${ review.rating > 4 ? 'checked' : ''} title="Rate 5"></i></li>
+    <li>
+        <i class="fa fa-star ${ review.rating > 3 ? 'checked' : ''} title="Rate 4"></i></li>
+    <li>
+        <i class="fa fa-star ${ review.rating > 2 ? 'checked' : ''} title="Rate 3"></i></li>
+    <li>
+        <i class="fa fa-star ${ review.rating > 1 ? 'checked' : ''} title="Rate 2"></i></li>
+    <li>
+        <i class="fa fa-star ${ review.rating > 0 ? 'checked' : ''} title="Rate 1"></i></li>
+  </ul>`;
+    
+
   return `
   <div class="swiper-slide"><div class="card bg-dark p-3 mb-1">
     <div>
@@ -89,32 +103,7 @@ function create_review_html(review: Review) {
     </p>
     <div>
         <!-- Giving a star rating out of 5 -->
-        <ul class="btn btn-light list-inline rating-list">
-          <li>
-              <i class="fa fa-star {% if review.rating > 4 %} checked {% endif %}" title="Rate 5"></i></li>
-          <li>
-              <i class="fa fa-star {% if review.rating > 3 %} checked {% endif %}" title="Rate 4"></i></li>
-          <li>
-              <i class="fa fa-star {% if review.rating > 2 %} checked {% endif %}" title="Rate 3"></i></li>
-          <li>
-              <i class="fa fa-star {% if review.rating > 1 %} checked {% endif %}" title="Rate 2"></i></li>
-          <li>
-              <i class="fa fa-star {% if review.rating > 0 %} checked {% endif %}" title="Rate 1"></i></li>
-        </ul>
-
-        <a href="#" >
-            <span data-id="${review.id}" data-likes="${review.likes}" 
-            user-liked="" 
-            class="like-button float-end btn btn-primary btn-sm m-1">
-                <i class="fa fa-thumbs-o-up" aria-hidden="true">&nbsp;{{ review.likes }}</i>
-            </span>
-        </a>
-    </div>
-
-    {% if review.author == user %}
-    <div>
-        <a href="{% cross_app_reverse_tag 'events' 'review_delete' event_id=event.event_id review_id=review.review_id %}" class="float-start btn btn-danger btn-sm m-1">Delete</a>
-        <a href="{% cross_app_reverse_tag 'events' 'review_update' event_id=event.event_id review_id=review.review_id %}" class="float-start btn btn-primary btn-sm m-1">Update</a>
+        ${rating}
     </div>
 
     {% endif %}

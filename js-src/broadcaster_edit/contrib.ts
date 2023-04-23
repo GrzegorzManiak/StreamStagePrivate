@@ -1,6 +1,6 @@
-import { GetInvitationsResponse, GetInvitationsSuccess, Invite } from "./index.d";
-import { create_toast } from "../common";
-import { fetch_invites, respond_invite } from "./api";
+import { BroadcasterDetails, GetInvitationsResponse, GetInvitationsSuccess, Invite } from "./index.d";
+import { construct_modal, create_toast } from "../common";
+import { fetch_invites, respond_invite, send_invite } from "./api";
 
 let invite_list:HTMLElement;
 
@@ -11,7 +11,140 @@ export function manage_contrib_panel(invite_panel: HTMLElement) {
     var text_your_invites = invite_panel.parentElement.querySelector("#text-your-invites") as HTMLElement;
 
     get_invites(no_invite_notice, text_your_invites);
+
 }
+
+
+export function show_contrib(broadcaster: BroadcasterDetails) {
+    const modal_wrap = construct_modal(
+        "Broadcaster Contributors",
+        "Manage contributors to your broadcaster.", 
+        false,
+        'success',
+        contrib_modal(broadcaster)
+    );
+
+    // -- Get the buttons
+    const invite_btn = modal_wrap.querySelector('#invite-member-btn') as HTMLButtonElement;
+    // -- Get the buttons
+    const close_btn = modal_wrap.querySelector('#close-modal') as HTMLButtonElement;
+
+    close_btn.addEventListener('click', async() => {
+        // -- Call the no function
+        //no();
+
+        // -- Remove the modal
+        modal_wrap.remove();
+    });
+    invite_btn.addEventListener('click', async() => {
+       show_invite_modal(broadcaster.id);
+    });
+
+    // -- Append the modal to the body
+    document.body.appendChild(modal_wrap);
+    (modal_wrap.querySelector('.modal-content') as HTMLElement).setAttribute("style",  "width:45rem!important");
+}
+
+function show_invite_modal(broadcaster_id: string) {
+    const modal_wrap = construct_modal(
+        "Invite", 
+        "Invite a user to contribute on your broadcaster.", 
+        false,
+        'success', 
+        invite_template()
+    );
+
+    // -- Get the buttons
+    const invite_btn = modal_wrap.querySelector('#invite-member-btn') as HTMLButtonElement;
+    // -- Get the buttons
+    const close_btn = modal_wrap.querySelector('#close-modal') as HTMLButtonElement;
+
+    const username_field = modal_wrap.querySelector('#id_name') as HTMLInputElement;
+    const message_field = modal_wrap.querySelector('#id_message') as HTMLInputElement;
+
+    close_btn.addEventListener('click', async() => {
+        // -- Call the no function
+        //no();
+
+        // -- Remove the modal
+        modal_wrap.remove();
+    });
+    invite_btn.addEventListener('click', async() => {
+        // send
+
+        var response = await send_invite(broadcaster_id, username_field.value, message_field.value);
+
+        // -- Check if the request was successful
+        if (response.code !== 200)
+            return create_toast(
+                'error', 'Oops!',
+                response.message
+        )
+
+        create_toast('success', 'Contribution', 'Sent invitation to contribute.')
+    });
+
+
+    // -- Append the modal to the body
+    document.body.appendChild(modal_wrap);
+    (modal_wrap.querySelector('.modal-content') as HTMLElement).setAttribute("style",  "width:30rem!important");
+}
+
+function invite_template() {
+    return `
+    <form>
+        <div class="mb-3">
+            <h1>Username:</h1>
+        </div>
+        <div>
+            <div class="mb-3">
+                <label for="id_name" class="form-label requiredField">Username<span class="asteriskField">*</span> </label>
+                <input type="text" name="name" maxlength="32" class="textinput textInput form-control" required="" id="id_name">
+            </div>
+            <div class="mb-3">
+                <label for="id_message" class="form-label requiredField">Message (optional)<span class="asteriskField">*</span> </label>
+                <textarea name="message" cols="40" rows="10" maxlength="512" class="textarea form-control" required="" id="id_message"></textarea>
+            </div>
+    </div>
+        <span id="invite-member-btn" class="btn success">Send Invite</span>
+        <span id="close-modal" class="btn info">Cancel</span>
+    </form>`;
+}
+
+function contrib_modal(broadcaster: BroadcasterDetails) {
+    var contributors  = ``;
+
+    console.log(broadcaster);
+    for (var contributor of broadcaster.contributors) {
+        contributors += `        
+            <div class='profile-images'>
+                <img src='${contributor.profile}' />
+            </div>
+            <div class='profile-info'>
+                <a class='h3 m-0' href="${contributor.url}">${contributor.username}</a>
+            </div>
+            <div class='profile-actions'>
+                <button data-user="${contributor.username}" class="w-100 h-100 btn btn-primary info remove-contributor">
+                    <p>Remove</p>
+                </button>
+            </div>
+        `;
+    }
+
+    return `
+        <form>
+            <div class="mb-3">
+                <h1>Contributors:</h1>
+            </div>
+            <div id="bc-contributors">
+            ${contributors}
+            </div>
+            <span id="invite-member-btn" class="btn success">Invite Member</span>
+            <span id="close-modal" class="btn info">Close</span>
+        </form>
+    `;
+}
+
 
 async function get_invites(no_invite_notice: HTMLElement, text_your_invites:HTMLElement) {
     const response = await fetch_invites();
