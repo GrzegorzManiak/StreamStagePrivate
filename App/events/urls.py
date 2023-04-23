@@ -13,7 +13,9 @@ from .views import (
     review_like,
     showing_create,
     showing_update,
-    showing_delete
+    showing_delete,
+    
+    watch_event
 )
 
 from .api import (
@@ -64,6 +66,8 @@ urlpatterns = [
     path('<slug:event_id>/review/<slug:review_id>/update/', review_update, name='review_update'),
     path('<slug:event_id>/review/<slug:review_id>/delete/', review_delete, name='review_delete'),
     path('review/<slug:review_id>/like', review_like),
+
+    path('watch/<slug:showing_id>/', watch_event),
 
     # API
     path('api/get_ticket_listings', get_ticket_listings, name='get_ticket_listings'),

@@ -260,3 +260,16 @@ def review_like(request, review_id):
     review = EventReview.objects.filter(review_id=review_id).first()
     review.toggle_like(request.user)
     return HttpResponse()
+
+
+def watch_event(request, showing_id):
+    try:
+        showing = EventShowing.objects.get(showing_id=showing_id)
+    except:
+        showing = None
+
+    context = {
+        showing: showing
+    }
+
+    return render(request, 'watch_event.html', context)
