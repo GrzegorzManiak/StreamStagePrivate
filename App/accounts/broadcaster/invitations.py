@@ -3,6 +3,11 @@ from accounts.models import BroadcasterContributeInvite, Broadcaster
 def get_invitations(user):
     return BroadcasterContributeInvite.objects.filter(invitee=user,is_pending=True)
 
+def is_invited(invitee, broadcaster):
+    invite = BroadcasterContributeInvite.objects.filter(invitee=invitee,broadcaster=broadcaster).first()
+    
+    return invite is not None
+
 def send_invite(inviter, invitee, broadcaster, message = ""):
     
     invite = BroadcasterContributeInvite(

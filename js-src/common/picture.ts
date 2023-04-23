@@ -123,8 +123,8 @@ export function picture_upload_modal(
     save_button.addEventListener('click', async () => {
         const stop_spinner = attach(save_button);
         const res = await on_upload(cropper.getCroppedCanvas().toDataURL());
-        stop_spinner();
         if (res) modal_elm.remove();
+        stop_spinner();
     });
     cancel_button.addEventListener('click', () => modal_elm.remove());
 }

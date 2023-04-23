@@ -18,6 +18,15 @@ def get_item_price(item_id):
     
     return None
 
+def is_in_stock(item_id):
+    ticket = TicketListing.objects.filter(listing_id = item_id).first()
+
+    if ticket:
+        return ticket.remaining_stock > 0 or ticket.ticket_type == 0
+    
+    return False
+
+
 def create_ticket(
     purchase_id: uuid.UUID,
     ticket_listing: TicketListing, 
@@ -69,6 +78,10 @@ def on_intent_success(cust_payment_intent):
                 item, 
                 purchase_item
             )
+            
+
+            item.remaining_stock -= 1
+            item.save()
 
     return purchase_id
 
