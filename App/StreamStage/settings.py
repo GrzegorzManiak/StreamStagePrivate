@@ -157,6 +157,7 @@ WEBPACK_LOADER = {
 }
 
 MIDDLEWARE = [
+    'accounts.com_lib.csrf_rewriter_middleware',
     'django_hosts.middleware.HostsRequestMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
