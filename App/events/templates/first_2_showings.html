@@ -56,26 +56,40 @@
             <!-- Dropdown Menu -->
             <div class="dropdown-menu" id="show-tickets">
                 {% for ticket in showing.get_ticket_listings %}
-                <div class="row m-1 bk-theme-backdrop p-2 rounded">
-                    <div class="d-flex justify-content-between w-100 mb-2 fs-5">
-                        <div class="m-0">{{ ticket.ticket_detail }}</div>
-                        <div class='text-muted m-0'>€{{ ticket.price }}</div>
+                    <div class="row m-1 bk-theme-backdrop p-2 rounded">
+                        <div class="d-flex justify-content-between w-100 mb-2 fs-5">
+                            <div class="m-0">{{ ticket.ticket_detail }}</div>
+                            <div class='text-muted m-0'>€{{ ticket.price }}</div>
+                        </div>
+                        
+                        <div class='btn-group w-100 d-flex justify-content-between slim-btn'>    
+                            {% if ticket.remaining_stock == 0 %}
+                                <button
+                                    disabled
+                                    name="out-of-stock-btn"
+                                    class="p-5 btn btn-secondary secondary loader-btn w-100 slim-btn ">
+                                    <p>Sold Out!</p>
+                                </button>
+                            {% else %}
+                            <button 
+                                name="purchase-stream" 
+                                data-ticket-id="{{ ticket.listing_id }}" 
+                                data-item-name="{{ ticket.ticket_detail }}" 
+                                data-item-price="€{{ ticket.price }}"
+                                type="submit" 
+                                class="btn btn-success success loader-btn w-100 slim-btn "
+                                loader-state='default'
+                            >   
+                                <span>
+                                    <div class='spinner-border' role='status'>
+                                        <span class='visually-hidden'>Loading...</span>
+                                    </div>
+                                </span>
+                                <p>Buy now ({{ ticket.remaining_stock }} left)</p>
+                            </button>
+                            {% endif %}
+                        </div>
                     </div>
-
-                    <div class='btn-group w-100 d-flex justify-content-between slim-btn'>
-                        <button name="purchase-stream" data-ticket-id="{{ ticket.listing_id }}"
-                            data-item-name="{{ ticket.ticket_detail }}" data-item-price="€{{ ticket.price }}"
-                            type="submit" class="btn btn-success success loader-btn w-100 slim-btn "
-                            loader-state='default'>
-                            <span>
-                                <div class='spinner-border' role='status'>
-                                    <span class='visually-hidden'>Loading...</span>
-                                </div>
-                            </span>
-                            <p>Buy now</p>
-                        </button>
-                    </div>
-                </div>
                 {% endfor %}
             </div>
         </div>

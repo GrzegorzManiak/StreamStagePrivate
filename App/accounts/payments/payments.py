@@ -7,7 +7,7 @@
 from typing import List
 import uuid
 from store.processing import on_intent_success, on_subscription_success
-from store.processing import get_item_price
+from store.processing import get_item_price, is_in_stock
 from StreamStage.mail import send_template_email
 from accounts.models import Member
 from StreamStage.secrets import STRIPE
@@ -328,8 +328,13 @@ def create_cust_payment_intent(user: Member, listing_ids: List[str], payment_met
     for listing_id in listing_ids:
         if listing_id == "ss_monthly" or listing_id == "ss_yearly": continue
         item_price = get_item_price(listing_id)
+        
+        if not is_in_stock(listing_id):
+            return { "error" : "Item out of stock!" }
+
         if item_price == None: return { "error": "Invalid listing ID given." }
         else: price += item_price
+
 
         
     # -- count how many cents are in price (Stripe only accepts integer val)
