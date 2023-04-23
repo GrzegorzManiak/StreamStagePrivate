@@ -31,6 +31,8 @@ from .api import (
     add_media,
     del_media,
 
+    get_bc_events
+
     # get_event_details,
     # update_event_details
 )
@@ -97,6 +99,8 @@ urlpatterns = [
     path('api/broadcasters/get/', get_broadcaster, name='get_broadcaster'),
     path('api/broadcasters/update/', update_broadcaster, name='update_broadcaster'),
     path('api/broadcasters/delete/', delete_broadcaster, name='delete_broadcaster'),
+
+    path('api/broadcasters/get_events', get_bc_events, name='get_bc_events'),
 
     path('api/events/', events, name='events'),
     path('api/events/get/', get_event, name='get_event'),

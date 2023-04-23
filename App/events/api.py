@@ -1,4 +1,7 @@
 import datetime
+from StreamStage.templatetags.tags import cross_app_reverse
+
+from accounts.models import Broadcaster
 from .api_auth import can_edit_event
 from accounts.com_lib import authenticated, invalid_response, error_response, required_data, success_response
 from rest_framework.decorators import api_view
@@ -301,6 +304,81 @@ def del_media(request, data):
     media.delete()
 
     return success_response('Successfully deleted event media.')
+
+
+
+@api_view(['GET', 'POST'])
+@required_data(['broadcaster_id', 'sort', 'order', 'page'])
+def get_bc_events(request, data):
+    """
+        This view is used to get the events
+        for a broadcaster.
+    """
+    
+    # -- Pagination
+    try: 
+        page = int(data['page'])
+        if page < 0: return invalid_response('Page must be greater than 0')
+    except ValueError: return invalid_response('Page must be an integer')
+
+    valid_sorts = ['rating']
+    if data['sort'] not in valid_sorts: return invalid_response('Invalid sort')
+
+    valid_orders = ['asc', 'desc']
+    if data['order'] not in valid_orders: return invalid_response('Invalid order')
+
+    
+
+    per_page = 5
+    sort = '-' + data['sort'] if data['order'] == 'desc' else data['sort']
+
+    # -- Get the broadcaster
+    try: broadcaster = Broadcaster.objects.get(id=data['broadcaster_id'])
+    except Broadcaster.DoesNotExist: return invalid_response('Broadcast er does not exist')
+
+    # -- Get the reviews
+    events = Event.objects.filter(
+        broadcaster=broadcaster
+    )#.order_by(sort)
+
+    total_pages = int(len(events) / per_page)
+    serialized_events = []
+    events = events[page * per_page: (page + 1) * per_page]
+    for event in events:
+        serialized_reviews = []
+
+        for review in event.get_reviews():
+            serialized_reviews.append({
+                'id': review.review_id,
+                'event': review.event.event_id,
+                'event_name': review.event.title,
+                'rating': review.rating,
+                'body': review.body,
+                'title': review.title,
+                'created': review.created,
+                'likes': review.likes,
+                'username': review.author.username,
+            })
+        
+        serialized_events.append({
+            'event_id': event.event_id,
+            'rating': event.get_average_rating(),
+            'categories': event.get_category_names(),
+            'cover_pic': event.get_cover_picture() or '',
+            'url': cross_app_reverse('events', 'event_view', { "event_id": event.event_id }),
+            'description': event.description,
+            'title': event.title,
+            'reviews': serialized_reviews,
+        })
+
+    # -- Return the reviews
+    return success_response('Events retrieved successfully', {
+        'events': serialized_events,
+        'page': page,
+        'per_page': per_page,
+        'total': len(serialized_events),
+        'pages': total_pages,
+    })
 
 
 # @api_view(['POST'])

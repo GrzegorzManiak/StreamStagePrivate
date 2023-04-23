@@ -289,6 +289,13 @@ class Event(models.Model):
         if len(showings) > 0:        
             return True 
 
+    def get_category_names(self):
+        names = []
+
+        for category in self.categories.values():
+            names.append(category.name)
+
+        return names
 
 
     def serialize(self):

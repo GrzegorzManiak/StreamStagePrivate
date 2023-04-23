@@ -14,7 +14,6 @@ export interface Pod {
     type: PanelType
 }
 
-
 export interface BroadcasterDetails {
     id: string,
     handle: string,
@@ -41,6 +40,19 @@ export interface Config {
     respond_invite: string
 }
 
+export interface Invite {
+    id: string
+    inviter: string
+    broadcaster: string
+    bc_profile: string
+    bc_url: string
+    message: string
+}
+
+export interface InviteResponse {
+    id: string
+    response: "y" | "n"
+}
 
 // api stuff (credits to Greg)
 export interface DefaultResponseNoData {
@@ -67,3 +79,10 @@ export type GetBroadcasterDetailsResponse = GetBroadcasterDetailsSuccess | Defau
 
 export type UpdateBroadcasterDetailsSuccess = DefaultResponseData & { data: { details: BroadcasterDetails } }
 export type UpdateBroadcasterDetailsResponse = UpdateBroadcasterDetailsSuccess | DefaultResponse;
+
+export type GetInvitationsSuccess = DefaultResponseData & { data: { invites: Invite[] } }
+export type GetInvitationsResponse = GetInvitationsSuccess | DefaultResponse;
+
+export type RespondToInviteResponse = DefaultResponseData | DefaultResponse;
+
+export type SendInvitationResponse = DefaultResponseData | DefaultResponse

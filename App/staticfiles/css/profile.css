@@ -189,3 +189,6 @@ main .width-limiter {
 
 [data-tab='about-tab'] [data-tab='about-tab'] { border-bottom: 2px solid var(--accent-color); }
 [data-tab='about-tab'] #about-tab { transform: translateX(0); }
+
+[data-tab='events-tab'] [data-tab='events-tab'] { border-bottom: 2px solid var(--accent-color); }
+[data-tab='events-tab'] #events-tab { transform: translateX(0); }

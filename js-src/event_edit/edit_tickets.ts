@@ -12,8 +12,6 @@ export function handle_ticket_section(panel: HTMLElement) {
 
     if (add_listing_btn)
         manage_add_listing_btn(add_listing_btn);
-
-    
     
     query_listings();
 }
@@ -22,7 +20,6 @@ export function manage_add_live_ticket_btn(
     btn: HTMLElement,
     showing_id: string
 ) {
-
     btn.addEventListener("click", () => {
         const modal = construct_modal("Add In Person Ticket", "Fill in ticket details below.", true, 'success', add_live_ticket_form);
 
@@ -69,7 +66,6 @@ export function manage_add_live_ticket_btn(
 function manage_add_listing_btn(
     btn: HTMLElement
 ) {
-
     btn.addEventListener("click", () => {
         const modal = construct_modal("Add Streaming Ticket", "Fill in ticket details below.", true, 'success', add_stream_ticket_form);
 
@@ -258,15 +254,13 @@ function ticket_listing_html(
             <div class="b">${listing.detail}</div>
             <span>€${listing.price}</span>
         </div>
-        <div class="col-4 h-75 remove-listing-btn btn btn-danger" data-lid="${listing.id}">
+        <div class="col-4 h-75 remove-listing-btn btn error" data-lid="${listing.id}">
             Delete
         </div>
     `
 
     return row;
 }
-
-
 
 const add_stream_ticket_form = `
     <form>

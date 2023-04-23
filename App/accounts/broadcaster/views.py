@@ -93,17 +93,18 @@ def get_broadcaster_details(request, broadcaster:Broadcaster, data):
 
 @api_view(['POST'])
 @authenticated()
-def fetch_invites(request, data):
+def fetch_invites(request):
     encoded_invites = []
 
     for invite in get_invitations(request.user):
         encoded_invites.append({
             "id":invite.id,
-            "invitee": invite.invitee.cased_username,
+            "inviter": invite.inviter.cased_username,
             "broadcaster": invite.broadcaster.handle,
-            "message": invite.message 
+            "bc_profile": invite.broadcaster.get_picture("profile_pic"),
+            "bc_url": cross_app_reverse('homepage', 'broadcaster_profile', {"username": invite.broadcaster.handle}),
+            "message": invite.message
         })
-
 
     return success_response("Successfully fetched invitations.", { "invites": encoded_invites })
 
@@ -126,11 +127,11 @@ def send_contribute_invite(request, broadcaster:Broadcaster, data):
 
 @api_view(['POST'])
 @authenticated()
-@required_data(['invite_id', 'response'])
+@required_data(['id', 'response'])
 def respond_to_invite(request, data):
 
     try:
-        invite = BroadcasterContributeInvite.objects.get(id=data['invite_id'])
+        invite = BroadcasterContributeInvite.objects.get(id=data['id'])
     except:
         return error_response("Couldn't find that invite.")
     

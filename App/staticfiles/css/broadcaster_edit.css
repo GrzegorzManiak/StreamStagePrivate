@@ -48,3 +48,16 @@
 .broadcaster-edit-btn { 
     cursor: pointer;
 }
+
+.contrib-invite {
+    background-color: var(--theme-backdrop-color);
+    border-radius: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    margin: 10px;
+    width: 100%;
+}
+
+.invite-msg{
+    max-width: 200px;
+}

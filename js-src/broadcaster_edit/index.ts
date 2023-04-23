@@ -3,6 +3,7 @@ import { manage_broadcaster_list } from "./panel";
 import { Config } from "./index.d"
 import { single } from "../common/single";
 import { attach_event_listeners } from "./core/panels";
+import { manage_contrib_panel } from "./contrib";
 
 single("broadcaster_edit");
 
@@ -21,5 +22,9 @@ export const configuration = build_configuration<Config>({
 var broadcaster_list = document.querySelector("#broadcaster-list") as HTMLElement;
 if (broadcaster_list)
     manage_broadcaster_list(broadcaster_list);
+
+var contrib_panel = document.querySelector("#contribution-panel") as HTMLElement
+if (contrib_panel)
+    manage_contrib_panel(contrib_panel);
 
 attach_event_listeners();

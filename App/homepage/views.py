@@ -136,16 +136,14 @@ def broadcaster_profile(request, username):
             'description': broadcaster.biography,
             'approved': broadcaster.approved,
             'is_you': False,
+            'broadcaster_id': broadcaster.id,
             'short_description': broadcaster.biography[:50] + '...' if len(broadcaster.biography) > 50 else broadcaster.biography,
             'name': broadcaster.name,
             'joined': broadcaster.created,
             'reviews': 0,
         },
         'api': {
-            'get_reviews': cross_app_reverse('accounts', 'get_reviews'),
-            'resend_verification': cross_app_reverse('accounts', 'resend_key'),
-            'remove_verification': cross_app_reverse('accounts', 'remove_key'),
-            'recent_verification': cross_app_reverse('accounts', 'recent_key'),
+            'get_bc_events': cross_app_reverse('events', 'get_bc_events'),
             'submit_report': reverse_lazy('submit_report'),
         }
     }

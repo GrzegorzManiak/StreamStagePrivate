@@ -179,10 +179,10 @@ function showing_html(
         <div class="showing-tickets" data-sid="${showing.showing_id}">
         </div>
         <div class="m-1">
-        <div class="col-6 m-1 remove-showing-btn btn btn-danger" data-sid="${showing.showing_id}">
+        <div class="col-6 m-1 remove-showing-btn btn error" data-sid="${showing.showing_id}">
             Delete Showing
         </div>
-            <div class="col-5 m-1 add-live-ticket btn btn-success" data-sid="${showing.showing_id}">
+            <div class="col-5 m-1 add-live-ticket btn success" data-sid="${showing.showing_id}">
                 Add Ticket
             </div>
         </div>
