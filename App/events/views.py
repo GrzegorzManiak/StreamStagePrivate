@@ -6,15 +6,13 @@ from .api_auth import can_edit_event
 
 from StreamStage.templatetags.tags import cross_app_reverse
 from django.views.decorators.csrf import csrf_exempt
-from .models import Event, EventReview, EventShowing
+from .models import Event, EventReview
 from .forms import (EventUpdateForm, 
                     EventDeleteForm, 
                     ReviewCreateForm, 
                     ReviewUpdateForm, 
-                    ReviewDeleteForm,
-                    ShowingCreateForm,
-                    ShowingUpdateForm,
-                    ShowingDeleteForm)
+                    ReviewDeleteForm
+                    )
 
 from . import inline_reviews
 
@@ -34,7 +32,7 @@ def event_view(request, event_id):
     
     reviews = event.get_reviews().order_by('-created')
     review_context = inline_reviews.handle(request, event)
-    avg_rating = round(event.get_average_rating(reviews), 1)
+    avg_rating = round(event.get_average_rating(), 1)
 
     context = {
         'can_edit': event.is_authorized(request.user),
@@ -72,7 +70,9 @@ def event_view(request, event_id):
 @csrf_exempt
 def get_past_events(request):
     context = {}
-    context["events"] = Event.objects.all()
+    context["events"] = [event for event in Event.objects.all() if event.can_view(request.user)
+                         and event.get_showings_count() > 0 and event.get_num_upcoming_showings() == 0 
+                         and event.approved]
 
     return render(request, "event_list_past.html", context)
 
@@ -151,7 +151,6 @@ def event_delete(request, event_id):
                                         # ****************
                                         # *** Showings ***                                        # ***************
                                         # ****************
-@csrf_exempt
 def showing_create(request, event_id):
     context = {}
     event = Event.objects.get(event_id=event_id)
@@ -170,7 +169,6 @@ def showing_create(request, event_id):
     context['form']= form
     return render(request, "showings/showing_new.html", context)
 
-@csrf_exempt
 def showing_update(request, event_id, showing_id):
     context = {}
     showing = EventShowing.objects.filter(showing_id=showing_id).first()
@@ -189,7 +187,6 @@ def showing_update(request, event_id, showing_id):
     return render(request, "showings/showing_update.html", context)
 
 
-@csrf_exempt
 def showing_delete(request, event_id, showing_id):
     showing = EventShowing.objects.filter(showing_id=showing_id).first()
 
@@ -268,7 +265,7 @@ def review_delete(request, event_id, review_id):
 
     return render(request, "reviews/review_delete.html", context)
 
-@csrf_exempt
+
 def review_like(request, review_id):
     review = EventReview.objects.filter(review_id=review_id).first()
     review.toggle_like(request.user)

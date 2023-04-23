@@ -17,7 +17,7 @@ Update Event | StreamStage
 
 
 {% block content %}
-    <main>
+    <main class="nav-gap">
         <span 
             class='config'
 
@@ -42,9 +42,13 @@ Update Event | StreamStage
             <!-- Back to Event Button -->
 
             <h1 class="page-title">Edit Event</h1>
-            <a href="../" class="text-muted">< Back to Event</a>
-            <div class="col-8">
-                <h1>Basic Details</h1>
+            <a href="../" class="d-flex justify-content-center">
+                <button class="btn btn-primary">
+                    Back to Event
+                </button>
+            </a>
+            <div class="col-lg-8 col-md-7 col-sm-12 my-1">
+                <h2 class="grad-title">Basic Details</h2>
                 <div><!-- class="d-flex content_center"> -->
                     <form class="form-class form-layout" action="" method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
@@ -55,8 +59,8 @@ Update Event | StreamStage
                     </form>
                 </div>
             </div>
-            <div class="col-4">
-                <h1>Advanced Details</h1>
+            <div class="col-lg-4 col-md-5 col-sm-12 my-1">
+                <h2 class="grad-title">Advanced Details</h2>
 
                 <div class="mt-2 form-class">
                     <h3>Streaming Tickets</h3>
@@ -75,17 +79,17 @@ Update Event | StreamStage
             </div>
         </div>
         <div class="row m-auto mt-3" style="max-width: 1200px">
-            <div class="col-8">
+            <div class="col-12">
                 <h1>Event Pictures</h1>
 
                 <div class="mt-2 form-class">
-                    <div id="media-panel">
+                    <div id="media-panel" class="row">
 
                     </div>
-                    <span id="add-media-btn" class="btn success">Add Picture</span>
+                    <span id="add-media-btn" class="my-2 btn success">Add Picture</span>
                 </div>
             </div>
         </div>
-        {% render_bundle 'event_edit' %}>
+        {% render_bundle 'event_edit' %}
     </main>
 {% endblock %}

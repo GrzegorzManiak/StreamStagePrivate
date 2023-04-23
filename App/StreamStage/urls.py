@@ -25,20 +25,21 @@ from django.contrib.sitemaps.views import sitemap
 from .api.terms import get_latest_terms, create_terms, filter_terms, render_terms, render_terms_specific
 from .api.privacy import get_latest_privacy, create_privacy, filter_privacy, render_privacy, render_privacy_specific
 from .api.faq import create_faq, filter_faq, render_faq, delete_faq, update_faq
+from .views import about_us_view
 
 from accounts.sitemap import sitemap_entries as acc_se
 from applications.sitemap import sitemap_entries as app_se
-from events.sitemap import sitemap_entries as ev_se
-from homepage.sitemap import sitemap_entries as hp_se
-from search.sitemap import sitemap_entries as sr_se
+# from events.sitemap import sitemap_entries as ev_se
+# from homepage.sitemap import sitemap_entries as hp_se
+# from search.sitemap import sitemap_entries as sr_se
 
-# -- Combine all the sitemaps
+# # -- Combine all the sitemaps
 sitemap_entries = [
     *acc_se,
     *app_se,
-    *ev_se,
-    *hp_se,
-    *sr_se
+#     *ev_se,
+#     *hp_se,
+#     *sr_se
 ]
 
 formated_sitemap = f"""<?xml version="1.0" encoding="UTF-8"?>
@@ -74,6 +75,7 @@ urlpatterns = [
     path('search/', include('search.urls')),
     path('', include('homepage.urls')),
     path('homepage/', include('homepage.urls')),
+    path('about_us', about_us_view, name='about_us'),
 
     # -- API
     path('api/terms/latest', get_latest_terms, name='get_latest_terms'),

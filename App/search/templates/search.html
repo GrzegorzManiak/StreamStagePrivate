@@ -36,6 +36,7 @@ Search Events | StreamStage
 
                 <!-- Display Search Results -->
                 {% for event in events_list %}
+                    {% if event.approved %}
                     <div class="event-listing">
 
                         <div class="event-cover-container">
@@ -50,7 +51,7 @@ Search Events | StreamStage
                                     > @{{ event.broadcaster.handle }}</p>
                                 </div>
                                 {% if event.description|length > 250 %}
-                                    <p>{{ event.description|slice:":250" }}...</p>
+                                    <p>{{ event.description|slice:":180" }}...</p>
                                 {% else %}
                                     <p>{{ event.description }}</p>
                                 {% endif %}
@@ -136,7 +137,7 @@ Search Events | StreamStage
 
 
                     </div>
-
+                    {% endif %}
                     {% empty %}
                     <div class="row mx-auto">
                         <p class="text-center">No results found.</p>

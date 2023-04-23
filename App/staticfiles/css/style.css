@@ -34,6 +34,9 @@ body {
     color: var(--font-color);
     min-height: 100vh;
 }
+div > p {
+    overflow-wrap: break-word !important;
+}
 
 .bk-theme { background-color: var(--theme-color); }
 .bk-theme-semi-transparent { background-color: var(--theme-semi-transparent-color); }
@@ -78,11 +81,22 @@ main {
 .page-title {
     margin: .5em auto;
     text-align: center;
-    color: #ffb25a;
+    font-weight: bolder;
+    color: var(--accent-color);
+}
+.page-title, .sub-title{
+    color: var(--accent-color);
 }
 
-.sub-title {
-    color: #ffb25a;
+.grad-title {
+    background-color: var(--accent-color);
+    background-image: linear-gradient(100deg, #FFFFFF, var(--accent-color));
+    background-image: linear-gradient(100deg, #FFFFFF, var(--accent-color));
+    background-size: 100%;
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    -webkit-text-fill-color: transparent; 
+    -moz-text-fill-color: transparent;
 }
 
 
@@ -112,7 +126,7 @@ div>a:hover {
     margin: 0;
     padding: 0;
 
-    border-bottom: 1px solid #ffb25a;
+    border-bottom: 1px solid var(--accent-color);;
 }
 
 .terms-privacy h2 {
@@ -201,11 +215,6 @@ form>div>input,
 form>div>button {
     margin: auto !important;
     width: 100% !important;
-}
-
-form>div>textarea,
-form>p>textarea {
-    /* height: 6rem !important; */
 }
 
 .button-slim p,
@@ -859,14 +868,19 @@ footer hr {
 
 }
 
-/* ***************** */
-/*    EVENT PAGES    */
-/* ***************** */
+/* About Us Page */
+.about{
+    height: 17rem;
+    height: 17rem;
+}
+.about_img{
+    display: block;
+    min-width: 15rem;
+    max-width: 80%;
+    height: 15rem;
+    margin: 1rem auto;
+}
 
-/***** Events Listings Pages *****/
-/* - Upcoming Events Page */
-/* - Past Events Page */
-/* - Search Events Page */
 
 
 /***** Site wide *****/

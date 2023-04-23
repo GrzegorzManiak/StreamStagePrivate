@@ -1,14 +1,39 @@
 
+/***** Event Listings Pages *****/
+/* Event media */
+.event-cover-list {
+    display: block;
+    max-width: 12rem;
+    max-height: 12rem;
+    margin: 1rem auto;
+    object-fit: cover;
+}
+@media screen and (max-width: 992px) {
+    .event-cover-list img{
+        width: 50%;
+    }
+}
+/* Hide Reviews on Medium & Smaller Screens */
+@media screen and (max-width: 992px) {
+    .hide_md * {
+        display: none;
+    }
+}
+
 /***** Event Page *****/
 /* Event media */
 .event-cover {
     display: block;
-    max-width: 100%;
+    max-width: 80%;
     max-height: 100%;
     margin: 1rem auto;
     object-fit: cover;
 }
-
+@media screen and (max-width: 992px) {
+    .event-cover img{
+        width: 50%;
+    }
+}
 /* Event Trailer */
 .video {
     display: block;
@@ -17,7 +42,19 @@
     margin: 1rem auto; 
 }
 
-/* - Event Page Media Carousel & Event/Search Listings Pages Review Carousel */
+/***** Event Update Page *****/
+.media-elem div img{
+    border-radius: 0.5rem;
+    height: 10rem;
+}
+.media-elem div span{
+    margin: 0 1rem;
+}
+
+/*****
+    Event Page Media Carousel 
+    Event/Search Listings Pages Review Carousel 
+*****/
 .swiper {
     width: 100%;
 }
@@ -38,7 +75,7 @@
 .s-btn {
     width: 5% !important;
     height: 95% !important;
-    color: #ffb25a !important;
+    color: #0275d8 !important;
     background: transparent;
     border: none;
     outline: none;
@@ -65,7 +102,7 @@
 }
 
 .swiper-pagination-bullet {
-    background-color: #ffb25a !important;
+    background-color: #0275d8 !important;
 }
 
 /***** Reviews Rating Stars *****/
@@ -85,7 +122,7 @@
 
 .rating-list li {
     float: right;
-    color: var(--muted-font-color);
+    color: #ffb25a;
 
 }
 
