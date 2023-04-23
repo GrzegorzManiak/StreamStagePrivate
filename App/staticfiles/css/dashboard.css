@@ -607,3 +607,24 @@ select {
     backdrop-filter: blur(0.5rem);
     box-shadow: 0 0 0.5rem 0.5rem #0000001a;
 }
+
+.subscription-text h4, .subscription-text p { 
+    margin: 0; 
+    font-weight: 500!important;
+    font-size: 1.5rem!important;
+}
+
+/* 500 break */
+@media only screen and (max-width: 500px) {
+    .subscription-text h4, .subscription-text p { 
+        font-size: 1.25rem!important; 
+        font-weight: 400!important;
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* 690 */
+@media only screen and (max-width: 690px) {
+    .toggles > div { width: 100%!important; }
+}
