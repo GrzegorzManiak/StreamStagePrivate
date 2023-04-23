@@ -3,6 +3,7 @@ from sendgrid.helpers.mail import Mail
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.apps import apps
+from StreamStage.settings import RUNNING_ON_LOCALHOST
 import uuid
 
 def send_email(to: str, subject: str, body: str):    
@@ -173,18 +174,32 @@ def send_template_email(
 
         case 'payment_success':
             subject = "Payment success"
-            body = """
-            """
+            base_context['title'] = "Payment success"
+            base_context['description'] = "You have successfully made a payment"
+            body = render_to_string(
+                'email/payment_success.html',
+                base_context
+            )
+
 
         case 'payment_canceled':
             subject = "Payment canceled"
-            body = """
-            """
+            base_context['title'] = "Payment canceled"
+            base_context['description'] = "You have canceled a payment"
+            body = render_to_string(
+                'email/payment_canceled.html',
+                base_context
+            )
 
         case 'subscription_success':
             subject = "Subscription success"
-            body = """
-            """
+            base_context['title'] = "Subscription success"
+            base_context['description'] = "You have successfully subscribed"
+            body = render_to_string(
+                'email/subscription_success.html',
+                base_context
+            )
+            
 
     # -- Add the email to the database
     sent_email = apps.get_model('StreamStage', 'SentEmail')
@@ -205,4 +220,5 @@ def send_template_email(
     )
 
     # -- Send out the email
-    send_email(email, subject, body)
+    if RUNNING_ON_LOCALHOST == False:
+        send_email(email, subject, body)

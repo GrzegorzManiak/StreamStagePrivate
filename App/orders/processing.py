@@ -1,3 +1,4 @@
+from StreamStage.mail import send_template_email
 from events.models import Event
 from accounts.models import Member
 from store.models import TicketListing
@@ -39,6 +40,8 @@ def create_purchase(
     Statistics.log('tickets', 'gross', (ticket_listing.price * total_mult))
     Statistics.log('tickets', 'count', 1)
 
+    send_template_email(purchaser, 'payment_success', purchase)
+    
     purchase.save()
     item.save()
 
