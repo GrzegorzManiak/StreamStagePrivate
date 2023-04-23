@@ -85,6 +85,17 @@
                                     </p>
                                 </div>
                                 <script>
+                                    // -- Get .errorlist from form
+                                    const errorlist = document.querySelector('.errorlist');
+
+                                    // -- If there is an error, move it out of the form
+                                    if (errorlist) {
+                                        const clone = errorlist.cloneNode(true);
+                                        errorlist.remove();
+
+                                        const panel = document.querySelector('.panel');
+                                        panel.insertBefore(clone, panel.firstChild);
+                                    }
                                 </script>
                             </article>
 

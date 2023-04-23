@@ -11,6 +11,7 @@
 
 {% block head %}
     <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+    <link rel="stylesheet" href="{% static 'css/application.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -64,72 +65,61 @@
                             <article class='panel' data-panel-type='email-wait'>
                                 <div class="
                                     text-center
-                                ">
-                                    <p class='
-                                        mb-4
-                                        fs-5
-                                    '>
-                                        <div class="col-4">
-                                            <b>Streamer</b>
-                                            <div class="application-preview">
-                                                {% if streamer_apps.count == 0 %}
-                                                    No pending applications!
-                                                {% endif %}
-                                                {% for application in streamer_apps %}
-                                                    <div>
-                                                        <p class="identifier float-start">#{{application.application_id}}</p>
-                                                        <b class="p-2">{{application.applicant.username}}</b>
-                                                    </div>
-                                                    <div>
-                                                        <p>{{application.submission_statement}}</p>
-                                                    </div>
-                                                    <div style="height:1em">
-                                                        <a href="{% url 'review_streamer_application' application.application_id %}" class="float-end">Review</a>
-                                                    </div>
-                                                {% endfor %}
-                                            </div>
-                                        </div>
-                                        <div class="col-4">
-                                            <b>Broadcasters</b>
-                                            <div class="application-preview">
-                                                {% if broadcaster_apps.count == 0 %}
-                                                    No pending applications!
-                                                {% endif %}
-                                                {% for application in broadcaster_apps %}
-                                                    <div>
-                                                        <p class="identifier float-start">#{{application.application_id}}</p>
-                                                        <b class="p-2">@{{application.broadcaster.handle}}</b>
-                                                    </div>
-                                                    <div>
-                                                        <p>{{application.submission_statement}}</p>
-                                                    </div>
-                                                    <div style="height:1em">
-                                                        <a href="{% url 'review_broadcaster_application' application.application_id %}" class="float-end">Review</a>
-                                                    </div>
-                                                {% endfor %}
-                                            </div>
-                                        </div>
-                                        <div class="col-4">
-                                            <b>Events</b>
-                                            <div class="application-preview">
-                                                {% if event_apps.count == 0 %}
-                                                    No pending applications!
-                                                {% endif %}
-                                                {% for application in event_apps %}
-                                                <div>
+                                ">  
+                                    <hr>
+        
+                                    <div class="w-100">
+                                        <p>Streamer</p>
+                                        <div class="application-preview">
+                                            {% if streamer_apps.count == 0 %}
+                                                No pending applications!
+                                            {% endif %}
+                                            {% for application in streamer_apps %}
+                                                <div class='w-100'>
                                                     <p class="identifier float-start">#{{application.application_id}}</p>
-                                                    <b class="p-2">{{application.applicant.username}}</b>
+                                                    <p>@{{application.applicant.username}}</p>
+                                                    <a href="{% url 'review_streamer_application' application.application_id %}" class="float-end">Review</a>                        
                                                 </div>
-                                                <div>
-                                                    <p>{{application.submission_statement}}</p>
-                                                </div>
-                                                <div style="height:1em">
-                                                    <a href="{% url 'review_event_application' application.application_id %}" class="float-end">Review</a>
-                                                </div>
-                                                {% endfor %}
-                                            </div>
+                                            {% endfor %}
                                         </div>
-                                    </p>
+                                    </div>
+
+                                    <hr>
+    
+                                    <div class="w-100">
+                                        <p>Broadcasters</p>
+                                        <div class="application-preview">
+                                            {% if broadcaster_apps.count == 0 %}
+                                                No pending applications!
+                                            {% endif %}
+                                            {% for application in broadcaster_apps %}
+                                                <div class='w-100'>
+                                                    <p class="identifier float-start">#{{application.application_id}}</p>
+                                                    <p>@{{application.broadcaster.handle}}</p>
+                                                    <a href="{% url 'review_broadcaster_application' application.application_id %}" class="float-end">Review</a>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+
+                                    <hr>
+
+                                    <div class="w-100">
+                                        <p>Events</p>
+                                        <div class="application-preview">
+                                            {% if event_apps.count == 0 %}
+                                                No pending applications!
+                                            {% endif %}
+                                            {% for application in event_apps %}
+                                            <div class='w-100'>
+                                                <p class="identifier float-start">#{{application.application_id}}</p>
+                                                <p>@{{application.applicant.username}}</p>
+                                                <a href="{% url 'review_event_application' application.application_id %}" class="float-end">Review</a>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+
                                 </div>
                             </article>
                         </div>
