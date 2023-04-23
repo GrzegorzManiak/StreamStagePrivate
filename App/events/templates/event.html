@@ -230,8 +230,16 @@ Event | StreamStage
                                                         <div class="m-0">{{ ticket.ticket_detail }}</div>
                                                         <div class='text-muted m-0'>€{{ ticket.price }}</div>
                                                     </div>
-                
+                                                    
                                                     <div class='btn-group w-100 d-flex justify-content-between slim-btn'>    
+                                                        {% if ticket.remaining_stock == 0 %}
+                                                            <button
+                                                                disabled
+                                                                name="out-of-stock-btn"
+                                                                class="p-5 btn btn-secondary secondary loader-btn w-100 slim-btn ">
+                                                                <p>Sold Out!</p>
+                                                            </button>
+                                                        {% else %}
                                                         <button 
                                                             name="purchase-stream" 
                                                             data-ticket-id="{{ ticket.listing_id }}" 
@@ -246,8 +254,9 @@ Event | StreamStage
                                                                     <span class='visually-hidden'>Loading...</span>
                                                                 </div>
                                                             </span>
-                                                            <p>Buy now</p>
+                                                            <p>Buy now ({{ ticket.remaining_stock }} left)</p>
                                                         </button>
+                                                        {% endif %}
                                                     </div>
                                                 </div>
                                             {% endfor %}
