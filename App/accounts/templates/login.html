@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load tags %}
 {% load render_bundle from webpack_loader %}
 
 {% block metadescription %}
@@ -79,7 +80,8 @@
                             </div>
 
                             <div class='login-area-panels'>
-                                <article class='h-100 login-area-panel' data-panel-type='login'>
+                                <article class='h-100 login-area-panel' 
+                                data-panel-type='login'>
 
                                     <!-- Email input -->
                                     <div class="mb-4">
@@ -139,6 +141,15 @@
                                             my-auto
                                         ">Not a member? &nbsp;
                                             <a href="{% url 'register' %}" class="text-primary">Register</a>
+                                        </p>
+
+                                        <p class="
+                                            text-center
+                                            text-muted
+                                            mx-3
+                                            my-auto
+                                        ">Forgot your password? &nbsp;
+                                            <a href="{% url 'forgot' %}" class="text-primary">Reset</a>
                                         </p>
                                     </div>
 
@@ -323,8 +334,8 @@
                                 <!-- Tos, Privacy policy -->
                                 <p>
                                     By proceeding with the "Loging in" or "Creation" of an account, you acknowledge and agree to abide by the
-                                    <a href="">Terms of Service</a> and 
-                                    <a href="#!">Privacy Policy</a>.
+                                    <a href='{% cross_app_reverse_tag 'StreamStage' 'render_terms' %}'>Terms of Service</a> and 
+                                    <a href='{% cross_app_reverse_tag 'StreamStage' 'render_privacy' %}'>Privacy Policy</a>.
                                 </p>
 
                             </div>

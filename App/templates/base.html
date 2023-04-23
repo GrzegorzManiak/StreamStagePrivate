@@ -107,6 +107,7 @@
         <span class='config'
             data-logged-in="{{ request.user.is_authenticated }}"
             data-impersonate="{{ request.impersonate }}"
+            data-csrf-token="{{ csrf_token }}"
         ></span>
 
         <!-- Navbar -->

@@ -68,21 +68,17 @@ const accounts = get_pod('accounts'),
     server = get_pod('server'),
     cash_flow = get_pod('cash_flow'),
     tickets = get_pod('tickets'),
-    reviews = get_pod('reviews'),
-    subscriptions = get_pod('subscriptions'),
-    viewers = get_pod('viewers');
+    subscriptions = get_pod('subscriptions');
 
 // -- Attach to all panels
 if (
     accounts && server && 
     cash_flow && tickets && 
-    reviews && subscriptions && 
-    viewers
+    subscriptions
 ) manage_statistical_panels(
     accounts, server,
     cash_flow, tickets, 
-    reviews, subscriptions, 
-    viewers
+    subscriptions, 
 );
 
 

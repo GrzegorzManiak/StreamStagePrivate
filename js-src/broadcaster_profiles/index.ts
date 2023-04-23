@@ -1,26 +1,28 @@
 import { Type, build_configuration } from "../api/config";
 import { report } from "../common/report";
 import { single } from "../common/single";
-import { manage_reviews_panel } from "./src/reviews";
+import { manage_events_panel } from "./src/events";
 
 single('broad_profiles');
 
 export const configuration = build_configuration<{
-    authenticated: boolean,
-    username: string,
-    is_you: boolean,
+    csrf_token: string,
+    handle: string,
+    broadcaster_id: string,
+
+    submit_report: string,
+    get_events: string,
 }>({
-    username: new Type('data-username', 'string'),
-    is_you: new Type('data-is-you', 'boolean'),
-    authenticated: new Type('data-is-authenticated', 'boolean'),
+    csrf_token: new Type('data-csrf-token', 'string'),
+    handle: new Type('data-handle', 'string'),
+    broadcaster_id: new Type('data-broadcaster-id', 'string'),
+
+    submit_report: new Type('data-submit-report', 'string'),
+    get_events: new Type('data-get-bc-events', 'string'),
 }); 
 
-// -- Load the review panel
-manage_reviews_panel(
-    configuration.username,
-    configuration.is_you,
-);
-
+// -- Load the events panel
+manage_events_panel();
 
 // -- Get the tab selector
 const tab_selector = Array.from(document.querySelectorAll('.tab-selector')),
@@ -35,7 +37,6 @@ if (tab) {
     if (tab_button) tabs.setAttribute('data-tab', tab_button.getAttribute('data-tab'));
 }
 
-
 // -- Attach the event listeners
 more_desc.addEventListener('click', () => tabs.setAttribute('data-tab', 'about-tab'));
 tab_selector.forEach(tab => tab.addEventListener('click', () => {
@@ -47,5 +48,5 @@ tab_selector.forEach(tab => tab.addEventListener('click', () => {
 // -- Attach to the report button
 const report_button = document.querySelector('.report');
 report_button.addEventListener('click', () => {
-    report('user', configuration.username);
+    report('broadcaster', configuration.handle);
 });

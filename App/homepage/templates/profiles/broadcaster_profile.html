@@ -3,227 +3,209 @@
 {% load render_bundle from webpack_loader %}
 
 {% block metadescription %}
-    
+
 {% endblock %}
 
 {% block title %}
-    StreamStage - {{ data.name }}
+StreamStage - {{ data.name }}
 {% endblock %}
 
 {% block head %}
-    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
-    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
-    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'css/events.css' %}">
 {% endblock %}
 
 {% block content %}
-    <span class='config'
-        data-is-you="{{ data.is_you }}"
-        data-is-authenticated="{{ user.is_authenticated }}"
-        data-username="{{ data.name }}"
-        data-csrf-token='{{ csrf_token }}'
-        data-get-reviews='{{ api.get_reviews }}'
-        data-send-verification='{{ api.send_verification }}'
-        data-resend-verification='{{ api.resend_verification }}'
-        data-remove-verification='{{ api.remove_verification }}'
-        data-recent-verification='{{ api.recent_verification }}'
-        data-submit-report='{{ api.submit_report }}'
-    >
-    </span>
+<span class='config'
+    data-handle="{{ data.handle }}"
+    data-profile="{{ data.avatar }}"
+    data-broadcaster-id="{{ data.broadcaster_id }}"
+    data-csrf-token='{{ csrf_token }}'
+    data-get-bc-events='{{ api.get_bc_events }}'
+    data-submit-report='{{ api.submit_report }}'>
+</span>
 
-    <div>
-        <!-- Background -->
-        <div class='background'>
+<div>
+    <!-- Background -->
+    <div class='background'>
+        <!-- Gradient -->
+        <div class='background-gradient'></div>
 
-            <!-- Gradient -->
-            <div class='background-gradient'></div>
+        <!-- Image -->
+        <div class='profile-background' style="background-image: url({{ data.background }})"></div>
 
-            <!-- Image -->
-            <div 
-                class='profile-background' 
-                style="background-image: url({{ data.background }})"
-            ></div>
+    </div>
 
-        </div>
+    <!-- Profile -->
+    <div class='profile'>
+        <div class='profile-width-limiter'>
 
-        <!-- Profile -->
-        <div class='profile'>
-            <div class='profile-width-limiter'>
-
-                <!-- Profile picture -->
-                <div class='profile-picture'>
-                    <img src="{{ data.avatar }}" alt="Profile picture">
-                </div>
-
-                <!-- Profile info -->
-                <div class='profile-info'>
-                    <h1>{{ data.name }}</h1>
-                    <h3 class='text-muted'>@{{ data.handle }}</h3>
-                    {% if not data.approved %}
-                    <span class="b text-danger"> <i class="fas fa-exclame"></i> Awaiting Approval </span>
-                    {% endif %}
-                    <p class='text-muted'>
-                        {{ data.short_description }}
-                        <span class="more-desc"> | More <i class="fas fa-chevron-right"></i></span>
-                        
-                        {% if edit_details_path %}
-                        <a href="{{edit_details_path}}" class="edit-details float-end"> <i class="fas fa-chevron-left"></i> Edit Details </a>
-                        {% endif %}
-                    </p>
-                </div>
-
+            <!-- Profile picture -->
+            <div class='profile-picture'>
+                <img src="{{ data.avatar }}" alt="Profile picture">
             </div>
+
+            <!-- Profile info -->
+            <div class='profile-info'>
+                <h1>{{ data.name }}</h1>
+                <h3 class='text-muted'>@{{ data.handle }}</h3>
+                {% if not data.approved %}
+                <span class="b text-danger"> <i class="fas fa-exclame"></i> Awaiting Approval </span>
+                {% endif %}
+                <p class='text-muted'>
+                    {{ data.short_description }}
+                    <span class="more-desc"> | More <i class="fas fa-chevron-right"></i></span>
+
+                    {% if edit_details_path %}
+                    <a href="{{edit_details_path}}" class="edit-details float-end"> <i class="fas fa-chevron-left"></i>
+                        Edit Details </a>
+                    {% endif %}
+                </p>
+            </div>
+
         </div>
+    </div>
 
 
-        <!-- Content -->
-        <main>
-            <div class='width-limiter' data-tab='reviews-tab' id='tabs'>
-                <div class='tab-selectors d-flex aligncntn'>
-                    <p class='tab-selector' data-tab='reviews-tab' data-url='reviews'>Reviews</p>
-                    <p class='tab-selector' data-tab='about-tab' data-url='about'>About</p>
-                </div>
+    <!-- Content -->
+    <main>
+        <div class='width-limiter' data-tab='events-tab' id='tabs'>
+            <div class='tab-selectors d-flex aligncntn'>
+                <p class='tab-selector' data-tab='events-tab' data-url='events'>Events</p>
+                <p class='tab-selector' data-tab='about-tab' data-url='about'>About</p>
+            </div>
 
-                <div class='tabs w-100'>
+            <div class='tabs w-100'>
 
-                    <div id='reviews-tab' class='w-100 h-100'>
-                        <!-- FIlters -->
-                        <div class='
+                <div id='events-tab' class='w-100 h-100'>
+                    <!-- FIlters -->
+                    <div class='
                             mb-5
                             d-flex
                             filters
                             gap-2
                             w-100
-                        '>  
-                            <div class='w-50'>
-                                <label class="form-label" for="filter">Filter by</label>
-                                <select 
-                                    name="filter" 
-                                    id="filter" 
-                                    class="form-select w-100 inp"
-                                >   
-                                    <option value="created" selected>Created</option>
-                                    <option value="rating">Rating</option>
-                                    <option value="likes">Likes</option>
-                                </select>
-                            </div>
-
-                            <div class='w-50'>
-                                <label class="form-label" for="order">Order by</label>
-                                <select 
-                                    name="order" 
-                                    id="order" 
-                                    class="form-select w-100 inp"
-                                >   
-                                    <option value="desc" selected>Descending</option>
-                                    <option value="asc">Ascending</option>
-                                </select>
-                            </div>
+                        '>
+                        <div class='w-50'>
+                            <label class="form-label" for="filter">Filter by</label>
+                            <select name="filter" id="filter" class="form-select w-100 inp">
+                                <option value="rating" selected>Rating</option>
+                            </select>
                         </div>
 
+                        <div class='w-50'>
+                            <label class="form-label" for="order">Order by</label>
+                            <select name="order" id="order" class="form-select w-100 inp">
+                                <option value="desc" selected>Descending</option>
+                                <option value="asc">Ascending</option>
+                            </select>
+                        </div>
+                    </div>
 
-                        <!-- Reviews -->
-                        <div class='
+
+                    <!-- Events -->
+                    <div class='
                             mb-5
                             d-flex
-                            reviews
+                            events
                             flex-column
-                            gap-2
+                            gap-2 
                             w-100
                         '>
-                            
-                        </div>
+                    </div>
 
-                        <!-- Save button -->
-                        <div class="
+                    <!-- Save button -->
+                    <div class="
                             text-center
                             w-100
                         ">
 
-                            <!-- Pagination -->
-                            <div class="
+                        <!-- Pagination -->
+                        <div class="
                                 d-flex 
                                 justify-content-between
                                 justify-content-center
-                                gap-2           
+                                gap-2 
                                 w-100 
-                            ">   
-                                
-                                <!-- Prev -->
-                                <button 
-                                    class="w-100 h-100 btn btn-primary btn-lg info loader-btn prev"
-                                    loader-state='default'>   
-                                    <span> <div class='spinner-border' role='status'> 
-                                    <span class='visually-hidden'>Loading...</span> </div> </span>
-                                    <p><i class="fas fa-chevron-left"></i> Prev</p>
-                                </button>
+                            ">
 
-                                <!-- Input -->
-                                <div class="h-100 w-100">
-                                    <input 
-                                        name="review-page" 
-                                        id="review-page" 
-                                        placeholder="0" 
-                                        value="0"
+                            <!-- Prev -->
+                            <button class="w-100 h-100 btn btn-primary btn-lg info loader-btn prev"
+                                loader-state='default'>
+                                <span>
+                                    <div class='spinner-border' role='status'>
+                                        <span class='visually-hidden'>Loading...</span>
+                                    </div>
+                                </span>
+                                <p><i class="fas fa-chevron-left"></i> Prev</p>
+                            </button>
+
+                            <!-- Input -->
+                            <div class="h-100 w-100">
+                                <input name="events-page" id="events-page" placeholder="0" value="0"
                                     class="form-control form-control-lg inp text-center">
 
-                                    <!-- Out of -->
-                                    <p class="text-muted m0 out-of">out of 0</p>
-                                </div>
-
-                                <!-- Next -->
-                                <button 
-                                    class="w-100 h-100 btn btn-primary btn-lg info loader-btn next"
-                                    loader-state='default'>   
-                                    <span> <div class='spinner-border' role='status'> 
-                                    <span class='visually-hidden'>Loading...</span> </div> </span>
-                                    <p>Next <i class="fas fa-chevron-right"></i></p>
-                                </button>
-
+                                <!-- Out of -->
+                                <p class="text-muted m0 out-of">out of 0</p>
                             </div>
+
+                            <!-- Next -->
+                            <button class="w-100 h-100 btn btn-primary btn-lg info loader-btn next"
+                                loader-state='default'>
+                                <span>
+                                    <div class='spinner-border' role='status'>
+                                        <span class='visually-hidden'>Loading...</span>
+                                    </div>
+                                </span>
+                                <p>Next <i class="fas fa-chevron-right"></i></p>
+                            </button>
+
                         </div>
                     </div>
+                </div>
 
-                    <div id='about-tab' class='w-100 d-flex h-100 gap-4'>
-                        <!-- Description column -->
-                        <div class='
+                <div id='about-tab' class='w-100 d-flex h-100 gap-4'>
+                    <!-- Description column -->
+                    <div class='
                             mb-5
                             d-flex
                             flex-column
                             gap-2
                             w-100
                         '>
-                            <h1 class='w-100'>About</h1>
-                            <hr>
-                            {{ data.description }} 
-                        </div>
+                        <h1 class='w-100'>About</h1>
+                        <hr>
+                        {{ data.description }}
+                    </div>
 
-                        <!-- details column -->
-                        <div class='
+                    <!-- details column -->
+                    <div class='
                             mb-5
                             d-flex
                             gap-2
                             w-50
                             flex-column
                         '>
-                            <h1 class='w-100'>Stats</h1>
-                            <hr>
-                            <p class='w-100 m-0'>Joined {{ data.joined }}</p>
-                            <p class='w-100 m-0'>{{ data.reviews }} Reviews</p>
-                            <p class='w-100 m-0'>From {{ data.country }}</p>
-                            <hr>
-                            <p class='w-100 m-0 report'>
-                                <i class="fas fa-flag"></i>
-                                Report
-                            </p>
-                        </div>
+                        <h1 class='w-100'>Stats</h1>
+                        <hr>
+                        <p class='w-100 m-0'>Joined {{ data.joined }}</p>
+                        <p class='w-100 m-0'>{{ data.event }} Events</p>
+                        <p class='w-100 m-0'>From {{ data.country }}</p>
+                        <hr>
+                        <p class='w-100 m-0 report'>
+                            <i class="fas fa-flag"></i>
+                            Report
+                        </p>
                     </div>
-
                 </div>
-            </div>
-        </main>
-    </div>
 
-    <!-- Scripts -->
-    {% render_bundle 'broadcaster_profiles' %}
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Scripts -->
+{% render_bundle 'broadcaster_profiles' %}
 {% endblock %}

@@ -6,7 +6,7 @@
 -->
 <article class='panel' data-panel-type='my_broadcasters' data-panel-status='' style="max-width:1000px; margin:auto">
     <div class="nav-gap">
-        <form id="bc-update-form" class="form-class form-layout" action="" method="POST" enctype="multipart/form-data" style="display: none; max-width: 900px;">
+        <form id="bc-update-form" class="form-class form-layout" action="" method="POST" enctype="multipart/form-data" style="display: none; width:100%;">
             <div class="d-flex flex-column">
                 <div class="mb-5 d-flex justify-content-center profile-picture-banner">
                     <!-- Banner -->
@@ -38,7 +38,19 @@
             <p class="text-muted">Manage broadcaster profiles that you are authorized to edit.</p>
             <div id="broadcaster-list"></div>
         </div>
+        <br/>
+
+        <div class="mt-5 justify-content-start">
+            <h1 class="fw-bold">Contribution</h1>
+            <p id="text-your-invites" class="text-muted">Your invitations:</p>
+            <div id="contribution-panel">
+                <p id="no-invites-notice" style="display:none" class="text-muted">You have no pending invitations.</p>
+                
+                <div id="invite_list">
+                </div>
+
+            </div>
+        </div>
     </div>
 </article>
-
 {% endblock %}

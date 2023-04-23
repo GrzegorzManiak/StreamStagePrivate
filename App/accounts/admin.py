@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Member, Broadcaster, oAuth2
+from .models import BroadcasterContributeInvite, Member, Broadcaster, oAuth2
 
 
 # Register your models here.
@@ -22,3 +22,7 @@ class BroadcasterAdmin(admin. ModelAdmin):
 @admin.register(oAuth2)
 class oAuth2Admin(admin.ModelAdmin):
     list_display = ['id', 'user', 'oauth_type', 'oauth_id']
+
+@admin.register(BroadcasterContributeInvite)
+class InvitationAdmin(admin.ModelAdmin):
+    list_display = [ 'inviter', 'invitee', 'broadcaster', 'message', 'is_pending' ]

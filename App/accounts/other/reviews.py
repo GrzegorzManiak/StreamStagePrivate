@@ -62,7 +62,6 @@ def get_reviews(request, data):
     })
 
 
-
 @api_view(['POST'])
 @impersonate()
 @authenticated()

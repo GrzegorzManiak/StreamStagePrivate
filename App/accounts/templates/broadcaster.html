@@ -26,6 +26,7 @@
 
     data-fetch-invites='{{ api.fetch_invites }}'
     data-send-invite='{{ api.send_invite }}'
+    data-remove-contributor='{{ api.remove_contributor }}'
     data-respond-invite='{{ api.respond_invite }}'
 
     data-broadcasters='{{ broadcaster_id_list }}'
@@ -43,7 +44,7 @@
                     -->
                 <div class='side-panel-header'>
                     <p class='side-panel-header-text'>
-                        Personal
+                        Broadcaster
                     </p>
                 </div>
 
@@ -79,60 +80,7 @@
                     <!-- 
                             End of Pod - Applications
                         -->
-                    <!-- 
-                            Pod - Contribution
-                        -->
-                    <div data-pod-status='' data-pod='invitations' class='
-                        side-panel-pod
-                        text-light d-flex
-                        align-items-center
-                        justify-content-start
-                    '>
-                    <!-- Icon -->
-                    <div class='
-                                side-panel-pod-icon
-                                d-flex
-                                align-items-center
-                                justify-content-center
-                            '>
-                        <i class="fa-solid text-justify accordion
-                                fa-user
-                            "></i>
-                    </div>
-
-                    <!-- Text -->
-                    <div class='side-panel-pod-text'>
-                        <p class='side-panel-pod-text-text m-0 mb-0'>
-                            Invitations
-                        </p>
-                    </div>
-                </div>
-                <!-- 
-                        End of Pod - Contribution
-                    -->
-                </div>
-            </section>
-
-            <section id='pod-broadcaster'>
-                <!--
-                        Header - Security
-                    -->
-                <div class='side-panel-header'>
-                    <p class='side-panel-header-text'>
-                        Broadcaster
-                    </p>
-                </div>
-
-                <div class='pods'>
-                    <!-- 
-                            Pod - My Broadcasters
-                        -->
-                    <div data-pod-status='active' data-pod='my_broadcasters' class='
-                            side-panel-pod
-                            text-light d-flex
-                            align-items-center
-                            justify-content-start
-                        '>
+                    <div data-pod-status='active' data-pod='my_broadcasters' class='side-panel-pod text-light d-flex align-items-center justify-content-start'>
                         <!-- Icon -->
                         <div class='
                                     side-panel-pod-icon
@@ -199,9 +147,6 @@
 
                                 <!-- 'My Broadcasters' Panel -->
                                 {% include 'broadcaster/my_broadcasters.html' %}
-
-                                <!-- 'My Broadcasters' Panel -->
-                                {% include 'broadcaster/invitations.html' %}
                             </div>
                         </main>
                     </div>

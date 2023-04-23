@@ -1,7 +1,7 @@
 from accounts.models import BroadcasterContributeInvite, Broadcaster
 
 def get_invitations(user):
-    return BroadcasterContributeInvite.objects.filter(invitee=user)
+    return BroadcasterContributeInvite.objects.filter(invitee=user,is_pending=True)
 
 def send_invite(inviter, invitee, broadcaster, message = ""):
     

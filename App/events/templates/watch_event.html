@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load tags %}
+{% load render_bundle from webpack_loader %}
+
+{% block title %}Watch Event{% endblock title %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/payments.css' %}">
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+    <link rel="stylesheet" href="{% static 'css/event.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
+{% endblock %}
+
+{% block content %}
+<main>
+    <span 
+        class='config'
+
+        data-csrf-token='{{ csrf_token }}'
+
+        data-event-id='{{event.event_id}}'
+    ></span>
+    <div class="nav-gap container">
+        {% if showing is None %}
+            Event stream not found.
+        {% else %}
+
+            
+
+        {% endif %}
+    </div>
+</main>
+{% endblock content %}

@@ -148,7 +148,7 @@ class TicketListing(models.Model):
                 'price': self.price,
                 'stock': self.remaining_stock,
                 'ticket_type': self.ticket_type,
-                'showing_id': self.showing.showing_id
+                'showing_id': self.showing.showing_id or ""
             }
 
 # Event Model
@@ -316,6 +316,14 @@ class Event(models.Model):
                 showings.append(showing)
         return len(showings) > 0   
 
+    def get_category_names(self):
+        names = []
+
+        for category in self.categories.values():
+            names.append(category['name'])
+
+        return names
+    
     def serialize(self):
         next_showing = self.get_next_showing()
         if next_showing: next_showing = str(next_showing.time).split(" ")[0]

@@ -50,7 +50,7 @@ function manage_add_media_btn(
 
 function set_media(evt_media: Media[]) {
     media_panel.innerHTML = "";
-
+    
     for (var media of evt_media) {
         append_media(media);
     }

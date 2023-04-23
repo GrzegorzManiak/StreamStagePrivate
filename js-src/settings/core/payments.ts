@@ -29,8 +29,7 @@ export function manage_add_card(pod: Pod) {
     // -- Add the event listener to the add card button
     add_card_button.addEventListener('click', async() => {
         // -- Add the modal to the body
-        const modal_div = document.createElement('div');
-        modal_div.innerHTML = card_modal();
+        const modal_div = card_modal();
         document.body.appendChild(modal_div);
         
         const submit_button = modal_div.querySelector('.yes') as HTMLButtonElement;

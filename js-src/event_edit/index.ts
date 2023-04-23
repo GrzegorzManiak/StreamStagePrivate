@@ -53,6 +53,7 @@ if (listings_panel) {
 if (showings_panel) {
     handle_showings_panel(showings_panel as HTMLElement);
 }
+
 if (media_panel) {
     handle_media_panel(media_panel as HTMLElement);
 }

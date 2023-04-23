@@ -11,6 +11,7 @@ from .views import (
     review_update,
     review_delete,
     review_like,
+    watch_event
 )
 
 from .api import (
@@ -25,6 +26,8 @@ from .api import (
     get_media,
     add_media,
     del_media,
+
+    get_bc_events
 
     # get_event_details,
     # update_event_details
@@ -47,6 +50,11 @@ from .ext_api import (
     update_event
 )
 
+from .chat.api import (
+    send_new_message,
+    fetch_new_messages
+)
+
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -63,6 +71,8 @@ urlpatterns = [
     path('<slug:event_id>/review/<slug:review_id>/delete/', review_delete, name='review_delete'),
     path('review/<slug:review_id>/like', review_like),
 
+    path('watch/<slug:showing_id>/', watch_event),
+
     # API
     path('api/get_ticket_listings', get_ticket_listings, name='get_ticket_listings'),
     path('api/add_ticket_listings', add_ticket_listing, name='add_ticket_listing'),
@@ -75,6 +85,10 @@ urlpatterns = [
     path('api/get_media', get_media, name='get_media'),
     path('api/add_media', add_media, name='add_media'),
     path('api/del_media', del_media, name='del_media'),
+
+    # Chat
+    path('api/chat/send', send_new_message, name='send_message'),
+    path('api/chat/get', fetch_new_messages, name='fetch_messages'),
 
     # path('api/get_details', get_event_details, name='get_event_details'),
     # path('api/update_details', update_event_details, name='update_event_details'),
@@ -91,6 +105,8 @@ urlpatterns = [
     path('api/broadcasters/get/', get_broadcaster, name='get_broadcaster'),
     path('api/broadcasters/update/', update_broadcaster, name='update_broadcaster'),
     path('api/broadcasters/delete/', delete_broadcaster, name='delete_broadcaster'),
+
+    path('api/broadcasters/get_events', get_bc_events, name='get_bc_events'),
 
     path('api/events/', events, name='events'),
     path('api/events/get/', get_event, name='get_event'),
