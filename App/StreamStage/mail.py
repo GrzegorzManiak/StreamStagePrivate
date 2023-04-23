@@ -199,7 +199,17 @@ def send_template_email(
                 'email/subscription_success.html',
                 base_context
             )
+
+        case 'change_password':
+            subject = "Change password"
+            base_context['title'] = "Change password"
+            base_context['description'] = "You have requested to change your password"
+            body = render_to_string(
+                'email/change_password.html',
+                base_context
+            )
             
+
 
     # -- Add the email to the database
     sent_email = apps.get_model('StreamStage', 'SentEmail')

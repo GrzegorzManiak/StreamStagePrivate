@@ -64,13 +64,14 @@ def request_password_reset(user: Member):
             user.email,
             callback,
         )
-        
+    
 
         # -- Send the email
         print(f'https://me.streamstage.co/email/verify?token={keys[0]}')
-        # -- Check if the email was sent
-        # if res[0] == False:
-        #     return (False, res[1])
+        send_template_email(
+            user, "change_password",
+            { "url": f'https://me.streamstage.co/email/verify?token={keys[0]}' }
+        )
 
         # -- Return the keys
         return [key, keys[2], keys[1]]
