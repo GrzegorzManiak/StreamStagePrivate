@@ -1,3 +1,4 @@
+
 {% extends 'base.html' %}
 {% load static %}
 {% load tags %}
@@ -29,17 +30,24 @@
 
             <div id="watch-container" class="row">
                 <div id="video" class="col-9">
-                    
+                    <div class="d-flex justify-content-center">
+                        <video class="mx-auto" width="95%" controls>
+                            <source src="https://kiver.is/knifefight.webm">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
                 </div>
 
                 <div id="live-chat" class="col-3">
+                    <H1>CHAT</H1>
                     <div id="message-container">
                         <div id="messages">
-                            <div class="message"><div class="msg-author">ben</div><div class="msg-body">holy moly guacamole</div><div></div>
+                          <!--  <div class="message"><div class="msg-author">ben</div><div class="msg-body">holy moly guacamole</div><div></div>-->
                         </div>
                     </div>
+                    
                     <div id="chatbox">
-                        <input type="text">
+                        <!--<input type="text">-->
                     </div>
                 </div>
             </div>

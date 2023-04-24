@@ -735,3 +735,4 @@ class EventTests(TestCase):
     # Testing if 2 trailer for event, get_trailer_count returns 1
     def test_get_trailer_count_return_count(self):
         self.assertEqual(self.event3.get_trailer_count(), 1)
+
