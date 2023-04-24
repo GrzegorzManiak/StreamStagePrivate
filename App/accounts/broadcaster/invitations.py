@@ -19,6 +19,8 @@ def send_invite(inviter, invitee, broadcaster, message = ""):
 
     invite.save()
 
+    return invite
+
 def accept_invite(invite:BroadcasterContributeInvite):
     if not invite.is_pending:
         return

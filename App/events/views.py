@@ -75,6 +75,8 @@ def get_past_events(request):
     context["events"] = [event for event in Event.objects.all() if event.can_view(request.user)
                          and event.get_showings_count() > 0 and event.get_num_upcoming_showings() == 0 
                          and event.approved]
+    
+    
 
     return render(request, "event_list_past.html", context)
 

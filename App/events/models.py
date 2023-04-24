@@ -1,4 +1,5 @@
 import base64
+from decimal import Decimal
 import io
 import random
 import uuid
@@ -99,7 +100,7 @@ class Category(models.Model):
             Returns a random amount of events
             from the category
         """
-        events = Event.objects.filter(categories=self).order_by('?')[:amount]
+        events = Event.objects.filter(categories=self,approved=True).order_by('?')[:amount]
         processed_events = []
 
         for event in events:
@@ -150,6 +151,9 @@ class TicketListing(models.Model):
                 'ticket_type': self.ticket_type,
                 'showing_id': self.showing.showing_id or ""
             }
+        
+    def get_price_subscription(self):
+        return round(float(self.price) * 0.85, 2)
 
 # Event Model
 class Event(models.Model):
@@ -373,12 +377,26 @@ class Event(models.Model):
         """
             Simple function to check if a user can view an event
         """
-        return True
+        #return True
         broadcaster = self.broadcaster
         contributors = broadcaster.contributors.all()
         is_staff = user.is_staff
         is_subscribed = user.is_subscribed()
         # days_past_last_showing = (datetime.now(tz = self.get_last_showing().time.tzinfo) - self.get_last_showing().time).days
+        
+        if self.get_last_showing() is None and self.get_next_showing() is None:
+            return False
+        
+        if not self.approved:
+            return False
+        
+        has_ticket = False
+        if self.get_next_showing() is None:
+            for ticket in user.get_tickets()['expired']:
+                if ticket.listing is not None and ticket.listing.event == self:
+                    has_ticket = True
+
+
         days_past_last_showing = (datetime.now() - self.get_last_showing().time.replace(tzinfo=None)).days
         is_contributor = user in contributors
         is_broadcaster = broadcaster.streamer == user
@@ -390,7 +408,7 @@ class Event(models.Model):
         #    and its available to anyone with a subscription
         if days_past_last_showing > 7 and is_subscribed: return True
 
-        return False
+        return has_ticket
     
 
 # Event Review Model

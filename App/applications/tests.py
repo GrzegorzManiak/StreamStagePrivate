@@ -1,6 +1,4 @@
 from django.test import TestCase
-from django.urls import reverse
-from django.contrib.auth import get_user_model
 
 from applications.models import StreamerApplication, EventApplication, BroadcasterApplication
 from accounts.models import Member, Broadcaster
@@ -12,8 +10,8 @@ from applications.processing import (
     submit_broadcaster_application,
     submit_event_application,
     submit_streamer_application,
-    get_broadcaster_application,
-    get_streamer_application,
+    get_broadcaster_applications,
+    get_streamer_applications,
     get_event_applications,
 
     approve_broadcaster_application,
@@ -31,6 +29,7 @@ class ApplicationTests(TestCase):
     def setUp(self):
         # Create a test Member that is a streamer
         self.test_streamer = Member(
+            cased_username = 'ged_kreg',
             username = 'ged_kreg',
             email = 'gedukas@garblox.com',
             country = 'LT',

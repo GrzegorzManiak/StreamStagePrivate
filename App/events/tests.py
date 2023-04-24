@@ -1,9 +1,11 @@
-from django.test import TestCase
+from django.test import RequestFactory, TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+
+from StreamStage.templatetags.tags import cross_app_reverse
 from .models import Category, Event, EventReview, EventShowing, TicketListing, EventMedia, EventTrailer
 from accounts.models import Member, Broadcaster
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class EventTests(TestCase):
@@ -475,7 +477,7 @@ class EventTests(TestCase):
             country = 'IE',
             city = 'City',
             venue = 'Venue',
-            time = '2023-04-21T20:50:06.089Z',
+            time = datetime.now() - timedelta(minutes=30),
             max_duration = 300
         )
         self.assertEqual(self.event2.is_event_live(), True)
@@ -735,3 +737,5 @@ class EventTests(TestCase):
     # Testing if 2 trailer for event, get_trailer_count returns 1
     def test_get_trailer_count_return_count(self):
         self.assertEqual(self.event3.get_trailer_count(), 1)
+
+

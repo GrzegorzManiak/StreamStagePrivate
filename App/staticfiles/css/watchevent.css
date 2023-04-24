@@ -6,7 +6,7 @@
 
 #watch-container {
     background-color: rgba(0,0,0,0.1);
-    height: 100vh;
+    height: 700px;
     width: 100%;
 }
 
@@ -14,11 +14,39 @@
     background-color: rgba(0,0,0,0.1);
     border-top-left-radius: 1rem;
     border-bottom-left-radius: 1rem;
-    height: 100vh;
+    border: 1px solid black;
+    border-right: none;
+    padding: 5px;
+    height: 700px;
 }
+
+#live-chat h1{
+    background-color: rgba(0,0,0,0.1);
+    margin: 0px;
+    padding: 0px;
+    text-align: center;
+    border-bottom: 1px solid black;
+}
+
 #live-chat {
-    background-color: rgba(255, 255, 255, 0.155);
+    background-color: rgba(255, 255, 255, 0.055);
     border-top-right-radius: 1rem;
+    border: 1px solid black;
+    border-left: none;
     border-bottom-right-radius: 1rem;
-    height: 100vh;
+    padding: 0px;
+    height: 700px;
 } 
+
+#message-container {
+    height: 100%;
+    padding: 5px;
+}
+
+#messages {
+    height: auto;
+}
+
+#chat-box {
+
+}

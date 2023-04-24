@@ -12,12 +12,12 @@
         <div class="row m-1 bk-theme-backdrop p-2 rounded">
             <div class="d-flex justify-content-between w-100 mb-2 fs-5">
                 <div class="m-0">{{ ticket.ticket_detail }}</div>
-                <div class='text-muted m-0'>€{{ ticket.price }}</div>
+                <div class='text-muted m-0'>€{% if user.has_subscription %} {{ticket.get_price_subscription}} {%else%}{{ticket.price }}{%endif%}</div>
             </div>
 
             <div class='btn-group w-100 d-flex justify-content-between slim-btn'>
                 <button name="purchase-stream" data-ticket-id="{{ ticket.listing_id }}"
-                    data-item-name="{{ ticket.ticket_detail }}" data-item-price="€{{ ticket.price }}" type="submit"
+                    data-item-name="{{ ticket.ticket_detail }}" data-item-price="€{% if user.has_subscription %} {{ticket.get_price_subscription}} {%else%}{{ticket.price }}{%endif%}" type="submit"
                     class="btn btn-success success loader-btn w-100 slim-btn " loader-state='default'>
                     <span>
                         <div class='spinner-border' role='status'>
