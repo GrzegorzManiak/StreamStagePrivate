@@ -33,7 +33,6 @@ from .payments.views import (
     remove_payment_method,
     create_payment_intent,
     check_payment_intent,
-    start_subscription
 )
 
 from .other import (
@@ -126,10 +125,7 @@ urlpatterns = [
     path('api/payment/remove', remove_payment_method, name='remove_payment'),
     path('api/payment/create', create_payment_intent, name='create_payment'),
     path('api/payment/check', check_payment_intent, name='check_payment'),
-    
-    # -- Subscriptions
-    path('api/subscription/start/', start_subscription, name='start_subscription'),
-    
+        
     # -- EMail Verification
     path('register/email', send_reg_verification, name='send_reg_verification'),
 
