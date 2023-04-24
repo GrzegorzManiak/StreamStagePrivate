@@ -8,7 +8,7 @@ from accounts.models import Broadcaster, Member, BroadcasterContributeInvite
 from accounts.broadcaster.api_auth import can_edit_broadcaster
 from accounts.com_lib import authenticated, required_data, success_response, error_response
 
-from .invitations import send_invite, accept_invite, get_invitations, reject_invite
+from .invitations import is_invited, send_invite, accept_invite, get_invitations, reject_invite
 
 
 # temporary
@@ -135,6 +135,10 @@ def send_contribute_invite(request, broadcaster:Broadcaster, data):
 
     if broadcaster.contributors.contains(user):
         return error_response("This user is already a contributor.")
+    
+    if is_invited(user, broadcaster):
+        return error_response("This user is already invited to contribute.")
+
     
     send_invite(request.user, user, broadcaster, data['message'])
 

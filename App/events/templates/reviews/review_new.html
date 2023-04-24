@@ -1,8 +1,4 @@
 <div id="add-review-panel">
-    {% if not new_review_form %}
-    <span class="btn btn-sm btn-secondary" id="admin-review-override-btn" >Add another</span>
-    {% endif %}
-
     <div id="add-review-panel" class="col 3" {% if not new_review_form %}elem-status="hidden"{% endif %}>
         <form class="form-class form-layout review-form" action="" method="POST" enctype="multipart/form-data">
             <h4>Add Review</h4>

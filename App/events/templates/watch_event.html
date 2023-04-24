@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{% static 'css/payments.css' %}">
     <link rel="stylesheet" href="{% static 'css/auth.css' %}">
     <link rel="stylesheet" href="{% static 'css/event.css' %}">
+    <link rel="stylesheet" href="{% static 'css/watchevent.css' %}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
 {% endblock %}
 
@@ -21,12 +22,27 @@
 
         data-event-id='{{event.event_id}}'
     ></span>
-    <div class="nav-gap container">
-        {% if showing is None %}
-            Event stream not found.
+    <div class="nav-gap watch-body">
+        {% if error is not None %}
+            {{ error }}
         {% else %}
 
-            
+            <div id="watch-container" class="row">
+                <div id="video" class="col-9">
+                    
+                </div>
+
+                <div id="live-chat" class="col-3">
+                    <div id="message-container">
+                        <div id="messages">
+
+                        </div>
+                    </div>watch-body
+                    <div id="chatbox">
+
+                    </div>
+                </div>
+            </div>
 
         {% endif %}
     </div>
