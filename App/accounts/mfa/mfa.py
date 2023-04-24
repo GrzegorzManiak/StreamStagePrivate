@@ -23,7 +23,7 @@
 # -- Imports
 import pyotp
 import time
-
+from accounts.com_lib import model_to_dict
 
 temp_mfa_tokens = []
 
@@ -37,9 +37,13 @@ temp_mfa_tokens = []
     :return: True if the user has a duplicate, False if not
 """
 def check_duplicate(user) -> bool:
-    for temp_token in temp_mfa_tokens:
-        if str(temp_token['user']['id']) == str(user.id):
-            return True
+    try:
+        user = model_to_dict(user)
+        for temp_token in temp_mfa_tokens:
+            temp_token_user = model_to_dict(temp_token['user'])
+            if str(temp_token_user['id']) == str(user['id']):
+                return True
+    except: pass
     return False
 
 
@@ -51,11 +55,14 @@ def check_duplicate(user) -> bool:
     :param user: The user to delete
 """
 def delete_duplicate(user):
-    for temp_token in temp_mfa_tokens:
-        if temp_token['user'] == user:
-            temp_mfa_tokens.remove(temp_token)
-            return
-    
+    try:
+        user = model_to_dict(user)
+        for temp_token in temp_mfa_tokens:
+            if temp_token['user'] == user:
+                temp_mfa_tokens.remove(temp_token)
+                return
+    except: pass
+        
 
 
 """
@@ -66,6 +73,8 @@ def delete_duplicate(user):
     :return: The token
 """
 def generate_token(user) -> str:
+    user = model_to_dict(user)
+
     # -- Check if the user already has a token
     delete_duplicate(user)
 
@@ -92,9 +101,12 @@ def generate_token(user) -> str:
     :return: True if the user has a token, False if not
 """
 def has_token(user) -> bool:
-    for temp_token in temp_mfa_tokens:
-        if str(temp_token['user']['id']) == str(user.id):
-            return True
+    try:
+        user = model_to_dict(user)
+        for temp_token in temp_mfa_tokens:
+            if str(temp_token['user']['id']) == str(user['id']):
+                return True
+    except: pass
     return False
 
 
@@ -107,15 +119,18 @@ def has_token(user) -> bool:
     :return: list[str, str] - The token and a message
 """
 def get_token(user) -> list[str, str]:
-    for temp_token in temp_mfa_tokens:
-        if temp_token['user'] == user:
-            # -- Check if the token has expired
-            if time.time() - temp_token['time'] > 900:
-                temp_mfa_tokens.remove(temp_token)
-                return [None, 'Sorry, but it seems like your token has expired, please try again']
-            
-            return [temp_token['token'], 'Congratulations, you have successfully generated a token']
-        
+    try:
+        user = model_to_dict(user)
+        for temp_token in temp_mfa_tokens:
+            temp_token_user = model_to_dict(temp_token['user'])
+            if temp_token_user['id'] == user['id']:
+                # -- Check if the token has expired
+                if time.time() - temp_token['time'] > 900:
+                    temp_mfa_tokens.remove(temp_token)
+                    return [None, 'Sorry, but it seems like your token has expired, please try again']
+                
+                return [temp_token['token'], 'Congratulations, you have successfully generated a token']
+    except: pass
     return [None, 'Sorry, but it seems like you do not have a token, please try again']
 
 
@@ -130,9 +145,11 @@ def get_token(user) -> list[str, str]:
         and an explanation
 """
 def verify_temp_otp(user, otp) -> list[bool, str]:
-
-    token_data = get_token(user)
-    if token_data[0] == None: return [False, token_data[1]]
-    if not pyotp.TOTP(token_data[0]).verify(otp):
-        return [False, 'Sorry, but it seems like the OTP you have entered is invalid, please try again']
+    try:
+        user = model_to_dict(user)
+        token_data = get_token(user)
+        if token_data[0] == None: return [False, token_data[1]]
+        if not pyotp.TOTP(token_data[0]).verify(otp):
+            return [False, 'Sorry, but it seems like the OTP you have entered is invalid, please try again']
+    except: return [False, 'Sorry, but it seems like you do not have a token, please try again']
     return [True, 'Congratulations, you have successfully verified your OTP']

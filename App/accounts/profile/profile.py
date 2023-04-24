@@ -25,6 +25,8 @@ from accounts.models import Member
 from StreamStage.mail import send_template_email
 from StreamStage.models import Statistics
 
+from accounts.com_lib import model_to_dict
+
 import secrets
 import time
 
@@ -278,6 +280,9 @@ PAT_EXPIRY_TIME = 60 * 15 # -- 15 minutes
     :return: str - The generated token
 """
 def generate_pat(user, token: str = None) -> str:
+    user = model_to_dict(user)
+    user = Member.objects.get(id=user['id'])
+    
     # -- Check if the user is valid
     if not isinstance(user, Member):
         return None

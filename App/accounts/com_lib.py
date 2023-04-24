@@ -11,10 +11,12 @@
 """
 
 # -- Imports
-from django.http.response import JsonResponse
+from django.apps import apps
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from rest_framework.decorators import api_view
 from rest_framework import status
+from django.test.client import RequestFactory
 
 from functools import wraps
 from django.contrib.auth import get_user_model
@@ -25,6 +27,19 @@ from operator import or_
 from django.db.models import Q
 
 from StreamStage.templatetags.tags import cross_app_reverse
+
+"""
+    :name: model_to_dict
+    :description: This function is used to convert a model  
+    to a dict, this just standardizes the way we do it
+"""
+def model_to_dict(model):
+    if model is None: return None
+    if type(model) is dict: return model
+    if hasattr(model, '__dict__'): return model.__dict__
+    return model
+
+
 
 """
     :name: success_response
@@ -475,3 +490,5 @@ def paginate(
         
         return wrapper
     return decorator
+
+
