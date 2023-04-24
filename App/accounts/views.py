@@ -17,7 +17,7 @@ from StreamStage.models import Statistics
 from accounts.auth_lib import authenticate_key, generate_key
 from accounts.models import Member, LoginHistory, SecurityPreferences
 from accounts.oauth.oauth import format_providers
-from accounts.email.verification import add_key, send_email
+from accounts.verification.verification import add_key, send_email
 import secrets
 import datetime
 

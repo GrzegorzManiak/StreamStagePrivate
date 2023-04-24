@@ -12,7 +12,7 @@ from StreamStage.models import Statistics
 from accounts.com_lib import authenticated, error_response, invalid_response, required_data, success_response, impersonate
 
 from accounts.oauth.oauth import get_all_oauth_for_member, format_providers
-from accounts.email.verification import add_key, send_email
+from accounts.verification.verification import add_key, send_email
 from accounts.models import LoginHistory, oAuth2
 
 from .profile import (

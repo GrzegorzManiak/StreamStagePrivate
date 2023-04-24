@@ -98,7 +98,6 @@ def get_key(key: str) -> dict:
     return None
 
 
-
 """
     :name: expire_key
     :description: This function expires the key
@@ -278,7 +277,7 @@ def regenerate_key(
 ) -> dict or None:
     # -- Get the key from the store
     key = get_key_by_resend_key(resend_key)
-
+    print(new_email)
     # -- Check if the key is valid
     if key is None: return [False, 'Invalid key', None]
 

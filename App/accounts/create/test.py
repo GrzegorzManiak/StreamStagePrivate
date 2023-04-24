@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from accounts.email.verification import get_key_by_resend_key, verify_key, regenerate_key
+from accounts.verification.verification import get_key_by_resend_key, verify_key, regenerate_key
 from StreamStage.templatetags import cross_app_reverse
 from django.test import TestCase
 from django.test.client import RequestFactory
