@@ -1,10 +1,5 @@
-import json
-from django.test import RequestFactory, TestCase
-from django.contrib.auth import get_user_model
-
-from StreamStage.templatetags.tags import cross_app_reverse
+from django.test import TestCase
 from accounts.models import Member, Broadcaster, BroadcasterContributeInvite
-from datetime import datetime, timedelta
 
 from .invitations import (
     send_invite,
@@ -14,7 +9,7 @@ from .invitations import (
     get_invitations
 )
 
-class BroadcasterTests(TestCase):
+class InvitationsTests(TestCase):
     def setUp(self):
         
         # Create Test Member 1
