@@ -63,7 +63,7 @@ def event_view(request, event_id):
             'delete_review': cross_app_reverse('accounts', 'delete_review'),
         },
         'stripe_key': secrets.STRIPE_PUB_KEY,
-        'can_view': event.can_view(request.user),
+        'can_view': event.can_view(request.user) if request.user.is_authenticated else False,
     }
 
     return render(request, 'event.html', context)
