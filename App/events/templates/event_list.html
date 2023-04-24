@@ -7,7 +7,7 @@
         <div class="col-lg-3 col-md-4 col-sm-12">
             <!-- Event Categories -->
             {% for category in event.categories.all %}
-            <span class="badge bg-primary">{{category.name}}</span>
+            <span class="badge bg-secondary">{{category.name}}</span>
             {% endfor %}
             <!-- Event Broadcaster -->
             <h6 class="my-2">@{{ event.broadcaster.handle }}</h6>

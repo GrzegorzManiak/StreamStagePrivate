@@ -33,7 +33,7 @@
     {% endif %}
 </div>
 <div class="col-12">
-    {% for showing in event.get_first_2_showings %}
+    {% for showing in event.get_next_2_showings %}
     <div class="row mx-2">
         <div class="col-6 my-4">
             <p class="m-0">{{showing.time }}</p>

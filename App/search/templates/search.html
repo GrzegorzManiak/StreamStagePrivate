@@ -51,7 +51,7 @@ Search Events | StreamStage
                                     > @{{ event.broadcaster.handle }}</p>
                                 </div>
                                 {% if event.description|length > 250 %}
-                                    <p>{{ event.description|slice:":180" }}...</p>
+                                    <p>{{ event.description|slice:":100" }}...</p>
                                 {% else %}
                                     <p>{{ event.description }}</p>
                                 {% endif %}

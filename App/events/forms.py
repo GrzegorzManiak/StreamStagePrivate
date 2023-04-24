@@ -42,8 +42,8 @@ class ReviewCreateForm(forms.ModelForm):
             'body', 
             'rating'
         ]
-    title = forms.CharField(label='', widget=forms.Textarea(attrs={'name':'', 'rows':1, 'cols':100, 'placeholder':'Title'}))
-    body = forms.CharField(label='', widget=forms.Textarea(attrs={'name':'body', 'rows':4, 'cols':100, 'placeholder':'Review'}))
+    title = forms.CharField(label='', widget=forms.Textarea(attrs={'name':'', 'rows':1, 'cols':100, 'placeholder':'Amazing or Awful?'}))
+    body = forms.CharField(label='', widget=forms.Textarea(attrs={'name':'body', 'rows':4, 'cols':100, 'placeholder':'Tell us all about it... but no spoilers!'}))
     rating = forms.CharField(label='')
 
 

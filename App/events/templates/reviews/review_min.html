@@ -8,7 +8,6 @@
         <h4 class="w-100">{{ review.title }} </h4>
         <p 
             class="w-100"
-            onclick="window.location.href='{% cross_app_reverse_tag 'homepage' 'user_profile' username=review.author.cased_username %}'"
         >Written by @{{review.author.username}}</p>
     </div>
 

@@ -34,7 +34,7 @@ body {
     color: var(--font-color);
     min-height: 100vh;
 }
-div > p {
+body *{
     overflow-wrap: break-word !important;
 }
 
@@ -71,7 +71,9 @@ main {
     margin: auto;
 }
 
-
+.yellow{
+    color: var(--accent-color)
+}
 /* Gap to leave room for nav */
 .nav-gap {
     margin-top: var(--header-height);
