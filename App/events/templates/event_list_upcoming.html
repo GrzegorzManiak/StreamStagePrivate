@@ -20,12 +20,9 @@ Upcoming Events | StreamStage
 {% block content %}
         <main>
                 <div class="nav-gap">
-
                         <!-- Listing Upcoming Events (if they have upcoming showings) -->
                         {% for event in events %}
-                                {% if event.get_num_upcoming_showings > 0 and event.approved %}
                                         {% include 'event_list.html' with event=event %}
-                                {% endif %}
                         {% empty %}
                         <div class="row mx-auto">
                                 <h4 class="text-center">No Upcoming Events</h4>

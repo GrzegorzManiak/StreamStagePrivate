@@ -285,6 +285,7 @@ class Event(models.Model):
             end_date = datetime(2100, 1, 1)
             showings = EventShowing.objects.filter(event=self).filter(time__range=(start_date,end_date)).all().order_by('time')
             return showings
+        return []
 
     def get_num_upcoming_showings(self):
         showings = []

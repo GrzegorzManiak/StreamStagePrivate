@@ -84,7 +84,12 @@ def get_past_events(request):
 @csrf_exempt
 def get_live_events(request):
     context = {}
-    context["events"] = Event.objects.all()
+    evts = Event.objects.all()
+
+    context["events"] = []
+    for event in evts:
+        if len(event.get_upcoming_showings()) > 0 and event.is_event_live() and event.approved:
+            context["events"].append(event)
 
     return render(request, "event_list_live.html", context)
 
@@ -92,7 +97,13 @@ def get_live_events(request):
 @csrf_exempt
 def get_upcoming_events(request):
     context = {}
-    context["events"] = Event.objects.all()
+    evts = Event.objects.all()
+    
+    context["events"] = []
+
+    for event in evts:
+        if len(event.get_upcoming_showings()) > 0 and event.approved:
+            context["events"].append(event)
 
     return render(request, "event_list_upcoming.html", context)
 
