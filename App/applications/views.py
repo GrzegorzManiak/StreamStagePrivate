@@ -167,11 +167,11 @@ def review_event_application(request, id):
         return redirect('review_applications')
 
     if request.POST.get("reject") is not None:
-        reject_streamer_application(application, user)
+        reject_event_application(application, user)
         return redirect('review_applications')
         
     elif request.POST.get("approve") is not None:
-        approve_streamer_application(application, user)
+        approve_event_application(application, user)
         return redirect('review_applications')
 
     return render(request, "admin/review_event.html", { 'app' : application })

@@ -83,6 +83,8 @@ def approve_broadcaster_application(application, admin):
     application.processed_by = admin
 
     application.broadcaster.approved = True
+    
+    application.broadcaster.save()
     application.save()
 
 def reject_broadcaster_application(application, admin):

@@ -31,14 +31,18 @@ Event | StreamStage
         data-get-reviews='{{ api.get_reviews }}' data-update-review='{{ api.update_review }}'
         data-delete-review='{{ api.delete_review }}' data-stripe-pub='{{ stripe_key }}'></span>
     <div class="nav-gap container">
-
         <!-- Update Event Button -->
         {% if can_edit %}
+        {% if event.approved %}
         <a href="update/" class="text-muted">
             <button class="btn btn-primary">
                 Edit Event
             </button>
         </a>
+        {% else %}
+        
+        <span class="b text-danger"> <i class="fas fa-exclame"></i> Awaiting Approval </span>
+        {% endif %}
         {% endif %}
         <!-- 
         Event Categories & Media
