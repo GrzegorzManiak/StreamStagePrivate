@@ -233,5 +233,24 @@ class VerificationTest(TestCase):
 
         self.assertNotEqual(new_key, None)
         regenerated = regenerate_key(key[1], "greg@greg.greg")
-        print(regenerated)
+        self.assertEqual(regenerated[0], False)
+
+    def test_regenerate_key_set_up_for_email(self):
+        self.assertEqual(get_key('test'), None)
+        self.assertEqual(len(temp_keys_store), 0)
+        def test_callback(data):
+            print(data)
+        def email_callback(data, email):
+            return True
+        key = add_key(
+            self.user,
+            'test@gmail.com',
+            test_callback,
+            email_callback
+        )
+        self.assertEqual(len(temp_keys_store), 1)
+        new_key = get_key(key[0])
+
+        self.assertNotEqual(new_key, None)
+        regenerated = regenerate_key(key[1], "greg@greg.greg")
         self.assertEqual(regenerated[0], True)

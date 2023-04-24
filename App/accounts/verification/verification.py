@@ -236,6 +236,7 @@ def send_email(
         Local: http://localhost:8000/accounts/email/verify?token={key['key']}
     """ 
     print(message)
+    
     # NOTE: This is PURELY for testing purposes
     # requests.get(f'https://me.streamstage.co/email/verify?token={key["key"]}')
     
@@ -277,7 +278,7 @@ def regenerate_key(
 ) -> dict or None:
     # -- Get the key from the store
     key = get_key_by_resend_key(resend_key)
-    print(new_email)
+
     # -- Check if the key is valid
     if key is None: return [False, 'Invalid key', None]
 
@@ -297,6 +298,9 @@ def regenerate_key(
 
         # -- Change the email
         key['email'] = new_email
+
+    elif (new_email is not None and key['allow_email_change'] is False):
+        return [False, 'Email change not allowed', None]
 
     # -- Generate a new key
     new_key = add_key(
