@@ -5,10 +5,12 @@ from django.contrib.auth.hashers import make_password
 from accounts.com_lib import invalid_response, required_data, not_authenticated, success_response
 from accounts.models import Member, SecurityPreferences
 from StreamStage.models import Statistics
+from django.core.validators import validate_email
 
-from .create import start_email_verification, username_taken, email_taken
+from .create import start_email_verification, username_taken, email_taken, strong_password
 from accounts.oauth.oauth import get_oauth_data, link_oauth_account
 from accounts.auth_lib import generate_key
+from accounts.profile import validate_username
 
 """
     :name: Send Verification Email
@@ -35,7 +37,10 @@ def send_reg_verification(request, data):
     # -- Check if the username is taken
     if username_taken(data['username']): return invalid_response('Username is taken')
     if email_taken(data['email']): return invalid_response('Email is taken')
-
+    try: validate_email(data['email'])
+    except: return invalid_response('Email is invalid')
+    if not strong_password(data['password']): return invalid_response('Password is not strong enough')
+    if not validate_username(data['username'])[0]: return invalid_response('Username is invalid')
 
     # -- Check if an oauth token was provided
     #    and if its email is verifiedq

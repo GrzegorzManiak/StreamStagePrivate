@@ -92,49 +92,6 @@ def strong_password(password: str) -> bool:
     return True
 
 
-"""
-    :name: create_account_email
-    :description: This function is responsible for
-        creating a temporary account, it also sends
-        out an email to the provided email address
-        with a link to verify the email.
-    :param email: String - The email of the user
-    :param username: String - The username of the user
-    :param password: String - The password of the user
-    :return: JsonResponse - The response
-"""
-def create_account_email(
-    email: str,
-    username: str,
-    password: str,
-):
-    # -- Check if the user already has an account
-    if email_taken(email):
-        return JsonResponse({
-            'status': 'error',
-            'message': 'An account with that email already exists',
-        }, status=status.HTTP_400_BAD_REQUEST)
-
-    if username_taken(username):
-        return JsonResponse({
-            'status': 'error',
-            'message': 'An account with that username already exists',
-        }, status=status.HTTP_400_BAD_REQUEST)
-
-    # -- Check if the password is strong
-    if not strong_password(password):
-        return JsonResponse({
-            'status': 'error',
-            'message': 'The password is not strong enough',
-        }, status=status.HTTP_400_BAD_REQUEST)
-
-    email = email.lower()
-    username = username.lower()
-   
-    # -- Verify the email
-    return send_email(email, password, username)
-
-
 
 """
     :name: start_email_verification
