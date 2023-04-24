@@ -101,7 +101,7 @@ def create_payment_intent(request, data):
         for entry in valid_entrys:
             if entry not in data['payment_method']:
                 return invalid_response("Invalid payment method, missing " + entry)
-            
+
         # -- Add the payment method
         if (
             data['payment_method']['save'] is True or
@@ -125,13 +125,14 @@ def create_payment_intent(request, data):
 
         # -- We are not saving the card, so we can just create
         #    a temporary payment method not linked to the user
-        else: payment_method = get_id_from_card(
-            data['payment_method']['card'],
-            data['payment_method']['exp_month'],
-            data['payment_method']['exp_year'],
-            data['payment_method']['cvc'],
-            data['payment_method']['name'],
-        )
+        else: 
+            payment_method = get_id_from_card(
+                data['payment_method']['card'],
+                data['payment_method']['exp_month'],
+                data['payment_method']['exp_year'],
+                data['payment_method']['cvc'],
+                data['payment_method']['name'],
+            )
     
     # -- Check if the payment method is a saved card
     else:
@@ -193,19 +194,3 @@ def check_payment_intent(request, data):
     
     Statistics.log('payment', 'unk', 1)
     return error_response("Error in checking status of payment")
-
-
-
-@api_view(['POST'])
-@impersonate()
-@authenticated()
-@required_data(['payment_method'])
-def start_subscription(request, data):
-    # -- Start the subscription
-    subscription = start_subscription_saved_payment(request.user, data['payment_method'])
-
-    if subscription[0] is None:
-        return invalid_response(subscription[1])
-    
-    # -- Return the subscription
-    return success_response('Subscription started successfully', subscription[0])

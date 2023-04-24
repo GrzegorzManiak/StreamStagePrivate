@@ -42,7 +42,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '192.168.0.227',
-    'streamstage.co',
+    'streamstage. co',
     '.streamstage.co',
 ]
 

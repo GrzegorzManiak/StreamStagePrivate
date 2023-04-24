@@ -18,7 +18,6 @@ from .verification import (
 )
 
 
-
 @api_view(['POST'])
 @required_data(['token'])
 def remove_key_view(request, data):

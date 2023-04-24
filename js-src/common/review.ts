@@ -9,7 +9,7 @@ export function create_review(
     <div class='w-100'>
         <div class='event d-flex justify-content-between align-items-center w-100'>
             <p class='event-title'>${review.event_name}</p>
-            <p class='event-rating'>${review.rating} / 10</p>
+            <p class='event-rating'>${review.rating} / 5</p>
             <p class='event-likes'>${review.likes} ${review.likes === 1 ? 'like' : 'likes'}</p>
             <p class='event-date'>${new Date(review.created).toLocaleDateString()}</p>
         </div>
