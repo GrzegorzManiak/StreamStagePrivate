@@ -33,8 +33,7 @@ def can_edit_broadcaster():
                 
                 if not request.user.is_authenticated:
                     return redirect(cross_app_reverse('accounts', 'login'))
-                
-               
+            
             if not request.user.is_staff:
                 is_contributor = broadcaster.contributors.filter(id=request.user.id).exists()
 

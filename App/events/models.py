@@ -399,6 +399,13 @@ class Event(models.Model):
         
         if not self.approved:
             return False
+        
+        has_ticket = False
+        if self.get_next_showing() is None:
+            for ticket in user.get_tickets()['expired']:
+                if ticket.listing is not None and ticket.listing.event == self:
+                    has_ticket = True
+
 
         days_past_last_showing = (datetime.now() - self.get_last_showing().time.replace(tzinfo=None)).days
         is_contributor = user in contributors
@@ -411,7 +418,7 @@ class Event(models.Model):
         #    and its available to anyone with a subscription
         if days_past_last_showing > 7 and is_subscribed: return True
 
-        return False
+        return has_ticket
     
 
 # Event Review Model
