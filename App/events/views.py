@@ -218,15 +218,26 @@ def review_like(request, review_id):
     review.toggle_like(request.user)
     return HttpResponse()
 
-
+@authenticated()
 def watch_event(request, showing_id):
     try:
         showing = EventShowing.objects.get(showing_id=showing_id)
+        
+        context = {
+            showing: showing
+        }
     except:
         showing = None
 
-    context = {
-        showing: showing
-    }
+        context = {
+            "error": "Showing not found."
+        }
+    
+
+    
+
+    # check if user is allowed to watch
+
+    print(showing_id)
 
     return render(request, 'watch_event.html', context)

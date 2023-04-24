@@ -71,7 +71,7 @@ urlpatterns = [
     path('<slug:event_id>/review/<slug:review_id>/delete/', review_delete, name='review_delete'),
     path('review/<slug:review_id>/like', review_like),
 
-    path('watch/<slug:showing_id>/', watch_event),
+    path('watch/<slug:showing_id>/', watch_event, name='watch_event'),
 
     # API
     path('api/get_ticket_listings', get_ticket_listings, name='get_ticket_listings'),

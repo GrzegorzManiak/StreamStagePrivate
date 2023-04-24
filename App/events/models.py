@@ -315,13 +315,16 @@ class Event(models.Model):
             return self.get_showings().last()
 
     def is_event_live(self):
+        return self.get_live_showing() is not None
+    
+    def get_live_showing(self):
         showings = []
         for showing in self.get_showings():
             time_left = datetime.now(tz = showing.time.tzinfo) - showing.time
             if time_left < timedelta(minutes=showing.max_duration) and time_left.total_seconds() > 0:
                 showings.append(showing)
-        return len(showings) > 0   
-
+        return showings[0] if len(showings) > 0 else None
+ 
     def get_category_names(self):
         names = []
 
