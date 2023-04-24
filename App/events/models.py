@@ -218,18 +218,20 @@ class Event(models.Model):
         else:
             return media[self.primary_media_idx]
 
-    def get_media(self):
-        cover_pic = self.get_cover_picture()
-        other_media = EventMedia.objects.filter(event=self).filter(~Q(media_id=cover_pic.media_id)).all()
-        media = []
-        media.append(cover_pic)
-        media += other_media
-
-        return media
     
     def get_media_count(self):
         return EventMedia.objects.filter(event=self).all().count()
     
+    def get_media(self):
+        cover_pic = self.get_cover_picture()
+        media = []
+        media.append(cover_pic)
+        if self.get_media_count() > 1:
+            other_media = EventMedia.objects.filter(event=self).filter(~Q(media_id=cover_pic.media_id)).all()
+            media += other_media
+
+        return media
+        
     # Trailer 
 
     def get_trailer(self): 
@@ -241,7 +243,7 @@ class Event(models.Model):
     # Reviews
 
     def get_reviews(self):
-        return EventReview.objects.filter(event=self).all().order_by('likes')
+        return EventReview.objects.filter(event=self).all().order_by('-likes')
     
     def get_review_authors(self):
         authors = []
@@ -250,13 +252,13 @@ class Event(models.Model):
         return authors
 
     def get_medium_reviews(self):
-        reviews = EventReview.objects.filter(event=self).all().order_by('likes')
+        reviews = self.get_reviews()
         for review in reviews:
             review.body = review.body[:250]
         return reviews 
        
     def get_short_reviews(self):
-        reviews = EventReview.objects.filter(event=self).all().order_by('likes')
+        reviews = self.get_reviews()
         for review in reviews:
             review.body = review.body[:50]
         return reviews
@@ -265,20 +267,8 @@ class Event(models.Model):
         return EventReview.objects.filter(event=self).all().count()
     
     def get_average_rating(self):
-        return EventReview.objects.filter(event=self).aggregate(Avg("rating"))["rating__avg"] or 0
-    
-    # Get top review based on likes
-    def get_top_review(self, reviews_in = None):
-            reviews = reviews_in or self.get_reviews()
+        return self.get_reviews().aggregate(Avg("rating"))["rating__avg"] or 0
 
-            top_review = None
-            likes = 0
-            for review in reviews:
-                if review.likes > likes:
-                    likes = review.likes
-                    top_review = review
-            return top_review
-    
     # Showings
 
     def get_showings(self):
@@ -307,12 +297,12 @@ class Event(models.Model):
         if self.get_showings_count() > 0:
             return self.get_upcoming_showings().first()
         
-    def get_first_2_showings(self):
-        if self.get_showings_count() > 3:
-            next_3_showings = list(EventShowing.objects.filter(event=self).all())
-            for showing in next_3_showings[2:]:
-                    next_3_showings.remove(showing)
-        return next_3_showings
+    def get_next_2_showings(self):
+        if self.get_showings_count() > 2:
+            next_2_showings = list(EventShowing.objects.filter(event=self).all())
+            for showing in next_2_showings[2:]:
+                    next_2_showings.remove(showing)
+        return next_2_showings
 
     def get_last_showing(self):
         if self.get_showings_count() > 0:
@@ -426,12 +416,12 @@ class EventReview(models.Model):
     review_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     author = models.ForeignKey('accounts.Member', related_name="Author", on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    title = models.CharField("Review Title", max_length=50)
+    title = models.CharField("Review Title", max_length=25)
     body = models.TextField("Review Body", max_length=500)
     created = models.DateTimeField("Created", auto_now_add=True)
     updated = models.DateTimeField("Updated", auto_now=True)
     likes = models.IntegerField("Review Likes", default=0)
-    rating = models.SmallIntegerField("Event Rating", default=10, validators=[MinValueValidator(0), MaxValueValidator(10)])
+    rating = models.SmallIntegerField("Event Rating", default=5, validators=[MinValueValidator(0), MaxValueValidator(5)])
     likers = models.ManyToManyField(to="accounts.Member")
 
     class Meta:
@@ -465,8 +455,15 @@ class EventReview(models.Model):
         return list
 
     def get_review_likes(self):
-        return len(self.likers)
+        return self.likers.count()
+    
+    def get_date_slash(self):
+        if self.created == self.updated:
+            return self.created.date()
+        else:
+            return self.updated.date()
 
+    
 # Event Media Model
 class EventMedia(models.Model):
     media_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

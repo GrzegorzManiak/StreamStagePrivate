@@ -37,17 +37,17 @@ class SearchResultsListView(ListView):
         # Filter by Venue
         if venue:
             # Getting Venue from showings
-            showings = (showings or EventShowing.objects).filter(venue=venue)
+            showings = (showings or EventShowing.objects).filter(venue__icontains=venue)
 
         # Filter by City
         if city:
             # Getting City from showings
-            showings = (showings or EventShowing.objects).filter(city=city)
+            showings = (showings or EventShowing.objects).filter(city__icontains=city)
 
         # Filter by Country
         if country:
             # Getting Country from showings
-            showings = (showings or EventShowing.objects).filter(country__name=country)
+            showings = (showings or EventShowing.objects).filter(country__icontains=country)
 
         # Filter by Date
         if end_date:
@@ -164,7 +164,7 @@ class SearchResultsListView(ListView):
 
             # Checking results between max and min price
             results = [ result for result in results if result.has_ticket_listings() and max_price >= result.get_min_ticket_price().price >= min_price 
-            and max_price >= result.get_max_price_ticket().price >= min_price ]
+            and max_price >= result.get_max_ticket_price().price >= min_price ]
         
         # Once filtering complete, return results
         return results

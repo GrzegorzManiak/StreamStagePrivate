@@ -1,10 +1,11 @@
 {% load tags %}
-<div class="card bg-dark p-3 mb-1">
+<div class="card bg-dark p-3 mb-1 refresh">
     <div>
-        <b class="card-title">{{ review.title }} </b>
-        <span class="float-end">by {{review.author.username}}</span>
+        <p class="float-start m-0 p-0">by <b>{{review.author.cased_username}}</b></p>
+        <span class="float-end">{{review.get_date_slash | date:"d/m/y"}}</span>
     </div>
-    
+    <hr class="yellow">
+    <b class="card-title">{{ review.title }} </b>
     <p class="card-text">
         {% if review.get_review_body_length > 49 %}
         {{ review.body }}...
@@ -15,7 +16,7 @@
     </p>
     <div>
         <!-- Giving a star rating out of 5 -->
-        <ul class="btn btn-light list-inline rating-list">
+        <ul class="btn btn-light btn-sm list-inline rating-list">
           <li onclick="rate(5, '{{ event.event_id }}')">
               <i class="fa fa-star {% if review.rating > 4 %} checked {% endif %}" title="Rate 5"></i></li>
           <li onclick="rate(4, '{{ event.event_id }}')">
@@ -28,7 +29,7 @@
               <i class="fa fa-star {% if review.rating > 0 %} checked {% endif %}" title="Rate 1"></i></li>
         </ul>
 
-        <a href="#" >
+        <a href="#refresh" >
             <span data-id="{{ review.review_id}}" data-likes="{{ review.likes }}" 
             user-liked="{% for id in review.get_likers_list %}
                         {% if id == user.id %}true{% endif %}

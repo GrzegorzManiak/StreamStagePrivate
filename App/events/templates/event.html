@@ -11,7 +11,6 @@ Event | StreamStage
 <link rel="stylesheet" href="{% static 'css/payments.css' %}">
 <link rel="stylesheet" href="{% static 'css/auth.css' %}">
 <link rel="stylesheet" href="{% static 'css/events.css' %}">
-<link rel="stylesheet" href="{% static 'css/event.css' %}">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
 {% endblock %}
 
@@ -135,7 +134,7 @@ Event | StreamStage
                             </a>
                         </div>
                     </div>
-                    <div class="col-lg-12 col-md-4 col-sm-4 col-xs-4 mx-auto">
+                    <div class="col-lg-12 mx-auto third">
                         <!-- Overall Event Rating -->
                         <div class="my-lg-4 my-md-1 my-sm-1 my-xs-1">
                             <h4 class="w-100 grad-title"><b>Event Rating</b></h4>
@@ -153,9 +152,9 @@ Event | StreamStage
     -->
             <div class="row px-2">
                 <div class="col-lg-6 col-md-12 mx-auto mx-2 my-lg-4 my-md-0 my-sm-2">
-                    {% if event.get_showings_count > 3 %}
-                    <div class="show-more-elem" data-showmore-id="2">{% include 'all_showings.html' %}</div>
-                    <div class="show-less-elem" data-showmore-id="2">{% include 'first_2_showings.html' %}</div>
+                    {% if event.get_showings_count > 2 %}
+                    <div class="show-more-elem" data-showmore-id="2">{% include 'all_shows_tckts.html' %}</div>
+                    <div class="show-less-elem" data-showmore-id="2">{% include 'next_2_shows_tckts.html' %}</div>
                     <button type="resend" name="resend" id="resend" data-showmore-id="2" class="
                                 show-more-btn
                                 btn 
@@ -165,7 +164,7 @@ Event | StreamStage
                         Show More
                     </button>
                     {% else %}
-                    {% include 'all_showings.html' %}
+                    {% include 'all_shows_tckts.html' %}
                     {% endif %}
                 </div>
                 <!--
@@ -181,7 +180,7 @@ Event | StreamStage
                     <!-- If No Trailer -->
                     {% if event.get_trailer_count == 0 %}
                     <div class="text-center">
-                        <p>No Trailers Available</p>
+                        <p>No Trailer Available</p>
                     </div>
                     <!-- 1 Trailer -->
                     {% else %}
@@ -216,7 +215,7 @@ Event | StreamStage
                             <!-- If more reviews, display in carousel -->
                             {% if event.get_review_count > 0 %}
                             {% for review in event.get_medium_reviews %}
-                            <div class="swiper-slide">
+                            <div class=" swiper-slide">
                                 {% include 'reviews/review.html' %}
                             </div>
                             {% endfor %}
