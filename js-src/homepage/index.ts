@@ -112,3 +112,5 @@ const load = () => {
 
     attach_to_showcases();
 }
+
+load();
