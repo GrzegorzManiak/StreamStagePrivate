@@ -58,7 +58,7 @@ def profile(request):
             'add_payment': reverse_lazy('add_payment'),
             'get_payments': reverse_lazy('get_payments'),
             'remove_payment': reverse_lazy('remove_payment'),
-            'start_subscription': reverse_lazy('start_subscription'),
+            'start_subscription': "",
             'get_reviews': reverse_lazy('get_reviews'),
             'update_review': reverse_lazy('update_review'),
             'delete_review': reverse_lazy('delete_review'),

@@ -7,8 +7,8 @@ from StreamStage.settings import RUNNING_ON_LOCALHOST, DEBUG
 import uuid
 
 def send_email(to: str, subject: str, body: str):    
-    if RUNNING_ON_LOCALHOST: return
-    if DEBUG: return
+    # if RUNNING_ON_LOCALHOST: return
+    # if DEBUG: return
     
     try:
         email = Mail(
