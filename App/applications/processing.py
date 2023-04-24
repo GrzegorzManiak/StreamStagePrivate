@@ -47,9 +47,11 @@ def submit_event_application(user, data):
         event_id = identifiers.generate_event_id(),
         #live_price = data['live_price']
     )
+
+    event.save()
     
-    # for category in data['categories']:
-    #    event.categories.add(category)#Category.objects.get(id=category))
+    for category in data['categories']:
+       event.categories.add(category)
 
     event.save()
 

@@ -72,10 +72,7 @@
                                     <label class='mt-2 w-100 text-start' for="submission-desc">Description</label>
                                     <textarea class="form-control" id="submission-desc" rows="3" readonly>{{app.event.description}}</textarea>
 
-                                    <label class='mt-2 w-100 text-start' for="submission-statment">Statement</label>
-                                    <textarea class="form-control" id="submission-statment" rows="3" readonly>{{app.submission_statement}}</textarea>
-
-                                    <label class='mt-2 w-100 text-start' for="submission-category">Categorys</label>
+                                    <label class='mt-2 w-100 text-start' for="submission-category">Categories</label>
                                     <textarea class="form-control" id="submission-category" rows="1" readonly>{% for category in app.event.categories.all %}{{category.name}}{% if not forloop.last %}, {% endif %}{% endfor %}</textarea>
 
                                     <p class='
