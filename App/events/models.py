@@ -1,4 +1,5 @@
 import base64
+from decimal import Decimal
 import io
 import random
 import uuid
@@ -150,6 +151,9 @@ class TicketListing(models.Model):
                 'ticket_type': self.ticket_type,
                 'showing_id': self.showing.showing_id or ""
             }
+        
+    def get_price_subscription(self):
+        return round(float(self.price) * 0.85, 2)
 
 # Event Model
 class Event(models.Model):

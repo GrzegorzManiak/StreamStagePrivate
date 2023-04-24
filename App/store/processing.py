@@ -1,3 +1,5 @@
+from decimal import Decimal
+import decimal
 from orders.models import Purchase, PurchaseItem
 from orders.processing import create_purchase
 from store.models import FlexibleTicket
@@ -61,8 +63,9 @@ def on_intent_success(cust_payment_intent):
     items = reverse_items(item_ids)
     purchase_id = uuid.uuid4()
 
-    for item in items:        
+    multiplier = float(0.85) if cust_payment_intent['user'].has_subscription else float(1)
 
+    for item in items:
         # currently all items are TicketListings, but may not always be.
         if isinstance(item, TicketListing):
             purchase_item = create_purchase(
@@ -70,7 +73,8 @@ def on_intent_success(cust_payment_intent):
                 cust_payment_intent['stripe_intent'],
                 cust_payment_intent["user"], 
                 billing_data, 
-                item
+                item,
+                multiplier
             )
 
             create_ticket(
@@ -79,7 +83,6 @@ def on_intent_success(cust_payment_intent):
                 purchase_item
             )
             
-
             item.remaining_stock -= 1
             item.save()
 

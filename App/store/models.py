@@ -49,7 +49,7 @@ class FlexibleTicket(models.Model):
                 "day_num": self.showing.time.strftime("%d"),
                 "month": self.showing.time.strftime("%b"),
                 "year": self.showing.time.strftime("%Y"),
-                "time": self.showing.time.strftime("%-I:%M%p")
+                "time": "TBD"#self.showing.time.strftime("%-I:%M%p")
             } if (self.showing and self.showing.time) else {
                 "day": "Date TBD",
                 "day_num": "",

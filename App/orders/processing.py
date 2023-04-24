@@ -36,8 +36,8 @@ def create_purchase(
         price = ticket_listing.price
     )
 
-    Statistics.log('payment', 'gross', (ticket_listing.price * total_mult))
-    Statistics.log('tickets', 'gross', (ticket_listing.price * total_mult))
+    Statistics.log('payment', 'gross', (float(ticket_listing.price) * total_mult))
+    Statistics.log('tickets', 'gross', (float(ticket_listing.price) * total_mult))
     Statistics.log('tickets', 'count', 1)
 
     send_template_email(purchaser, 'payment_success', purchase)
