@@ -19,11 +19,13 @@ from django.core.validators import validate_email
 from django_countries.fields import CountryField
 from timezone_field import TimeZoneField
 
-from accounts.email.verification import add_key, send_email
+from accounts.verification.verification import add_key, send_email
 from accounts.create.create import email_taken, username_taken
 from accounts.models import Member
 from StreamStage.mail import send_template_email
 from StreamStage.models import Statistics
+
+from accounts.com_lib import model_to_dict
 
 import secrets
 import time
@@ -67,6 +69,9 @@ def validate_username(username) -> tuple[bool, str]:
         and a string which is the reason why it was not changed
 """
 def change_username(user, new_username) -> tuple[bool, str]:
+    user = model_to_dict(user)
+    user = Member.objects.get(id=user.get('id', None))
+
     # -- Check if the username is already taken
     if username_taken(new_username):
         # -- Find the user with the username
@@ -108,6 +113,9 @@ def change_username(user, new_username) -> tuple[bool, str]:
         and a string which is the reason why it was not changed
 """
 def change_description(user, new_description) -> tuple[bool, str]:
+    user = model_to_dict(user)
+    user = Member.objects.get(id=user.get('id', None))
+
     # -- Check if the user is valid
     if not isinstance(user, Member):
         return (False, 'User is not valid')
@@ -162,6 +170,8 @@ def change_description(user, new_description) -> tuple[bool, str]:
     }
 """
 def update_profile(user, data, sensitive=False) -> tuple[bool, str]:
+    user = model_to_dict(user)
+    user = Member.objects.get(id=user.get('id', None))
     sensitive_fields = ['tfa_token', 'password', 'email']
 
     # -- Check if the user is valid
@@ -278,9 +288,18 @@ PAT_EXPIRY_TIME = 60 * 15 # -- 15 minutes
     :return: str - The generated token
 """
 def generate_pat(user, token: str = None) -> str:
+    user = model_to_dict(user)
+    user = Member.objects.get(id=user.get('id', None))
+
     # -- Check if the user is valid
     if not isinstance(user, Member):
         return None
+    
+    # -- Check if the user already has a token
+    for pat in temporary_pats:
+        if pat['user'] == user:
+            res = revoke_pat(pat['token'], user)
+            if res[0] == False: return None
 
     # -- Generate the token
     if token == None:
@@ -307,6 +326,7 @@ def generate_pat(user, token: str = None) -> str:
         and a string which is the reason why it is not found
 """
 def get_pat(token) -> list[dict, str]:
+    
     # -- Check if the token is in the temporary list
     for pat in temporary_pats:
         if pat['token'] == token:
@@ -334,6 +354,9 @@ def get_pat(token) -> list[dict, str]:
         and a string which is the reason why it is not valid
 """
 def validate_pat(token, member) -> list[bool, str]:
+    member = model_to_dict(member)
+    member = Member.objects.get(id=member.get('id', None))
+
     # -- Check if the token is in the temporary list
     pat_data = get_pat(token)
     if pat_data[0] == None:
@@ -357,6 +380,9 @@ def validate_pat(token, member) -> list[bool, str]:
         and a string which is the reason why it is not extended
 """
 def extend_pat(token, member) -> list[bool, str]:
+    member = model_to_dict(member)
+    member = Member.objects.get(id=member.get('id', None))
+
     # -- Check if the token is valid
     if not isinstance(token, str):
         return [False, 'Sorry, but it appears that the token is not valid']
@@ -391,6 +417,9 @@ def extend_pat(token, member) -> list[bool, str]:
         and a string which is the reason why it is not revoked
 """
 def revoke_pat(token, member) -> list[bool, str]:
+    member = model_to_dict(member)
+    member = Member.objects.get(id=member.get('id', None))
+
     # -- Check if the token is valid
     if not isinstance(token, str):
         return [False, 'Sorry, but it appears that the token is not valid']

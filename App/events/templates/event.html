@@ -111,15 +111,17 @@ Event | StreamStage
     -->
             <div class="col-lg-3 col-md-12 mx-auto">
                 <div class="row mx-auto">
-                    <div class="col-lg-12 mx-auto third">
+                    {% if event.get_live_showing %}
+                    <div class="col-lg-12 col-md-4 col-sm-4 col-xs-4 mx-auto">
                         <!-- Stream Event -->
                         <div class="my-lg-4 my-md-1 my-sm-1 my-xs-1">
-                            <a href="">
-                                <button class="btn btn-primary btn-lg">Stream Event</button>
+                            <a href="{% cross_app_reverse_tag 'events' 'watch_event' showing_id=event.get_live_showing.showing_id %}">
+                                <button class="btn stream-evt-btn btn-primary btn-lg">Stream Event</button>
                             </a>
                         </div>
                     </div>
-                    <div class="col-lg-12 mx-auto third">
+                    {% endif %}
+                    <div class="col-lg-12 col-md-4 col-sm-4 col-xs-4 mx-auto">
                         <!-- Streamer Name -->
                         <div class="my-lg-4 my-md-1 my-sm-1 my-xs-1">
                             <h4 class="grad-title"><b>Streamer</b></h4>

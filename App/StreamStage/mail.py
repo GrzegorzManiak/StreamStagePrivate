@@ -3,10 +3,13 @@ from sendgrid.helpers.mail import Mail
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.apps import apps
-from StreamStage.settings import RUNNING_ON_LOCALHOST
+from StreamStage.settings import RUNNING_ON_LOCALHOST, DEBUG
 import uuid
 
 def send_email(to: str, subject: str, body: str):    
+    # if RUNNING_ON_LOCALHOST: return
+    # if DEBUG: return
+    
     try:
         email = Mail(
             from_email=settings.OUTBOUND_EMAIL,

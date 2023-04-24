@@ -2,8 +2,9 @@
 from StreamStage.mail import send_template_email
 from .mfa import generate_token, delete_duplicate, get_token, verify_temp_otp
 from rest_framework.decorators import api_view
-from accounts.com_lib import authenticated, invalid_response, required_data, success_response, impersonate
+from accounts.com_lib import model_to_dict, authenticated, invalid_response, required_data, success_response, impersonate
 from accounts.profile import validate_pat
+
 
 
 @api_view(['POST'])
@@ -24,7 +25,6 @@ def setup_mfa(request, data):
 
     # -- Send the token to the user
     return success_response('MFA token generated', { 'token': mfa_token })
-
 
 
 @api_view(['POST'])
@@ -76,7 +76,8 @@ def disable_mfa(request, data):
     request.user.save()
 
     # -- Email the user
-    if request.user.security_preferences.email_on_mfa_change:
-        send_template_email(request.user, 'mfa_disabled')
-
+    try: 
+        if request.user.security_preferences.email_on_mfa_change:
+            send_template_email(request.user, 'mfa_disabled')
+    except: print('Email failed to send')
     return success_response('MFA has been disabled successfully')

@@ -8,7 +8,9 @@ from .profile import (
     username_taken,
     extend_pat,
     validate_pat,
-    get_pat
+    get_pat,
+    revoke_pat,
+    temporary_pats
 )
 
 from .views import (

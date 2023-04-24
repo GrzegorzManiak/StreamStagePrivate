@@ -16,35 +16,6 @@ import stripe
 stripe.api_key = STRIPE['pri']
 customer_payment_intents = {}
 
-
-
-def clear_stripe_customer(user: Member):
-    """
-        :name: clear_stripe_customer
-        :description: This function clears any incomplete payments for the user
-        :param user: The user object
-        :return: None
-    """
-    # -- Check if the user is valid
-    if user is None: return None
-
-    # -- Get the stripe customer
-    customer = user.get_stripe_customer()
-
-    # -- Check if the customer is valid
-    if customer is None: return None
-
-    # -- Get the payment intents
-    payment_intents = stripe.PaymentIntent.list(
-        customer=customer.id,
-        limit=100,
-    )
-
-    # -- Loop through the payment intents
-    # for payment_intent in payment_intents.data:
-    #     # -- Cancel the payment intent
-    #     stripe.Invoice.void_invoice(payment_intent.id)
-
     
 
 def add_stripe_payment_method(
@@ -233,9 +204,6 @@ def remove_stripe_payment_method(user: Member, card_id: str):
     if customer is None: return False
 
     try:
-        # -- Clear the stripe customer
-        clear_stripe_customer(user)
-
         # -- Detach the payment method from the customer
         pm = stripe.PaymentMethod.detach(
             payment_method=card_id,
@@ -477,8 +445,6 @@ def start_subscription_saved_payment(user: Member, payment_method: str):
     if customer is None: return False
 
     try:
-        # -- Clear the stripe customer
-        clear_stripe_customer(user)
 
         # -- Attach the payment method to the customer
         stripe.PaymentMethod.attach(
