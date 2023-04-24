@@ -97,6 +97,7 @@ CSRF_TRUSTED_ORIGINS = [
     '*://*.streamstage.co/*',
 ]
 
+
 X_FRAME_OPTIONS = 'ALLOW-FROM *://*.streamstage.co/*'
 CORS_ALLOWED_ORIGIN_REGEXES = [r"^https://.+$"]
 CORS_ORIGIN_ALLOW_ALL = True
