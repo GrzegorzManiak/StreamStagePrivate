@@ -22,9 +22,7 @@ Live Events | StreamStage
         <div class="nav-gap">
             <!-- Listing Live Events (if has showings & showing is still live)-->
             {% for event in events %}
-                {% if event.get_showings_count > 0 and event.is_event_live and event.approved %}
                     {% include 'event_list.html' with event=event %}
-                {% endif %}
             {% empty %}
             <div class="row mx-auto">
                 <h4 class="text-center">Currently No Live Events</h4>
