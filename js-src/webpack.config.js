@@ -25,6 +25,7 @@ module.exports = {
         applications: './applications/index.ts',
         navbar: './elements/navbar.ts',
         profiles: './profiles/index.ts',
+        forgot: './forgot/index.ts',
         broadcaster_profiles: './broadcaster_profiles/index.ts',
         admin: './admin/index.ts',
     },
