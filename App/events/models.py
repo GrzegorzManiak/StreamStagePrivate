@@ -100,7 +100,7 @@ class Category(models.Model):
             Returns a random amount of events
             from the category
         """
-        events = Event.objects.filter(categories=self).order_by('?')[:amount]
+        events = Event.objects.filter(categories=self,approved=True).order_by('?')[:amount]
         processed_events = []
 
         for event in events:
@@ -387,12 +387,19 @@ class Event(models.Model):
         """
             Simple function to check if a user can view an event
         """
-        return True
+        #return True
         broadcaster = self.broadcaster
         contributors = broadcaster.contributors.all()
         is_staff = user.is_staff
         is_subscribed = user.is_subscribed()
         # days_past_last_showing = (datetime.now(tz = self.get_last_showing().time.tzinfo) - self.get_last_showing().time).days
+        
+        if self.get_last_showing() is None and self.get_next_showing() is None:
+            return False
+        
+        if not self.approved:
+            return False
+
         days_past_last_showing = (datetime.now() - self.get_last_showing().time.replace(tzinfo=None)).days
         is_contributor = user in contributors
         is_broadcaster = broadcaster.streamer == user
