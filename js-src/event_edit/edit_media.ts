@@ -5,6 +5,39 @@ import { configuration } from "./index"
 import { picture_upload_modal } from "../common/picture";
 
 let media_panel;
+// let trailer_panel;
+
+// export function handle_trailer_panel(panel: HTMLElement) {
+//     trailer_panel = panel;
+
+//     var add_trailer_btn = document.querySelector('#add-trailer-btn') as HTMLElement;
+//     var existing_trailer = document.querySelector('#uploaded-trailer') as HTMLElement;
+
+//     if (add_trailer_btn)
+//         manage_add_trailer(add_trailer_btn);
+
+//     if (existing_trailer)
+//         manage_existing_trailer(existing_trailer);
+        
+// }
+
+
+function manage_add_trailer(
+    btn: HTMLElement
+) {
+    btn.addEventListener('click', () => construct_modal(
+        'Event Trailer',
+        'Upload a trailer for your event.',
+        false,
+        "success",
+        `
+
+        `
+    ));
+}
+
+
+
 
 export function handle_media_panel(panel: HTMLElement) {
     media_panel = panel;

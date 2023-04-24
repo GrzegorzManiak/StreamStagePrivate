@@ -45,12 +45,13 @@ def get_ticket_listings(request, data):
 @required_data(['event_id', 'ticket_type', 'detail', 'price', 'stock'])
 @can_edit_event()
 def add_ticket_listing(request, event, data):
-    ticket_type = data['ticket_type']
-    price = data['price']
-    stock = data['stock']
+    ticket_type = int(data['ticket_type'])
+    price = float(data['price'])
+    stock = int(data['stock'])
     detail = data['detail']
-
+    
     if ticket_type not in TicketType.Types:
+        print(ticket_type, "is not in list:", TicketType.Types)
         return error_response('Invalid ticket type.')
     
     if price < 0:

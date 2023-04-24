@@ -45,6 +45,8 @@ var listings_panel = document.querySelector('#ticket-listings-panel');
 var showings_panel = document.querySelector('#showings-panel')
 var media_panel = document.querySelector('#media-panel')
 
+var trailer_panel = document.querySelector('#trailer-panel')
+
 
 if (listings_panel) {
     handle_ticket_section(listings_panel as HTMLElement);
@@ -57,3 +59,6 @@ if (showings_panel) {
 if (media_panel) {
     handle_media_panel(media_panel as HTMLElement);
 }
+// if (trailer_panel) {
+//     handle_trailer_panel(trailer_panel as HTMLElement);
+// }
