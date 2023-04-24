@@ -96,6 +96,8 @@
                         </p>
                     </div>
 
+                    <div data-pod-status='active' data-pod='intro' class='side-panel-pod'></div>
+
                     <div class='pods'>
                         <!-- 
                             Pod - Server
@@ -278,7 +280,7 @@
                             Pod - Accounts
                         -->
                         <div 
-                            data-pod-status='active'
+                            data-pod-status=''
                             data-pod='accounts'
                         class='
                             side-panel-pod
@@ -465,6 +467,14 @@
                                 {% include 'admin/terms_privacy.html' %}
                                 {% include 'admin/faq.html' %}
                                 {% include 'admin/reports.html' %}
+
+                                {% comment %} intro {% endcomment %}
+                                <article class='panel' data-panel-type='intro' data-panel-status=''>
+                                    <div class="mb-5 justify-content-start">
+                                        <h1 class="fw-bold">Site managment page</h1>
+                                        <p class="text-muted">Welcome to the site managment page. Here you can manage all the content on the site.</p>
+                                    </div>
+                                </article>
                             </div>
                         </main>
                     </div>

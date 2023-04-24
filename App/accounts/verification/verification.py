@@ -98,7 +98,6 @@ def get_key(key: str) -> dict:
     return None
 
 
-
 """
     :name: expire_key
     :description: This function expires the key
@@ -237,6 +236,7 @@ def send_email(
         Local: http://localhost:8000/accounts/email/verify?token={key['key']}
     """ 
     print(message)
+    
     # NOTE: This is PURELY for testing purposes
     # requests.get(f'https://me.streamstage.co/email/verify?token={key["key"]}')
     
@@ -298,6 +298,9 @@ def regenerate_key(
 
         # -- Change the email
         key['email'] = new_email
+
+    elif (new_email is not None and key['allow_email_change'] is False):
+        return [False, 'Email change not allowed', None]
 
     # -- Generate a new key
     new_key = add_key(

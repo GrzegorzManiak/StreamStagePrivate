@@ -1,6 +1,6 @@
 from django.urls import path, include
 
-from .email.views import (
+from .verification.views import (
     check_if_verified_recently_view,
     remove_key_view,
     resend_key_view,

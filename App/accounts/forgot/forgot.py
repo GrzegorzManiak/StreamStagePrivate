@@ -1,4 +1,4 @@
-from accounts.email.verification import add_key, send_email
+from accounts.verification.verification import add_key, send_email
 from accounts.models import Member
 from StreamStage.mail import send_template_email
 

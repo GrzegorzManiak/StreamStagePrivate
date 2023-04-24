@@ -19,7 +19,7 @@ from django.core.validators import validate_email
 from django_countries.fields import CountryField
 from timezone_field import TimeZoneField
 
-from accounts.email.verification import add_key, send_email
+from accounts.verification.verification import add_key, send_email
 from accounts.create.create import email_taken, username_taken
 from accounts.models import Member
 from StreamStage.mail import send_template_email
@@ -419,7 +419,7 @@ def extend_pat(token, member) -> list[bool, str]:
 def revoke_pat(token, member) -> list[bool, str]:
     member = model_to_dict(member)
     member = Member.objects.get(id=member.get('id', None))
-    
+
     # -- Check if the token is valid
     if not isinstance(token, str):
         return [False, 'Sorry, but it appears that the token is not valid']
