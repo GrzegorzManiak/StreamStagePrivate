@@ -232,7 +232,7 @@ function bc_html(details: BroadcasterDetails) : HTMLElement {
                     <h1>${details.name}</h1>
                     <a href="${details.url}" class='h3 t/media/broadcaster/banners/e8d3acef-77fc-4dc4-9829-2216d110aa28.webpext-muted'>@${details.handle}</a>
                 </div>
-                <p class='text-muted' style="max-width: 50%;">
+                <p class='text-muted' style="max-width: 100%;">
                     ${details.biography}
                 </p>
             </div>
