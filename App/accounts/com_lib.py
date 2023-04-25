@@ -163,7 +163,7 @@ def csrf_rewriter_middleware(get_request):
     
     def middleware(request):
         # -- Get the request
-        # request = get_request(request)  
+        request = get_request(request)  
 
         # print(request.headers)    
 
