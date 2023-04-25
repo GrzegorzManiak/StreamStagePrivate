@@ -92,8 +92,12 @@ class Category(models.Model):
     def get_random_categories(amount: int):
         """
             Returns a random amount of categories
+            RETUNRS the top X ammount of categories
+            with the most events
         """
-        return Category.objects.all().order_by('?')[:amount]
+        # return Category.objects.all().order_by('?')[:amount]
+        return Category.objects.all().order_by('-updated')[:amount]
+        
     
     def get_random_events(self, amount: int):
         """
