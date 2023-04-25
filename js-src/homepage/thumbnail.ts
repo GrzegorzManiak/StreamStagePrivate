@@ -50,6 +50,12 @@ export function add_thumbnail(event: Event) {
     const tn_view_count = tn_clone.querySelector('[data-elm="view-count"]') as HTMLSpanElement;
     const tn_date_vod = tn_clone.querySelector('[data-elm="date-vod"]') as HTMLSpanElement;
 
+    // -- If the title is over X replace it to the first X characters
+    //    and add '...'
+    const max_title_length = 20;
+    if (event.title.length > max_title_length) 
+        event.title = event.title.substring(0, max_title_length) + '...';
+        
     tn_title.innerText = event.title;
     tn_title.style.userSelect = 'none';
     tn_title.onclick = () => {
