@@ -70,8 +70,8 @@
     margin-right: 0.5rem;
 }
 
-[class='thumbnail-pfp'] img {
-    width: 100%;
+[data-elm="pfp"] img {
+    width: 100%!important;
 }
 
 [pfp-pos='top'] {
