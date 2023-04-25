@@ -21,6 +21,7 @@ export function manage_add_live_ticket_btn(
     btn: HTMLElement,
     showing_id: string
 ) {
+    console.log("Adding live ticket button", btn, showing_id);
     btn.addEventListener("click", () => {
         const modal_wrap = construct_modal(
             "Add In Person Ticket", 

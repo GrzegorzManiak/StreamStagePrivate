@@ -73,15 +73,12 @@ function remove_showing(sid: string) {
 
 function append_showing(showing: Showing) {
     showings_panel.appendChild(showing_html(showing));
-
     const btn = showings_panel.querySelector(`.remove-showing-btn[data-sid="${showing.showing_id}"]`);
-    btn.addEventListener("click", () => {
-        del_showing(showing.showing_id);
-    });
-        
-    var add_ticket_btn = showings_panel.querySelector(`.add-live-ticket`);
-    
-    manage_add_live_ticket_btn(add_ticket_btn, showing.showing_id);
+    btn.addEventListener("click", () => del_showing(showing.showing_id));
+    manage_add_live_ticket_btn(
+        showings_panel.querySelector(`[data-sid="${showing.showing_id}"].add-live-ticket`),
+        showing.showing_id
+    );
 }
 
 // API calls
