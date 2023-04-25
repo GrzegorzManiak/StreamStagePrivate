@@ -539,7 +539,7 @@ class EventTrailer(models.Model):
 # Event Showing Model
 class EventShowing(models.Model):
     showing_id = (models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False))
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, null=True, blank=True)
     country = CountryField("Country")
     city = models.CharField("City", max_length=25, blank=True)
     venue = models.CharField("Venue", max_length=50, blank=True)

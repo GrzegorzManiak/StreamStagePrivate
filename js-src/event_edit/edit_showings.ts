@@ -37,11 +37,12 @@ function manage_add_showing_btn(
         var venue_field = modal_wrap.querySelector(".form-control[name='venue']") as HTMLInputElement;
         var country_field = modal_wrap.querySelector(".form-select[name='country']") as HTMLInputElement;
         var city_field = modal_wrap.querySelector(".form-control[name='city']") as HTMLInputElement;
+        const running_time_field = modal_wrap.querySelector(".form-control[name='running_time']") as HTMLInputElement;
     
         // -- Add the event listeners
         yes_btn.addEventListener('click', async(evt) => {
             if (validate_showing_details(country_field.value, city_field.value, venue_field.value, time_field.valueAsDate)) {
-                add_showing(country_field.value, city_field.value, venue_field.value, time_field.value);
+                add_showing(country_field.value, city_field.value, venue_field.value, time_field.value, running_time_field.value);
                 modal_wrap.remove();
             }
         });
@@ -102,9 +103,10 @@ async function add_showing(
     country: string,
     city: string,
     venue: string,
-    time: string
+    time: string,
+    running_time: string
 ) {
-    const request = await add_evt_showing(configuration.event_id, country, city, venue, time);
+    const request = await add_evt_showing(configuration.event_id, country, city, venue, time, running_time);
 
     // -- Check if the request was successful
     if (request.code !== 200) return create_toast(
@@ -220,6 +222,12 @@ const add_showing_form = `
             <label for="id_city" class="form-label">City</label>
             <input type="text" name="city" maxlength="25" class="textinput textInput form-control" id="id_city">
         </div>
+
+        <div id="div_id_running" class="mb-3">
+            <label for="id_time" class="form-label">Running Time</label>
+            <input type="numerical" name="running_time" maxlength="25" class="textinput textInput form-control" id="id_time">
+        </div>
+
 
         <div id="div_id_country" class="mb-3">
             <label for="id_country" class="form-label requiredField">Country<span class="asteriskField">*</span></label>

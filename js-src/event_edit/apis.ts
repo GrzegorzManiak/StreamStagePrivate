@@ -89,7 +89,8 @@ export const add_evt_showing = async (
     country: string,
     city: string,
     venue: string,
-    time: string
+    time: string,
+    running_time: string
 ): Promise<AddShowingResponse> => base_request(
     'POST',
     configuration.add_showing,
@@ -98,7 +99,8 @@ export const add_evt_showing = async (
         country: country,
         city: city,
         venue: venue,
-        time: time
+        time: time,
+        running_time: running_time
     }
 );
 

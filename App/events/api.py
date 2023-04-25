@@ -139,7 +139,7 @@ def get_showings(request, data):
 @api_view(['POST'])
 @authenticated()
 @can_edit_event()
-@required_data(['event_id', 'time', 'venue', 'city', 'country'])
+@required_data(['event_id', 'time', 'venue', 'city', 'country', 'running_time'])
 def add_showing(request, data, event):
     event = Event.objects.filter(event_id=data['event_id']).first()
     if not event: return error_response('Event with given ID not found.')
@@ -156,7 +156,7 @@ def add_showing(request, data, event):
         venue = venue,
         city = city,
         country = country,
-        max_duration = 120
+        max_duration = int(data['running_time'])
     )
     showing.save()
 
@@ -187,7 +187,8 @@ def del_showing(request, data, event):
     if showing is None or showing.event != event:
         return error_response('Permission denied: invalid showing ID.')
     
-    showing.delete()
+    showing.event = None
+    showing.save()
     return success_response('Successfully deleted event showing.')
 
 
