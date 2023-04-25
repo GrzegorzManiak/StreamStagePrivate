@@ -71,6 +71,10 @@
     align-items: flex-start;
 }
 
+.event-title > p {
+    height: 0rem;
+}
+
 .event-title h4 {
     color: var(--accent-color);
     font-size: 1.5rem;
