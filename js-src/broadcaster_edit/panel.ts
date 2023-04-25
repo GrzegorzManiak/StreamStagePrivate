@@ -59,6 +59,9 @@ function load_broadcasters() {
 
     if (configuration.broadcaster_ids === ":none:") {
         bc_list.innerHTML += `You have no broadcasters. Apply here.`;
+        bc_list.addEventListener('click', () => {
+            window.location.href = "https://applications.streamstage.co/broadcaster";
+        });
         return;
     }
 

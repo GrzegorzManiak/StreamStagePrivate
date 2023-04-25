@@ -132,7 +132,6 @@ class Member(AbstractUser):
     def __str__(self):
       return str(self.username)
 
-
     def mask_email(self, keep: int = 2):
         """
             Masks an email address, keeping
@@ -490,6 +489,16 @@ class Member(AbstractUser):
             'profile_pic': self.get_profile_pic(),
             'url': cross_app_reverse('homepage', 'user_profile', kwargs={'username': self.username}),
         }
+
+    def set_username(self, username):
+        """
+            Sets the username of the user
+        """
+        username = username.strip()
+        self.username = username.lower()
+        self.cased_username = username
+        self.save()
+        self.ensure()
 
 class MembershipStatus(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE)

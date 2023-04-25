@@ -28,6 +28,7 @@ from django.db.models import Q
 
 from StreamStage.templatetags.tags import cross_app_reverse
 
+
 """
     :name: model_to_dict
     :description: This function is used to convert a model  
@@ -162,8 +163,9 @@ def csrf_rewriter_middleware(get_request):
     
     def middleware(request):
         # -- Get the request
-        request = get_request(request)  
-        # print(request.headers)
+        # request = get_request(request)  
+
+        # print(request.headers)    
 
         # # -- Check for the 'ss-csrf-token' header
         # #    or 'x-csrftoken' header

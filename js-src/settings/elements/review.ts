@@ -142,7 +142,7 @@ export async function create_review_edit(
         else {
             create_toast('success', 'Success!', res.message);
             modal_elm.remove();
-            elm.getElementsByClassName('event-rating')[0].innerHTML = `${rating.value} / 10`;
+            elm.getElementsByClassName('event-rating')[0].innerHTML = `${rating.value} / 5`;
             elm.getElementsByClassName('title')[0].innerHTML = title.value;
             elm.getElementsByClassName('review-body')[0].innerHTML = body.value;
         }

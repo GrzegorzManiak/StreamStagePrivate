@@ -47,7 +47,7 @@ Event | StreamStage
         Event Categories & Media
     -->
         <div class="row text-light">
-            <div class="col-lg-3 col-md-4 col-sm-12 mx-auto p-2">
+            <div class="col-lg-3 col-md-4 col-sm-12 p-2">
                 <!-- Category -->
                 <div class="mx-2 my-2">
                     {% for category in event.categories.all %}
@@ -56,7 +56,7 @@ Event | StreamStage
                 </div>
 
                 <!-- Event Poster -->
-                <div class="d-flex flex-row mx-2 my-4">
+                <div class="w-100 event-media-main-cover">
                     <!-- If No Media, Use Default Event Cover Image -->
                     {% if event.get_media_count == 0 %}
                     <img class="event-cover" src="{% static 'images/default_event_cover.png' %}"
@@ -64,10 +64,10 @@ Event | StreamStage
                     {% else %}
                     <!-- Media Carousel -->
                     <div class="swiper mySwiper">
-                        <div class="swiper-wrapper">
+                        <div class="swiper-wrapper w-100">
                             {% for media in event.get_media %}
-                            <div class="swiper-slide">
-                                <img class="event-cover" src="{{ media.picture.url }}" alt="Event Media Photo">
+                            <div class="swiper-slide event-media-main-cover w-100">
+                                <img class="event-cover w-100" src="{{ media.picture.url }}" alt="Event Media Photo">
                             </div>
                             {% endfor %}
                         </div>
@@ -81,7 +81,7 @@ Event | StreamStage
             <!-- 
         Event Title & Description
     -->
-            <div class="col-lg-6 col-md-8 col-sm-12 mx-auto p-2">
+            <div class="col-lg-4 col-md-8 col-sm-12 mx-auto p-2">
                 <!-- Event Title -->
                 <div class="mx-2 my-4">
                     <h2 class="page-title">{{ event.title }}</h2>

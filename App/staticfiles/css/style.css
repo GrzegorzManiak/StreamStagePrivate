@@ -182,7 +182,7 @@ div>a:hover {
     background-color: var(--theme-secondary-color) !important;
     padding: 1rem !important;
     margin: auto !important;
-    border-radius: 15px !important;
+    border-radius: .5rem;
     max-width: 100%;
 }
 

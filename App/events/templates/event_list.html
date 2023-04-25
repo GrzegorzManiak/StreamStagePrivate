@@ -13,9 +13,9 @@
             <h6 class="my-2">@{{ event.broadcaster.handle }}</h6>
             <!-- Event Cover Picture (if any) -->
             {% if event.get_media_count == 0 %}
-            <img class="event-cover" src="{% static 'images/default_event_cover.png' %}" alt="No Event Cover Photo">
+            <img class="event-cover-list" src="{% static 'images/default_event_cover.png' %}" alt="No Event Cover Photo">
             {% else %}
-            <img class="event-cover" src="{{ event.get_cover_picture.picture.url }}"
+            <img class="event-cover-list" src="{{ event.get_cover_picture.picture.url }}"
                 alt="{{ event.get_cover_picture.description }}">
             {% endif %}
         </div>

@@ -1,0 +1,340 @@
+
+/***** Event Listings Pages *****/
+/* Event media */
+.event-cover-list {
+    display: block;
+    max-width: 12rem;
+    max-height: 12rem;
+    margin: 1rem auto;
+    object-fit: cover;
+    border-radius: 0.5rem;
+}
+
+@media screen and (max-width: 992px) {
+/* Make Images half-width on Medium & Smaller Screens */
+    .event-cover-list img{
+        width: 50%;
+    }
+/* Hide Reviews on Medium & Smaller Screens */
+    .hide_md * {
+        display: none;
+    }
+}
+
+
+/***** Event Page *****/
+/* Event media */
+.event-cover {
+    display: block;
+    max-width: 80%;
+    max-height: 100%;
+    margin: 1rem auto;
+    object-fit: cover;
+    border-radius: 0.5rem;
+}
+@media screen and (max-width: 992px) {
+    .event-cover img{
+        width: 50%;
+    }
+}
+@media screen and (max-width: 992px) {
+    .third{
+        width: 33%;
+    }
+}
+
+.swiper-slide .event-cover {
+    max-height: 100%;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    max-height: 20rem;
+    max-width: 20rem;
+    overflow: visible!important;
+}
+
+/* Tickets */
+
+.ticket-dropdown {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--theme-backdrop-color);
+    border-radius: 0.5rem;
+    width: 100%;
+    border: 0px;
+    margin-top: auto;
+}
+
+.ticket-dropdown > p {
+    font-size: 1rem;
+    font-weight: 400;
+    width: 100%;
+    color: var(--font-color);
+    margin: 0;
+    padding: 0.25rem;
+}
+
+.dropdown-menu {
+    background-color: var(--theme-backdrop-color);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+}
+
+.dropdown-menu * {
+    color: var(--font-color);
+    border: 0;
+}
+
+/***** Event Update Page *****/
+.media-elem div img{
+    border-radius: 0.5rem;
+    height: 10rem;
+}
+.media-elem div span{
+    margin: 0 1rem;
+}
+
+/*****
+    Event Page Media Carousel 
+    Event/Search Listings Pages Review Carousel 
+*****/
+.swiper {
+    width: 100%;
+}
+
+.swiper-slide {
+    width: 100%;
+}
+
+.s-btn {
+    width: 5% !important;
+    height: 95% !important;
+    color: #0275d8 !important;
+    background: transparent;
+    border: none;
+    outline: none;
+    transition: opacity 0.25s !important;
+}
+
+.s-btn:hover {
+    opacity: 0.8s;
+}
+
+.s-btn::before,
+.s-btn::after {
+    font-size: 1.5rem !important;
+}
+
+.swiper-button-prev {
+    position: absolute !important;
+    left: 2% !important;
+}
+
+.swiper-button-next {
+    position: absolute;
+    right: 2% !important;
+}
+
+.swiper-pagination-bullet {
+    background-color: #0275d8 !important;
+}
+
+/***** Reviews Rating Stars *****/
+/* Display no rating so stars can be used */
+#id_rating {
+    display: none;
+}
+
+.rating-list {
+    background-color: var(--theme-backdrop-color) !important;
+}
+
+.rating-list btn {
+    border: none;
+
+}
+
+.rating-list li {
+    float: right;
+    color: #d3b796;
+
+}
+
+.rating-list li:hover,
+.rating-list li:hover~li {
+    color: #ffb25a;
+}
+
+.rating-list {
+    display: inline-block;
+    list-style: none;
+}
+
+.checked {
+    color: #ffb25a;
+}
+
+.rating-list li {
+    transition: all 0.2s ease-in-out;
+}
+
+[data-value="1"] :nth-child(5) { color: #ffb25a; }
+
+[data-value="2"] :nth-child(5) { color: #ffb25a; }
+[data-value="2"] :nth-child(4) { color: #ffb25a; }
+
+[data-value="3"] :nth-child(5) { color: #ffb25a; }
+[data-value="3"] :nth-child(4) { color: #ffb25a; }
+[data-value="3"] :nth-child(3) { color: #ffb25a; }
+
+[data-value="4"] :nth-child(5) { color: #ffb25a; }
+[data-value="4"] :nth-child(4) { color: #ffb25a; }
+[data-value="4"] :nth-child(3) { color: #ffb25a; }
+[data-value="4"] :nth-child(2) { color: #ffb25a; }
+
+[data-value="5"] :nth-child(5) { color: #ffb25a; }
+[data-value="5"] :nth-child(4) { color: #ffb25a; }
+[data-value="5"] :nth-child(3) { color: #ffb25a; }
+[data-value="5"] :nth-child(2) { color: #ffb25a; }
+[data-value="5"] :nth-child(1) { color: #ffb25a; }
+
+
+[data-lid] {
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    background-color: var(--theme-backdrop-color);
+    display: flex!important;
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+}
+
+[data-lid] .btn {
+    height: 100%!important;
+    flex-grow: 1;
+}
+
+[data-lid] :not(.btn) {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+[data-lid] span {
+    text-align: end;
+}
+
+#add-ticket-listing-btn, #add-showing-btn {
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+#ticket-listings-panelm, .showings-panel {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.showing-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    background-color: var(--theme-backdrop-color);
+}
+
+.showing-text {
+    width: 100%;
+    padding: 0.5rem;
+}
+.showing-text * {
+    margin: 0;
+    padding: 0;
+}
+.showing-tickets {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.showing-button {
+    width: 100%;
+}
+
+.showing-tickets {
+    width: 100%;
+    background-color: var(--theme-backdrop-color);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+}
+
+main {
+    min-height: 100vh;
+}
+
+.new-pictures {
+    padding: 1rem!important;
+}
+
+#media-panel {
+    padding: 1rem!important;
+    gap: 1rem;
+    display: flex!important;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+#media-panel > div {
+    width: 48%;
+}
+
+.media-elem {
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    background-color: var(--theme-backdrop-color);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+    overflow: hidden;
+    justify-content: center;
+}
+
+.img-limiter {
+    width: 100%;
+    height: 10rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+}
+
+.remove-media-btn {
+    width: 100%;
+}
+
+
+/* at 440 */
+@media screen and (max-width: 440px) {
+    #media-panel > div {
+        width: 100%;
+    }
+}
+
+.event-media-main-cover {
+    overflow: hidden;
+    border-radius: 0.5rem;
+}

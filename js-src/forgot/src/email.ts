@@ -62,7 +62,7 @@ export async function email_verification(
         const data = (res as ResendVerification).data;
         verify_token = data.verify;
         resend_token = data.token;
-        time = 60 * 60 * 15;
+        time =60 * 15;
         stop_spinner();
     });
 }

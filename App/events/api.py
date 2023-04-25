@@ -89,27 +89,17 @@ def add_ticket_listing(request, event, data):
 @csrf_exempt
 @api_view(['POST'])
 @authenticated()
+@can_edit_event()
 @required_data(['event_id', 'listing_id'])
-def del_ticket_listing(request, data):
-    if not request.user.is_streamer:
-        return error_response('Permission denied: you are not a streamer.')
-
+def del_ticket_listing(request, data, event):
     event = Event.objects.filter(event_id=data['event_id']).first()
-
-    if not event:
-        return error_response('Event with given ID not found.')
+    if not event: return error_response('Event with given ID not found.')
     
-    # TODO: contributors check
-    if request.user != event.broadcaster.streamer:
-        return error_response('Permission denied: you do not have permissions to edit provided event.')
-    
-    listing = TicketListing.objects.filter(listing_id = data['listing_id']).first()
+    ticket = TicketListing.objects.filter(listing_id=data['listing_id']).first()
+    if not ticket: return error_response('Ticket with given ID not found.')
 
-    if listing is None or listing.event != event:
-        return error_response('Permission denied: invalid listing id.')
-    
-    listing.delete()
-
+    ticket.event = None
+    ticket.save()
     return success_response('Successfully deleted listing')
 
 
@@ -125,14 +115,9 @@ def get_showings(request, data):
     """
     
     event = Event.objects.filter(event_id=data['event_id']).first()
+    if not event: return error_response('Event with given ID not found.')
 
-    if not event:
-        return error_response('Event with given ID not found.')
-
-    showings = EventShowing.objects.filter(
-        event=event
-    )
-
+    showings = EventShowing.objects.filter(event=event)
     encoded_showings = []
     
     for showing in showings:
@@ -153,20 +138,12 @@ def get_showings(request, data):
 @csrf_exempt
 @api_view(['POST'])
 @authenticated()
+@can_edit_event()
 @required_data(['event_id', 'time', 'venue', 'city', 'country'])
-def add_showing(request, data):
-    if not request.user.is_streamer:
-        return error_response('Permission denied: you are not a streamer.')
-
+def add_showing(request, data, event):
     event = Event.objects.filter(event_id=data['event_id']).first()
-
-    if not event:
-        return error_response('Event with given ID not found.')
+    if not event: return error_response('Event with given ID not found.')
     
-    # TODO: contributors check
-    if request.user != event.broadcaster.streamer:
-        return error_response('Permission denied: you do not have permissions to edit provided event.')
-
     time = data['time']
     venue = data['venue']
     city = data['city']
@@ -174,7 +151,8 @@ def add_showing(request, data):
     
     showing = EventShowing(
         event = event,
-        time = datetime.datetime.strptime(time, '%Y-%m-%dT%H:%M'),
+        # 4441-03-12T12:03
+        time = datetime.datetime.strptime(time, "%Y-%m-%dT%H:%M"),
         venue = venue,
         city = city,
         country = country,
@@ -199,27 +177,17 @@ def add_showing(request, data):
 @csrf_exempt
 @api_view(['POST'])
 @authenticated()
+@can_edit_event()
 @required_data(['event_id', 'showing_id'])
-def del_showing(request, data):
-    if not request.user.is_streamer:
-        return error_response('Permission denied: you are not a streamer.')
-
+def del_showing(request, data, event):
     event = Event.objects.filter(event_id=data['event_id']).first()
-
-    if not event:
-        return error_response('Event with given ID not found.')
-    
-    # TODO: contributors check
-    if request.user != event.broadcaster.streamer:
-        return error_response('Permission denied: you do not have permissions to edit provided event.')
+    if not event: return error_response('Event with given ID not found.')
     
     showing = EventShowing.objects.filter(showing_id = data['showing_id']).first()
-
     if showing is None or showing.event != event:
         return error_response('Permission denied: invalid showing ID.')
     
     showing.delete()
-
     return success_response('Successfully deleted event showing.')
 
 
@@ -230,19 +198,14 @@ def del_showing(request, data):
 @csrf_exempt
 @api_view(['POST'])
 @authenticated()
+@can_edit_event()
 @required_data(['event_id'])
-def get_media(request, data):
+def get_media(request, data, event):
     event = Event.objects.filter(event_id=data['event_id']).first()
-
-    if not event:
-        return error_response('Event with given ID not found.')
-
-    evt_media = EventMedia.objects.filter(
-        event=event
-    )
+    if not event: return error_response('Event with given ID not found.')
+    evt_media = EventMedia.objects.filter(event=event)
 
     encoded_media = []
-    
     for media in evt_media:
         encoded_media.append({
             'media_id': media.media_id,
@@ -258,19 +221,11 @@ def get_media(request, data):
 @csrf_exempt
 @api_view(['POST'])
 @authenticated()
+@can_edit_event()
 @required_data(['event_id', 'picture', 'description'])
-def add_media(request, data):
-    if not request.user.is_streamer:
-        return error_response('Permission denied: you are not a streamer.')
-
+def add_media(request, data, event):
     event = Event.objects.filter(event_id=data['event_id']).first()
-
-    if not event:
-        return error_response('Event with given ID not found.')
-    
-    # TODO: contributors check
-    if request.user != event.broadcaster.streamer:
-        return error_response('Permission denied: you do not have permissions to edit provided event.')
+    if not event: return error_response('Event with given ID not found.')
 
     description = data['description']
     picture = data['picture']
@@ -297,27 +252,17 @@ def add_media(request, data):
 @csrf_exempt
 @api_view(['POST'])
 @authenticated()
+@can_edit_event()
 @required_data(['event_id', 'media_id'])
-def del_media(request, data):
-    if not request.user.is_streamer:
-        return error_response('Permission denied: you are not a streamer.')
-
+def del_media(request, data, event):
     event = Event.objects.filter(event_id=data['event_id']).first()
-
-    if not event:
-        return error_response('Event with given ID not found.')
-    
-    # TODO: contributors check
-    if request.user != event.broadcaster.streamer:
-        return error_response('Permission denied: you do not have permissions to edit provided event.')
-    
+    if not event: return error_response('Event with given ID not found.')
     media = EventMedia.objects.filter(media_id = data['media_id']).first()
 
     if media is None or media.event != event:
         return error_response('Permission denied: invalid media ID.')
     
     media.delete()
-
     return success_response('Successfully deleted event media.')
 
 
@@ -394,29 +339,3 @@ def get_bc_events(request, data):
         'total': len(serialized_events),
         'pages': total_pages,
     })
-
-
-# @api_view(['POST'])
-# @required_data(['event_id', 'title', 'description', 'categories', 'primary_media_idx'])
-# @can_edit_event()
-# def update_event_details(request, event:Event, data):
-    
-#     event.title = data['title']
-#     event.description = data['description']
-#     event.primary_media_idx = data['primary_media_idx']
-#     event.over_18s = data['over_18s']
-
-#     #categories
-
-#     return success_response('Successfully updated event details.')
-
-# @api_view(['GET'])
-# @required_data(['event_id'])
-# @can_edit_event()
-# def get_event_details(request, event:Event, data):
-#     """
-#         Returns the event with the given id.
-#     """
-    
-#     return success_response('Successfully retrieved event', {
-#     })

@@ -38,7 +38,7 @@ def can_edit_event():
                 if not request.user.is_authenticated:
                     return redirect(cross_app_reverse('accounts', 'login'))
                 
-                
+
             has_access = False
             if request.user.is_staff or request.user.is_superuser: has_access = True
             if event.broadcaster.streamer == request.user: has_access = True

@@ -122,7 +122,7 @@ class Category(models.Model):
 # Ticket Listing Model
 class TicketListing(models.Model):
     listing_id = models.UUIDField(default=uuid.uuid4)
-    event = models.ForeignKey(to="events.Event", on_delete=models.CASCADE)
+    event = models.ForeignKey(to="events.Event", on_delete=models.CASCADE, null=True)
     ticket_detail = models.CharField(max_length=100, blank=True)
     price = models.DecimalField(max_digits=1000, decimal_places=2, validators=[MinValueValidator(0)])
     # Ticket Type Id - 0 = Streaming, 1 = In-person
@@ -378,6 +378,9 @@ class Event(models.Model):
         """
             Simple function to check if a user can view an event
         """
+        if not user.is_authenticated:
+            return False
+        
         #return True
         broadcaster = self.broadcaster
         contributors = broadcaster.contributors.all()
@@ -394,7 +397,14 @@ class Event(models.Model):
         has_ticket = False
         if self.get_next_showing() is None:
             for ticket in user.get_tickets()['expired']:
-                if ticket.listing is not None and ticket.listing.event == self:
+                # -- CHeck if ticket dict has a listing
+
+                if (  
+                    ticket.__contains__('listing') and                  
+                    ticket['listing'] is not None and 
+                    ticket['listing'].__contains__('event') and
+                    ticket['listing']['event'] == self
+                ):
                     has_ticket = True
 
 

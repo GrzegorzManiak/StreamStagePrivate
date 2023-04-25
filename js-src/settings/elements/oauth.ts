@@ -36,7 +36,7 @@ export default (
                 <button
                     type="submit"
                     id="remove-tfa"
-                    class="btn btn-danger btn-sm loader-btn col-3"
+                    class="btn btn-danger error btn-sm loader-btn col-3"
                     loader-state="default"
                 > Remove </button>
 

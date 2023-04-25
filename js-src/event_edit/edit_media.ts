@@ -54,7 +54,7 @@ function manage_add_media_btn(
     btn: HTMLElement
 ) {
     btn.addEventListener('click', () => picture_upload_modal(
-        null, 1,
+        'https://picsum.photos/500/800.jpg', undefined,
         'Event Image',
         'Upload an image for your event',
         async (image: string) => {
@@ -144,15 +144,15 @@ function media_html(
     media: Media
 ) : HTMLElement {
     var sq = document.createElement('div');
-    sq.className = "media-elem text-center col-lg-3 col-md-4 col-sm-6";
+    sq.className = "media-elem text-center";
     sq.setAttribute("data-mid", media.media_id);
 
     sq.innerHTML = `
-        <div>
+        <div class='img-limiter'>
             <img class="event-cover" src="${media.picture}"></div>
             <span>${media.description}</span>
         </div>
-        <div class="remove-media-btn btn btn-danger" data-mid="${media.media_id}">
+        <div class="remove-media-btn btn error btn-danger" data-mid="${media.media_id}">
             Remove Media
         </div>
     `
@@ -163,6 +163,6 @@ function media_html(
 const media_description_input = `
     <div class="mb-3">
         <label for="id_media_description" class="form-label requiredField">Description</label>
-        <input name="description" maxlength="300" class="textarea form-control" required="" id="id_media_description" placeholder="Cool photograph!"></input>
+        <input name="description" maxlength="300" class="form-control inp textarea form-control" required="" id="id_media_description" placeholder="Cool photograph!"></input>
     </div>
 `;

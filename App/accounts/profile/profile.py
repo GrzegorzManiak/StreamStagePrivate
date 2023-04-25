@@ -89,13 +89,10 @@ def change_username(user, new_username) -> tuple[bool, str]:
 
     # -- Check if the username is valid
     validation = validate_username(new_username)
-    if validation[0] == False:
-        return validation
+    if validation[0] == False: return validation
 
     # -- Change the username
-    user.username = new_username.lower()
-    user.cased_username = new_username
-    user.save()
+    user.set_username(new_username)
 
     return (True, 'Username changed successfully')
 
@@ -115,7 +112,6 @@ def change_username(user, new_username) -> tuple[bool, str]:
 def change_description(user, new_description) -> tuple[bool, str]:
     user = model_to_dict(user)
     user = Member.objects.get(id=user.get('id', None))
-
     # -- Check if the user is valid
     if not isinstance(user, Member):
         return (False, 'User is not valid')
@@ -196,19 +192,26 @@ def update_profile(user, data, sensitive=False) -> tuple[bool, str]:
     if 'username' in data:
         res = change_username(user, data['username'])
         if res[0] == False: return res
+        user.username = data['username'].lower()
+        user.username_cased = data['username']
+        user.save()
 
     # -- Update the description
     if 'description' in data:
         res = change_description(user, data['description'])
         if res[0] == False: return res
+        user.description = data['description']
+        user.save()
 
     # -- Update the first name
     if 'first_name' in data:
         user.first_name = data['first_name']
+        user.save()
 
     # -- Update the last name
     if 'last_name' in data:
         user.last_name = data['last_name']
+        user.save()
 
     # -- Update the time zone
     # NOTE: I have absolutely no idea why the time zone field
@@ -231,6 +234,7 @@ def update_profile(user, data, sensitive=False) -> tuple[bool, str]:
         try: CountryField().validate(model_instance=None, value=data['country'])
         except ValidationError: return (False, 'Country is not valid')
         user.country = data['country']
+        user.save()
 
     # -- Update the 2FA token
     if 'tfa_token' in data:

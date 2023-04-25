@@ -106,12 +106,12 @@ export function construct_modal(
 
     const buttons_template = `
         <!-- Continue -->
-        <button type="submit" class="btn yes btn-${color} btn-lg w-75">
+        <button type="submit" class="btn yes btn-${color} ${color} btn-lg w-75">
             Continue
         </button>
 
         <!-- Continue -->
-        <button type="submit" class="btn no btn-danger btn-lg w-25 error">
+        <button type="submit" class="btn no btn-danger error btn-lg w-25 error">
             Cancel
         </button>
     `;

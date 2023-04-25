@@ -1,7 +1,8 @@
-import { construct_modal, create_toast } from "../common";
+import { construct_modal, create_toast, sleep } from "../common";
 import { add_ticket_listing, del_ticket_listing, get_ticket_listings } from "./apis";
 import { GetTicketListingsSuccess, AddTicketListingSuccess, TicketListing } from "./index.d"
 import { configuration } from "./index"
+import { query_showings } from "./edit_showings";
 
 let listings_panel;
 
@@ -123,24 +124,38 @@ function set_listings(listings: TicketListing[]) {
     }
 }
 
-function remove_listing(lid: number) {
-    listings_panel.querySelector(".listing-row[data-lid=\"" + lid + "\"]").remove();
-}
+async function append_inperson_ticket(listing: TicketListing) {
+    if (listing.showing_id == null) return;
+    const get_showing_elm = () => document.querySelector(`.listing-row[data-sid="${listing.showing_id}"] .showing-tickets`);
+    let failed_count = 0;
+    const max_failures = 10;
 
-function append_inperson_ticket(listing: TicketListing) {
-    if (listing.showing_id == null)
-        return;
+    while (true) {
+        console.log("Waiting for showings to load...");
+        const showing_elem = get_showing_elm();
+        
+        if (failed_count > max_failures) {
+            console.log("Failed to load showings.");
+            create_toast(
+                'error', 'Oops!',
+                'There was an error while trying to get ticket listings, please try again later.'
+            )
+            return;
+        }
 
-    console.log(`.listing-row[data-sid="${listing.showing_id}"]`);
-
-    var showing_elem = document.querySelector(`.listing-row[data-sid="${listing.showing_id}"]`);
-
-    showing_elem.appendChild(ticket_listing_html(listing));
-    
-    showing_elem.querySelector(`.remove-listing-btn[data-lid="${listing.id}"]`)
-            .addEventListener("click", () => {
-                del_listing(listing.id);
-            });
+        if (showing_elem == null) {
+            console.log("Showings not loaded yet.");
+            failed_count++;
+            await sleep(1000);
+        }
+        
+        else {
+            console.log("Showings loaded.");
+            const elm = showing_elem.appendChild(ticket_listing_html(listing));
+            elm.addEventListener("click", () => del_listing(listing.id));
+            return;
+        }
+    }
 }
 
 function append_streaming_ticket(listing: TicketListing) {
@@ -159,14 +174,12 @@ async function query_listings() {
     const listings = await get_ticket_listings(configuration.event_id);
 
     // -- Check if the request was successful
-    if (listings.code !== 200)
-        return create_toast(
-            'error', 'Oops!',
-            'There was an error while trying to get ticket listings, please try again later.'
-        )
+    if (listings.code !== 200) return create_toast(
+        'error', 'Oops!',
+        'There was an error while trying to get ticket listings, please try again later.'
+    )
 
     const data = (listings as GetTicketListingsSuccess).data
-
     set_listings(data.listings);
 }
 
@@ -220,21 +233,24 @@ async function add_live_listing(
 }
 
 async function del_listing(lid: number) {
+    // -- Get the element [data-lid-main="${lid}"]
+    const elm = document.querySelector(`[data-lid-main="${lid}"]`);
+    if (elm == null) return;
+
+    // -- Remove the entry from the Database
     const request = await del_ticket_listing(configuration.event_id, lid);
+    console.log("Deleting listing: ", lid);
 
     // -- Check if the request was successful
-    if (request.code !== 200)
-        return create_toast(
-            'error', 'Oops!',
-            'There was an error while trying to remove ticket listing, please try again later.'
-        )
-
-    remove_listing(lid);
-
-    create_toast(
-        'success', 'Ticketing',
-        'Removed ticket listing.'
+    if (request.code !== 200) return create_toast(
+        'error', 'Oops!',
+        'There was an error while trying to remove ticket listing, please try again later.'
     )
+
+    // -- Remove the element from the DOM
+    elm.remove();
+    console.log("Removed listing: ", lid);
+    create_toast('success', 'Ticketing', 'Removed ticket listing.')
 }
 
 
@@ -246,6 +262,7 @@ function ticket_listing_html(
     var row = document.createElement('div');
     row.className = "row m-1 listing-row";
     row.setAttribute("data-lid", listing.id.toString());
+    row.setAttribute("data-lid-main", listing.id.toString());
 
     row.innerHTML = `
         <div class="col-8">

@@ -37,11 +37,11 @@ class FlexibleTicket(models.Model):
             "event": {
                 "url": cross_app_reverse('events', 'event_view', {
                     'event_id': self.listing.event.event_id
-                }),
-                "broadcaster_name": self.listing.event.broadcaster.handle,
-                "title": self.listing.event.title,
-                "event_id": self.listing.event.event_id,
-                "splash": self.listing.event.get_cover_picture(),
+                })  if self.listing.event else "Deleted",
+                "broadcaster_name": self.listing.event.broadcaster.handle if self.listing.event else "Deleted",
+                "title": self.listing.event.title if self.listing.event else "Deleted",
+                "event_id": self.listing.event.event_id if self.listing.event else "Deleted",
+                "splash": self.listing.event.get_cover_picture() if self.listing.event else "Deleted",
                 "venue": self.showing.venue if self.showing else "Venue TBD"
             },
             "date": {
