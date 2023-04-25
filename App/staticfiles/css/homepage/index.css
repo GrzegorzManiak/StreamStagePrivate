@@ -70,6 +70,10 @@
     margin-right: 0.5rem;
 }
 
+[class='thumbnail-pfp'] img {
+    width: 100%;
+}
+
 [pfp-pos='top'] {
     position: absolute;
     top: calc((var(--pfp-size) / 4) * -1);
