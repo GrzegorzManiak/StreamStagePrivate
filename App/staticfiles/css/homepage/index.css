@@ -70,7 +70,7 @@
     margin-right: 0.5rem;
 }
 
-[data-elm="pfp"] img {
+[data-elm="pfp"] {
     width: 100%!important;
 }
 
