@@ -113,7 +113,8 @@ class SearchResultsListView(ListView):
             # Isolating event ID
             event_ids = []
             for event in events:
-                event_ids.append(event.event_id)
+                if event is not None:
+                    event_ids.append(event.event_id)
 
             results = results.filter(event_id__in=event_ids).distinct()
 
