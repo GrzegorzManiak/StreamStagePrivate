@@ -20,7 +20,7 @@ like_buttons.forEach(button => {
       numberOfLikes--;
       isLiked = !isLiked;
     }
-    const request = new Request("/events/review/" + reviewID + "/like");
+    const request = new Request("/review/" + reviewID + "/like");
     fetch(request);
     button.innerHTML='<i class="fa fa-thumbs-o-up" aria-hidden="true">&nbsp;' + numberOfLikes + '</i>';
   };
