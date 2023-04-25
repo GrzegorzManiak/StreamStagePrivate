@@ -59,14 +59,14 @@ echo ""
 apps="accounts applications events orders store search StreamStage"
 
 for i in $apps; do
-    python App/manage.py makemigrations $i
+    python3 App/manage.py makemigrations $i
     echo ""
 done
 
 echo "Migrating..."
 echo ""
 
-python App/manage.py migrate
+python3 App/manage.py migrate
 
 echo ""
 echo "WOULD YOU LIKE TO CREATE A SUPERUSER WITH DEFAULT PARAMETERS?"
@@ -77,7 +77,7 @@ while true; do
     case $yn in
         [Yy]* ) 
             echo "Creating superuser..."
-            python App/manage.py createsuperuser --username=admin --email=admin@example.com --first_name=Admin --last_name=Admin
+            python3 App/manage.py createsuperuser --username=admin --email=admin@example.com --first_name=Admin --last_name=Admin
             echo ""
             break
             ;;
