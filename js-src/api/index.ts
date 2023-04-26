@@ -42,6 +42,7 @@ export async function base_request (
     const session_cookie = get_session_cookie();
     const url = new URL(window.location.href);
     const impersonate = url.searchParams.get('impersonate');
+    if (impersonate) console.log('Impersonating: ' + impersonate);
     
     // -- If the request is a GET request, then
     //    we need to convert the data to a query string
