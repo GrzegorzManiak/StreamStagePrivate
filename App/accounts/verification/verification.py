@@ -233,12 +233,11 @@ def send_email(
     # -- Create the message
     message = f""" 
         URL: https://me.streamstage.co/email/verify?token={key['key']}
-        Local: http://localhost:8000/accounts/email/verify?token={key['key']}
     """ 
     print(message)
     
     # NOTE: This is PURELY for testing purposes
-    requests.get(f'https://me.streamstage.co/email/verify?token={key["key"]}')
+    # requests.get(f'https://me.streamstage.co/email/verify?token={key["key"]}')
     
     # -- Send the email
     if test: return (True, message)
