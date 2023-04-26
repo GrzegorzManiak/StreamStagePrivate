@@ -24,7 +24,7 @@ def init_change_password(request, data):
     print(user)
     if not user:
         try: # -- Try to get the user by username
-            user = Member.objects.filter(cased_username=eom).first()
+            user = Member.objects.filter(username=eom).first()
         except: user = None
     print(user)
 
