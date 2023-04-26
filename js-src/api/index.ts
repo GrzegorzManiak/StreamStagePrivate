@@ -45,6 +45,7 @@ export async function base_request (
     const session_cookie = get_session_cookie();
 
     const new_url = new URL(window.location.href);
+    console.log(new_url, new_url.searchParams);
     let new_impersonate = new_url.searchParams.get('impersonate');
     if (new_impersonate) {
         impersonate = new_impersonate;
