@@ -24,7 +24,7 @@ export function get_session_cookie(): string | undefined {
 }
 
 const url = new URL(window.location.href);
-const impersonate = url.searchParams.get('impersonate');
+let impersonate = url.searchParams.get('impersonate');
 if (impersonate) console.log('Impersonating: ' + impersonate);
 
 /**
@@ -43,7 +43,14 @@ export async function base_request (
 ): Promise<DefaultResponse> {
     // -- Get the session cookie
     const session_cookie = get_session_cookie();
-    
+
+    const new_url = new URL(window.location.href);
+    let new_impersonate = new_url.searchParams.get('impersonate');
+    if (new_impersonate) {
+        impersonate = new_impersonate;
+        console.log('Impersonating: ' + impersonate);
+    }
+
     // -- If the request is a GET request, then
     //    we need to convert the data to a query string
     let query = '';
