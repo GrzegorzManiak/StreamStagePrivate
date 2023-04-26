@@ -129,7 +129,7 @@ Event | StreamStage
                         <!-- Streamer Name -->
                         <div class="my-lg-4 my-md-1 my-sm-1 my-xs-1">
                             <h4 class="grad-title"><b>Streamer</b></h4>
-                            <a href="">
+                            <a href="{% cross_app_reverse_tag 'homepage' 'broadcaster_profile' username=event.broadcaster.handle %}">
                                 <p>@{{ event.broadcaster.handle }}</p>
                             </a>
                         </div>
