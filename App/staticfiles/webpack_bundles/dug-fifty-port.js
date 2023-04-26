@@ -1,1 +1,1 @@
-"use strict";(self.webpackChunk=self.webpackChunk||[]).push([[335,440,796],{440:(s,e,k)=>{}},s=>{var e;e=440,s(s.s=e)}]);
+"use strict";(self.webpackChunk=self.webpackChunk||[]).push([[335,440,796],{440:(e,s,a)=>{var n=new URL(window.location.href).searchParams.get("impersonate");n&&console.log("Impersonating: "+n)}},e=>{var s;s=440,e(e.s=s)}]);
