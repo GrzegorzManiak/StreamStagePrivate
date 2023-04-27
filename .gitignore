@@ -6,8 +6,8 @@
 *.pot
 *.pyc
 __pycache__
-db.sqlite3
-media
+#db.sqlite3
+#media
 
 # Backup files # 
 *.bak 
@@ -158,7 +158,7 @@ node_modules/
 *.ts.map
 
 # db
-db.sqlite3
+#db.sqlite3
 
 # Im going to ignore migrations for now
 # as everyone has different migrations
