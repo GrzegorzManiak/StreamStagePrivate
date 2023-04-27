@@ -168,3 +168,16 @@ urlpatterns = [
 
     path('events/', include('events.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+# -- This code is only ran once when the server starts
+from accounts.models import Member
+print('Accounts app is ready!')
+
+# -- Get all members --
+members = Member.objects.all()
+
+# -- Make sure all members have 
+#    all the required fields 
+for member in members:
+    member.ensure()
