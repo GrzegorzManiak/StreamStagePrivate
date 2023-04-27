@@ -31,7 +31,7 @@
     /* 
         Make sure the image takes up exactly 
         the width and height set in the root
-        All extra space will be cropped
+        All extra space will be 
     */
     width: var(--tb-width);
     aspect-ratio: var(--tb-aspect-ratio);
@@ -665,7 +665,9 @@
     font-size: 1rem;
     font-weight: 400;
     margin-top: 0.5rem;
-    color: var(--greyed-out-font-color)
+    color: var(--greyed-out-font-color);
+    overflow: auto;
+    max-height: 4.5rem;
 }
 
 swiper-container {
