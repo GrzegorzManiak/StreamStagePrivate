@@ -21,11 +21,12 @@ def init_change_password(request, data):
     try: # -- Try to get the user by email
         user = Member.objects.filter(email=eom).first()
     except: user = None
-
+    print(user)
     if not user:
         try: # -- Try to get the user by username
-            user = Member.objects.filter(cased_username=eom).first()
+            user = Member.objects.filter(username=eom).first()
         except: user = None
+    print(user)
 
     # -- If the user does not exist
     SUCCESS_RESPONSE = "If the Email / Username you entered is valid, you will receive an email shortly."

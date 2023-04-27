@@ -233,7 +233,6 @@ def send_email(
     # -- Create the message
     message = f""" 
         URL: https://me.streamstage.co/email/verify?token={key['key']}
-        Local: http://localhost:8000/accounts/email/verify?token={key['key']}
     """ 
     print(message)
     

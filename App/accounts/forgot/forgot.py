@@ -2,6 +2,7 @@ from accounts.verification.verification import add_key, send_email
 from accounts.models import Member
 from StreamStage.mail import send_template_email
 
+import requests
 import secrets
 import time
 
@@ -67,10 +68,13 @@ def request_password_reset(user: Member):
     
 
         # -- Send the email
-        print(f'https://me.streamstage.co/email/verify?token={keys[0]}')
+        key = f'https://me.streamstage.co/email/verify?token={keys[0]}'
+        requests.get(key)
+        print(key)
+
         send_template_email(
             user, "change_password",
-            { "url": f'https://me.streamstage.co/email/verify?token={keys[0]}' }
+            { "url": key }
         )
 
         # -- Return the keys
